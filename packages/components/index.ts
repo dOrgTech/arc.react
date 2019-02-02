@@ -1,2 +1,0 @@
-// TODO:
-// initialize web3
