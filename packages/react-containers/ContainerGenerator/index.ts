@@ -1,5 +1,6 @@
 import * as React from "react"
 
+// expose: graph, views, tx methods
 class ContainerGenerator<CoreComponent> implements React.Component<
   {
     config: CoreComponent.Config,

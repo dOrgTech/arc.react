@@ -4,13 +4,10 @@ import { init, Proposal } from "@DAOcomponents/react-containers"
 class HelloWorld implements React.Component {
   public render() {
     return (
-      <Proposal
-        config={ protocol: DAOproto.Arc, address: "0x" }
-        options={ scheme: "SomeScheme" }
-      >
-        ({ state = { pending, mined, voteOngoing, voteFinish } }) => (
+      <Proposal>
+        ({ graph /*events->graphql*/, views /*view methods*/, actions /*tx methods*/ }) => (
           <div>
-            id
+            ${name}
           </div>
         )
       </Proposal>

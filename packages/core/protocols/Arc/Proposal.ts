@@ -1,0 +1,1 @@
+// TODO: implement / extend proposal interface for Arc
