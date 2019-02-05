@@ -1,4 +1,4 @@
 # DAOcomponents  
-## Example Use Cases  
-Read more [here](./docs/example-uses.md). 
- 
+TODO:
+- future ambitions (see Web3Binding Research)
+- immediate POC (wrapping components for daostack's client library)(used for other tools [dOrg | dOrganism, status, cent, bushwick])
