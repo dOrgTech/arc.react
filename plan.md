@@ -6,7 +6,7 @@
   - view demo scenario  
 
 # Intentions  
-- Storyboard-esc experience  
+* Storyboard-esc experience  
 - Self contained components  
 - Simple integration + view customization  
   - Container & View Components?
