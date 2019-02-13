@@ -1,18 +1,21 @@
 {
-  "main": "lib/src/index.js",
-  "typings": "lib/src/index.d.ts",
+  "main": "dist/src/index.js",
+  "typings": "dist/src/index.d.ts",
   "scripts": {
+    "start": "start-storybook -p 3000",
     "compile": "tsc",
     "test": "jest",
-    "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
   "dependencies": {
-    "react": "^15.6.1"
+    "@daostack/client": "0.0.21",
+    "react": "^15.6.1",
+    "rxjs": "^6.4.0"
   },
   "devDependencies": {
-    "@storybook/addon-storyshots": "^3.2.8",
+    "@storybook/addon-storyshots": "^3.4.11",
     "@storybook/react": "^3.2.8",
+    "@types/graphql": "^14.0.6",
     "@types/jest": "^20.0.2",
     "@types/react": "^15.0.33",
     "@types/react-dom": "^15.5.1",
@@ -31,7 +34,7 @@
     },
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "/lib/"
+      "/dist/"
     ],
     "testRegex": "(/test/.*|\\.(test|spec))\\.(jsx?|tsx?)$",
     "moduleFileExtensions": [

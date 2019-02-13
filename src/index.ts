@@ -1,1 +1,2 @@
-export * from "./widget";
+export * from "./lib";
+export * from "./containers";

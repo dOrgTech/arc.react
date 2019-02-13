@@ -1,10 +1,10 @@
 import * as React from "react";
-import { SampleWidget } from "../src";
+import { DAO } from "../src";
 
 import { storiesOf } from "@storybook/react";
 
 storiesOf("Containers", module)
-  .add("Sample Widget", () => <SampleWidget name="Visitor" />);
+  .add("Sample Widget", () => <DAO address="Visitor" />);
 
 storiesOf("Views", module)
-  .add("Sample Widget", () => <SampleWidget name="Visitor" />);
+  .add("Sample Widget", () => <DAO address="Visitor" />);
