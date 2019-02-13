@@ -2,7 +2,11 @@
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
   "scripts": {
-    "start": "start-storybook -p 3000",
+    "start": "concurrently \"npm:start:subgraph\" \"npm:start:storybook\"",
+    "start:storybook": "start-storybook -p 3000",
+    "start:subgraph": "concurrently \"npm:start:graphnode\" \"npm:deploy:subgraph\"",
+    "start:graphnode": "docker-compose up graph-node",
+    "deploy:subgraph": "wait-on tcp:8020 && npm explore @daostack/subgraph -- npm install && npm explore @daostack/subgraph -- npm run deploy",
     "compile": "tsc",
     "test": "jest",
     "build-storybook": "build-storybook"
@@ -22,11 +26,13 @@
     "@types/react-test-renderer": "^15.5.1",
     "@types/storybook__react": "^3.0.1",
     "awesome-typescript-loader": "^3.2.1",
+    "concurrently": "^4.1.0",
     "jest": "^20.0.4",
     "react-dom": "^15.6.1",
     "react-test-renderer": "^15.6.1",
     "ts-jest": "^20.0.6",
-    "typescript": "^2.4.1"
+    "typescript": "^2.4.1",
+    "wait-on": "^3.2.0"
   },
   "jest": {
     "transform": {
