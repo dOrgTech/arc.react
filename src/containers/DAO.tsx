@@ -17,9 +17,9 @@ export const DAO: React.SFC<Props> = ({ address }) => (
       } else if (state.error) {
         return <div>{state.error.message}</div>
       } else if (state.data) {
-        <div>{state.data.address}</div>
+        return <div>{state.data.address}</div>
       } else {
-        <div>null</div>
+        return <div>null</div>
       }
     }
   }
