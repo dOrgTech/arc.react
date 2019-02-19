@@ -2,7 +2,8 @@
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
   "scripts": {
-    "start": "concurrently \"npm:start:subgraph\" \"npm:start:storybook\"",
+    "start": "concurrently \"npm:start:subgraph\" \"npm:start:storybook\" \"npm:open:storybook\"",
+    "open:storybook": "wait-on tcp:3000 && opener http://localhost:3000",
     "start:storybook": "start-storybook -p 3000",
     "start:subgraph": "concurrently \"npm:start:graphnode\" \"npm:deploy:subgraph\"",
     "start:graphnode": "docker-compose -f ./node_modules/@daostack/subgraph/docker-compose.yml up graph-node",
@@ -13,8 +14,8 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
-    "@daostack/client": "0.0.21",
-    "react": "^15.6.1",
+    "@daostack/client": "0.0.24",
+    "react": "^16.7.0",
     "rxjs": "^6.4.0"
   },
   "devDependencies": {
@@ -22,15 +23,17 @@
     "@storybook/react": "^3.2.8",
     "@types/graphql": "^14.0.6",
     "@types/jest": "^20.0.2",
-    "@types/react": "^15.0.33",
-    "@types/react-dom": "^15.5.1",
-    "@types/react-test-renderer": "^15.5.1",
+    "@types/react": "^16.8.3",
+    "@types/react-dom": "^16.8.2",
+    "@types/react-test-renderer": "^16.8.1",
     "@types/storybook__react": "^3.0.1",
     "awesome-typescript-loader": "^3.2.1",
     "concurrently": "^4.1.0",
     "jest": "^20.0.4",
-    "react-dom": "^15.6.1",
-    "react-test-renderer": "^15.6.1",
+    "opener": "^1.5.1",
+    "react-dom": "^16.8.2",
+    "react-object-inspector": "^0.2.1",
+    "react-test-renderer": "^16.8.2",
     "ts-jest": "^20.0.6",
     "typescript": "^2.4.1",
     "wait-on": "^3.2.0"

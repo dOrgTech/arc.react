@@ -8,7 +8,11 @@ interface Props {
   // TODO: loading component override
 }
 
-export const DAO: React.SFC<Props> = ({ address }) => (
+export const DAOContext = React.createContext({
+  /* Arc.IDAOState */
+} as Arc.IDAOState);
+
+export const DAO: React.SFC<Props> = ({ address, children }) => (
   <Subscribe observable={arc.dao(address).state}>
   {
     (state: IObservableState<Arc.IDAOState>): any => {
@@ -17,7 +21,7 @@ export const DAO: React.SFC<Props> = ({ address }) => (
       } else if (state.error) {
         return <div>{state.error.message}</div>
       } else if (state.data) {
-        return <div>{state.data.address}</div>
+        return <DAOContext.Provider value={state.data}>{children}</DAOContext.Provider>
       } else {
         return <div>null</div>
       }
