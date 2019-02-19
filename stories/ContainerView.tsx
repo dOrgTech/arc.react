@@ -1,21 +1,43 @@
 import * as React from "react";
-import * as ObjectInspector from "react-object-inspector";
+import { ObjectInspector } from "react-inspector";
 
 interface Props {
   name: string,
-  Container: React.ComponentClass<any, any> | React.FunctionComponent<any>,
-  Context: React.Context<any>,
-  props: any
+  Type: any,
+  props?: any
 }
 
-const ContainerView: React.SFC<Props> = ({ name, Container, Context, props }) => (
-  <Container {...props}>
-    <Context.Consumer>
-      {data => (
-        <ObjectInspector data={data} name={name} />
-      )}
-    </Context.Consumer>
-  </Container>
-)
+export default class ContainerView extends React.Component<Props> {
+  public render() {
+    const { name, Type, props } = this.props;
 
-export default ContainerView;
+    return (
+      <Type.Container {...props}>
+        <Type.Status>
+          {(status: any) => {
+            if (status.isLoading) {
+              return <div>loading</div>
+            } else if (status.error) {
+              return <div>{status.error.message}</div>
+            } else {
+              // TODO: null case?
+              return (
+                <Type.Graph>
+                  {(graph: any) => (
+                    <>
+                      <ObjectInspector data={graph} name={`${name}.Graph`} expandLevel={1} />
+                      <ObjectInspector data={status} name={`${name}.Status`} expandLevel={1} />
+                    </>
+                  )}
+                </Type.Graph>
+              );
+            }
+          }}
+        </Type.Status>
+      </Type.Container>
+    )
+  }
+}
+
+// TODO: if function is the child, then render it with everything
+// TODO: why is status "loaded" false?

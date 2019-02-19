@@ -1,1 +1,1 @@
-declare module "react-object-inspector";
+declare module "react-inspector";

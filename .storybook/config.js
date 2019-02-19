@@ -3,6 +3,7 @@
 import { configure } from '@storybook/react';
 
 function loadStories() {
+  // TODO: improve this directory, rename it "examples"?
   require('../stories');
 }
 

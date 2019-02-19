@@ -1,8 +1,8 @@
 import React = require("react");
 import { create } from "react-test-renderer";
-import { DAO } from "../src";
+import { Container as DAO } from "../src/containers/DAO";
 
-test("Say my name, say my name...", () => {
+test("Test...", () => {
   const tree = create(
     <DAO address="Visitor" />
   ).toJSON();
