@@ -1,6 +1,9 @@
 {
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
+  "engines": {
+    "node": "8.10.0"
+  },
   "scripts": {
     "start": "concurrently \"npm:start:subgraph\" \"npm:start:storybook\"",
     "start:storybook": "start-storybook -p 3000",
