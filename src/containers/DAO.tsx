@@ -7,6 +7,18 @@ interface Props {
 }
 
 // TODO: add action & view method props
+// TODO: long term, only have read & write semantics. read (props & funcs / transforms)
+// TODO: short term, views & actions can have their mappings defined here
+/*
+  const views = {
+    someView: (arg: boolean): uint => {
+      // use typechain to invoke a view
+      var value = contract.view(arg, "some other arg")
+      return value.first // example of complex mapping
+    }
+  }
+*/
+
 export class Container extends Base<
   Props, DAOSchema, { /* view methods */ }, { /* action (tx) methods */ }
 > {
