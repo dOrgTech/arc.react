@@ -1,4 +1,4 @@
-import { Container as Base } from "./Container";
+import { Container } from "./Container";
 import Arc, { IDAOState as DAOSchema } from "@daostack/client";
 import { Observable } from "rxjs";
 
@@ -19,18 +19,37 @@ interface Props {
   }
 */
 
-export class Container extends Base<
-  Props, DAOSchema, { /* view methods */ }, { /* action (tx) methods */ }
-> {
-  createObservable(props: Props, arc: Arc): Observable<DAOSchema> {
+type GraphSchema = DAOSchema;
+type ViewMethods = { /* view methods */ };
+type ActionMethods = { /* action (tx) methods */ };
+
+export default class DAO extends Container<
+  Props,
+  GraphSchema,
+  ViewMethods,
+  ActionMethods
+>
+{
+  createObservable(props: Props, arc: Arc): Observable<GraphSchema> {
     return arc.dao(props.address).state
   }
-}
 
-export const Graph = Container.Graph<DAOSchema>().Consumer;
-export const Views = Container.Views<{ /* view methods */ }>().Consumer;
-export const Actions = Container.Actions<{/* action (tx) methods */}>().Consumer;
-export const Status = Container.Query<DAOSchema>().Consumer;
+  public static get Graph() {
+    return Container.GraphContext<GraphSchema>().Consumer;
+  }
+
+  public static get Views() {
+    return Container.ViewsContext<ViewMethods>().Consumer;
+  }
+
+  public static get Actions() {
+    return Container.ActionsContext<ActionMethods>().Consumer;
+  }
+
+  public static get Query() {
+    return Container.QueryContext<GraphSchema>().Consumer;
+  }
+}
 
 /*
 import DAO from "./DAO";

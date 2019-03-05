@@ -34,11 +34,11 @@ const objectInspector = (data: any, name: string, tooltip: string) => {
 
 export default class ContainerView extends React.Component<Props> {
   public render() {
-    const { name, Type, props } = this.props;
+    const { name, Type, props, children } = this.props;
 
     return (
-      <Type.Container {...props}>
-        <Type.Status>
+      <Type {...props}>
+        <Type.Query>
           {(status: any) => {
             if (status.isLoading) {
               return <div>loading</div>
@@ -52,7 +52,8 @@ export default class ContainerView extends React.Component<Props> {
                       return (
                         <>
                           {objectInspector(graph, `${name}.Graph`, "Semantic Graph")}
-                          {objectInspector(status, `${name}.Status`, "bar")}
+                          {objectInspector(status, `${name}.Query`, "GraphQL Query Diagnostics")}
+                          {children}
                         </>
                       )
                     } else {
@@ -63,8 +64,8 @@ export default class ContainerView extends React.Component<Props> {
               );
             }
           }}
-        </Type.Status>
-      </Type.Container>
+        </Type.Query>
+      </Type>
     )
   }
 }

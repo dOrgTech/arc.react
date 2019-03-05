@@ -54,26 +54,30 @@ extends React.Component<
   //// I think the answer is yes definitely...
   abstract createObservable(props: Props, arc: Arc): Observable<GraphSchema>;
 
-  public static GraphContext = React.createContext({ });
-  public static ViewsContext = React.createContext({ });
-  public static ActionsContext = React.createContext({ });
-  public static QueryContext = React.createContext({ });
-
-  public static Graph<GraphSchema>() {
-    return (Container.GraphContext as any) as Context<GraphSchema>;
+  protected static GraphContext<GraphSchema>(): Context<GraphSchema> {
+    return this.graphContext as any;
   }
 
-  public static Views<ViewMethods>() {
-    return (Container.ViewsContext as any) as Context<ViewMethods>;
+  protected static ViewsContext<ViewMethods>(): Context<ViewMethods> {
+    return this.viewsContext as any;
   }
 
-  public static Actions<ActionMethods>() {
-    return (Container.ActionsContext as any) as Context<ActionMethods>;
+  protected static ActionsContext<ActionMethods>(): Context<ActionMethods> {
+    return this.actionsContext as any;
   }
 
-  public static Query<GraphSchema>() {
-    return (Container.QueryContext as any) as Context<Query<GraphSchema>>;
+  // TODO: move query inside Graph?
+  protected static QueryContext<GraphSchema>(): Context<Query<GraphSchema>> {
+    return this.queryContext as any;
   }
+
+  private static graphContext = React.createContext({ });
+  private static viewsContext = React.createContext({ });
+  private static actionsContext = React.createContext({ });
+  private static queryContext = React.createContext({ });
+
+  // TODO: abstract this away
+  private subscription: Subscription | null = null;
 
   constructor(props: Props & RootProps<GraphSchema, ViewMethods, ActionMethods>) {
     super(props);
@@ -95,10 +99,10 @@ extends React.Component<
   }
 
   public render() {
-    const Graph = Container.Graph<GraphSchema>() as any;
-    const Views = Container.Views<ViewMethods>() as any;
-    const Actions = Container.Actions<ActionMethods>() as any;
-    const Query = Container.Query<GraphSchema>() as any;
+    const GraphProvider = Container.GraphContext<GraphSchema>().Provider as any;
+    const ViewsProvider = Container.ViewsContext<ViewMethods>().Provider as any;
+    const ActionsProvider = Container.ActionsContext<ActionMethods>().Provider as any;
+    const QueryProvider = Container.QueryContext<GraphSchema>().Provider as any;
 
     const { children } = this.props;
     const { _query, _tuple } = this.state;
@@ -111,20 +115,33 @@ extends React.Component<
     this.updateQuery();
 
     return (
-      <Query.Provider value={_query}>
-      <Graph.Provider value={_tuple.graph}>
-      <Views.Provider value={_tuple.views}>
-      <Actions.Provider value={_tuple.actions}>
+      <QueryProvider value={_query}>
+      <GraphProvider value={_tuple.graph}>
+      <ViewsProvider value={_tuple.views}>
+      <ActionsProvider value={_tuple.actions}>
         {children}
-      </Actions.Provider>
-      </Views.Provider>
-      </Graph.Provider>
-      </Query.Provider>
+      </ActionsProvider>
+      </ViewsProvider>
+      </GraphProvider>
+      </QueryProvider>
     )
   }
 
-  // TODO: abstract this away
-  private subscription: Subscription | null = null;
+  public componentWillMount() {
+    this.updateQuery();
+  }
+
+  // TODO: idk about this...
+  public componentWillReceiveProps(nextProps: any) {
+    if (nextProps.children !== this.props.children) {
+      this.teardownSubscription();
+      this.updateQuery();
+    }
+  }
+
+  public componentWillUnmount() {
+    this.teardownSubscription();
+  }
 
   private mergeState(merge: any) {
     this.setState(
@@ -169,25 +186,9 @@ extends React.Component<
     }
   }
 
-  public teardownSubscription() {
+  private teardownSubscription() {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
-  }
-
-  public componentWillMount() {
-    this.updateQuery();
-  }
-
-  // TODO: idk about this...
-  public componentWillReceiveProps(nextProps: any) {
-    if (nextProps.children !== this.props.children) {
-      this.teardownSubscription();
-      this.updateQuery();
-    }
-  }
-
-  public componentWillUnmount() {
-    this.teardownSubscription();
   }
 }

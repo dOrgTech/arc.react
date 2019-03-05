@@ -10,7 +10,8 @@
     "start:subgraph": "concurrently \"npm:start:graphnode\" \"npm:deploy:subgraph\"",
     "start:graphnode": "docker-compose -f ./node_modules/@daostack/subgraph/docker-compose.yml up graph-node",
     "stop:graphnode": "docker-compose -f ./node_modules/@daostack/subgraph/docker-compose.yml down -v",
-    "deploy:subgraph": "wait-on tcp:8020 && npm explore @daostack/subgraph -- npm install && npm explore @daostack/subgraph -- npm run deploy",
+    "deploy:subgraph": "wait-on tcp:8020 && npm explore @daostack/subgraph -- npm install && npm explore @daostack/subgraph -- npm run deploy && npm run deploy:copyOutput",
+    "deploy:copyOutput": "mkdir ./.daostack && cp node_modules/@daostack/subgraph/migration.json ./.daostack/",
     "compile": "tsc",
     "test": "jest",
     "build-storybook": "build-storybook"
