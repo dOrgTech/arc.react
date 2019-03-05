@@ -1,10 +1,35 @@
 import * as React from "react";
-import { ObjectInspector } from "react-inspector";
+import {
+  ObjectInspector,
+  ObjectRootLabel,
+  ObjectLabel
+} from "react-inspector";
 
 interface Props {
   name: string,
   Type: any,
   props?: any
+}
+
+const nodeRenderer = (node: any, tooltip: string) => {
+  const { depth, name, data, isNonenumerable, expanded } = node;
+
+  return (
+    depth === 0
+      ? <ObjectRootLabel name={name} data={tooltip} />
+      : <ObjectLabel name={name} data={data} isNonenumerable={isNonenumerable} />
+  );
+}
+
+const objectInspector = (data: any, name: string, tooltip: string) => {
+  return (
+    <ObjectInspector
+    data={data}
+    name={name}
+    expandLevel={1}
+    theme={"chromeDark"}
+    nodeRenderer={(node: any) => nodeRenderer(node, tooltip)} />
+  );
 }
 
 export default class ContainerView extends React.Component<Props> {
@@ -20,15 +45,20 @@ export default class ContainerView extends React.Component<Props> {
             } else if (status.error) {
               return <div>{status.error.message}</div>
             } else {
-              // TODO: null case?
               return (
                 <Type.Graph>
-                  {(graph: any) => (
-                    <>
-                      <ObjectInspector data={graph} name={`${name}.Graph`} expandLevel={1} />
-                      <ObjectInspector data={status} name={`${name}.Status`} expandLevel={1} />
-                    </>
-                  )}
+                  {(graph: any) => {
+                    if (graph && status) {
+                      return (
+                        <>
+                          {objectInspector(graph, `${name}.Graph`, "Semantic Graph")}
+                          {objectInspector(status, `${name}.Status`, "bar")}
+                        </>
+                      )
+                    } else {
+                      return <div>null</div>
+                    }
+                  }}
                 </Type.Graph>
               );
             }

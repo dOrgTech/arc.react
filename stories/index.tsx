@@ -5,10 +5,12 @@ import ContainerView from "./ContainerView";
 // Containers
 import * as DAO from "../src/containers/DAO";
 
-storiesOf("Event Graph", module)
-  .add("Query", () => <text>TODO: query editor</text>);
+storiesOf("Environment", module)
+  .add("Connections", () => <text>TODO: connection statuses (eth_node, contracts, graph_node)</text>)
+  .add("Contracts", () => <text>TODO: contracts deployed</text>)
+  .add("Graph Query", () => <text>TODO: query editor</text>);
 
-storiesOf("Containers", module)
+storiesOf("Components", module)
   .add("DAO", () =>
     <ContainerView 
       name={ "DAO" }
@@ -16,5 +18,8 @@ storiesOf("Containers", module)
       props={{ address: "0xcB4e66eCA663FDB61818d52A152601cA6aFEf74F" }} />
   );
 
-storiesOf("Views", module)
+storiesOf("Example Views", module)
   .add("TODO", () => <text>TODO: sample DAO view</text>);
+
+storiesOf("Example Apps", module)
+  .add("TODO", () => <text>TODO: sample DAO app integrations</text>);

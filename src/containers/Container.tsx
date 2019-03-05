@@ -18,8 +18,9 @@ import { Observable, Subscription } from "rxjs";
   single deal out of a template or *library of components*.
 */
 interface Tuple<GraphSchema, ViewMethods, ActionMethods> {
+  // TODO: add riacardian template (prose), maybe rename these props to code (actions), prose (ricard), parameters (graph & views)
   graph?: GraphSchema,
-  views?: ViewMethods,
+  views?: ViewMethods, // TODO: combine graph & views into same object
   actions?: ActionMethods
 }
 
