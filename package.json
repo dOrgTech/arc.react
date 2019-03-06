@@ -16,7 +16,7 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
-    "@daostack/client": "0.0.24",
+    "@daostack/client": "0.0.33",
     "ramda": "^0.26.1",
     "react": "16.5.0",
     "rxjs": "^6.4.0"
@@ -29,6 +29,7 @@
     "@storybook/addon-links": "4.0.0-rc.6",
     "@storybook/addon-storyshots": "4.0.0-rc.6",
     "@storybook/react": "4.0.0-rc.6",
+    "@types/bn.js": "^4.11.4",
     "@types/graphql": "^14.0.6",
     "@types/jest": "^20.0.2",
     "@types/ramda": "^0.25.50",

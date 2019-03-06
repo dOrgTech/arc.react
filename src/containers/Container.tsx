@@ -5,125 +5,88 @@ import * as R from "ramda";
 // TODO: Generalize this layer...? Web3Binding :)
 import Arc from "@daostack/client";
 import arc from "../lib/arc";
+import { IStateful } from "@daostack/client/src/types"
 
 // TODO: get rid of?
 import { Observable, Subscription } from "rxjs";
 
-/*
-  Tuple:
-  https://en.wikipedia.org/wiki/Ricardian_contract
-  This form proposes a *tuple* of {prose, parameters, code}
-  where the parameters can particularise or specialise the
-  legal prose and the computer code in order to create a
-  single deal out of a template or *library of components*.
-*/
-interface Tuple<GraphSchema, ViewMethods, ActionMethods> {
-  // TODO: add riacardian template (prose), maybe rename these props to code (actions), prose (ricard), parameters (graph & views)
-  graph?: GraphSchema,
-  views?: ViewMethods, // TODO: combine graph & views into same object
-  actions?: ActionMethods
+interface Query<Data> {
+  createTime: number;
+  isLoading: boolean;
+  error?: Error;
+  complete: boolean;
+  observable: Observable<Data>;
 }
 
-interface Query<GraphSchema> {
-  createTime: number,
-  isLoading: boolean | null,
-  error: Error | null,
-  complete: boolean,
-  observable: Observable<GraphSchema> | null
+interface State<Entity, Data, Code> {
+  entity?: Entity;
+  data?: Data;
+  code?: Code;
+  query?: Query<Data>;
 }
 
-interface State<GraphSchema, ViewMethods, ActionMethods> {
-  _query: Query<GraphSchema>,
-  _tuple: Tuple<GraphSchema, ViewMethods, ActionMethods>
-}
-
-type RootProps<GraphSchema, ViewMethods, ActionMethods> = Tuple<GraphSchema, ViewMethods, ActionMethods>;
-
-export abstract class Container<Props, GraphSchema, ViewMethods, ActionMethods> 
-extends React.Component<
-  Props & RootProps<GraphSchema, ViewMethods, ActionMethods>,
-  State<GraphSchema, ViewMethods, ActionMethods>
-> {
-
-  // TODO: abstract methods
-  // create instance
-  // init graph
-  // init views
-  // init actions
+export abstract class Container<Props, Entity extends IStateful<Data>, Data, Code>
+  extends React.Component<Props, State<Entity, Data, Code>>
+{
+  // TODO: abstract this away
+  // create instance?
+  // init data?
   //// might need a proxy layer in between the client library and this code...
   //// I think the answer is yes definitely...
-  abstract createObservable(props: Props, arc: Arc): Observable<GraphSchema>;
+  protected abstract createEntity(props: Props, arc: Arc): Entity;
 
-  protected static GraphContext<GraphSchema>(): Context<GraphSchema> {
-    return this.graphContext as any;
+  protected static EntityContext<Entity>(): Context<Entity> {
+    return Container._EntityContext as any;
   }
 
-  protected static ViewsContext<ViewMethods>(): Context<ViewMethods> {
-    return this.viewsContext as any;
+  protected static DataContext<Data>(): Context<Data> {
+    return Container._DataContext as any;
   }
 
-  protected static ActionsContext<ActionMethods>(): Context<ActionMethods> {
-    return this.actionsContext as any;
+  protected static CodeContext<Code>(): Context<Code> {
+    return Container._CodeContext as any;
   }
 
-  // TODO: move query inside Graph?
-  protected static QueryContext<GraphSchema>(): Context<Query<GraphSchema>> {
-    return this.queryContext as any;
+  protected static QueryContext<Data>(): Context<Query<Data>> {
+    return Container._QueryContext as any;
   }
 
-  private static graphContext = React.createContext({ });
-  private static viewsContext = React.createContext({ });
-  private static actionsContext = React.createContext({ });
-  private static queryContext = React.createContext({ });
+  private static _EntityContext = React.createContext({ });
+  private static _DataContext = React.createContext({ });
+  private static _CodeContext = React.createContext({ });
 
-  // TODO: abstract this away
-  private subscription: Subscription | null = null;
+  // TODO: get rid of this...
+  private static _QueryContext = React.createContext({ });
 
-  constructor(props: Props & RootProps<GraphSchema, ViewMethods, ActionMethods>) {
+  private _subscription?: Subscription;
+
+  constructor(props: Props) {
     super(props);
 
-    this.state = {
-      _query: {
-        createTime: 0, // TODO: get time
-        isLoading: null,
-        error: null,
-        complete: false,
-        observable: null
-      },
-      _tuple: {
-        graph: this.props.graph,
-        views: this.props.views,
-        actions: this.props.actions
-      }
-    };
+    this.state = { };
   }
 
   public render() {
-    const GraphProvider = Container.GraphContext<GraphSchema>().Provider as any;
-    const ViewsProvider = Container.ViewsContext<ViewMethods>().Provider as any;
-    const ActionsProvider = Container.ActionsContext<ActionMethods>().Provider as any;
-    const QueryProvider = Container.QueryContext<GraphSchema>().Provider as any;
+    const EntityProvider = Container.EntityContext<Entity>().Provider as any;
+    const DataProvider = Container.DataContext<Data>().Provider as any;
+    const CodeProvider = Container.CodeContext<Code>().Provider as any;
+    const QueryProvider = Container.QueryContext<Data>().Provider as any;
 
     const { children } = this.props;
-    const { _query, _tuple } = this.state;
-
-    // TODO: check for Props chanages
-    /// 1. take hash of (this.props as Props)
-    /// 2. if (this.propsHash !== hash(this.props as Props))
-    /// 3.   re-set state on the child (setState(this.props as Props))
+    const { entity, data, code, query } = this.state;
 
     this.updateQuery();
 
     return (
-      <QueryProvider value={_query}>
-      <GraphProvider value={_tuple.graph}>
-      <ViewsProvider value={_tuple.views}>
-      <ActionsProvider value={_tuple.actions}>
+      <EntityProvider value={entity}>
+      <DataProvider value={data}>
+      <CodeProvider value={code}>
+      <QueryProvider value={query}>
         {children}
-      </ActionsProvider>
-      </ViewsProvider>
-      </GraphProvider>
       </QueryProvider>
+      </CodeProvider>
+      </DataProvider>
+      </EntityProvider>
     )
   }
 
@@ -150,36 +113,47 @@ extends React.Component<
   }
 
   private updateQuery() {
-
-    const query = this.state._query;
+    const { query } = this.state;
 
     // start the query if it's not already
-    if (query.observable === null) {
+    if (query === undefined) {
+      const entity: Entity = this.createEntity(this.props, arc);
+      const query: Query<Data> = {
+        createTime: Date.now(),
+        isLoading: false,
+        complete: false,
+        observable: entity.state()
+      };
+
       this.mergeState({
-        _query: {
-          observable: this.createObservable((this.props as any) as Props, arc)
-        }
+        entity,
+        query
       });
-    } else if (query.isLoading === null) {
+    } else if (
+      this._subscription === undefined &&
+      query.isLoading === false &&
+      query.complete === false
+    ) {
       this.mergeState({
-        _query: { isLoading: true }
+        query: { isLoading: true }
       });
 
-      this.subscription = query.observable.subscribe(
-        (data: GraphSchema) => {
+      // TODO: handle error case & try to requery every so often...
+      this._subscription = query.observable.subscribe(
+        (data: Data) => {
           this.mergeState({
-            _query: { isLoading: false },
-            _tuple: { graph: data }
+            data: data,
+            query: { isLoading: false }
           });
         },
         (error: Error) => { 
           this.mergeState({
-            _query: { error }
+            query: { error }
           });
         },
         () => {
           this.mergeState({
-            _query: { complete: true }
+            query: { complete: true }
           });
         }
       );
@@ -187,8 +161,9 @@ extends React.Component<
   }
 
   private teardownSubscription() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
+    if (this._subscription) {
+      this._subscription.unsubscribe();
+      this._subscription = undefined;
     }
   }
 }

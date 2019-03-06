@@ -39,20 +39,20 @@ export default class ContainerView extends React.Component<Props> {
     return (
       <Type {...props}>
         <Type.Query>
-          {(status: any) => {
-            if (status.isLoading) {
+          {(query: any) => {
+            if (query.isLoading) {
               return <div>loading</div>
-            } else if (status.error) {
-              return <div>{status.error.message}</div>
+            } else if (query.error) {
+              return <div>{query.error.message}</div>
             } else {
               return (
-                <Type.Graph>
-                  {(graph: any) => {
-                    if (graph && status) {
+                <Type.Data>
+                  {(data: any) => {
+                    if (data && query) {
                       return (
                         <>
-                          {objectInspector(graph, `${name}.Graph`, "Semantic Graph")}
-                          {objectInspector(status, `${name}.Query`, "GraphQL Query Diagnostics")}
+                          {objectInspector(data, `${name}.Data`, "Semantic Data")}
+                          {objectInspector(query, `${name}.Query`, "GraphQL Query Diagnostics")}
                           {children}
                         </>
                       )
@@ -60,7 +60,7 @@ export default class ContainerView extends React.Component<Props> {
                       return <div>null</div>
                     }
                   }}
-                </Type.Graph>
+                </Type.Data>
               );
             }
           }}
