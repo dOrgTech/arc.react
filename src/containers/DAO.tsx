@@ -2,26 +2,28 @@ import { Container } from "./Container";
 import Arc, { IDAOState as DAOSchema } from "@daostack/client";
 import { Observable } from "rxjs";
 
-interface Props {
-  address: string;
-}
-
-// TODO: add action & view method props
 // TODO: long term, only have read & write semantics. read (props & funcs / transforms)
-// TODO: short term, views & actions can have their mappings defined here
-/*
-  const views = {
-    someView: (arg: boolean): uint => {
-      // use typechain to invoke a view
-      var value = contract.view(arg, "some other arg")
-      return value.first // example of complex mapping
-    }
-  }
-*/
+
+// - only address a user should be expected to give is the DAO avatar address
+// - all other addresses are gotten from the semantic graph...
+/*interface ViewMethods
+{
+  test(value: string): boolean,
+  something(something: string): string
+};
+
+interface ActionMethods {
+  test: (value: number) => string
+};*/
 
 type GraphSchema = DAOSchema;
-type ViewMethods = { /* view methods */ };
-type ActionMethods = { /* action (tx) methods */ };
+type ViewMethods = { };
+type ActionMethods = { };
+
+interface Props {
+  // Address of the DAO Avatar
+  address: string;
+}
 
 export default class DAO extends Container<
   Props,
