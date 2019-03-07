@@ -1,12 +1,20 @@
 module.exports = (baseConfig, env, defaultConfig) => {
-    // Extend it as you need.
-    // For example, add typescript loader:
-    defaultConfig.module.rules.push({
-        test: /\.(ts|tsx)$/,
-        loader: require.resolve('awesome-typescript-loader')
-    });
-    defaultConfig.resolve.extensions.push('.ts', '.tsx');
-    defaultConfig.resolve.mainFields = ['browser', 'main', 'module'];
-
-    return defaultConfig;
+  defaultConfig.module.rules.push({
+    test: /\.(ts|tsx)$/,
+    use: [
+      {
+        loader: require.resolve('awesome-typescript-loader'),
+      },
+    ],
+    // TODO: add include director for storybook & src directories
+  });
+  defaultConfig.module.rules.push({
+    test: /\.mjs$/,
+    include: /node_modules/,
+    type: 'javascript/auto'
+  });
+  defaultConfig.resolve.extensions.push(
+    '.mjs', '.ts', '.tsx'
+  );
+  return defaultConfig;
 };

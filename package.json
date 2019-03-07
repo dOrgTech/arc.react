@@ -25,6 +25,7 @@
     "@babel/core": "^7.3.3",
     "@material-ui/core": "^3.9.2",
     "@storybook/addon-actions": "4.0.0-rc.6",
+    "@storybook/addon-console": "^1.1.0",
     "@storybook/addon-graphql": "^5.0.0",
     "@storybook/addon-links": "4.0.0-rc.6",
     "@storybook/addon-storyshots": "4.0.0-rc.6",

@@ -12,9 +12,10 @@ import { Observable, Subscription } from "rxjs";
 
 interface Query<Data> {
   createTime: number;
+  subCount: number;
   isLoading: boolean;
-  error?: Error;
   complete: boolean;
+  error?: Error;
   observable: Observable<Data>;
 }
 
@@ -120,6 +121,7 @@ export abstract class Container<Props, Entity extends IStateful<Data>, Data, Cod
       const entity: Entity = this.createEntity(this.props, arc);
       const query: Query<Data> = {
         createTime: Date.now(),
+        subCount: 0,
         isLoading: false,
         complete: false,
         observable: entity.state()
@@ -129,13 +131,15 @@ export abstract class Container<Props, Entity extends IStateful<Data>, Data, Cod
         entity,
         query
       });
-    } else if (
-      this._subscription === undefined &&
-      query.isLoading === false &&
-      query.complete === false
-    ) {
+    } else if (this._subscription === undefined) {
+      const subCount = ++query.subCount;
+
       this.mergeState({
-        query: { isLoading: true }
+        query: {
+          isLoading: true,
+          complete: false,
+          subCount
+        }
       });
 
       // TODO: handle error case & try to requery every so often...
