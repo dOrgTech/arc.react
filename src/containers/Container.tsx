@@ -8,15 +8,14 @@ import arc from "../lib/arc";
 import { IStateful } from "@daostack/client/src/types"
 
 // TODO: get rid of?
-import { Observable, Subscription } from "rxjs";
+import { Subscription } from "rxjs";
 
 interface Query<Data> {
   createTime: number;
-  subCount: number;
-  isLoading: boolean;
-  complete: boolean;
+  queryCount: number;
+  dataReceived: boolean;
+  queryComplete: boolean;
   error?: Error;
-  observable: Observable<Data>;
 }
 
 interface State<Entity, Data, Code> {
@@ -70,13 +69,7 @@ export abstract class Container<Props, Entity extends IStateful<Data>, Data, Cod
     this.onQueryData = this.onQueryData.bind(this);
     this.onQueryError = this.onQueryError.bind(this);
     this.onQueryComplete = this.onQueryComplete.bind(this);
-    this.teardownQuery = this.teardownQuery.bind(this);
     this.mergeState = this.mergeState.bind(this);
-  }
-
-  public shouldComponentUpdate(nextProps: any, nextState: any) {
-    console.log("HERE");
-    return true;
   }
 
   public render() {
@@ -88,7 +81,6 @@ export abstract class Container<Props, Entity extends IStateful<Data>, Data, Cod
     const { children } = this.props;
     const { entity, data, code, query } = this.state;
 
-    console.log("rendering")
     return (
       <EntityProvider value={entity}>
       <DataProvider value={data}>
@@ -103,19 +95,18 @@ export abstract class Container<Props, Entity extends IStateful<Data>, Data, Cod
   }
 
   public componentWillMount() {
-    console.log("will mount");
     this.createQuery();
   }
 
   public componentWillUnmount() {
-    console.log("will unmount");
-    this.teardownQuery();
+    if (this._subscription) {
+      this._subscription.unsubscribe();
+      this._subscription = undefined;
+    }
   }
 
   // TODO: handle error case & try to requery every so often...
   private createQuery() {
-    console.log("Create Query");
-
     // create the entity with our component's props
     const entity: Entity = this.createEntity(this.props, arc);
 
@@ -132,48 +123,35 @@ export abstract class Container<Props, Entity extends IStateful<Data>, Data, Cod
       entity,
       query: {
         createTime: Date.now(),
-        subCount: existingQuery ? ++existingQuery.subCount : 0,
-        isLoading: true,
-        complete: false,
-        observable: entity.state()
+        queryCount: existingQuery ? ++existingQuery.queryCount : 0,
+        dataReceived: false,
+        queryComplete: false
       }
     });
   }
 
   private onQueryData(data: Data) {
-    console.log("Query Data")
     this.mergeState({
       data: data,
-      query: { isLoading: false }
+      query: { dataReceived: true }
     });
   }
 
   private onQueryError(error: Error) {
-    console.log("Query Error")
     this.mergeState({
       query: { error }
     });
   }
 
   private onQueryComplete() {
-    console.log("Query Complete")
     this.mergeState({
-      query: { complete: true }
+      query: { queryComplete: true }
     });
   }
 
-  private teardownQuery() {
-    if (this._subscription) {
-      this._subscription.unsubscribe();
-      this._subscription = undefined;
-    }
-  }
-
   private mergeState(merge: any) {
-    console.log("state change");
     this.setState(
       R.mergeDeepRight(this.state, merge)
     );
-    this.forceUpdate();
   }
 }
