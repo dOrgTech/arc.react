@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@daostack/client": "0.0.33",
-    "@daostack/subgraph": "git+https://github.com/daostack/subgraph",
+    "@daostack/subgraph": "0.0.3",
     "ramda": "^0.26.1",
     "react": "16.5.0",
     "rxjs": "^6.4.0"
