@@ -31,7 +31,7 @@ export default class DAO extends Container<Props, Entity, Data, Code>
   }
 
   public static get Query() {
-    return Container.QueryContext<Data>().Consumer;
+    return Container.QueryContext().Consumer;
   }
 }
 
