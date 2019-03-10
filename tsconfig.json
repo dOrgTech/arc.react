@@ -1,15 +1,27 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "outDir": "build/lib",
     "module": "commonjs",
-    "lib": ["es2016", "es2017", "dom", "esnext.asynciterable"],
+    "target": "es5",
+    "lib": ["es5", "es6", "es7", "es2017", "dom"],
+    "sourceMap": true,
+    "allowJs": false,
     "jsx": "react",
-    "outDir": "./dist",
-    "rootDir": "./",
-    "strict": true, 
-    "allowSyntheticDefaultImports": false,
+    "moduleResolution": "node",
+    "rootDirs": ["src", "storybook"],
+    "baseUrl": "src",
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "noUnusedLocals": true,
+    "declaration": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
-  "exclude": [
-    "./example-apps"
-  ]
+  "include": ["src/**/*", "storybook/**/*"],
+  "exclude": ["node_modules", "build", "scripts"]
 }

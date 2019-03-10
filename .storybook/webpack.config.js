@@ -1,12 +1,35 @@
 module.exports = (baseConfig, env, defaultConfig) => {
-    // Extend it as you need.
-    // For example, add typescript loader:
-    defaultConfig.module.rules.push({
-        test: /\.(ts|tsx)$/,
-        loader: require.resolve('awesome-typescript-loader')
-    });
-    defaultConfig.resolve.extensions.push('.ts', '.tsx');
-    defaultConfig.resolve.mainFields = ['browser', 'main', 'module'];
+  defaultConfig.module.rules.push({
+    test: /\.(ts|tsx)$/,
+    use: [
+      {
+        loader: require.resolve('awesome-typescript-loader'),
+      },
+    ],
+    // TODO: add include director for storybook & src directories
+  });
 
-    return defaultConfig;
+  defaultConfig.module.rules.push({
+    test: /\.mjs$/,
+    include: /node_modules/,
+    type: 'javascript/auto'
+  });
+
+  defaultConfig.resolve.extensions.push(
+    '.mjs', '.ts', '.tsx'
+  );
+
+  // Gets rid of verbose compilation warnings coming from
+  // the 'graphql-language-service-interface' package.
+  // See: https://github.com/graphql/graphql-language-service/issues/128
+  defaultConfig.module.rules.push({
+    test: /\.js.flow$/,
+    use: [
+      {
+        loader: require.resolve('ignore-loader')
+      }
+    ]
+  });
+
+  return defaultConfig;
 };

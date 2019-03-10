@@ -1,7 +1,7 @@
-import { Container } from "./Container";
+/*import { Container } from "./Container";
 import Arc, { DAO as Entity, IDAOState as Data } from "@daostack/client";
 
-/*
+
 import DAOContainer from "./DAO";
 import Arc, { DAO as Entity, IDAOState as Data } from "@daostack/client";
 
