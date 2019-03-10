@@ -1,14 +1,11 @@
 import * as React from "react";
 import {
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
   Typography,
-  Theme,
-  withStyles,
-  createStyles,
-  createMuiTheme,
+  withStyles
 } from "@material-ui/core";
+import MuiExpansionPanel from "@material-ui/core/ExpansionPanel";
+import MuiExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
+import MuiExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import { GraphqlCodeBlock } from "graphql-syntax-highlighter-react";
 
 const queries = [
@@ -56,10 +53,52 @@ const queries = [
 }`
 }];
 
+const ExpansionPanel = withStyles({
+  root: {
+    border: '1px solid rgba(0,0,0,.125)',
+    boxShadow: 'none',
+    '&:not(:last-child)': {
+      borderBottom: 0,
+    },
+    '&:before': {
+      display: 'none',
+    },
+  },
+  expanded: {
+    margin: 'auto',
+  },
+})(MuiExpansionPanel);
+
+const ExpansionPanelSummary: any = withStyles({
+  root: {
+    backgroundColor: 'rgba(0,0,0,.03)',
+    borderBottom: '1px solid rgba(0,0,0,.125)',
+    marginBottom: -1,
+    minHeight: 56,
+    '&$expanded': {
+      minHeight: 56,
+    },
+  },
+  content: {
+    '&$expanded': {
+      margin: '12px 0',
+    },
+  },
+  expanded: {},
+})(props => <MuiExpansionPanelSummary {...props} />);
+
+ExpansionPanelSummary.muiName = 'ExpansionPanelSummary';
+
+const ExpansionPanelDetails = withStyles(theme => ({
+  root: {
+    padding: theme.spacing.unit * 2,
+  },
+}))(MuiExpansionPanelDetails);
+
 const QuerySnippets: React.SFC = () => (
   <>
     {queries.map(query => (
-      <ExpansionPanel>
+      <ExpansionPanel key={query.name}>
         <ExpansionPanelSummary>
           <Typography>{query.name}</Typography>
         </ExpansionPanelSummary>
@@ -72,11 +111,4 @@ const QuerySnippets: React.SFC = () => (
   </>
 );
 
-const styles = (theme: Theme) => 
-  createStyles({
-    root: {
-      width: "100%",
-    }
-  });
-
-export default withStyles(styles)(QuerySnippets);
+export default QuerySnippets;

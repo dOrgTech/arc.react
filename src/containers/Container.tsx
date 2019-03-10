@@ -65,6 +65,18 @@ export abstract class Container<Props, Entity extends IStateful<Data>, Data, Cod
     super(props);
 
     this.state = { };
+
+    this.createQuery = this.createQuery.bind(this);
+    this.onQueryData = this.onQueryData.bind(this);
+    this.onQueryError = this.onQueryError.bind(this);
+    this.onQueryComplete = this.onQueryComplete.bind(this);
+    this.teardownQuery = this.teardownQuery.bind(this);
+    this.mergeState = this.mergeState.bind(this);
+  }
+
+  public shouldComponentUpdate(nextProps: any, nextState: any) {
+    console.log("HERE");
+    return true;
   }
 
   public render() {
@@ -76,8 +88,7 @@ export abstract class Container<Props, Entity extends IStateful<Data>, Data, Cod
     const { children } = this.props;
     const { entity, data, code, query } = this.state;
 
-    this.updateQuery();
-
+    console.log("rendering")
     return (
       <EntityProvider value={entity}>
       <DataProvider value={data}>
@@ -92,82 +103,77 @@ export abstract class Container<Props, Entity extends IStateful<Data>, Data, Cod
   }
 
   public componentWillMount() {
-    this.updateQuery();
-  }
-
-  // TODO: idk about this...
-  public componentWillReceiveProps(nextProps: any) {
-    if (nextProps.children !== this.props.children) {
-      this.teardownSubscription();
-      this.updateQuery();
-    }
+    console.log("will mount");
+    this.createQuery();
   }
 
   public componentWillUnmount() {
-    this.teardownSubscription();
+    console.log("will unmount");
+    this.teardownQuery();
   }
 
-  private mergeState(merge: any) {
-    this.setState(
-      R.mergeDeepRight(this.state, merge)
+  // TODO: handle error case & try to requery every so often...
+  private createQuery() {
+    console.log("Create Query");
+
+    // create the entity with our component's props
+    const entity: Entity = this.createEntity(this.props, arc);
+
+    // subscribe to this entity's state changes
+    this._subscription = entity.state().subscribe(
+      this.onQueryData,
+      this.onQueryError,
+      this.onQueryComplete
     );
-  }
 
-  private updateQuery() {
-    const { query } = this.state;
+    const existingQuery = this.state.query;
 
-    // start the query if it's not already
-    if (query === undefined) {
-      const entity: Entity = this.createEntity(this.props, arc);
-      const query: Query<Data> = {
+    this.mergeState({
+      entity,
+      query: {
         createTime: Date.now(),
-        subCount: 0,
-        isLoading: false,
+        subCount: existingQuery ? ++existingQuery.subCount : 0,
+        isLoading: true,
         complete: false,
         observable: entity.state()
-      };
-
-      this.mergeState({
-        entity,
-        query
-      });
-    } else if (this._subscription === undefined) {
-      const subCount = ++query.subCount;
-
-      this.mergeState({
-        query: {
-          isLoading: true,
-          complete: false,
-          subCount
-        }
-      });
-
-      // TODO: handle error case & try to requery every so often...
-      this._subscription = query.observable.subscribe(
-        (data: Data) => {
-          this.mergeState({
-            data: data,
-            query: { isLoading: false }
-          });
-        },
-        (error: Error) => { 
-          this.mergeState({
-            query: { error }
-          });
-        },
-        () => {
-          this.mergeState({
-            query: { complete: true }
-          });
-        }
-      );
-    }
+      }
+    });
   }
 
-  private teardownSubscription() {
+  private onQueryData(data: Data) {
+    console.log("Query Data")
+    this.mergeState({
+      data: data,
+      query: { isLoading: false }
+    });
+  }
+
+  private onQueryError(error: Error) {
+    console.log("Query Error")
+    this.mergeState({
+      query: { error }
+    });
+  }
+
+  private onQueryComplete() {
+    console.log("Query Complete")
+    this.mergeState({
+      query: { complete: true }
+    });
+  }
+
+  private teardownQuery() {
     if (this._subscription) {
       this._subscription.unsubscribe();
       this._subscription = undefined;
     }
+  }
+
+  private mergeState(merge: any) {
+    console.log("state change");
+    this.setState(
+      R.mergeDeepRight(this.state, merge)
+    );
+    this.forceUpdate();
   }
 }

@@ -4,7 +4,6 @@ import { configure } from '@storybook/react';
 import '@storybook/addon-console';
 
 function loadStories() {
-  // TODO: improve this directory, rename it "examples"?
   require('../storybook');
 }
 

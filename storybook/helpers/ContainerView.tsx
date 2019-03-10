@@ -12,7 +12,7 @@ interface Props {
 }
 
 const nodeRenderer = (node: any, tooltip: string) => {
-  const { depth, name, data, isNonenumerable, expanded } = node;
+  const { depth, name, data, isNonenumerable } = node;
 
   return (
     depth === 0
