@@ -1,5 +1,7 @@
+import * as React from "react";
 import {
-  CompEntity,
+  CEntity,
+  CProps,
   ComponentList
 } from "./ComponentList";
 import DAO from "./DAO";
@@ -11,8 +13,16 @@ interface Props { }
 // this is the easiest... avoids the code duplication... idk.
 export default class DAOs extends ComponentList<Props, DAO>
 {
-  createEntities(props: Props, arc: Arc): Observable<CompEntity<DAO>[]> {
+  createObservableEntities(props: Props, arc: Arc): Observable<CEntity<DAO>[]> {
     return arc.daos();
+  }
+
+  renderComponent(entity: CEntity<DAO>, children: any): React.ComponentElement<CProps<DAO>, any> {
+    return (
+      <DAO address={entity.address}>
+        {children()}
+      </DAO>
+    );
   }
 }
 

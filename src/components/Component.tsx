@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Context } from "react";
 import memoize from "memoize-one";
+import { Subscription } from "rxjs";
 import * as R from "ramda";
 
 // TODO: Generalize this layer...? Web3Binding :)
@@ -10,9 +11,6 @@ import { IStateful } from "@daostack/client/src/types"
 
 import { ComponentLogs } from "../lib/ComponentLogs";
 export { ComponentLogs };
-
-// TODO: get rid of?
-import { Subscription } from "rxjs";
 
 interface State<Data, Code> {
   data?: Data;
@@ -94,6 +92,7 @@ export abstract class Component<
     const entity = this.entity(this.props, arc);
     const { data, code, logs } = this.state;
 
+    // TODO: logging
     console.log("render");
 
     return (
@@ -126,11 +125,20 @@ export abstract class Component<
 
     logs.entityCreation();
 
-    this.clearDataCodeProse();
+    this.clearPrevState();
 
     try {
       const entity = this.createEntity(props, arc);
-      this.createDataQuery(entity);
+
+      this.state.logs.dataQueryStart();
+
+      // subscribe to this entity's state changes
+      this._subscription = entity.state().subscribe(
+        this.onQueryData,
+        this.onQueryError,
+        this.onQueryComplete
+      );
+
       // TODO: create code + prose
       return entity;
     } catch (error) {
@@ -139,24 +147,12 @@ export abstract class Component<
     }
   }
 
-  private clearDataCodeProse() {
+  private clearPrevState() {
     this.mergeState({
       data: undefined,
       code: undefined,
       // TOOD: prose: undefined
     });
-  }
-
-  // TODO: handle error case & try to requery every so often...
-  private createDataQuery(entity: Entity) {
-    this.state.logs.dataQueryStart();
-
-    // subscribe to this entity's state changes
-    this._subscription = entity.state().subscribe(
-      this.onQueryData,
-      this.onQueryError,
-      this.onQueryComplete
-    );
   }
 
   private onQueryData(data: Data) {
