@@ -1,4 +1,4 @@
-import { Container } from "./Container";
+import { Component } from "./Component";
 import Arc, { DAO as Entity, IDAOState as Data } from "@daostack/client";
 
 type Code = {
@@ -12,26 +12,26 @@ interface Props {
   address: string;
 }
 
-export default class DAO extends Container<Props, Entity, Data, Code>
+export default class DAO extends Component<Props, Entity, Data, Code>
 {
   createEntity(props: Props, arc: Arc): Entity {
-    return arc.dao(props.address)
+    return arc.dao(props.address);
   }
 
   public static get Entity() {
-    return Container.EntityContext<Entity>().Consumer;
+    return Component.EntityContext<Entity>().Consumer;
   }
 
   public static get Data() {
-    return Container.DataContext<Data>().Consumer;
+    return Component.DataContext<Data>().Consumer;
   }
 
   public static get Code() {
-    return Container.CodeContext<Code>().Consumer;
+    return Component.CodeContext<Code>().Consumer;
   }
 
-  public static get Query() {
-    return Container.QueryContext().Consumer;
+  public static get Logs() {
+    return Component.LogsContext().Consumer;
   }
 }
 

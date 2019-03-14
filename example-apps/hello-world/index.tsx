@@ -1,5 +1,5 @@
 import * as React from "react"
-import { init, Proposal } from "@DAOcomponents/react-containers"
+import { init, Proposal } from "@dOrg/DAOcomponents"
 
 class HelloWorld implements React.Component {
   public render() {

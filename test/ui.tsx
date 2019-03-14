@@ -1,6 +1,6 @@
 import React = require("react");
 import { create } from "react-test-renderer";
-import DAO from "../src/containers/DAO";
+import DAO from "../src/components/DAO";
 
 test("Test...", () => {
   const tree = create(

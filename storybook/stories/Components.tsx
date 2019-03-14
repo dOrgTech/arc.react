@@ -1,13 +1,13 @@
 import * as React from "react";
 import { storiesOf } from "@storybook/react";
-import ContainerView, { PropTypes } from "../helpers/ContainerView";
-import DAO from "../../src/containers/DAO";
+import ComponentView, { PropertyType } from "../helpers/ComponentView";
+import DAO from "../../src/components/DAO";
 
 export default () => 
   storiesOf("Components", module)
     .add("DAO", () => {
       return (
-        <ContainerView
+        <ComponentView
           name={ "DAO" }
           Component={ DAO }
           // TODO: load these addresses from the graphnode
@@ -16,7 +16,7 @@ export default () =>
               friendlyName: "DAO Address",
               name: "address",
               defaultValue: "0xcB4e66eCA663FDB61818d52A152601cA6aFEf74F",
-              type: PropTypes.string
+              type: PropertyType.string
             }
           ]} />
       )
