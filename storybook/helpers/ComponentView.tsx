@@ -4,6 +4,12 @@ import {
   ObjectRootLabel,
   ObjectLabel
 } from "react-inspector";
+import {
+  CircularProgress,
+  Typography,
+  Divider
+} from '@material-ui/core';
+
 import { ComponentLogs } from "../../src/components/Component";
 import { PropertyEditors, PropertyData, PropertyType } from "./PropertyEditors";
 export { PropertyData, PropertyType };
@@ -37,21 +43,18 @@ export default class ComponentView extends React.Component<Props, State> {
 
     return (
       <>
+      <Typography variant="h3" component="h3">
+        DAO
+      </Typography>
+      <Divider />
+      <Typography variant="h6" component="h6">
+        Properties
+      </Typography>
       <PropertyEditors properties={propEditors} state={this.state} setState={(state) => this.setState(state)} />
       <Component {...this.state}>
-        <Component.Data>
-          {(data: any | undefined) => (
-            <>
-            {data ? (
-              <>
-              {objectInspector(data, `${name}.Data`, "Semantic Data")}
-              </>
-            ) : (
-              <div>loading data...</div>
-            )}
-            </>
-          )}
-        </Component.Data>
+        <Typography variant="h6" component="h6">
+          Entity
+        </Typography>
         <Component.Entity>
           {(entity: any | undefined) => (
             <>
@@ -60,11 +63,34 @@ export default class ComponentView extends React.Component<Props, State> {
               {objectInspector(entity, `${name}.Entity`, "Entity Instance")}
               </>
             ) : (
-              <div>loading entity...</div>
+              <div>
+                <CircularProgress />
+              </div>
             )}
             </>
           )}
         </Component.Entity>
+        <Typography variant="h6" component="h6">
+          Data
+        </Typography>
+        <Component.Data>
+          {(data: any | undefined) => (
+            <>
+            {data ? (
+              <>
+              {objectInspector(data, `${name}.Data`, "Semantic Data")}
+              </>
+            ) : (
+              <div>
+                <CircularProgress />
+              </div>
+            )}
+            </>
+          )}
+        </Component.Data>
+        <Typography variant="h6" component="h6">
+          Logs
+        </Typography>
         <Component.Logs>
           {(logs: ComponentLogs) => (
             <>

@@ -1,9 +1,9 @@
-import Debugging from "./stories/Debugging";
+import Environment from "./stories/Environment";
 import Components from "./stories/Components";
 import ExampleViews from "./stories/ExampleViews";
 import ExampleApps from "./stories/ExampleApps";
 
-Debugging();
+Environment();
 Components();
 ExampleViews();
 ExampleApps();

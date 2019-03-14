@@ -51,10 +51,12 @@ export class PropertyEditors extends React.Component<Props> {
           case PropertyType.string:
             return (
               <TextField
+                style={{ marginTop: 12, marginBottom: 12 }}
                 id={`prop-editor-${prop.name}`}
                 label={prop.friendlyName}
                 value={state[prop.name]}
                 onChange={this.handleChange(prop.name)}
+                variant="outlined"
                 />
             )
           break;
