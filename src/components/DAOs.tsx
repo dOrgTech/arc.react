@@ -1,20 +1,22 @@
-/*import { Component } from "./Component";
-import Arc, { DAO as Entity, IDAOState as Data } from "@daostack/client";
+import {
+  CompEntity,
+  ComponentList
+} from "./ComponentList";
+import DAO from "./DAO";
+import Arc from "@daostack/client";
+import { Observable } from "rxjs";
 
-
-import DAOComponent from "./DAO";
-import Arc, { DAO as Entity, IDAOState as Data } from "@daostack/client";
+interface Props { }
 
 // this is the easiest... avoids the code duplication... idk.
-export default class DAOs extends ConatinerList<DAOComponent>
+export default class DAOs extends ComponentList<Props, DAO>
 {
-  createEntities(props: Props, arc: Arc): Entity[] {
+  createEntities(props: Props, arc: Arc): Observable<CompEntity<DAO>[]> {
     return arc.daos();
   }
 }
-*/
 
-// Ideal usage
+// Ideal usage TODO: refine this...
 /*
 /// DAOs list drawer
 <DAOs> // able to turn off automatic iteration
@@ -29,6 +31,18 @@ export default class DAOs extends ConatinerList<DAOComponent>
 */
 
 /*
+/// DAOs Data
+<DAOs>
+  <DAOs.Data autoIterate=false>
+    {(daos: IDAOState[]) => (
+      <div>daos[0].name</div>
+    )}
+  </DAOs.Data>
+</DAOs>
+*/
+
+
+/*
 /// DAOs entity getter
 <DAOs passEntity=true>
   {(daos: DAO[]) => (
@@ -36,16 +50,5 @@ export default class DAOs extends ConatinerList<DAOComponent>
       {daos.map(...)}
     </>
   )}
-</DAOs>
-*/
-
-/*
-/// DAOs Data
-<DAOs>
-  <DAOs.Data>
-    {(daos: IDAOState[]) => (
-      <div>daos[0].name</div>
-    )}
-  </DAOs.Data>
 </DAOs>
 */
