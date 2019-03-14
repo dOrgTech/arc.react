@@ -1,29 +1,29 @@
 import * as React from "react";
 import { storiesOf } from "@storybook/react";
 import DAOs from "../../src/components/DAOs";
-import DAO from "../../src/components/DAO";
+import DAO, { DAOData } from "../../src/components/DAO";
 
 export default () =>
   storiesOf("Component Lists", module)
     .add("DAOs", () => {
       return (
         <DAOs>
-        {() => {
-          console.log("HERE WHERE WE WANT TO BE");
-          return (
+          <div>something useful</div>
           <DAO.Data>
-          {(data: any | undefined) => (
+          {(data: DAOData | undefined) => (
             <>
             {data ? (
+              <>
               <div>{data.name}</div>
+              <div>{data.address}</div>
+              <div>{data.memberCount}</div>
+              </>
             ) : (
               <div>loading...</div>
             )}
             </>
           )}
           </DAO.Data>
-          )
-        }}
         </DAOs>
       )
     });

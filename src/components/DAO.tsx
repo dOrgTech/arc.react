@@ -35,6 +35,13 @@ export default class DAO extends Component<Props, Entity, Data, Code>
   }
 }
 
+export {
+  Props as DAOProps,
+  Entity as DAOEntity,
+  Data as DAOData,
+  Code as DAOCode,
+};
+
 // Ideal usage
 /*
 /// DAO.Data
