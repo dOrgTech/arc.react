@@ -95,17 +95,21 @@ export abstract class Component<
     // TODO: logging
     console.log("render");
 
-    return (
-      <EntityProvider value={entity}>
-      <DataProvider value={data}>
-      <CodeProvider value={code}>
-      <LogsProvider value={logs}>
-        {children}
-      </LogsProvider>
-      </CodeProvider>
-      </DataProvider>
-      </EntityProvider>
-    )
+    if (typeof children === "function") {
+      return children(entity, data, code, logs);
+    } else {
+      return (
+        <EntityProvider value={entity}>
+        <DataProvider value={data}>
+        <CodeProvider value={code}>
+        <LogsProvider value={logs}>
+          {children}
+        </LogsProvider>
+        </CodeProvider>
+        </DataProvider>
+        </EntityProvider>
+      )
+    }
   }
 
   public componentWillMount() {

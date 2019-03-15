@@ -10,7 +10,6 @@ import { Observable } from "rxjs";
 
 interface Props { }
 
-// this is the easiest... avoids the code duplication... idk.
 export default class DAOs extends ComponentList<Props, DAO>
 {
   createObservableEntities(props: Props, arc: Arc): Observable<CEntity<DAO>[]> {

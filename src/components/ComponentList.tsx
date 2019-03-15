@@ -58,11 +58,18 @@ export abstract class ComponentList<
     // TODO: logging
     console.log("render");
 
-    return (
-      entities ? entities.map(entity => (
-        <>{this.renderComponent(entity, children)}</>
-      )) : <></>
-    );
+    if (typeof children === "function") {
+      return children(entities);
+    } else {
+      // TODO: better "loading..." handler
+      return (
+        entities ? entities.map(entity => (
+          <>
+          {this.renderComponent(entity, children)}
+          </>
+        )) : <div>loading...</div>
+      );
+    }
   }
 
   public componentWillMount() {

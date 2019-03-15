@@ -44,7 +44,7 @@ export default class ComponentView extends React.Component<Props, State> {
     return (
       <>
       <Typography variant="h3" component="h3">
-        DAO
+        {name}
       </Typography>
       <Divider />
       <Typography variant="h6" component="h6">

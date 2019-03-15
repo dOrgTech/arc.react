@@ -1,4 +1,4 @@
-import { Component } from "./Component";
+import { Component, ComponentLogs } from "./Component";
 import Arc, { DAO as Entity, IDAOState as Data } from "@daostack/client";
 
 type Code = {
@@ -40,6 +40,7 @@ export {
   Entity as DAOEntity,
   Data as DAOData,
   Code as DAOCode,
+  ComponentLogs
 };
 
 // Ideal usage

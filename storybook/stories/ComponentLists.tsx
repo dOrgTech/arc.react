@@ -1,7 +1,7 @@
 import * as React from "react";
 import { storiesOf } from "@storybook/react";
 import DAOs from "../../src/components/DAOs";
-import DAO, { DAOData } from "../../src/components/DAO";
+import DAO, { DAOData, DAOEntity } from "../../src/components/DAO";
 
 export default () =>
   storiesOf("Component Lists", module)
@@ -24,6 +24,23 @@ export default () =>
             </>
           )}
           </DAO.Data>
+        </DAOs>
+      )
+    })
+    .add("DAO Entities", () => {
+      return (
+        <DAOs>
+          {(entities: DAOEntity[]) => (
+            entities ?
+            <>
+              {entities.map((entity, index) => (
+                <React.Fragment key={index}>
+                <div>{entity.address}</div>
+                </React.Fragment>
+              ))}
+            </>
+            : <div>loading...</div>
+          )}
         </DAOs>
       )
     });
