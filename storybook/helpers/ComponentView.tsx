@@ -94,9 +94,11 @@ export default class ComponentView extends React.Component<Props, State> {
         <Component.Logs>
           {(logs: ComponentLogs) => (
             <>
+            {objectInspector(logs.react, `${name}.ReactLogs`, "React Logs")}
             {objectInspector(logs.entity, `${name}.EntityLogs`, "Entity Logs")}
             {objectInspector(logs.data, `${name}.DataLogs`, "Data Query Logs")}
             {objectInspector(logs.code, `${name}.CodeLogs`, "Code Logs")}
+            {objectInspector(logs.prose, `${name}.ProseLogs`, "Prose Logs")}
             </>
           )}
         </Component.Logs>

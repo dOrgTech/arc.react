@@ -4,11 +4,13 @@ import { Observable, Subscription } from "rxjs";
 import * as R from "ramda";
 
 import Arc from "@daostack/client";
-import arc from "../lib/arc";
+import arc from "../lib/integrations/arc";
 
 import { Component } from "./Component";
+import { ComponentListLogs } from "../lib/logging/ComponentListLogs";
+export { ComponentListLogs };
 
-// Extract the DAO's template parameters
+// Extract the derived component's template parameters
 export type CProps<Comp>  = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Props : undefined;
 export type CEntity<Comp> = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Entity : undefined;
 export type CData<Comp>   = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Data : undefined;
@@ -16,6 +18,7 @@ export type CCode<Comp>   = Comp extends Component<infer Props, infer Entity, in
 
 interface State<Entity> {
   entities: Entity[];
+  logs: ComponentListLogs
 }
 
 export abstract class ComponentList<
@@ -41,7 +44,8 @@ export abstract class ComponentList<
     super(props);
 
     this.state = {
-      entities: []
+      entities: [],
+      logs: new ComponentListLogs()
     };
 
     this.onQueryEntities = this.onQueryEntities.bind(this);
@@ -50,18 +54,16 @@ export abstract class ComponentList<
   }
 
   public render() {
-    // TODO: support multiple children types
     const { children } = this.props;
     this.observableEntities(this.props, arc);
-    const { entities } = this.state;
+    const { entities, logs } = this.state;
 
-    // TODO: logging
-    console.log("render");
+    logs.reactRendered();
 
     if (typeof children === "function") {
       return children(entities);
     } else {
-      // TODO: better "loading..." handler
+      // TODO: better "loading..." handler (overridable)
       return (
         entities ? entities.map(entity => (
           <>
@@ -85,13 +87,16 @@ export abstract class ComponentList<
   }
 
   private createObservableEntitiesWithProps(props: Props, arc: Arc): Observable<Entity[]> | undefined {
-    // TODO: logging
+    const { logs } = this.state;
+
+    logs.entityCreated();
+
     this.clearPrevState();
 
     try {
       const entities = this.createObservableEntities(props, arc);
 
-      // TODO: logging?
+      logs.dataQueryStarted();
 
       entities.subscribe(
         this.onQueryEntities,
@@ -101,7 +106,7 @@ export abstract class ComponentList<
 
       return entities;
     } catch (error) {
-      // TODO: logging
+      logs.entityCreationFailed(error);
       return undefined;
     }
   }
@@ -113,7 +118,7 @@ export abstract class ComponentList<
   }
 
   private onQueryEntities(entities: Entity[]) {
-    // TODO: logging
+    this.state.logs.dataQueryReceivedData();
 
     this.mergeState({
       entities: entities
@@ -121,11 +126,11 @@ export abstract class ComponentList<
   }
 
   private onQueryError(error: Error) {
-    // TODO: logging
+    this.state.logs.dataQueryCompleted();
   }
 
   private onQueryComplete() {
-    // TODO: logging
+    this.state.logs.dataQueryCompleted();
   }
 
   private mergeState(merge: any) {

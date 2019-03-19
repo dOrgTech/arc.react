@@ -4,13 +4,13 @@ import memoize from "memoize-one";
 import { Subscription } from "rxjs";
 import * as R from "ramda";
 
-// TODO: Generalize this layer...? Web3Binding :)
-import Arc from "@daostack/client";
-import arc from "../lib/arc";
-import { IStateful } from "@daostack/client/src/types"
-
-import { ComponentLogs } from "../lib/ComponentLogs";
+import { ComponentLogs } from "../lib/logging/ComponentLogs";
 export { ComponentLogs };
+
+// Note: Web3Bindings aims to automate this protocol API layer
+import Arc from "@daostack/client";
+import arc from "../lib/integrations/arc";
+import { IStateful } from "@daostack/client/src/types"
 
 interface State<Data, Code> {
   data?: Data;
@@ -92,8 +92,7 @@ export abstract class Component<
     const entity = this.entity(this.props, arc);
     const { data, code, logs } = this.state;
 
-    // TODO: logging
-    console.log("render");
+    logs.reactRendered();
 
     if (typeof children === "function") {
       return children(entity, data, code, logs);
@@ -127,14 +126,14 @@ export abstract class Component<
   private createEntityWithProps(props: Props, arc: Arc): Entity | undefined {
     const { logs } = this.state;
 
-    logs.entityCreation();
+    logs.entityCreated();
 
     this.clearPrevState();
 
     try {
       const entity = this.createEntity(props, arc);
 
-      this.state.logs.dataQueryStart();
+      logs.dataQueryStarted();
 
       // subscribe to this entity's state changes
       this._subscription = entity.state().subscribe(
@@ -146,7 +145,7 @@ export abstract class Component<
       // TODO: create code + prose
       return entity;
     } catch (error) {
-      logs.entityCreationError(error);
+      logs.entityCreationFailed(error);
       return undefined;
     }
   }
@@ -160,7 +159,7 @@ export abstract class Component<
   }
 
   private onQueryData(data: Data) {
-    this.state.logs.dataReceived();
+    this.state.logs.dataQueryReceivedData();
 
     this.mergeState({
       data: data
@@ -168,11 +167,11 @@ export abstract class Component<
   }
 
   private onQueryError(error: Error) {
-    this.state.logs.dataQueryError(error);
+    this.state.logs.dataQueryFailed(error);
   }
 
   private onQueryComplete() {
-    this.state.logs.dataQueryComplete();
+    this.state.logs.dataQueryCompleted();
   }
 
   private mergeState(merge: any) {

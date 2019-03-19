@@ -39,7 +39,7 @@ export default () =>
             <>
             <div>{entity.address}</div>
             <div>{data.memberCount}</div>
-            <div>{JSON.stringify(logs.entity)}</div>
+            <div>{JSON.stringify(logs)}</div>
             </>
           : <div>loading...</div>
         )}
