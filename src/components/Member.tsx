@@ -1,4 +1,4 @@
-/*import { Component } from "./Component";
+import { Component } from "./Component";
 import Arc, { IMemberState as MemberSchema } from "@daostack/client";
 
 type GraphSchema = MemberSchema;
@@ -20,7 +20,7 @@ export default class Member extends Component<
      
    }
 }
-*/
+
 // Ideal usage
 /*
 /// Member.Graph
