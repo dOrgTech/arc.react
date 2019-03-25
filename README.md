@@ -24,10 +24,10 @@ You can access the DAO's Data context...
 ...
   <DAO.Data>
     {(data: DAOData) => (
-      <>
-      <div>{"DAO: " + data.name}</div>
-      <div>{"Token: " + data.tokenName}</div>
-      <>
+      <div>
+        <div>{"DAO: " + data.name}</div>
+        <div>{"Token: " + data.tokenName}</div>
+      </div>
     )}
   </DAO.Data>
 ...
@@ -37,11 +37,11 @@ or you can interact with its Code...
 ```html
 <DAO.Code>
   {(code: DAOCode) => (
-    <>
-    <Button onSubmit={async () => {
-      await code.upvoteProposal(...)
-    }} />
-    </>
+    <div>
+      <Button onSubmit={async () => {
+        await code.upvoteProposal(...)
+      }} />
+    </div>
   )}
 </DAO.Code>
 ```
@@ -73,10 +73,10 @@ or you can interact with its Code...
   <div>DAO Details:</div>
   <DAO.Data>
     {(data: DAOData) => (
-      <>
-      <div>{"Name: " + data.name}</div>
-      <div>{"Token: " + data.tokenName}</div>
-      <>
+      <div>
+        <div>{"Name: " + data.name}</div>
+        <div>{"Token: " + data.tokenName}</div>
+      </div>
     )}
   </DAO.Data>
 </DAOs>
