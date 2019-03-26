@@ -12,10 +12,15 @@ interface Props {
   address: string;
 }
 
-export default class DAO extends Component<Props, Entity, Data, Code>
+export class DAO extends Component<Props, Entity, Data, Code>
 {
   createEntity(props: Props, arc: Arc): Entity {
     return arc.dao(props.address);
+  }
+
+  entityContextSatisfied(props: Props): boolean {
+    // no additional contextual information needed
+    return true;
   }
 
   public static get Entity() {
@@ -34,6 +39,8 @@ export default class DAO extends Component<Props, Entity, Data, Code>
     return Component.LogsContext().Consumer;
   }
 }
+
+export default DAO;
 
 export {
   Props as DAOProps,

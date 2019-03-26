@@ -1,29 +1,3 @@
-const config1 = new Config("web3Provider", "graphqlProvider")
-<Arc config={config1}>
-  <DAO address="foo">
-    <Member address="member" daoAddress="foo">
-    </Member>
-  </DAO>
-</Arc>
-
-config1.setWeb3Provider("foo");
-// within setters, dispatch to compoennts that have subscribed
-
-const config2 = new Config("web3Provider", "graphqlProvider")
-<Arc config={config2}>
-  <DAO address="bar">
-
-  </DAO>
-</Arc>
-
-// ? can you use context outside of render?
-
-
-// Subscription Approach
-// components register themselves w/ config
-// when config changes, dispatch to subscribers
-// rerender
-
 import * as React from "react";
 import { Context } from "react";
 import memoize from "memoize-one";

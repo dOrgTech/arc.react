@@ -4,13 +4,13 @@ import {
   CProps,
   ComponentList
 } from "./ComponentList";
-import DAO from "./DAO";
+import { DAO } from "./DAO";
 import Arc from "@daostack/client";
 import { Observable } from "rxjs";
 
 interface Props { }
 
-export default class DAOs extends ComponentList<Props, DAO>
+export class DAOs extends ComponentList<Props, DAO>
 {
   createObservableEntities(props: Props, arc: Arc): Observable<CEntity<DAO>[]> {
     return arc.daos();
@@ -24,3 +24,5 @@ export default class DAOs extends ComponentList<Props, DAO>
     );
   }
 }
+
+export default DAOs;

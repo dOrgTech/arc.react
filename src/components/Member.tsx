@@ -1,33 +1,67 @@
-import { Component } from "./Component";
-import Arc, { IMemberState as MemberSchema } from "@daostack/client";
+import * as React from "react";
+import { Component, ComponentLogs } from "./Component";
+import Arc, { Member as Entity, IMemberState as Data } from "@daostack/client";
+import DAO, { DAOEntity } from "./DAO";
 
-type GraphSchema = MemberSchema;
-type ViewMethods = { };
-type ActionMethods = { };
+type Code = {
+  // maybe wrap this better so the contracts
+  // are underneath the higher level functions?
+  // contractName: ContractType (TypeChain)
+}
 
-interface Props {
+interface RequiredProps {
+  // Address of the member
   address: string;
 }
 
-export default class Member extends Component<
-  Props,
-  GraphSchema,
-  ViewMethods,
-  ActionMethods
->
-{
-   createObservable(props: Props, arc: Arc): Observable<GraphSchema> {
-     
-   }
+interface ContextualProps {
+  // The DAO this member is apart of
+  dao: DAOEntity;
 }
 
-// Ideal usage
-/*
-/// Member.Graph
-<Member address="0x234234234">
-  <Member.Graph>
-    {member => (
-      <div>{member.reputation}</div>
+type Props = RequiredProps & ContextualProps;
+
+export class Member extends Component<Props, Entity, Data, Code>
+{
+  createEntity(props: Props, arc: Arc): Entity {
+    return props.dao.member(props.address);
+  }
+
+  public static get Entity() {
+    return Component.EntityContext<Entity>().Consumer;
+  }
+
+  public static get Data() {
+    return Component.DataContext<Data>().Consumer;
+  }
+
+  public static get Code() {
+    return Component.CodeContext<Code>().Consumer;
+  }
+
+  public static get Logs() {
+    return Component.LogsContext().Consumer;
+  }
+}
+
+const MemberWrapper: React.FunctionComponent<RequiredProps> = ({ address, children }) => (
+  <DAO.Entity>
+    {(entity: DAOEntity | undefined) => (
+      entity ?
+      <Member address={address} dao={entity}>
+        {children}
+      </Member>
+      : <div>loading...</div>
     )}
-</Member>
-*/
+  </DAO.Entity>
+);
+
+export default MemberWrapper;
+
+export {
+  Props as MemberProps,
+  Entity as MemberEntity,
+  Data as MemberData,
+  Code as MemberCode,
+  ComponentLogs
+};
