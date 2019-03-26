@@ -17,7 +17,7 @@ interface ContextualProps {
 
 type Props = RequiredProps & ContextualProps;
 
-export class DAOMembers extends ComponentList<Props, DAOMember>
+class DAOMembers extends ComponentList<Props, DAOMember>
 {
   createObservableEntities(props: Props, arc: Arc): Observable<CEntity<DAOMember>[]> {
     return props.dao.members();
@@ -47,5 +47,6 @@ const Members: React.FunctionComponent<RequiredProps> = ({ children }) => (
 export default Members;
 
 export {
-  Members
+  Members,
+  DAOMembers
 }
