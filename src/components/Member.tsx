@@ -9,6 +9,11 @@ type Code = {
   // contractName: ContractType (TypeChain)
 }
 
+const entityConsumer = Component.EntityContext<Entity>().Consumer;
+const dataConsumer   = Component.DataContext<Data>().Consumer;
+const codeConsumer   = Component.CodeContext<Code>().Consumer;
+const logsConsumer   = Component.LogsContext().Consumer;
+
 interface RequiredProps {
   // Address of the member
   address: string;
@@ -21,47 +26,72 @@ interface ContextualProps {
 
 type Props = RequiredProps & ContextualProps;
 
-export class Member extends Component<Props, Entity, Data, Code>
+class DAOMember extends Component<Props, Entity, Data, Code>
 {
   createEntity(props: Props, arc: Arc): Entity {
     return props.dao.member(props.address);
   }
 
   public static get Entity() {
-    return Component.EntityContext<Entity>().Consumer;
+    return entityConsumer;
   }
 
   public static get Data() {
-    return Component.DataContext<Data>().Consumer;
+    return dataConsumer;
   }
 
   public static get Code() {
-    return Component.CodeContext<Code>().Consumer;
+    return codeConsumer;
   }
 
   public static get Logs() {
-    return Component.LogsContext().Consumer;
+    return logsConsumer;
   }
 }
 
-const MemberWrapper: React.FunctionComponent<RequiredProps> = ({ address, children }) => (
-  <DAO.Entity>
-    {(entity: DAOEntity | undefined) => (
-      entity ?
-      <Member address={address} dao={entity}>
-        {children}
-      </Member>
-      : <div>loading...</div>
-    )}
-  </DAO.Entity>
-);
+class Member extends React.Component<RequiredProps>
+{
+  public static get Entity() {
+    return entityConsumer;
+  }
 
-export default MemberWrapper;
+  public static get Data() {
+    return dataConsumer;
+  }
+
+  public static get Code() {
+    return codeConsumer;
+  }
+
+  public static get Logs() {
+    return logsConsumer;
+  }
+
+  render() {
+    const { address, children } = this.props;
+
+    return (
+      <DAO.Entity>
+        {(entity: DAOEntity | undefined) => (
+          entity ?
+          <DAOMember dao={entity} address={address}>
+            {children}
+          </DAOMember>
+          : <div>loading...</div>
+        )}
+      </DAO.Entity>
+    );
+  }
+}
+
+export default Member;
 
 export {
-  Props as MemberProps,
+  Member,
+  DAOMember,
+  Props  as MemberProps,
   Entity as MemberEntity,
-  Data as MemberData,
-  Code as MemberCode,
+  Data   as MemberData,
+  Code   as MemberCode,
   ComponentLogs
 };

@@ -7,37 +7,43 @@ type Code = {
   // contractName: ContractType (TypeChain)
 }
 
+const entityConsumer = Component.EntityContext<Entity>().Consumer;
+const dataConsumer   = Component.DataContext<Data>().Consumer;
+const codeConsumer   = Component.CodeContext<Code>().Consumer;
+const logsConsumer   = Component.LogsContext().Consumer;
+
 interface Props {
   // Address of the DAO Avatar
   address: string;
 }
 
-export class DAO extends Component<Props, Entity, Data, Code>
+class DAO extends Component<Props, Entity, Data, Code>
 {
   createEntity(props: Props, arc: Arc): Entity {
     return arc.dao(props.address);
   }
 
   public static get Entity() {
-    return Component.EntityContext<Entity>().Consumer;
+    return entityConsumer;
   }
 
   public static get Data() {
-    return Component.DataContext<Data>().Consumer;
+    return dataConsumer;
   }
 
   public static get Code() {
-    return Component.CodeContext<Code>().Consumer;
+    return codeConsumer;
   }
 
   public static get Logs() {
-    return Component.LogsContext().Consumer;
+    return logsConsumer;
   }
 }
 
 export default DAO;
 
 export {
+  DAO,
   Props as DAOProps,
   Entity as DAOEntity,
   Data as DAOData,

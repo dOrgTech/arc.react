@@ -4,7 +4,7 @@ import {
   CProps,
   ComponentList
 } from "./ComponentList";
-import { Member } from "./Member";
+import { DAOMember } from "./Member";
 import DAO, { DAOEntity } from "./DAO";
 import Arc from "@daostack/client";
 import { Observable } from "rxjs";
@@ -17,31 +17,35 @@ interface ContextualProps {
 
 type Props = RequiredProps & ContextualProps;
 
-export class Members extends ComponentList<Props, Member>
+export class DAOMembers extends ComponentList<Props, DAOMember>
 {
-  createObservableEntities(props: Props, arc: Arc): Observable<CEntity<Member>[]> {
+  createObservableEntities(props: Props, arc: Arc): Observable<CEntity<DAOMember>[]> {
     return props.dao.members();
   }
 
-  renderComponent(entity: CEntity<Member>, children: any): React.ComponentElement<CProps<Member>, any> {
+  renderComponent(entity: CEntity<DAOMember>, children: any): React.ComponentElement<CProps<DAOMember>, any> {
     return (
-      <Member address={entity.address} dao={this.props.dao}>
+      <DAOMember address={entity.address} dao={this.props.dao}>
         {children}
-      </Member>
+      </DAOMember>
     )
   }
 }
 
-const MembersWrapper: React.FunctionComponent<RequiredProps> = ({ children }) => (
+const Members: React.FunctionComponent<RequiredProps> = ({ children }) => (
   <DAO.Entity>
     {(entity: DAOEntity | undefined) => (
       entity ?
-      <Members dao={entity}>
+      <DAOMembers dao={entity}>
         {children}
-      </Members>
+      </DAOMembers>
       : <div>loading...</div>
     )}
   </DAO.Entity>
 );
 
-export default MembersWrapper;
+export default Members;
+
+export {
+  Members
+}

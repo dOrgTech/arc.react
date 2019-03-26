@@ -36,19 +36,19 @@ export abstract class Component<
 
   // See here for more information on the React.Context pattern:
   // https://reactjs.org/docs/context.html
-  protected static EntityContext<Entity>(): Context<Entity> {
+  public static EntityContext<Entity>(): Context<Entity> {
     return Component._EntityContext as any;
   }
 
-  protected static DataContext<Data>(): Context<Data> {
+  public static DataContext<Data>(): Context<Data> {
     return Component._DataContext as any;
   }
 
-  protected static CodeContext<Code>(): Context<Code> {
+  public static CodeContext<Code>(): Context<Code> {
     return Component._CodeContext as any;
   }
 
-  protected static LogsContext(): Context<ComponentLogs> {
+  public static LogsContext(): Context<ComponentLogs> {
     return Component._LogsContext as any;
   }
 

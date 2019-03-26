@@ -2,7 +2,7 @@ import * as React from "react";
 import { storiesOf } from "@storybook/react";
 import ComponentView, { PropertyType } from "../helpers/ComponentView";
 import DAO, { DAOData, DAOEntity, DAOCode, ComponentLogs } from "../../src/components/DAO";
-import MemberWrapper, { Member, MemberData } from "../../src/components/Member";
+import Member, { MemberData } from "../../src/components/Member";
 
 export default () => 
   storiesOf("Components", module)
@@ -32,7 +32,7 @@ export default () =>
             : <div>loading...</div>
           )}
         </DAO.Data>
-        <MemberWrapper address="0xcb4e66eca663fdb61818d52a152601ca6afef74f">
+        <Member address="0xcb4e66eca663fdb61818d52a152601ca6afef74f">
           <Member.Data>
             {(data: MemberData | undefined) => (
               data ?
@@ -40,7 +40,7 @@ export default () =>
               : <div>loading...</div>
             )}
           </Member.Data>
-        </MemberWrapper>
+        </Member>
       </DAO>
       </>
     ))

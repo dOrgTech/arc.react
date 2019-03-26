@@ -10,7 +10,7 @@ import { Observable } from "rxjs";
 
 interface Props { }
 
-export class DAOs extends ComponentList<Props, DAO>
+class DAOs extends ComponentList<Props, DAO>
 {
   createObservableEntities(props: Props, arc: Arc): Observable<CEntity<DAO>[]> {
     return arc.daos();
@@ -26,3 +26,7 @@ export class DAOs extends ComponentList<Props, DAO>
 }
 
 export default DAOs;
+
+export {
+  DAOs
+}
