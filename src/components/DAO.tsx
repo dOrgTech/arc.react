@@ -18,11 +18,6 @@ export class DAO extends Component<Props, Entity, Data, Code>
     return arc.dao(props.address);
   }
 
-  entityContextSatisfied(props: Props): boolean {
-    // no additional contextual information needed
-    return true;
-  }
-
   public static get Entity() {
     return Component.EntityContext<Entity>().Consumer;
   }
