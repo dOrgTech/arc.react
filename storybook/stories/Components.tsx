@@ -2,6 +2,7 @@ import * as React from "react";
 import { storiesOf } from "@storybook/react";
 import ComponentView, { PropertyType } from "../helpers/ComponentView";
 import DAO, { DAOData, DAOEntity, DAOCode, ComponentLogs } from "../../src/components/DAO";
+import Member, { MemberData } from "../../src/components/Member";
 
 export default () => 
   storiesOf("Components", module)
@@ -22,6 +23,7 @@ export default () =>
       )
     })
     .add("DAO Test", () => (
+      <>
       <DAO address={"0xcB4e66eCA663FDB61818d52A152601cA6aFEf74F"}>
         <DAO.Data>
           {(data: DAOData | undefined) => (
@@ -30,7 +32,17 @@ export default () =>
             : <div>loading...</div>
           )}
         </DAO.Data>
+        <Member address="0xcb4e66eca663fdb61818d52a152601ca6afef74f">
+          <Member.Data>
+            {(data: MemberData | undefined) => (
+              data ?
+              <div>{data.reputation.toString()}</div>
+              : <div>loading...</div>
+            )}
+          </Member.Data>
+        </Member>
       </DAO>
+      </>
     ))
     .add("DAO Test2", () => (
       <DAO address={"0xcB4e66eCA663FDB61818d52A152601cA6aFEf74F"}>

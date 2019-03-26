@@ -7,85 +7,46 @@ type Code = {
   // contractName: ContractType (TypeChain)
 }
 
+const entityConsumer = Component.EntityContext<Entity>().Consumer;
+const dataConsumer   = Component.DataContext<Data>().Consumer;
+const codeConsumer   = Component.CodeContext<Code>().Consumer;
+const logsConsumer   = Component.LogsContext().Consumer;
+
 interface Props {
   // Address of the DAO Avatar
   address: string;
 }
 
-export default class DAO extends Component<Props, Entity, Data, Code>
+class DAO extends Component<Props, Entity, Data, Code>
 {
   createEntity(props: Props, arc: Arc): Entity {
     return arc.dao(props.address);
   }
 
   public static get Entity() {
-    return Component.EntityContext<Entity>().Consumer;
+    return entityConsumer;
   }
 
   public static get Data() {
-    return Component.DataContext<Data>().Consumer;
+    return dataConsumer;
   }
 
   public static get Code() {
-    return Component.CodeContext<Code>().Consumer;
+    return codeConsumer;
   }
 
   public static get Logs() {
-    return Component.LogsContext().Consumer;
+    return logsConsumer;
   }
 }
 
+export default DAO;
+
 export {
+  DAO,
   Props as DAOProps,
   Entity as DAOEntity,
   Data as DAOData,
   Code as DAOCode,
   ComponentLogs
 };
-
-// Ideal usage
-/*
-/// DAO.Data
-<DAO address="0x34234234">
-  <DAO.Data>
-    {dao => (
-      <div>{dao.name}</div>
-      <div>{dao.callSomeView(sdfsdf)}</div>
-    )}
-  </DAO.Data>
-</DAO>
-*/
-
-/*
-/// DAO.Code
-<DAO address="0x34234234">
-  <DAO.Code>
-    {code => await code.createProposal(...)}
-  </DAO.Code>
-</DAO>
-*/
-
-/*
-/// DAO Everything
-<DAO address="0x34234234">
-{
-  (data, code) => (
-    <div>{graph.name}</div>
-  )
-}
-</DAO>
-*/
-
-// TODO: long term, only have read & write semantics. read (props & funcs / transforms)
-
-// - only address a user should be expected to give is the DAO avatar address
-// - all other addresses are gotten from the semantic graph...
-/*interface ViewMethods
-{
-  test(value: string): boolean,
-  something(something: string): string
-};
-
-interface ActionMethods {
-  test: (value: number) => string
-};*/

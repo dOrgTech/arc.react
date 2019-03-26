@@ -128,6 +128,3 @@ const nodeRenderer = (node: any, tooltip: string) => {
       : <ObjectLabel name={name} data={data} isNonenumerable={isNonenumerable} />
   );
 }
-
-// TODO: if function is the child, then render it with everything
-// TODO: why is status "loaded" false?
