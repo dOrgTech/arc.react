@@ -3,7 +3,7 @@ import {
   CEntity,
   CProps,
   ComponentList
-} from "./ComponentList";
+} from "../runtime/ComponentList";
 import { DAOMember } from "./Member";
 import DAO, { DAOEntity } from "./DAO";
 import Arc from "@daostack/client";

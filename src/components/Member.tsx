@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Component, ComponentLogs } from "./Component";
+import { Component, ComponentLogs } from "../runtime/Component";
 import Arc, { Member as Entity, IMemberState as Data } from "@daostack/client";
 import DAO, { DAOEntity } from "./DAO";
 

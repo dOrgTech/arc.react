@@ -4,10 +4,10 @@ import { Observable, Subscription } from "rxjs";
 import * as R from "ramda";
 
 import Arc from "@daostack/client";
-import arc from "../lib/integrations/arc";
+import arc from "../../lib/integrations/arc";
 
 import { Component } from "./Component";
-import { ComponentListLogs } from "../lib/logging/ComponentListLogs";
+import { ComponentListLogs } from "./logging/ComponentListLogs";
 export { ComponentListLogs };
 
 // Extract the derived component's template parameters

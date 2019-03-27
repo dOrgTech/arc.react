@@ -3,7 +3,7 @@ import {
   CEntity,
   CProps,
   ComponentList
-} from "./ComponentList";
+} from "../runtime/ComponentList";
 import { DAO } from "./DAO";
 import Arc from "@daostack/client";
 import { Observable } from "rxjs";

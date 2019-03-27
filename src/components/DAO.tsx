@@ -1,4 +1,12 @@
-import { Component, ComponentLogs } from "./Component";
+// this.contextualizeProps(props: Props) => {
+//   if (props.dao === undefined) {
+//     return (
+//       <DAO.Entity>{entity => this.addProp("dao", entity)}</DAO.Entity>
+//     )
+//   }
+// }
+
+import { Component, ComponentLogs } from "../runtime/Component";
 import Arc, { DAO as Entity, IDAOState as Data } from "@daostack/client";
 
 // thought:

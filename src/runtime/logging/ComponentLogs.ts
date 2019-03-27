@@ -4,14 +4,13 @@ import {
   DataLogs,
   CodeLogs,
   ProseLogs
-} from "./logs";
-import LoggingConfig from "./index";
+} from "./types";
+import { ComponentConfig } from "../config/ComponentConfig";
 
-// TODO: redo the logging code w/ mixins to eliminate the code depulication...
-
-// The goal of this class is to delay creation of the logs
-// to help with memory effeciency. Don't take up room if
-// nothing is being logged or if logging is disabled.
+// The goal of this class is to:
+// 1. preserve memory through lazy allocation
+// 2. ensure high data integrity by guarding
+//    log data at the language level.
 export class ComponentLogs {
 
   public get react(): ReactLogs | undefined {
@@ -65,48 +64,48 @@ export class ComponentLogs {
   private _code?: CodeLogs;
   private _prose?: ProseLogs;
 
-  public reactRendered() {
-    if (!LoggingConfig.enabled) return;
+  public reactRendered(config: ComponentConfig) {
+    if (!config.logging) return;
     this.getReact.rendered();
   }
 
-  public entityCreated() {
-    if (!LoggingConfig.enabled) return;
+  public entityCreated(config: ComponentConfig) {
+    if (!config.logging) return;
     this.getEntity.created();
   }
 
-  public entityCreationFailed(error: Error) {
-    if (!LoggingConfig.enabled) return;
+  public entityCreationFailed(config: ComponentConfig, error: Error) {
+    if (!config.logging) return;
     this.getEntity.creationFailed(error);
   }
 
-  public dataQueryStarted() {
-    if (!LoggingConfig.enabled) return;
+  public dataQueryStarted(config: ComponentConfig) {
+    if (!config.logging) return;
     this.getData.queryStarted();
   }
 
-  public dataQueryReceivedData() {
-    if (!LoggingConfig.enabled) return;
+  public dataQueryReceivedData(config: ComponentConfig) {
+    if (!config.logging) return;
     this.getData.queryReceivedData();
   }
 
-  public dataQueryCompleted() {
-    if (!LoggingConfig.enabled) return;
+  public dataQueryCompleted(config: ComponentConfig) {
+    if (!config.logging) return;
     this.getData.queryCompleted();
   }
 
-  public dataQueryFailed(error: Error) {
-    if (!LoggingConfig.enabled) return;
+  public dataQueryFailed(config: ComponentConfig, error: Error) {
+    if (!config.logging) return;
     this.getData.queryFailed(error);
   }
 
-  public codeCreationFailed(error: Error) {
-    if (!LoggingConfig.enabled) return;
+  public codeCreationFailed(config: ComponentConfig, error: Error) {
+    if (!config.logging) return;
     this.getCode.creationFailed(error);
   }
 
-  public proseCreationFailed(error: Error) {
-    if (!LoggingConfig.enabled) return;
+  public proseCreationFailed(config: ComponentConfig, error: Error) {
+    if (!config.logging) return;
     this.getProse.creationFailed(error);
   }
 }
