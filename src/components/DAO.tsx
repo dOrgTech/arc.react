@@ -1,6 +1,11 @@
 import { Component, ComponentLogs } from "./Component";
 import Arc, { DAO as Entity, IDAOState as Data } from "@daostack/client";
 
+// thought:
+// - base class that is constructed w/ entity
+// - derived class that defines public "nice" methods
+// - - methods use entity to invoke transactions
+
 type Code = {
   // maybe wrap this better so the contracts
   // are underneath the higher level functions?
