@@ -10,8 +10,7 @@ export class ArcConfig extends ProtocolConfig
     public graphqlHttpUrl: string,
     public graphqlWsUrl: string
   ) {
-    super(web3HttpUrl, graphqlHttpUrl, graphqlWsUrl);
-
+    super();
     this.connection = new Connection({
       graphqlHttpProvider: graphqlHttpUrl,
       graphqlWsProvider: graphqlWsUrl,

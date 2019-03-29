@@ -14,22 +14,37 @@ const dataConsumer   = Component.DataContext<Data>().Consumer;
 const codeConsumer   = Component.CodeContext<Code>().Consumer;
 const logsConsumer   = Component.LogsContext().Consumer;
 
-interface RequiredProps {
+interface Props {
   // Address of the member
   address: string;
-}
 
-interface ContextualProps {
   // The DAO this member is apart of
-  dao: DAOEntity;
+  dao?: DAOEntity;
 }
 
-type Props = RequiredProps & ContextualProps;
-
-class DAOMember extends Component<Props, Entity, Data, Code>
+class Member extends Component<Props, Entity, Data, Code>
 {
+  // TODO: Arc could be a contextualized prop on the DAO instead of in each component
+  // Just make "Arc" a component?
   createEntity(props: Props, arc: Arc): Entity {
-    return props.dao.member(props.address);
+    // TODO: better error handling? maybe have another abstract function
+    // that's a predicate that lets you know if entity can be created w/
+    // provided data & gives user friendly sanitization errors?
+    if (this.props.dao === undefined) {
+      throw Error("Missing DAO prop");
+    }
+
+    return this.props.dao.member(props.address);
+  }
+
+  inferProps(): React.ReactNode {
+    if (this.props.dao === undefined) {
+      return (
+        <DAO.Entity>{entity => () => this.addProp("dao", entity)}</DAO.Entity>
+      );
+    } else {
+      return (<></>);
+    }
   }
 
   public static get Entity() {
@@ -48,47 +63,9 @@ class DAOMember extends Component<Props, Entity, Data, Code>
     return logsConsumer;
   }
 }
-
-class Member extends React.Component<RequiredProps>
-{
-  public static get Entity() {
-    return entityConsumer;
-  }
-
-  public static get Data() {
-    return dataConsumer;
-  }
-
-  public static get Code() {
-    return codeConsumer;
-  }
-
-  public static get Logs() {
-    return logsConsumer;
-  }
-
-  render() {
-    const { address, children } = this.props;
-
-    return (
-      <DAO.Entity>
-        {(entity: DAOEntity | undefined) => (
-          entity ?
-          <DAOMember dao={entity} address={address}>
-            {children}
-          </DAOMember>
-          : <div>loading...</div>
-        )}
-      </DAO.Entity>
-    );
-  }
-}
-
-export default Member;
 
 export {
   Member,
-  DAOMember,
   Props  as MemberProps,
   Entity as MemberEntity,
   Data   as MemberData,

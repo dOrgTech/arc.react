@@ -1,15 +1,8 @@
-// this.contextualizeProps(props: Props) => {
-//   if (props.dao === undefined) {
-//     return (
-//       <DAO.Entity>{entity => this.addProp("dao", entity)}</DAO.Entity>
-//     )
-//   }
-// }
-
+import * as React from "react";
 import { Component, ComponentLogs } from "../runtime/Component";
 import Arc, { DAO as Entity, IDAOState as Data } from "@daostack/client";
 
-// thought:
+// TODO: thought:
 // - base class that is constructed w/ entity
 // - derived class that defines public "nice" methods
 // - - methods use entity to invoke transactions
@@ -34,6 +27,10 @@ class DAO extends Component<Props, Entity, Data, Code>
 {
   createEntity(props: Props, arc: Arc): Entity {
     return arc.dao(props.address);
+  }
+
+  inferProps(): React.ReactNode {
+    return (<></>);
   }
 
   public static get Entity() {

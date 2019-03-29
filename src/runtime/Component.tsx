@@ -5,8 +5,8 @@ import memoize from "memoize-one";
 import { Subscription } from "rxjs";
 import { IStateful } from "@daostack/client/src/types"
 
-import { Platform } from "./Platform";
-import { PlatformConfig, DefaultPlatformConfig } from "./configs/PlatformConfig";
+import { Logging } from "./Logging";
+import { LoggingConfig, DefaultLoggingConfig } from "./configs/LoggingConfig";
 import { Protocol } from "./Protocol";
 import { ProtocolConfig } from "./configs/ProtocolConfig";
 
@@ -20,11 +20,12 @@ interface State<Data, Code> {
   data?: Data;
   code?: Code;
   // TODO: Prose
-  protocol?: ProtocolConfig;
+  // TODO: get rid of
+  protocolConfig?: ProtocolConfig;
 
   // Diagnostics for the component
   logs: ComponentLogs;
-  platform: PlatformConfig;
+  loggingConfig: LoggingConfig;
 
   // Properties inferred, used for the derived class
   inferredProps: PropertyBag;
@@ -86,7 +87,7 @@ export abstract class Component<
 
     this.state = {
       logs: new ComponentLogs(),
-      platform: DefaultPlatformConfig,
+      loggingConfig: DefaultLoggingConfig,
       inferredProps: {}
     };
 
@@ -102,7 +103,7 @@ export abstract class Component<
     const LogsProvider   = Component.LogsContext().Provider;
 
     const children = this.props.children;
-    const { data, code, logs, protocol, platform } = this.state;
+    const { data, code, logs, protocolConfig, loggingConfig } = this.state;
 
     // TODO: change "context" to "infer"
     // merge our component infered props into the normal props
@@ -111,18 +112,18 @@ export abstract class Component<
     // create & fetch the entity
     // TODO: this should throw errors. Upon first error, logging marks "loading started"
     // then when first success is seen, record that time too for timings
-    const entity = this.entity(props, protocol)
+    const entity = this.entity(props, protocolConfig)
 
-    logs.reactRendered(platform);
+    logs.reactRendered(loggingConfig);
 
     return (
       <>
       <Protocol.Config>
-        {config => () => { if (config) this.mergeState({ protocol: config }) }}
+        {config => () => { if (config) this.mergeState({ protocolConfig: config }) }}
       </Protocol.Config>
-      <Platform.Config>
-        {config => () => { if (config) this.mergeState({ platform : config }) }}
-      </Platform.Config>
+      <Logging.Config>
+        {config => () => { if (config) this.mergeState({ loggingConfig : config }) }}
+      </Logging.Config>
       {() => this.inferProps()}
       {() => {
         if (typeof children === "function") {
@@ -152,69 +153,15 @@ export abstract class Component<
     }
   }
 
+  private mergeState(merge: any) {
+    this.setState(
+      R.mergeDeepRight(this.state, merge)
+    );
+  }
+
+  // TODO: make sure this works
   protected addProp(name: string, value: any) {
-    this.mergeState({ [name]: value });
-  }
-
-  private createEntityWithProps(props: Props, protocol: ProtocolConfig | undefined): Entity | undefined {
-    const { logs, platform } = this.state;
-
-    if (!protocol) {
-      // TODO: logs.protocolConfigMissing(platform);
-      return undefined;
-    }
-
-    // TODO: change platform to "component config"?
-    logs.entityCreated(platform);
-
-    this.clearPrevState();
-
-    try {
-      const entity = this.createEntity(props, protocol);
-
-      logs.dataQueryStarted(platform);
-
-      // subscribe to this entity's state changes
-      this._subscription = entity.state().subscribe(
-        this.onQueryData,
-        this.onQueryError,
-        this.onQueryComplete
-      );
-
-      // TODO: create code + prose
-      return entity;
-    } catch (error) {
-      logs.entityCreationFailed(platform, error);
-      return undefined;
-    }
-  }
-
-  private clearPrevState() {
-    this.mergeState({
-      data: undefined,
-      code: undefined,
-      // TOOD: prose: undefined
-    });
-  }
-
-  private onQueryData(data: Data) {
-    const { logs, platform } = this.state;
-
-    logs.dataQueryReceivedData(platform);
-
-    this.mergeState({
-      data: data
-    });
-  }
-
-  private onQueryError(error: Error) {
-    const { logs, platform } = this.state;
-    logs.dataQueryFailed(platform, error);
-  }
-
-  private onQueryComplete() {
-    const { logs, platform } = this.state;
-    logs.dataQueryCompleted(platform);
+    this.mergeState({ inferredProps: { [name]: value } });
   }
 
   // TODO: ensure this works
@@ -229,9 +176,63 @@ export abstract class Component<
     return props;
   }
 
-  private mergeState(merge: any) {
-    this.setState(
-      R.mergeDeepRight(this.state, merge)
-    );
+  private createEntityWithProps(props: Props, protocol: ProtocolConfig | undefined): Entity | undefined {
+    const { logs, loggingConfig } = this.state;
+
+    if (!protocol) {
+      // TODO: logs.protocolConfigMissing(platform);
+      return undefined;
+    }
+
+    logs.entityCreated(loggingConfig);
+
+    this.clearPrevState();
+
+    try {
+      const entity = this.createEntity(props, protocol);
+
+      logs.dataQueryStarted(loggingConfig);
+
+      // subscribe to this entity's state changes
+      this._subscription = entity.state().subscribe(
+        this.onQueryData,
+        this.onQueryError,
+        this.onQueryComplete
+      );
+
+      // TODO: create code + prose
+      return entity;
+    } catch (error) {
+      logs.entityCreationFailed(loggingConfig, error);
+      return undefined;
+    }
+  }
+
+  private clearPrevState() {
+    this.mergeState({
+      data: undefined,
+      code: undefined,
+      // TOOD: prose: undefined
+    });
+  }
+
+  private onQueryData(data: Data) {
+    const { logs, loggingConfig } = this.state;
+
+    logs.dataQueryReceivedData(loggingConfig);
+
+    this.mergeState({
+      data: data
+    });
+  }
+
+  private onQueryError(error: Error) {
+    const { logs, loggingConfig } = this.state;
+    logs.dataQueryFailed(loggingConfig, error);
+  }
+
+  private onQueryComplete() {
+    const { logs, loggingConfig } = this.state;
+    logs.dataQueryCompleted(loggingConfig);
   }
 }

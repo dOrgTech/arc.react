@@ -1,25 +1,25 @@
 import * as React from "react";
 import { Context } from "react";
-import { PlatformConfig } from "./configs/PlatformConfig";
+import { LoggingConfig } from "./configs/LoggingConfig";
 
 interface Props {
-  config: PlatformConfig;
+  config: LoggingConfig;
 }
 
-export class Platform extends React.Component<Props>
+export class Logging extends React.Component<Props>
 {
   public static get Config() {
-    return Platform.ConfigContext().Consumer;
+    return Logging.ConfigContext().Consumer;
   }
 
-  private static ConfigContext(): Context<PlatformConfig> {
-    return Platform._ConfigContext as any;
+  private static ConfigContext(): Context<LoggingConfig> {
+    return Logging._ConfigContext as any;
   }
 
   private static _ConfigContext = React.createContext({ });
 
   render() {
-    const ConfigProvider = Platform.ConfigContext().Provider;
+    const ConfigProvider = Logging.ConfigContext().Provider;
 
     const { config, children } = this.props;
 
