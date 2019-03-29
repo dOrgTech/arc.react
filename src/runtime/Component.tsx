@@ -5,13 +5,11 @@ import memoize from "memoize-one";
 import { Subscription } from "rxjs";
 import { IStateful } from "@daostack/client/src/types"
 
+import { ComponentLogs } from "./logging/ComponentLogs";
 import { Logging } from "./Logging";
 import { LoggingConfig, DefaultLoggingConfig } from "./configs/LoggingConfig";
 import { Protocol } from "./Protocol";
 import { ProtocolConfig } from "./configs/ProtocolConfig";
-
-import { ComponentLogs } from "./logging/ComponentLogs";
-export { ComponentLogs };
 
 type PropertyBag = { [propName: string]: any }
  

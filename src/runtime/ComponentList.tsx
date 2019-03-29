@@ -1,14 +1,14 @@
 import * as React from "react";
+import * as R from "ramda";
 import memoize from "memoize-one";
 import { Observable, Subscription } from "rxjs";
-import * as R from "ramda";
-
-import Arc from "@daostack/client";
-import arc from "../../lib/integrations/arc";
 
 import { Component } from "./Component";
 import { ComponentListLogs } from "./logging/ComponentListLogs";
-export { ComponentListLogs };
+import { Logging } from "./Logging";
+import { LoggingConfig, DefaultLoggingConfig } from "./configs/LoggingConfig";
+import { Protocol } from "./Protocol";
+import { ProtocolConfig } from "./configs/ProtocolConfig";
 
 // Extract the derived component's template parameters
 export type CProps<Comp>  = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Props : undefined;
@@ -18,7 +18,12 @@ export type CCode<Comp>   = Comp extends Component<infer Props, infer Entity, in
 
 interface State<Entity> {
   entities: Entity[];
+  // TODO: get rid of this
+  protocolConfig?: ProtocolConfig;
+
+  // Diagnostics for the component
   logs: ComponentListLogs
+  loggingConfig: LoggingConfig;
 }
 
 export abstract class ComponentList<

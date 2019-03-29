@@ -64,6 +64,8 @@ class Member extends Component<Props, Entity, Data, Code>
   }
 }
 
+export default Member;
+
 export {
   Member,
   Props  as MemberProps,

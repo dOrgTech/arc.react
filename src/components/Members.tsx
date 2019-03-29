@@ -4,35 +4,31 @@ import {
   CProps,
   ComponentList
 } from "../runtime/ComponentList";
-import { DAOMember } from "./Member";
+import { Member } from "./Member";
 import DAO, { DAOEntity } from "./DAO";
 import Arc from "@daostack/client";
 import { Observable } from "rxjs";
 
-interface RequiredProps { }
-
-interface ContextualProps {
-  dao: DAOEntity;
+interface Props {
+  dao?: DAOEntity;
 }
 
-type Props = RequiredProps & ContextualProps;
-
-class DAOMembers extends ComponentList<Props, DAOMember>
+class Members extends ComponentList<Props, Member>
 {
-  createObservableEntities(props: Props, arc: Arc): Observable<CEntity<DAOMember>[]> {
+  createObservableEntities(props: Props, arc: Arc): Observable<CEntity<Member>[]> {
     return props.dao.members();
   }
 
-  renderComponent(entity: CEntity<DAOMember>, children: any): React.ComponentElement<CProps<DAOMember>, any> {
+  renderComponent(entity: CEntity<Member>, children: any): React.ComponentElement<CProps<Member>, any> {
     return (
-      <DAOMember address={entity.address} dao={this.props.dao}>
+      <Member address={entity.address} dao={this.props.dao}>
         {children}
-      </DAOMember>
+      </Member>
     )
   }
 }
 
-const Members: React.FunctionComponent<RequiredProps> = ({ children }) => (
+/*const Members: React.FunctionComponent<RequiredProps> = ({ children }) => (
   <DAO.Entity>
     {(entity: DAOEntity | undefined) => (
       entity ?
@@ -43,10 +39,10 @@ const Members: React.FunctionComponent<RequiredProps> = ({ children }) => (
     )}
   </DAO.Entity>
 );
+*/
 
 export default Members;
 
 export {
-  Members,
-  DAOMembers
+  Members
 }
