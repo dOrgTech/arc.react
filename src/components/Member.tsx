@@ -37,10 +37,10 @@ class Member extends Component<Props, Entity, Data, Code>
     return this.props.dao.member(props.address);
   }
 
-  inferProps(): React.ReactNode {
+  gatherInferredProps(): React.ReactNode {
     if (this.props.dao === undefined) {
       return (
-        <DAO.Entity>{entity => () => this.addProp("dao", entity)}</DAO.Entity>
+        <DAO.Entity>{entity => () => this.setProp("dao", entity)}</DAO.Entity>
       );
     } else {
       return (<></>);

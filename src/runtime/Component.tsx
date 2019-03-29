@@ -1,32 +1,26 @@
 import * as React from "react";
 import { Context } from "react";
-import * as R from "ramda";
 import memoize from "memoize-one";
 import { Subscription } from "rxjs";
 import { IStateful } from "@daostack/client/src/types"
 
+import { BaseComponent, BaseState } from "./BaseComponent";
 import { ComponentLogs } from "./logging/ComponentLogs";
+export { ComponentLogs };
 import { Logging } from "./Logging";
 import { LoggingConfig, DefaultLoggingConfig } from "./configs/LoggingConfig";
 import { Protocol } from "./Protocol";
 import { ProtocolConfig } from "./configs/ProtocolConfig";
 
-type PropertyBag = { [propName: string]: any }
- 
-interface State<Data, Code> {
+interface State<Data, Code> extends BaseState {
   // Context Feeds
   data?: Data;
   code?: Code;
   // TODO: Prose
-  // TODO: get rid of
-  protocolConfig?: ProtocolConfig;
 
   // Diagnostics for the component
   logs: ComponentLogs;
   loggingConfig: LoggingConfig;
-
-  // Properties inferred, used for the derived class
-  inferredProps: PropertyBag;
 }
 
 export abstract class Component<
@@ -34,7 +28,7 @@ export abstract class Component<
   Entity extends IStateful<Data>,
   Data,
   Code
-> extends React.Component<
+> extends BaseComponent<
     Props, State<Data, Code>
   >
 {
@@ -43,8 +37,6 @@ export abstract class Component<
   // Note: This entity is not within the component's state, but instead a memoized
   // property that will be recreated whenever necessary. See `private entity` below...
   protected abstract createEntity(props: Props, protocol: ProtocolConfig): Entity;
-
-  protected abstract inferProps(): React.ReactNode;
 
   // See here for more information on the React.Context pattern:
   // https://reactjs.org/docs/context.html
@@ -101,10 +93,9 @@ export abstract class Component<
     const LogsProvider   = Component.LogsContext().Provider;
 
     const children = this.props.children;
-    const { data, code, logs, protocolConfig, loggingConfig } = this.state;
+    const { data, code, protocolConfig, logs, loggingConfig } = this.state;
 
-    // TODO: change "context" to "infer"
-    // merge our component infered props into the normal props
+    // merge our component inferred props into the normal props
     const props = this.mergeInferredProps();
 
     // create & fetch the entity
@@ -122,7 +113,7 @@ export abstract class Component<
       <Logging.Config>
         {config => () => { if (config) this.mergeState({ loggingConfig : config }) }}
       </Logging.Config>
-      {() => this.inferProps()}
+      {() => this.gatherInferredProps()}
       {() => {
         if (typeof children === "function") {
           return children(entity, data, code, logs);
@@ -151,34 +142,11 @@ export abstract class Component<
     }
   }
 
-  private mergeState(merge: any) {
-    this.setState(
-      R.mergeDeepRight(this.state, merge)
-    );
-  }
-
-  // TODO: make sure this works
-  protected addProp(name: string, value: any) {
-    this.mergeState({ inferredProps: { [name]: value } });
-  }
-
-  // TODO: ensure this works
-  private mergeInferredProps(): Props {
-    const props = this.props;
-    const inferredProps = this.state.inferredProps;
-
-    for (const propName in inferredProps) {
-      props[propName] = inferredProps[propName]
-    }
-
-    return props;
-  }
-
   private createEntityWithProps(props: Props, protocol: ProtocolConfig | undefined): Entity | undefined {
     const { logs, loggingConfig } = this.state;
 
     if (!protocol) {
-      // TODO: logs.protocolConfigMissing(platform);
+      // TODO: logs.protocolConfigMissing();
       return undefined;
     }
 

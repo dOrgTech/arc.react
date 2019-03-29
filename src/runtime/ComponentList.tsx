@@ -3,8 +3,10 @@ import * as R from "ramda";
 import memoize from "memoize-one";
 import { Observable, Subscription } from "rxjs";
 
+import { BaseComponent, BaseState } from "./BaseComponent";
 import { Component } from "./Component";
 import { ComponentListLogs } from "./logging/ComponentListLogs";
+export { ComponentListLogs };
 import { Logging } from "./Logging";
 import { LoggingConfig, DefaultLoggingConfig } from "./configs/LoggingConfig";
 import { Protocol } from "./Protocol";
@@ -16,10 +18,8 @@ export type CEntity<Comp> = Comp extends Component<infer Props, infer Entity, in
 export type CData<Comp>   = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Data : undefined;
 export type CCode<Comp>   = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Code : undefined;
 
-interface State<Entity> {
+interface State<Entity> extends BaseState {
   entities: Entity[];
-  // TODO: get rid of this
-  protocolConfig?: ProtocolConfig;
 
   // Diagnostics for the component
   logs: ComponentListLogs
@@ -28,11 +28,18 @@ interface State<Entity> {
 
 export abstract class ComponentList<
   Props,
-  Comp extends Component<CProps<Comp>, CEntity<Comp>, CData<Comp>, CCode<Comp>>,
+  Comp extends Component<
+    CProps<Comp>,
+    CEntity<Comp>,
+    CData<Comp>,
+    CCode<Comp>
+  >,
   Entity = CEntity<Comp>
-> extends React.Component<Props, State<Entity>>
+> extends BaseComponent<
+    Props, State<Entity>
+  >
 {
-  protected abstract createObservableEntities(props: Props, arc: Arc): Observable<Entity[]>;
+  protected abstract createObservableEntities(props: Props, protocol: ProtocolConfig): Observable<Entity[]>;
   protected abstract renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Comp>, any>;
 
   private observableEntities = memoize(
@@ -50,7 +57,9 @@ export abstract class ComponentList<
 
     this.state = {
       entities: [],
-      logs: new ComponentListLogs()
+      logs: new ComponentListLogs(),
+      loggingConfig: DefaultLoggingConfig,
+      inferredProps: {}
     };
 
     this.onQueryEntities = this.onQueryEntities.bind(this);
@@ -59,29 +68,41 @@ export abstract class ComponentList<
   }
 
   public render() {
-    const { children } = this.props;
-    this.observableEntities(this.props, arc);
-    const { entities, logs } = this.state;
+    const children = this.props.children;
+    const { entities, protocolConfig, logs, loggingConfig } = this.state;
 
-    logs.reactRendered();
+    // merge our component inferred props into the normal props
+    const props = this.mergeInferredProps();
 
-    if (typeof children === "function") {
-      return children(entities);
-    } else {
-      // TODO: better "loading..." handler (overridable)
-      return (
-        entities ? entities.map(entity => (
-          <>
-          {this.renderComponent(entity, children)}
-          </>
-        )) : <div>loading...</div>
-      );
-    }
-  }
+    // TODO: better logging when props are missing
+    this.observableEntities(props, protocolConfig);
 
-  public componentWillMount() {
-    // prefetch the entities
-    this.observableEntities(this.props, arc);
+    logs.reactRendered(loggingConfig);
+
+    // TODO: should `if (config)` be there?
+    return (
+      <>
+      <Protocol.Config>
+        {config => () => { if (config) this.mergeState({ protocolConfig: config }) }}
+      </Protocol.Config>
+      <Logging.Config>
+        {config => () => { if (config) this.mergeState({ loggingConfig: config }) }}
+      </Logging.Config>
+      {() => this.gatherInferredProps()}
+      {() => {
+        if (typeof children === "function") {
+          return children(entities);
+        } else {
+          // TODO: better loading handler
+          entities ? entities.map(entity => (
+            <>
+            {this.renderComponent(entity, children)}
+            </>
+          )) : <div>loading...</div>
+        }
+      }}
+      </>
+    )
   }
 
   public componentWillUnmount() {
@@ -91,19 +112,24 @@ export abstract class ComponentList<
     }
   }
 
-  private createObservableEntitiesWithProps(props: Props, arc: Arc): Observable<Entity[]> | undefined {
-    const { logs } = this.state;
+  private createObservableEntitiesWithProps(props: Props, protocol: ProtocolConfig | undefined): Observable<Entity[]> | undefined {
+    const { logs, loggingConfig } = this.state;
 
-    logs.entityCreated();
+    if (!protocol) {
+      // TODO: logs.protocolConfigMissing()
+      return undefined;
+    }
+
+    logs.entityCreated(loggingConfig);
 
     this.clearPrevState();
 
     try {
-      const entities = this.createObservableEntities(props, arc);
+      const entities = this.createObservableEntities(props, protocol);
 
-      logs.dataQueryStarted();
+      logs.dataQueryStarted(loggingConfig);
 
-      entities.subscribe(
+      this._subscription = entities.subscribe(
         this.onQueryEntities,
         this.onQueryError,
         this.onQueryComplete
@@ -111,7 +137,7 @@ export abstract class ComponentList<
 
       return entities;
     } catch (error) {
-      logs.entityCreationFailed(error);
+      logs.entityCreationFailed(loggingConfig, error);
       return undefined;
     }
   }
@@ -123,7 +149,9 @@ export abstract class ComponentList<
   }
 
   private onQueryEntities(entities: Entity[]) {
-    this.state.logs.dataQueryReceivedData();
+    const { logs, loggingConfig } = this.state;
+
+    logs.dataQueryReceivedData(loggingConfig);
 
     this.mergeState({
       entities: entities
@@ -131,16 +159,12 @@ export abstract class ComponentList<
   }
 
   private onQueryError(error: Error) {
-    this.state.logs.dataQueryCompleted();
+    const { logs, loggingConfig } = this.state;
+    logs.dataQueryFailed(loggingConfig, error);
   }
 
   private onQueryComplete() {
-    this.state.logs.dataQueryCompleted();
-  }
-
-  private mergeState(merge: any) {
-    this.setState(
-      R.mergeDeepRight(this.state, merge)
-    );
+    const { logs, loggingConfig } = this.state;
+    logs.dataQueryCompleted(loggingConfig);
   }
 }

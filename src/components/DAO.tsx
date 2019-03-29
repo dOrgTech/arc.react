@@ -29,7 +29,7 @@ class DAO extends Component<Props, Entity, Data, Code>
     return arc.dao(props.address);
   }
 
-  inferProps(): React.ReactNode {
+  gatherInferredProps(): React.ReactNode {
     return (<></>);
   }
 
