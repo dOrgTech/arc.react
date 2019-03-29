@@ -16,7 +16,22 @@ interface Props {
 class Members extends ComponentList<Props, Member>
 {
   createObservableEntities(props: Props, arc: Arc): Observable<CEntity<Member>[]> {
+    // TODO: better error handling
+    if (props.dao === undefined) {
+      throw Error("Missing DAO prop");
+    }
+
     return props.dao.members();
+  }
+
+  gatherInferredProps(): React.ReactNode {
+    if (this.props.dao === undefined) {
+      return (
+        <DAO.Entity>{entity => () => this.setProp("dao", entity)}</DAO.Entity>
+      );
+    } else {
+      return (<></>);
+    }
   }
 
   renderComponent(entity: CEntity<Member>, children: any): React.ComponentElement<CProps<Member>, any> {
@@ -28,21 +43,8 @@ class Members extends ComponentList<Props, Member>
   }
 }
 
-/*const Members: React.FunctionComponent<RequiredProps> = ({ children }) => (
-  <DAO.Entity>
-    {(entity: DAOEntity | undefined) => (
-      entity ?
-      <DAOMembers dao={entity}>
-        {children}
-      </DAOMembers>
-      : <div>loading...</div>
-    )}
-  </DAO.Entity>
-);
-*/
-
 export default Members;
 
 export {
   Members
-}
+};

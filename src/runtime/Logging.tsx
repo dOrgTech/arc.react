@@ -16,7 +16,7 @@ export class Logging extends React.Component<Props>
     return Logging._ConfigContext as any;
   }
 
-  private static _ConfigContext = React.createContext({ });
+  private static _ConfigContext = React.createContext(undefined);
 
   render() {
     const ConfigProvider = Logging.ConfigContext().Provider;

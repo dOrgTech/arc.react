@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as R from "ramda";
 import memoize from "memoize-one";
 import { Observable, Subscription } from "rxjs";
 
@@ -22,6 +21,7 @@ interface State<Entity> extends BaseState {
   entities: Entity[];
 
   // Diagnostics for the component
+  // TODO: logs aren't consumable, expose through a context?
   logs: ComponentListLogs
   loggingConfig: LoggingConfig;
 }

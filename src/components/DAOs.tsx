@@ -16,6 +16,10 @@ class DAOs extends ComponentList<Props, DAO>
     return arc.daos();
   }
 
+  gatherInferredProps(): React.ReactNode {
+    return (<></>);
+  }
+
   renderComponent(entity: CEntity<DAO>, children: any): React.ComponentElement<CProps<DAO>, any> {
     return (
       <DAO address={entity.address}>
@@ -29,4 +33,4 @@ export default DAOs;
 
 export {
   DAOs
-}
+};

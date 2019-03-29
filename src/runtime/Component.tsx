@@ -105,32 +105,41 @@ export abstract class Component<
 
     logs.reactRendered(loggingConfig);
 
+    // TODO: move this to the prop passing pattern (required props, inferred props)(DAOMember, Member?)
     return (
       <>
       <Protocol.Config>
-        {config => () => { if (config) this.mergeState({ protocolConfig: config }) }}
+        {config => {
+          console.log(`Protocol.Config ${config}`);
+          if (config && config !== protocolConfig) {
+            console.log("mergeState(protocolConfig)");
+            this.mergeState({ protocolConfig: config });
+          }
+          return (<></>);
+        }}
       </Protocol.Config>
       <Logging.Config>
-        {config => () => { if (config) this.mergeState({ loggingConfig : config }) }}
+        {config => {
+          console.log(`Logging.Config ${config}`);
+          if (config && config !== loggingConfig) {
+            console.log("mergeState(loggingConfig)");
+            this.mergeState({ loggingConfig : config });
+          }
+          return (<></>);
+        }}
       </Logging.Config>
-      {() => this.gatherInferredProps()}
-      {() => {
-        if (typeof children === "function") {
-          return children(entity, data, code, logs);
-        } else {
-          return (
-            <EntityProvider value={entity}>
-            <DataProvider value={data}>
-            <CodeProvider value={code}>
-            <LogsProvider value={logs}>
-              {children}
-            </LogsProvider>
-            </CodeProvider>
-            </DataProvider>
-            </EntityProvider>
-          )
-        }
-      }}
+      {this.gatherInferredProps()}
+      <EntityProvider value={entity}>
+      <DataProvider value={data}>
+      <CodeProvider value={code}>
+      <LogsProvider value={logs}>
+      {typeof children === "function"
+      ? children(entity, data, code, logs)
+      : {children}}
+      </LogsProvider>
+      </CodeProvider>
+      </DataProvider>
+      </EntityProvider>
       </>
     )
   }

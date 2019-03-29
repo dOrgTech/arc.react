@@ -27,6 +27,7 @@ export abstract class BaseComponent<Props, State extends BaseState> extends Reac
 
   // TODO: make sure this works
   protected setProp(name: string, value: any) {
+    console.log("NOHERE");
     this.mergeState({ inferredProps: { [name]: value } });
   }
 

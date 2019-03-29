@@ -1,8 +1,4 @@
-import { Protocol, Props } from "../runtime/Protocol";
+import { Protocol } from "../runtime/Protocol";
+import { ArcConfig } from "./ArcConfig";
 
-export class Arc extends Protocol
-{
-  constructor(props: Props) {
-    super(props);
-  }
-}
+export class Arc extends Protocol<ArcConfig> { }

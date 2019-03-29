@@ -1,5 +1,5 @@
-export * from "./components";
-export * from "./protocol";
+export * from "./components/index";
+export * from "./protocol/index";
 
 import { Logging } from "./runtime/Logging";
 import { LoggingConfig } from "./runtime/configs/LoggingConfig";

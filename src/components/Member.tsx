@@ -30,11 +30,11 @@ class Member extends Component<Props, Entity, Data, Code>
     // TODO: better error handling? maybe have another abstract function
     // that's a predicate that lets you know if entity can be created w/
     // provided data & gives user friendly sanitization errors?
-    if (this.props.dao === undefined) {
+    if (props.dao === undefined) {
       throw Error("Missing DAO prop");
     }
 
-    return this.props.dao.member(props.address);
+    return props.dao.member(props.address);
   }
 
   gatherInferredProps(): React.ReactNode {

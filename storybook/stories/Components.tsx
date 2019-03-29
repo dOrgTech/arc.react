@@ -1,8 +1,17 @@
 import * as React from "react";
 import { storiesOf } from "@storybook/react";
 import ComponentView, { PropertyType } from "../helpers/ComponentView";
-import DAO, { DAOData, DAOEntity, DAOCode, ComponentLogs } from "../../src/components/DAO";
-import Member, { MemberData } from "../../src/components/Member";
+import {
+  Arc,
+  DefaultArcConfig,
+  DAO,
+  DAOData,
+  DAOEntity,
+  DAOCode,
+  Member,
+  MemberData,
+  ComponentLogs
+} from "../../src";
 
 export default () => 
   storiesOf("Components", module)
@@ -45,15 +54,17 @@ export default () =>
       </>
     ))
     .add("DAO Test2", () => (
-      <DAO address={"0xcB4e66eCA663FDB61818d52A152601cA6aFEf74F"}>
-        {(entity: DAOEntity, data: DAOData, code: DAOCode, logs: ComponentLogs) => (
-          entity && data && logs ?
-            <>
-            <div>{entity.address}</div>
-            <div>{data.memberCount}</div>
-            <div>{JSON.stringify(logs)}</div>
-            </>
-          : <div>loading...</div>
-        )}
-      </DAO>
+      <Arc config={DefaultArcConfig}>
+        <DAO address={"0xcB4e66eCA663FDB61818d52A152601cA6aFEf74F"}>
+          {(entity: DAOEntity, data: DAOData, code: DAOCode, logs: ComponentLogs) => (
+            entity && data && logs ?
+              <>
+              <div>{entity.address}</div>
+              <div>{data.memberCount}</div>
+              <div>{JSON.stringify(logs)}</div>
+              </>
+            : <div>loading...</div>
+          )}
+        </DAO>
+      </Arc>
     ));

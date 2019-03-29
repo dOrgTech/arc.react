@@ -10,7 +10,7 @@ import {
   Divider
 } from '@material-ui/core';
 
-import { ComponentLogs } from "../lib/Component";
+import { ComponentLogs } from "../../src/runtime/Component";
 import { PropertyEditors, PropertyData, PropertyType } from "./PropertyEditors";
 export { PropertyData, PropertyType };
 

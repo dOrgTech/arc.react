@@ -30,6 +30,7 @@ class DAO extends Component<Props, Entity, Data, Code>
   }
 
   gatherInferredProps(): React.ReactNode {
+    console.log("DAO.GatherInferredProps");
     return (<></>);
   }
 

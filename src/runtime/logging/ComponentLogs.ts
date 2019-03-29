@@ -5,7 +5,7 @@ import {
   CodeLogs,
   ProseLogs
 } from "./types";
-import { ComponentConfig } from "../config/ComponentConfig";
+import { LoggingConfig } from "../configs/LoggingConfig";
 
 // The goal of this class is to:
 // 1. preserve memory through lazy allocation
@@ -64,47 +64,47 @@ export class ComponentLogs {
   private _code?: CodeLogs;
   private _prose?: ProseLogs;
 
-  public reactRendered(config: ComponentConfig) {
+  public reactRendered(config: LoggingConfig) {
     if (!config.logging) return;
     this.getReact.rendered();
   }
 
-  public entityCreated(config: ComponentConfig) {
+  public entityCreated(config: LoggingConfig) {
     if (!config.logging) return;
     this.getEntity.created();
   }
 
-  public entityCreationFailed(config: ComponentConfig, error: Error) {
+  public entityCreationFailed(config: LoggingConfig, error: Error) {
     if (!config.logging) return;
     this.getEntity.creationFailed(error);
   }
 
-  public dataQueryStarted(config: ComponentConfig) {
+  public dataQueryStarted(config: LoggingConfig) {
     if (!config.logging) return;
     this.getData.queryStarted();
   }
 
-  public dataQueryReceivedData(config: ComponentConfig) {
+  public dataQueryReceivedData(config: LoggingConfig) {
     if (!config.logging) return;
     this.getData.queryReceivedData();
   }
 
-  public dataQueryCompleted(config: ComponentConfig) {
+  public dataQueryCompleted(config: LoggingConfig) {
     if (!config.logging) return;
     this.getData.queryCompleted();
   }
 
-  public dataQueryFailed(config: ComponentConfig, error: Error) {
+  public dataQueryFailed(config: LoggingConfig, error: Error) {
     if (!config.logging) return;
     this.getData.queryFailed(error);
   }
 
-  public codeCreationFailed(config: ComponentConfig, error: Error) {
+  public codeCreationFailed(config: LoggingConfig, error: Error) {
     if (!config.logging) return;
     this.getCode.creationFailed(error);
   }
 
-  public proseCreationFailed(config: ComponentConfig, error: Error) {
+  public proseCreationFailed(config: LoggingConfig, error: Error) {
     if (!config.logging) return;
     this.getProse.creationFailed(error);
   }
