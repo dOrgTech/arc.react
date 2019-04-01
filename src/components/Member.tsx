@@ -1,7 +1,18 @@
 import * as React from "react";
-import { Component, ComponentLogs } from "../runtime/Component";
-import Arc, { Member as Entity, IMemberState as Data } from "@daostack/client";
-import DAO, { DAOEntity } from "./DAO";
+import {
+  Component,
+  ComponentLogs,
+  BaseProps,
+  Logging
+} from "../runtime";
+import {
+  DAO,
+  DAOEntity
+} from "./";
+import {
+  Member as Entity,
+  IMemberState as Data
+} from "@daostack/client";
 
 type Code = {
   // maybe wrap this better so the contracts
@@ -14,37 +25,70 @@ const dataConsumer   = Component.DataContext<Data>().Consumer;
 const codeConsumer   = Component.CodeContext<Code>().Consumer;
 const logsConsumer   = Component.LogsContext().Consumer;
 
-interface Props {
+interface RequiredProps {
   // Address of the member
   address: string;
+}
 
+interface InferredProps {
   // The DAO this member is apart of
   dao?: DAOEntity;
 }
 
-class Member extends Component<Props, Entity, Data, Code>
+type Props = RequiredProps & InferredProps & BaseProps;
+
+class DAOMember extends Component<Props, Entity, Data, Code>
 {
   // TODO: Arc could be a contextualized prop on the DAO instead of in each component
   // Just make "Arc" a component?
-  createEntity(props: Props, arc: Arc): Entity {
+  createEntity(): Entity {
+    const { dao, address } = this.props;
+
     // TODO: better error handling? maybe have another abstract function
     // that's a predicate that lets you know if entity can be created w/
     // provided data & gives user friendly sanitization errors?
-    if (props.dao === undefined) {
-      throw Error("Missing DAO prop");
+    if (!dao) {
+      throw Error("DAO Missing: Please provide this field as a prop, or use the inference component.");
     }
-
-    return props.dao.member(props.address);
+    return dao.member(address);
   }
 
-  gatherInferredProps(): React.ReactNode {
-    if (this.props.dao === undefined) {
-      return (
-        <DAO.Entity>{entity => () => this.setProp("dao", entity)}</DAO.Entity>
-      );
-    } else {
-      return (<></>);
-    }
+  public static get Entity() {
+    return entityConsumer;
+  }
+
+  public static get Data() {
+    return dataConsumer;
+  }
+
+  public static get Code() {
+    return codeConsumer;
+  }
+
+  public static get Logs() {
+    return logsConsumer;
+  }
+}
+
+class Member extends React.Component<RequiredProps>
+{
+  render() {
+    const { address, children } = this.props;
+
+    // TODO: doing Logging.Config everywhere is trash... just make it global?
+    return (
+      <Logging.Config>
+      {config => (
+        <DAO.Entity>
+        {entity => (
+          <DAOMember address={address} dao={entity} loggingConfig={config}>
+          {children}
+          </DAOMember>
+        )}
+        </DAO.Entity>
+      )}
+      </Logging.Config>
+    )
   }
 
   public static get Entity() {
@@ -67,6 +111,7 @@ class Member extends Component<Props, Entity, Data, Code>
 export default Member;
 
 export {
+  DAOMember,
   Member,
   Props  as MemberProps,
   Entity as MemberEntity,

@@ -1,18 +1,15 @@
 import * as React from "react";
+import * as R from "ramda";
 import { Context } from "react";
 import memoize from "memoize-one";
 import { Subscription } from "rxjs";
 import { IStateful } from "@daostack/client/src/types"
 
-import { BaseComponent, BaseState } from "./BaseComponent";
+import { BaseProps } from "./BaseComponent";
 import { ComponentLogs } from "./logging/ComponentLogs";
-export { ComponentLogs };
-import { Logging } from "./Logging";
 import { LoggingConfig, DefaultLoggingConfig } from "./configs/LoggingConfig";
-import { Protocol } from "./Protocol";
-import { ProtocolConfig } from "./configs/ProtocolConfig";
 
-interface State<Data, Code> extends BaseState {
+interface State<Data, Code> {
   // Context Feeds
   data?: Data;
   code?: Code;
@@ -20,15 +17,14 @@ interface State<Data, Code> extends BaseState {
 
   // Diagnostics for the component
   logs: ComponentLogs;
-  loggingConfig: LoggingConfig;
 }
 
 export abstract class Component<
-  Props,
+  Props extends BaseProps,
   Entity extends IStateful<Data>,
   Data,
   Code
-> extends BaseComponent<
+> extends React.Component<
     Props, State<Data, Code>
   >
 {
@@ -36,7 +32,7 @@ export abstract class Component<
   // to the component's code, prose, and data. For example: DAO, Proposal, Member.
   // Note: This entity is not within the component's state, but instead a memoized
   // property that will be recreated whenever necessary. See `private entity` below...
-  protected abstract createEntity(props: Props, protocol: ProtocolConfig): Entity;
+  protected abstract createEntity(): Entity;
 
   // See here for more information on the React.Context pattern:
   // https://reactjs.org/docs/context.html
@@ -76,9 +72,7 @@ export abstract class Component<
     super(props);
 
     this.state = {
-      logs: new ComponentLogs(),
-      loggingConfig: DefaultLoggingConfig,
-      inferredProps: {}
+      logs: new ComponentLogs()
     };
 
     this.onQueryData = this.onQueryData.bind(this);
@@ -93,49 +87,24 @@ export abstract class Component<
     const LogsProvider   = Component.LogsContext().Provider;
 
     const children = this.props.children;
-    const { data, code, protocolConfig, logs, loggingConfig } = this.state;
-
-    // merge our component inferred props into the normal props
-    const props = this.mergeInferredProps();
+    const { data, code, logs } = this.state;
 
     // create & fetch the entity
     // TODO: this should throw errors. Upon first error, logging marks "loading started"
     // then when first success is seen, record that time too for timings
-    const entity = this.entity(props, protocolConfig)
+    const entity = this.entity(this.props)
 
-    logs.reactRendered(loggingConfig);
+    logs.reactRendered(this.LoggingConfig);
 
-    // TODO: move this to the prop passing pattern (required props, inferred props)(DAOMember, Member?)
     return (
       <>
-      <Protocol.Config>
-        {config => {
-          console.log(`Protocol.Config ${config}`);
-          if (config && config !== protocolConfig) {
-            console.log("mergeState(protocolConfig)");
-            this.mergeState({ protocolConfig: config });
-          }
-          return (<></>);
-        }}
-      </Protocol.Config>
-      <Logging.Config>
-        {config => {
-          console.log(`Logging.Config ${config}`);
-          if (config && config !== loggingConfig) {
-            console.log("mergeState(loggingConfig)");
-            this.mergeState({ loggingConfig : config });
-          }
-          return (<></>);
-        }}
-      </Logging.Config>
-      {this.gatherInferredProps()}
       <EntityProvider value={entity}>
       <DataProvider value={data}>
       <CodeProvider value={code}>
       <LogsProvider value={logs}>
       {typeof children === "function"
       ? children(entity, data, code, logs)
-      : {children}}
+      : <>{children}</>}
       </LogsProvider>
       </CodeProvider>
       </DataProvider>
@@ -151,22 +120,17 @@ export abstract class Component<
     }
   }
 
-  private createEntityWithProps(props: Props, protocol: ProtocolConfig | undefined): Entity | undefined {
-    const { logs, loggingConfig } = this.state;
+  private createEntityWithProps(props: Props): Entity | undefined {
+    const { logs } = this.state;
 
-    if (!protocol) {
-      // TODO: logs.protocolConfigMissing();
-      return undefined;
-    }
-
-    logs.entityCreated(loggingConfig);
+    logs.entityCreated(this.LoggingConfig);
 
     this.clearPrevState();
 
     try {
-      const entity = this.createEntity(props, protocol);
+      const entity = this.createEntity();
 
-      logs.dataQueryStarted(loggingConfig);
+      logs.dataQueryStarted(this.LoggingConfig);
 
       // subscribe to this entity's state changes
       this._subscription = entity.state().subscribe(
@@ -178,7 +142,7 @@ export abstract class Component<
       // TODO: create code + prose
       return entity;
     } catch (error) {
-      logs.entityCreationFailed(loggingConfig, error);
+      logs.entityCreationFailed(this.LoggingConfig, error);
       return undefined;
     }
   }
@@ -192,9 +156,9 @@ export abstract class Component<
   }
 
   private onQueryData(data: Data) {
-    const { logs, loggingConfig } = this.state;
+    const { logs } = this.state;
 
-    logs.dataQueryReceivedData(loggingConfig);
+    logs.dataQueryReceivedData(this.LoggingConfig);
 
     this.mergeState({
       data: data
@@ -202,12 +166,27 @@ export abstract class Component<
   }
 
   private onQueryError(error: Error) {
-    const { logs, loggingConfig } = this.state;
-    logs.dataQueryFailed(loggingConfig, error);
+    const { logs } = this.state;
+    logs.dataQueryFailed(this.LoggingConfig, error);
   }
 
   private onQueryComplete() {
-    const { logs, loggingConfig } = this.state;
-    logs.dataQueryCompleted(loggingConfig);
+    const { logs } = this.state;
+    logs.dataQueryCompleted(this.LoggingConfig);
+  }
+
+  private mergeState(merge: any, callback: (()=>void) | undefined = undefined) {
+    this.setState(
+      R.mergeDeepRight(this.state, merge),
+      callback
+    );
+  }
+
+  private get LoggingConfig(): LoggingConfig {
+    if (this.props.loggingConfig) {
+      return this.props.loggingConfig as any;
+    } else {
+      return DefaultLoggingConfig;
+    }
   }
 }

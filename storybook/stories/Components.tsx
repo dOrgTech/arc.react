@@ -18,8 +18,10 @@ export default () =>
     .add("DAO", () => {
       return (
         <ComponentView
-          name={ "DAO" }
-          Component={ DAO }
+          name={"DAO"}
+          Component={DAO}
+          Protocol={Arc}
+          config={DefaultArcConfig}
           // TODO: load these addresses from the graphnode
           propEditors={[
             {

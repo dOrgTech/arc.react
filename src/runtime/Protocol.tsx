@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Context } from "react";
 import { ProtocolConfig } from "./configs/ProtocolConfig";
+export { ProtocolConfig };
 
 interface Props<Config extends ProtocolConfig> {
   config: Config

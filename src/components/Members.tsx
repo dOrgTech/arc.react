@@ -1,50 +1,71 @@
 import * as React from "react";
+import { Observable } from "rxjs";
 import {
   CEntity,
   CProps,
-  ComponentList
-} from "../runtime/ComponentList";
-import { Member } from "./Member";
-import DAO, { DAOEntity } from "./DAO";
-import Arc from "@daostack/client";
-import { Observable } from "rxjs";
+  ComponentList,
+  BaseProps,
+  Logging
+} from "../runtime";
+import {
+  DAO,
+  DAOEntity,
+  DAOMember
+} from "./";
 
-interface Props {
+interface RequiredProps { }
+
+interface InferredProps {
   dao?: DAOEntity;
 }
 
-class Members extends ComponentList<Props, Member>
+type Props = RequiredProps & InferredProps & BaseProps;
+
+class DAOMembers extends ComponentList<Props, DAOMember>
 {
-  createObservableEntities(props: Props, arc: Arc): Observable<CEntity<Member>[]> {
-    // TODO: better error handling
-    if (props.dao === undefined) {
-      throw Error("Missing DAO prop");
+  createObservableEntities(): Observable<CEntity<DAOMember>[]> {
+    const { dao } = this.props;
+    // TODO: better error handling?
+    if (!dao) {
+      throw Error("DAO Entity Missing: Please provide this field as a props, or use the inference component.");
     }
-
-    return props.dao.members();
+    return dao.members();
   }
 
-  gatherInferredProps(): React.ReactNode {
-    if (this.props.dao === undefined) {
-      return (
-        <DAO.Entity>{entity => () => this.setProp("dao", entity)}</DAO.Entity>
-      );
-    } else {
-      return (<></>);
-    }
-  }
-
-  renderComponent(entity: CEntity<Member>, children: any): React.ComponentElement<CProps<Member>, any> {
+  renderComponent(entity: CEntity<DAOMember>, children: any): React.ComponentElement<CProps<DAOMember>, any> {
+    const { dao, loggingConfig } = this.props;
     return (
-      <Member address={entity.address} dao={this.props.dao}>
+      <DAOMember address={entity.address} dao={dao} loggingConfig={loggingConfig}>
         {children}
-      </Member>
+      </DAOMember>
     )
+  }
+}
+
+class Members extends React.Component<RequiredProps>
+{
+  render() {
+    const { children } = this.props;
+
+    return (
+      <Logging.Config>
+      {logging =>
+        <DAO.Entity>
+        {dao =>
+          <DAOMembers dao={dao} loggingConfig={logging}>
+          {children}
+          </DAOMembers>
+        }
+        </DAO.Entity>
+      }
+      </Logging.Config>
+    );
   }
 }
 
 export default Members;
 
 export {
+  DAOMembers,
   Members
 };

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Context } from "react";
 import { LoggingConfig } from "./configs/LoggingConfig";
+export { LoggingConfig };
 
 interface Props {
   config: LoggingConfig;

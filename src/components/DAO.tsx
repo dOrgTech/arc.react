@@ -1,6 +1,18 @@
 import * as React from "react";
-import { Component, ComponentLogs } from "../runtime/Component";
-import Arc, { DAO as Entity, IDAOState as Data } from "@daostack/client";
+import {
+  Component,
+  ComponentLogs,
+  BaseProps,
+  Logging
+} from "../runtime";
+import {
+  Arc,
+  ArcConfig
+} from "../protocol";
+import {
+  DAO as Entity,
+  IDAOState as Data
+} from "@daostack/client";
 
 // TODO: thought:
 // - base class that is constructed w/ entity
@@ -18,20 +30,64 @@ const dataConsumer   = Component.DataContext<Data>().Consumer;
 const codeConsumer   = Component.CodeContext<Code>().Consumer;
 const logsConsumer   = Component.LogsContext().Consumer;
 
-interface Props {
+interface RequiredProps {
   // Address of the DAO Avatar
   address: string;
 }
 
-class DAO extends Component<Props, Entity, Data, Code>
+interface InferredProps {
+  // TODO: should this really be optional? It makes more sense from a user perspective to have it be required
+  // Arc Instance
+  arcConfig?: ArcConfig;
+}
+
+type Props = RequiredProps & InferredProps & BaseProps;
+
+class ArcDAO extends Component<Props, Entity, Data, Code>
 {
-  createEntity(props: Props, arc: Arc): Entity {
-    return arc.dao(props.address);
+  createEntity(): Entity {
+    const { arcConfig, address } = this.props;
+    if (!arcConfig) {
+      throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
+    }
+    return arcConfig.connection.dao(address);
   }
 
-  gatherInferredProps(): React.ReactNode {
-    console.log("DAO.GatherInferredProps");
-    return (<></>);
+  public static get Entity() {
+    return entityConsumer;
+  }
+
+  public static get Data() {
+    return dataConsumer;
+  }
+
+  public static get Code() {
+    return codeConsumer;
+  }
+
+  public static get Logs() {
+    return logsConsumer;
+  }
+}
+
+class DAO extends React.Component<RequiredProps>
+{
+  render() {
+    const { address, children } = this.props;
+
+    return (
+      <Logging.Config>
+      {logging => (
+        <Arc.Config>
+        {arc => (
+          <ArcDAO address={address} arcConfig={arc} loggingConfig={logging}>
+          {children}
+          </ArcDAO>
+        )}
+        </Arc.Config>
+      )}
+      </Logging.Config>
+    )
   }
 
   public static get Entity() {
@@ -54,6 +110,7 @@ class DAO extends Component<Props, Entity, Data, Code>
 export default DAO;
 
 export {
+  ArcDAO,
   DAO,
   Props as DAOProps,
   Entity as DAOEntity,

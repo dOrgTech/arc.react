@@ -10,13 +10,15 @@ import {
   Divider
 } from '@material-ui/core';
 
-import { ComponentLogs } from "../../src/runtime/Component";
+import { ComponentLogs, ProtocolConfig } from "../../src";
 import { PropertyEditors, PropertyData, PropertyType } from "./PropertyEditors";
 export { PropertyData, PropertyType };
 
 interface Props {
   name: string;
   Component: any;
+  Protocol: any;
+  config: ProtocolConfig;
   propEditors: PropertyData[];
 }
 
@@ -39,7 +41,7 @@ export default class ComponentView extends React.Component<Props, State> {
   }
 
   public render() {
-    const { name, Component, propEditors } = this.props;
+    const { name, Component, Protocol, config, propEditors } = this.props;
 
     return (
       <>
@@ -51,58 +53,60 @@ export default class ComponentView extends React.Component<Props, State> {
         Properties
       </Typography>
       <PropertyEditors properties={propEditors} state={this.state} setState={(state) => this.setState(state)} />
-      <Component {...this.state}>
-        <Typography variant="h6" component="h6">
-          Entity
-        </Typography>
-        <Component.Entity>
-          {(entity: any | undefined) => (
-            <>
-            {entity ? (
+      <Protocol config={config}>
+        <Component {...this.state}>
+          <Typography variant="h6" component="h6">
+            Entity
+          </Typography>
+          <Component.Entity>
+            {(entity: any | undefined) => (
               <>
-              {objectInspector(entity, `${name}.Entity`, "Entity Instance")}
+              {entity ? (
+                <>
+                {objectInspector(entity, `${name}.Entity`, "Entity Instance")}
+                </>
+              ) : (
+                <div>
+                  <CircularProgress />
+                </div>
+              )}
               </>
-            ) : (
-              <div>
-                <CircularProgress />
-              </div>
             )}
-            </>
-          )}
-        </Component.Entity>
-        <Typography variant="h6" component="h6">
-          Data
-        </Typography>
-        <Component.Data>
-          {(data: any | undefined) => (
-            <>
-            {data ? (
+          </Component.Entity>
+          <Typography variant="h6" component="h6">
+            Data
+          </Typography>
+          <Component.Data>
+            {(data: any | undefined) => (
               <>
-              {objectInspector(data, `${name}.Data`, "Semantic Data")}
+              {data ? (
+                <>
+                {objectInspector(data, `${name}.Data`, "Semantic Data")}
+                </>
+              ) : (
+                <div>
+                  <CircularProgress />
+                </div>
+              )}
               </>
-            ) : (
-              <div>
-                <CircularProgress />
-              </div>
             )}
-            </>
-          )}
-        </Component.Data>
-        <Typography variant="h6" component="h6">
-          Logs
-        </Typography>
-        <Component.Logs>
-          {(logs: ComponentLogs) => (
-            <>
-            {objectInspector(logs.react, `${name}.ReactLogs`, "React Logs")}
-            {objectInspector(logs.entity, `${name}.EntityLogs`, "Entity Logs")}
-            {objectInspector(logs.data, `${name}.DataLogs`, "Data Query Logs")}
-            {objectInspector(logs.code, `${name}.CodeLogs`, "Code Logs")}
-            {objectInspector(logs.prose, `${name}.ProseLogs`, "Prose Logs")}
-            </>
-          )}
-        </Component.Logs>
-      </Component>
+          </Component.Data>
+          <Typography variant="h6" component="h6">
+            Logs
+          </Typography>
+          <Component.Logs>
+            {(logs: ComponentLogs) => (
+              <>
+              {objectInspector(logs.react, `${name}.ReactLogs`, "React Logs")}
+              {objectInspector(logs.entity, `${name}.EntityLogs`, "Entity Logs")}
+              {objectInspector(logs.data, `${name}.DataLogs`, "Data Query Logs")}
+              {objectInspector(logs.code, `${name}.CodeLogs`, "Code Logs")}
+              {objectInspector(logs.prose, `${name}.ProseLogs`, "Prose Logs")}
+              </>
+            )}
+          </Component.Logs>
+        </Component>
+      </Protocol>
       </>
     )
   }

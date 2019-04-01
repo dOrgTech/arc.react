@@ -1,36 +1,74 @@
 import * as React from "react";
+import { Observable } from "rxjs";
 import {
   CEntity,
   CProps,
-  ComponentList
-} from "../runtime/ComponentList";
-import { DAO } from "./DAO";
-import Arc from "@daostack/client";
-import { Observable } from "rxjs";
+  ComponentList,
+  BaseProps,
+  Logging
+} from "../runtime";
+import {
+  Arc,
+  ArcConfig
+} from "../protocol";
+import {
+  ArcDAO
+} from "./";
 
-interface Props { }
+interface RequiredProps { }
 
-class DAOs extends ComponentList<Props, DAO>
+interface InferredProps {
+  // Arc Instance
+  arcConfig?: ArcConfig;
+}
+
+type Props = RequiredProps & InferredProps & BaseProps;
+
+class ArcDAOs extends ComponentList<Props, ArcDAO>
 {
-  createObservableEntities(props: Props, arc: Arc): Observable<CEntity<DAO>[]> {
-    return arc.daos();
+  createObservableEntities(): Observable<CEntity<ArcDAO>[]> {
+    const { arcConfig } = this.props;
+    if (!arcConfig) {
+      throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
+    }
+    return arcConfig.connection.daos();
   }
 
-  gatherInferredProps(): React.ReactNode {
-    return (<></>);
-  }
+  renderComponent(entity: CEntity<ArcDAO>, children: any): React.ComponentElement<CProps<ArcDAO>, any> {
+    const { arcConfig } = this.props;
 
-  renderComponent(entity: CEntity<DAO>, children: any): React.ComponentElement<CProps<DAO>, any> {
     return (
-      <DAO address={entity.address}>
+      <ArcDAO address={entity.address} arcConfig={arcConfig}>
         {children}
-      </DAO>
+      </ArcDAO>
     );
+  }
+}
+
+class DAOs extends React.Component<RequiredProps>
+{
+  render() {
+    const { children } = this.props;
+
+    return (
+      <Logging.Config>
+      {logging =>
+        <Arc.Config>
+        {arc =>
+          <ArcDAOs arcConfig={arc} loggingConfig={logging}>
+            {children}
+          </ArcDAOs>
+        }
+        </Arc.Config>
+      }
+      </Logging.Config>
+    )
   }
 }
 
 export default DAOs;
 
 export {
+  ArcDAOs,
   DAOs
 };
