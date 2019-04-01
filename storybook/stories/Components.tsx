@@ -35,24 +35,26 @@ export default () =>
     })
     .add("DAO Test", () => (
       <>
-      <DAO address={"0xcB4e66eCA663FDB61818d52A152601cA6aFEf74F"}>
-        <DAO.Data>
+      <Arc config={DefaultArcConfig}>
+        <DAO address={"0xcB4e66eCA663FDB61818d52A152601cA6aFEf74F"}>
+          <DAO.Data>
           {(data: DAOData | undefined) => (
             data ?
             <div>{data.name}</div>
             : <div>loading...</div>
           )}
-        </DAO.Data>
-        <Member address="0xcb4e66eca663fdb61818d52a152601ca6afef74f">
-          <Member.Data>
+          </DAO.Data>
+          <Member address="0xcb4e66eca663fdb61818d52a152601ca6afef74f">
+            <Member.Data>
             {(data: MemberData | undefined) => (
               data ?
               <div>{data.reputation.toString()}</div>
               : <div>loading...</div>
             )}
-          </Member.Data>
-        </Member>
-      </DAO>
+            </Member.Data>
+          </Member>
+        </DAO>
+      </Arc>
       </>
     ))
     .add("DAO Test2", () => (

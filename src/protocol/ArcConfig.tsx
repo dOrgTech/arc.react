@@ -19,6 +19,10 @@ export class ArcConfig extends ProtocolConfig
   }
 }
 
+// TODO: export different predefined configs for:
+// - local hosts
+// - test networks
+// - main-net
 export const DefaultArcConfig = new ArcConfig(
   "http://127.0.0.1:8545",
   "http://127.0.0.1:8000/subgraphs/name/daostack",
