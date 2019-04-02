@@ -16,7 +16,7 @@ import {
 interface RequiredProps { }
 
 interface InferredProps {
-  dao?: DAOEntity;
+  dao: DAOEntity | undefined;
 }
 
 type Props = RequiredProps & InferredProps & BaseProps;

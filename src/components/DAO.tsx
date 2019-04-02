@@ -37,7 +37,7 @@ interface RequiredProps {
 interface InferredProps {
   // TODO: should this really be optional? It makes more sense from a user perspective to have it be required
   // Arc Instance
-  arcConfig?: ArcConfig;
+  arcConfig: ArcConfig | undefined;
 }
 
 type Props = RequiredProps & InferredProps & BaseProps;

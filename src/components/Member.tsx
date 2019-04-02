@@ -32,7 +32,7 @@ interface RequiredProps {
 
 interface InferredProps {
   // The DAO this member is apart of
-  dao?: DAOEntity;
+  dao: DAOEntity | undefined;
 }
 
 type Props = RequiredProps & InferredProps & BaseProps;

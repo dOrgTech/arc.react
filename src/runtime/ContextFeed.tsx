@@ -5,4 +5,4 @@
 //   </DAO.Data>
 // </DAO>
 
-// TODO: change prop?: type to prop: type | undefined
+// TODO: get rid of logging config context

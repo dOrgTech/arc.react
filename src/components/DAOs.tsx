@@ -19,7 +19,7 @@ interface RequiredProps { }
 
 interface InferredProps {
   // Arc Instance
-  arcConfig?: ArcConfig;
+  arcConfig: ArcConfig | undefined;
 }
 
 type Props = RequiredProps & InferredProps & BaseProps;
