@@ -2,29 +2,27 @@ import * as React from "react";
 import { Context } from "react";
 import memoize from "memoize-one";
 import { Subscription } from "rxjs";
-import * as R from "ramda";
-
-import { ComponentLogs } from "../lib/logging/ComponentLogs";
-export { ComponentLogs };
-
-// Note: Web3Bindings aims to automate this protocol API layer
-import Arc from "@daostack/client";
-import arc from "../lib/integrations/arc";
 import { IStateful } from "@daostack/client/src/types"
 
+import { BaseProps, BaseComponent } from "./BaseComponent";
+import { ComponentLogs } from "./logging/ComponentLogs";
+
 interface State<Data, Code> {
+  // Context Feeds
   data?: Data;
   code?: Code;
   // TODO: Prose
+
+  // Diagnostics for the component
   logs: ComponentLogs;
 }
 
 export abstract class Component<
-  Props,
+  Props extends BaseProps,
   Entity extends IStateful<Data>,
   Data,
   Code
-> extends React.Component<
+> extends BaseComponent<
     Props, State<Data, Code>
   >
 {
@@ -32,7 +30,7 @@ export abstract class Component<
   // to the component's code, prose, and data. For example: DAO, Proposal, Member.
   // Note: This entity is not within the component's state, but instead a memoized
   // property that will be recreated whenever necessary. See `private entity` below...
-  protected abstract createEntity(props: Props, arc: Arc): Entity;
+  protected abstract createEntity(): Entity;
 
   // See here for more information on the React.Context pattern:
   // https://reactjs.org/docs/context.html
@@ -54,11 +52,9 @@ export abstract class Component<
 
   // Untemplatized static context objects
   private static _EntityContext = React.createContext({ });
-  private static _DataContext = React.createContext({ });
-  private static _CodeContext = React.createContext({ });
-
-  // Logging context
-  private static _LogsContext = React.createContext({ });
+  private static _DataContext   = React.createContext({ });
+  private static _CodeContext   = React.createContext({ });
+  private static _LogsContext   = React.createContext({ });
 
   private entity = memoize(
     // This will only run when the function's arguments have changed :D
@@ -84,36 +80,35 @@ export abstract class Component<
 
   public render() {
     const EntityProvider = Component.EntityContext<Entity>().Provider as any;
-    const DataProvider = Component.DataContext<Data>().Provider as any;
-    const CodeProvider = Component.CodeContext<Code>().Provider as any;
-    const LogsProvider = Component.LogsContext().Provider;
+    const DataProvider   = Component.DataContext<Data>().Provider as any;
+    const CodeProvider   = Component.CodeContext<Code>().Provider as any;
+    const LogsProvider   = Component.LogsContext().Provider;
 
-    const { children } = this.props;
-    const entity = this.entity(this.props, arc);
+    const children = this.props.children;
     const { data, code, logs } = this.state;
+
+    // create & fetch the entity
+    // TODO: this should throw errors. Upon first error, logging marks "loading started"
+    // then when first success is seen, record that time too for timings
+    const entity = this.entity(this.props)
 
     logs.reactRendered();
 
-    if (typeof children === "function") {
-      return children(entity, data, code, logs);
-    } else {
-      return (
-        <EntityProvider value={entity}>
-        <DataProvider value={data}>
-        <CodeProvider value={code}>
-        <LogsProvider value={logs}>
-          {children}
-        </LogsProvider>
-        </CodeProvider>
-        </DataProvider>
-        </EntityProvider>
-      )
-    }
-  }
-
-  public componentWillMount() {
-    // prefetch the entity
-    this.entity(this.props, arc);
+    return (
+      <>
+      <EntityProvider value={entity}>
+      <DataProvider value={data}>
+      <CodeProvider value={code}>
+      <LogsProvider value={logs}>
+      {typeof children === "function"
+      ? children(entity, data, code, logs)
+      : <>{children}</>}
+      </LogsProvider>
+      </CodeProvider>
+      </DataProvider>
+      </EntityProvider>
+      </>
+    )
   }
 
   public componentWillUnmount() {
@@ -123,7 +118,7 @@ export abstract class Component<
     }
   }
 
-  private createEntityWithProps(props: Props, arc: Arc): Entity | undefined {
+  private createEntityWithProps(props: Props): Entity | undefined {
     const { logs } = this.state;
 
     logs.entityCreated();
@@ -131,7 +126,7 @@ export abstract class Component<
     this.clearPrevState();
 
     try {
-      const entity = this.createEntity(props, arc);
+      const entity = this.createEntity();
 
       logs.dataQueryStarted();
 
@@ -159,7 +154,9 @@ export abstract class Component<
   }
 
   private onQueryData(data: Data) {
-    this.state.logs.dataQueryReceivedData();
+    const { logs } = this.state;
+
+    logs.dataQueryReceivedData();
 
     this.mergeState({
       data: data
@@ -167,16 +164,12 @@ export abstract class Component<
   }
 
   private onQueryError(error: Error) {
-    this.state.logs.dataQueryFailed(error);
+    const { logs } = this.state;
+    logs.dataQueryFailed(error);
   }
 
   private onQueryComplete() {
-    this.state.logs.dataQueryCompleted();
-  }
-
-  private mergeState(merge: any) {
-    this.setState(
-      R.mergeDeepRight(this.state, merge)
-    );
+    const { logs } = this.state;
+    logs.dataQueryCompleted();
   }
 }

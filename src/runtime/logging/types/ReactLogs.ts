@@ -14,3 +14,4 @@ export class ReactLogs {
     ++this._renderCount;
   }
 }
+

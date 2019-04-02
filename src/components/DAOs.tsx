@@ -1,32 +1,69 @@
 import * as React from "react";
+import { Observable } from "rxjs";
 import {
   CEntity,
   CProps,
-  ComponentList
-} from "./ComponentList";
-import { DAO } from "./DAO";
-import Arc from "@daostack/client";
-import { Observable } from "rxjs";
+  ComponentList,
+  BaseProps
+} from "../runtime";
+import {
+  Arc,
+  ArcConfig
+} from "../protocol";
+import {
+  ArcDAO
+} from "./";
 
-interface Props { }
+interface RequiredProps { }
 
-class DAOs extends ComponentList<Props, DAO>
+interface InferredProps {
+  // Arc Instance
+  arcConfig: ArcConfig | undefined;
+}
+
+type Props = RequiredProps & InferredProps & BaseProps;
+
+class ArcDAOs extends ComponentList<Props, ArcDAO>
 {
-  createObservableEntities(props: Props, arc: Arc): Observable<CEntity<DAO>[]> {
-    return arc.daos();
+  createObservableEntities(): Observable<CEntity<ArcDAO>[]> {
+    const { arcConfig } = this.props;
+    if (!arcConfig) {
+      throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
+    }
+    return arcConfig.connection.daos();
   }
 
-  renderComponent(entity: CEntity<DAO>, children: any): React.ComponentElement<CProps<DAO>, any> {
+  renderComponent(entity: CEntity<ArcDAO>, children: any): React.ComponentElement<CProps<ArcDAO>, any> {
+    const { arcConfig } = this.props;
+
     return (
-      <DAO address={entity.address}>
+      <ArcDAO address={entity.address} arcConfig={arcConfig}>
         {children}
-      </DAO>
+      </ArcDAO>
     );
+  }
+}
+
+class DAOs extends React.Component<RequiredProps>
+{
+  render() {
+    const { children } = this.props;
+
+    return (
+      <Arc.Config>
+      {arc =>
+        <ArcDAOs arcConfig={arc}>
+          {children}
+        </ArcDAOs>
+      }
+      </Arc.Config>
+    )
   }
 }
 
 export default DAOs;
 
 export {
+  ArcDAOs,
   DAOs
-}
+};

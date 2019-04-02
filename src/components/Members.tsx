@@ -1,52 +1,66 @@
 import * as React from "react";
+import { Observable } from "rxjs";
 import {
   CEntity,
   CProps,
-  ComponentList
-} from "./ComponentList";
-import { DAOMember } from "./Member";
-import DAO, { DAOEntity } from "./DAO";
-import Arc from "@daostack/client";
-import { Observable } from "rxjs";
+  ComponentList,
+  BaseProps
+} from "../runtime";
+import {
+  DAO,
+  DAOEntity,
+  DAOMember
+} from "./";
 
 interface RequiredProps { }
 
-interface ContextualProps {
-  dao: DAOEntity;
+interface InferredProps {
+  dao: DAOEntity | undefined;
 }
 
-type Props = RequiredProps & ContextualProps;
+type Props = RequiredProps & InferredProps & BaseProps;
 
 class DAOMembers extends ComponentList<Props, DAOMember>
 {
-  createObservableEntities(props: Props, arc: Arc): Observable<CEntity<DAOMember>[]> {
-    return props.dao.members();
+  createObservableEntities(): Observable<CEntity<DAOMember>[]> {
+    const { dao } = this.props;
+    // TODO: better error handling?
+    if (!dao) {
+      throw Error("DAO Entity Missing: Please provide this field as a props, or use the inference component.");
+    }
+    return dao.members();
   }
 
   renderComponent(entity: CEntity<DAOMember>, children: any): React.ComponentElement<CProps<DAOMember>, any> {
+    const { dao } = this.props;
     return (
-      <DAOMember address={entity.address} dao={this.props.dao}>
+      <DAOMember address={entity.address} dao={dao}>
         {children}
       </DAOMember>
     )
   }
 }
 
-const Members: React.FunctionComponent<RequiredProps> = ({ children }) => (
-  <DAO.Entity>
-    {(entity: DAOEntity | undefined) => (
-      entity ?
-      <DAOMembers dao={entity}>
+class Members extends React.Component<RequiredProps>
+{
+  render() {
+    const { children } = this.props;
+
+    return (
+      <DAO.Entity>
+      {dao =>
+        <DAOMembers dao={dao}>
         {children}
-      </DAOMembers>
-      : <div>loading...</div>
-    )}
-  </DAO.Entity>
-);
+        </DAOMembers>
+      }
+      </DAO.Entity>
+    );
+  }
+}
 
 export default Members;
 
 export {
-  Members,
-  DAOMembers
-}
+  DAOMembers,
+  Members
+};

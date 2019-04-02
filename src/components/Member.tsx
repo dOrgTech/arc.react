@@ -1,7 +1,17 @@
 import * as React from "react";
-import { Component, ComponentLogs } from "./Component";
-import Arc, { Member as Entity, IMemberState as Data } from "@daostack/client";
-import DAO, { DAOEntity } from "./DAO";
+import {
+  Component,
+  ComponentLogs,
+  BaseProps
+} from "../runtime";
+import {
+  DAO,
+  DAOEntity
+} from "./";
+import {
+  Member as Entity,
+  IMemberState as Data
+} from "@daostack/client";
 
 type Code = {
   // maybe wrap this better so the contracts
@@ -19,17 +29,27 @@ interface RequiredProps {
   address: string;
 }
 
-interface ContextualProps {
+interface InferredProps {
   // The DAO this member is apart of
-  dao: DAOEntity;
+  dao: DAOEntity | undefined;
 }
 
-type Props = RequiredProps & ContextualProps;
+type Props = RequiredProps & InferredProps & BaseProps;
 
 class DAOMember extends Component<Props, Entity, Data, Code>
 {
-  createEntity(props: Props, arc: Arc): Entity {
-    return props.dao.member(props.address);
+  // TODO: Arc could be a contextualized prop on the DAO instead of in each component
+  // Just make "Arc" a component?
+  createEntity(): Entity {
+    const { dao, address } = this.props;
+
+    // TODO: better error handling? maybe have another abstract function
+    // that's a predicate that lets you know if entity can be created w/
+    // provided data & gives user friendly sanitization errors?
+    if (!dao) {
+      throw Error("DAO Missing: Please provide this field as a prop, or use the inference component.");
+    }
+    return dao.member(address);
   }
 
   public static get Entity() {
@@ -51,6 +71,21 @@ class DAOMember extends Component<Props, Entity, Data, Code>
 
 class Member extends React.Component<RequiredProps>
 {
+  render() {
+    const { address, children } = this.props;
+
+    // TODO: doing Logging.Config everywhere is trash... just make it global?
+    return (
+      <DAO.Entity>
+      {entity => (
+        <DAOMember address={address} dao={entity}>
+        {children}
+        </DAOMember>
+      )}
+      </DAO.Entity>
+    )
+  }
+
   public static get Entity() {
     return entityConsumer;
   }
@@ -66,29 +101,13 @@ class Member extends React.Component<RequiredProps>
   public static get Logs() {
     return logsConsumer;
   }
-
-  render() {
-    const { address, children } = this.props;
-
-    return (
-      <DAO.Entity>
-        {(entity: DAOEntity | undefined) => (
-          entity ?
-          <DAOMember dao={entity} address={address}>
-            {children}
-          </DAOMember>
-          : <div>loading...</div>
-        )}
-      </DAO.Entity>
-    );
-  }
 }
 
 export default Member;
 
 export {
-  Member,
   DAOMember,
+  Member,
   Props  as MemberProps,
   Entity as MemberEntity,
   Data   as MemberData,

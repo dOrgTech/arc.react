@@ -4,14 +4,13 @@ import {
   DataLogs,
   CodeLogs,
   ProseLogs
-} from "./logs";
-import LoggingConfig from "./index";
+} from "./types";
+import { LoggingConfig } from "./LoggingConfig";
 
-// TODO: redo the logging code w/ mixins to eliminate the code depulication...
-
-// The goal of this class is to delay creation of the logs
-// to help with memory effeciency. Don't take up room if
-// nothing is being logged or if logging is disabled.
+// The goal of this class is to:
+// 1. preserve memory through lazy allocation
+// 2. ensure high data integrity by guarding
+//    log data at the language level.
 export class ComponentLogs {
 
   public get react(): ReactLogs | undefined {
@@ -66,47 +65,47 @@ export class ComponentLogs {
   private _prose?: ProseLogs;
 
   public reactRendered() {
-    if (!LoggingConfig.enabled) return;
+    if (!LoggingConfig.Current.enabled) return;
     this.getReact.rendered();
   }
 
   public entityCreated() {
-    if (!LoggingConfig.enabled) return;
+    if (!LoggingConfig.Current.enabled) return;
     this.getEntity.created();
   }
 
   public entityCreationFailed(error: Error) {
-    if (!LoggingConfig.enabled) return;
+    if (!LoggingConfig.Current.enabled) return;
     this.getEntity.creationFailed(error);
   }
 
   public dataQueryStarted() {
-    if (!LoggingConfig.enabled) return;
+    if (!LoggingConfig.Current.enabled) return;
     this.getData.queryStarted();
   }
 
   public dataQueryReceivedData() {
-    if (!LoggingConfig.enabled) return;
+    if (!LoggingConfig.Current.enabled) return;
     this.getData.queryReceivedData();
   }
 
   public dataQueryCompleted() {
-    if (!LoggingConfig.enabled) return;
+    if (!LoggingConfig.Current.enabled) return;
     this.getData.queryCompleted();
   }
 
   public dataQueryFailed(error: Error) {
-    if (!LoggingConfig.enabled) return;
+    if (!LoggingConfig.Current.enabled) return;
     this.getData.queryFailed(error);
   }
 
   public codeCreationFailed(error: Error) {
-    if (!LoggingConfig.enabled) return;
+    if (!LoggingConfig.Current.enabled) return;
     this.getCode.creationFailed(error);
   }
 
   public proseCreationFailed(error: Error) {
-    if (!LoggingConfig.enabled) return;
+    if (!LoggingConfig.Current.enabled) return;
     this.getProse.creationFailed(error);
   }
 }

@@ -1,13 +1,10 @@
 import * as React from "react";
 import memoize from "memoize-one";
 import { Observable, Subscription } from "rxjs";
-import * as R from "ramda";
 
-import Arc from "@daostack/client";
-import arc from "../lib/integrations/arc";
-
+import { BaseProps, BaseComponent } from "./BaseComponent";
 import { Component } from "./Component";
-import { ComponentListLogs } from "../lib/logging/ComponentListLogs";
+import { ComponentListLogs } from "./logging/ComponentListLogs";
 export { ComponentListLogs };
 
 // Extract the derived component's template parameters
@@ -18,16 +15,26 @@ export type CCode<Comp>   = Comp extends Component<infer Props, infer Entity, in
 
 interface State<Entity> {
   entities: Entity[];
+
+  // Diagnostics for the component
+  // TODO: logs aren't consumable, expose through a context?
   logs: ComponentListLogs
 }
 
 export abstract class ComponentList<
-  Props,
-  Comp extends Component<CProps<Comp>, CEntity<Comp>, CData<Comp>, CCode<Comp>>,
+  Props extends BaseProps,
+  Comp extends Component<
+    CProps<Comp>,
+    CEntity<Comp>,
+    CData<Comp>,
+    CCode<Comp>
+  >,
   Entity = CEntity<Comp>
-> extends React.Component<Props, State<Entity>>
+> extends BaseComponent<
+    Props, State<Entity>
+  >
 {
-  protected abstract createObservableEntities(props: Props, arc: Arc): Observable<Entity[]>;
+  protected abstract createObservableEntities(): Observable<Entity[]>;
   protected abstract renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Comp>, any>;
 
   private observableEntities = memoize(
@@ -54,29 +61,27 @@ export abstract class ComponentList<
   }
 
   public render() {
-    const { children } = this.props;
-    this.observableEntities(this.props, arc);
+    const children = this.props.children;
     const { entities, logs } = this.state;
+    this.observableEntities(this.props);
 
     logs.reactRendered();
 
     if (typeof children === "function") {
       return children(entities);
     } else {
-      // TODO: better "loading..." handler (overridable)
-      return (
-        entities ? entities.map(entity => (
-          <>
-          {this.renderComponent(entity, children)}
-          </>
-        )) : <div>loading...</div>
-      );
+      // TODO: better loading handler
+      return entities ? entities.map(entity => (
+        <>
+        {this.renderComponent(entity, children)}
+        </>
+      )) : <div>loading...</div>
     }
   }
 
   public componentWillMount() {
     // prefetch the entities
-    this.observableEntities(this.props, arc);
+    this.observableEntities(this.props);
   }
 
   public componentWillUnmount() {
@@ -86,7 +91,7 @@ export abstract class ComponentList<
     }
   }
 
-  private createObservableEntitiesWithProps(props: Props, arc: Arc): Observable<Entity[]> | undefined {
+  private createObservableEntitiesWithProps(props: Props): Observable<Entity[]> | undefined {
     const { logs } = this.state;
 
     logs.entityCreated();
@@ -94,11 +99,11 @@ export abstract class ComponentList<
     this.clearPrevState();
 
     try {
-      const entities = this.createObservableEntities(props, arc);
+      const entities = this.createObservableEntities();
 
       logs.dataQueryStarted();
 
-      entities.subscribe(
+      this._subscription = entities.subscribe(
         this.onQueryEntities,
         this.onQueryError,
         this.onQueryComplete
@@ -118,24 +123,22 @@ export abstract class ComponentList<
   }
 
   private onQueryEntities(entities: Entity[]) {
-    this.state.logs.dataQueryReceivedData();
+    const { logs } = this.state;
+
+    logs.dataQueryReceivedData();
 
     this.mergeState({
       entities: entities
-    })
+    });
   }
 
   private onQueryError(error: Error) {
-    this.state.logs.dataQueryCompleted();
+    const { logs } = this.state;
+    logs.dataQueryFailed(error);
   }
 
   private onQueryComplete() {
-    this.state.logs.dataQueryCompleted();
-  }
-
-  private mergeState(merge: any) {
-    this.setState(
-      R.mergeDeepRight(this.state, merge)
-    );
+    const { logs } = this.state;
+    logs.dataQueryCompleted();
   }
 }
