@@ -18,7 +18,6 @@ import {
 // - base class that is constructed w/ entity
 // - derived class that defines public "nice" methods
 // - - methods use entity to invoke transactions
-
 type Code = {
   // maybe wrap this better so the contracts
   // are underneath the higher level functions?

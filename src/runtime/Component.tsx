@@ -1,13 +1,11 @@
 import * as React from "react";
-import * as R from "ramda";
 import { Context } from "react";
 import memoize from "memoize-one";
 import { Subscription } from "rxjs";
 import { IStateful } from "@daostack/client/src/types"
 
-import { BaseProps } from "./BaseComponent";
+import { BaseProps, BaseComponent } from "./BaseComponent";
 import { ComponentLogs } from "./logging/ComponentLogs";
-import { LoggingConfig, DefaultLoggingConfig } from "./configs/LoggingConfig";
 
 interface State<Data, Code> {
   // Context Feeds
@@ -24,7 +22,7 @@ export abstract class Component<
   Entity extends IStateful<Data>,
   Data,
   Code
-> extends React.Component<
+> extends BaseComponent<
     Props, State<Data, Code>
   >
 {
@@ -173,20 +171,5 @@ export abstract class Component<
   private onQueryComplete() {
     const { logs } = this.state;
     logs.dataQueryCompleted(this.LoggingConfig);
-  }
-
-  private mergeState(merge: any, callback: (()=>void) | undefined = undefined) {
-    this.setState(
-      R.mergeDeepRight(this.state, merge),
-      callback
-    );
-  }
-
-  private get LoggingConfig(): LoggingConfig {
-    if (this.props.loggingConfig) {
-      return this.props.loggingConfig as any;
-    } else {
-      return DefaultLoggingConfig;
-    }
   }
 }
