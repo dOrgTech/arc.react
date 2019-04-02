@@ -4,8 +4,7 @@ import {
   CEntity,
   CProps,
   ComponentList,
-  BaseProps,
-  Logging
+  BaseProps
 } from "../runtime";
 import {
   DAO,
@@ -33,9 +32,9 @@ class DAOMembers extends ComponentList<Props, DAOMember>
   }
 
   renderComponent(entity: CEntity<DAOMember>, children: any): React.ComponentElement<CProps<DAOMember>, any> {
-    const { dao, loggingConfig } = this.props;
+    const { dao } = this.props;
     return (
-      <DAOMember address={entity.address} dao={dao} loggingConfig={loggingConfig}>
+      <DAOMember address={entity.address} dao={dao}>
         {children}
       </DAOMember>
     )
@@ -48,17 +47,13 @@ class Members extends React.Component<RequiredProps>
     const { children } = this.props;
 
     return (
-      <Logging.Config>
-      {logging =>
-        <DAO.Entity>
-        {dao =>
-          <DAOMembers dao={dao} loggingConfig={logging}>
-          {children}
-          </DAOMembers>
-        }
-        </DAO.Entity>
+      <DAO.Entity>
+      {dao =>
+        <DAOMembers dao={dao}>
+        {children}
+        </DAOMembers>
       }
-      </Logging.Config>
+      </DAO.Entity>
     );
   }
 }

@@ -2,8 +2,7 @@ import * as React from "react";
 import {
   Component,
   ComponentLogs,
-  BaseProps,
-  Logging
+  BaseProps
 } from "../runtime";
 import {
   Arc,
@@ -75,17 +74,13 @@ class DAO extends React.Component<RequiredProps>
     const { address, children } = this.props;
 
     return (
-      <Logging.Config>
-      {logging => (
-        <Arc.Config>
-        {arc => (
-          <ArcDAO address={address} arcConfig={arc} loggingConfig={logging}>
-          {children}
-          </ArcDAO>
-        )}
-        </Arc.Config>
+      <Arc.Config>
+      {arc => (
+        <ArcDAO address={address} arcConfig={arc}>
+        {children}
+        </ArcDAO>
       )}
-      </Logging.Config>
+      </Arc.Config>
     )
   }
 

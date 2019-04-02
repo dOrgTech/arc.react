@@ -1,13 +1,11 @@
 import * as React from "react";
-import * as R from "ramda";
 import memoize from "memoize-one";
 import { Observable, Subscription } from "rxjs";
 
-import { BaseProps } from "./BaseComponent";
+import { BaseProps, BaseComponent } from "./BaseComponent";
 import { Component } from "./Component";
 import { ComponentListLogs } from "./logging/ComponentListLogs";
 export { ComponentListLogs };
-import { LoggingConfig, DefaultLoggingConfig } from "./configs/LoggingConfig";
 
 // Extract the derived component's template parameters
 export type CProps<Comp>  = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Props : undefined;
@@ -32,7 +30,7 @@ export abstract class ComponentList<
     CCode<Comp>
   >,
   Entity = CEntity<Comp>
-> extends React.Component<
+> extends BaseComponent<
     Props, State<Entity>
   >
 {
@@ -67,7 +65,7 @@ export abstract class ComponentList<
     const { entities, logs } = this.state;
     this.observableEntities(this.props);
 
-    logs.reactRendered(this.LoggingConfig);
+    logs.reactRendered();
 
     if (typeof children === "function") {
       return children(entities);
@@ -96,14 +94,14 @@ export abstract class ComponentList<
   private createObservableEntitiesWithProps(props: Props): Observable<Entity[]> | undefined {
     const { logs } = this.state;
 
-    logs.entityCreated(this.LoggingConfig);
+    logs.entityCreated();
 
     this.clearPrevState();
 
     try {
       const entities = this.createObservableEntities();
 
-      logs.dataQueryStarted(this.LoggingConfig);
+      logs.dataQueryStarted();
 
       this._subscription = entities.subscribe(
         this.onQueryEntities,
@@ -113,7 +111,7 @@ export abstract class ComponentList<
 
       return entities;
     } catch (error) {
-      logs.entityCreationFailed(this.LoggingConfig, error);
+      logs.entityCreationFailed(error);
       return undefined;
     }
   }
@@ -127,7 +125,7 @@ export abstract class ComponentList<
   private onQueryEntities(entities: Entity[]) {
     const { logs } = this.state;
 
-    logs.dataQueryReceivedData(this.LoggingConfig);
+    logs.dataQueryReceivedData();
 
     this.mergeState({
       entities: entities
@@ -136,26 +134,11 @@ export abstract class ComponentList<
 
   private onQueryError(error: Error) {
     const { logs } = this.state;
-    logs.dataQueryFailed(this.LoggingConfig, error);
+    logs.dataQueryFailed(error);
   }
 
   private onQueryComplete() {
     const { logs } = this.state;
-    logs.dataQueryCompleted(this.LoggingConfig);
-  }
-
-  private mergeState(merge: any, callback: (()=>void) | undefined = undefined) {
-    this.setState(
-      R.mergeDeepRight(this.state, merge),
-      callback
-    );
-  }
-
-  private get LoggingConfig(): LoggingConfig {
-    if (this.props.loggingConfig) {
-      return this.props.loggingConfig as any;
-    } else {
-      return DefaultLoggingConfig;
-    }
+    logs.dataQueryCompleted();
   }
 }

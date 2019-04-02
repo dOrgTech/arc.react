@@ -4,8 +4,7 @@ import {
   CEntity,
   CProps,
   ComponentList,
-  BaseProps,
-  Logging
+  BaseProps
 } from "../runtime";
 import {
   Arc,
@@ -51,17 +50,13 @@ class DAOs extends React.Component<RequiredProps>
     const { children } = this.props;
 
     return (
-      <Logging.Config>
-      {logging =>
-        <Arc.Config>
-        {arc =>
-          <ArcDAOs arcConfig={arc} loggingConfig={logging}>
-            {children}
-          </ArcDAOs>
-        }
-        </Arc.Config>
+      <Arc.Config>
+      {arc =>
+        <ArcDAOs arcConfig={arc}>
+          {children}
+        </ArcDAOs>
       }
-      </Logging.Config>
+      </Arc.Config>
     )
   }
 }

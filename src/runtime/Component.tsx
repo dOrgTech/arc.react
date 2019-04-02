@@ -92,7 +92,7 @@ export abstract class Component<
     // then when first success is seen, record that time too for timings
     const entity = this.entity(this.props)
 
-    logs.reactRendered(this.LoggingConfig);
+    logs.reactRendered();
 
     return (
       <>
@@ -121,14 +121,14 @@ export abstract class Component<
   private createEntityWithProps(props: Props): Entity | undefined {
     const { logs } = this.state;
 
-    logs.entityCreated(this.LoggingConfig);
+    logs.entityCreated();
 
     this.clearPrevState();
 
     try {
       const entity = this.createEntity();
 
-      logs.dataQueryStarted(this.LoggingConfig);
+      logs.dataQueryStarted();
 
       // subscribe to this entity's state changes
       this._subscription = entity.state().subscribe(
@@ -140,7 +140,7 @@ export abstract class Component<
       // TODO: create code + prose
       return entity;
     } catch (error) {
-      logs.entityCreationFailed(this.LoggingConfig, error);
+      logs.entityCreationFailed(error);
       return undefined;
     }
   }
@@ -156,7 +156,7 @@ export abstract class Component<
   private onQueryData(data: Data) {
     const { logs } = this.state;
 
-    logs.dataQueryReceivedData(this.LoggingConfig);
+    logs.dataQueryReceivedData();
 
     this.mergeState({
       data: data
@@ -165,11 +165,11 @@ export abstract class Component<
 
   private onQueryError(error: Error) {
     const { logs } = this.state;
-    logs.dataQueryFailed(this.LoggingConfig, error);
+    logs.dataQueryFailed(error);
   }
 
   private onQueryComplete() {
     const { logs } = this.state;
-    logs.dataQueryCompleted(this.LoggingConfig);
+    logs.dataQueryCompleted();
   }
 }

@@ -5,7 +5,7 @@ import {
   CodeLogs,
   ProseLogs
 } from "./types";
-import { LoggingConfig } from "../configs/LoggingConfig";
+import { LoggingConfig } from "./LoggingConfig";
 
 // The goal of this class is to:
 // 1. preserve memory through lazy allocation
@@ -64,48 +64,48 @@ export class ComponentLogs {
   private _code?: CodeLogs;
   private _prose?: ProseLogs;
 
-  public reactRendered(config: LoggingConfig) {
-    if (!config.logging) return;
+  public reactRendered() {
+    if (!LoggingConfig.Current.enabled) return;
     this.getReact.rendered();
   }
 
-  public entityCreated(config: LoggingConfig) {
-    if (!config.logging) return;
+  public entityCreated() {
+    if (!LoggingConfig.Current.enabled) return;
     this.getEntity.created();
   }
 
-  public entityCreationFailed(config: LoggingConfig, error: Error) {
-    if (!config.logging) return;
+  public entityCreationFailed(error: Error) {
+    if (!LoggingConfig.Current.enabled) return;
     this.getEntity.creationFailed(error);
   }
 
-  public dataQueryStarted(config: LoggingConfig) {
-    if (!config.logging) return;
+  public dataQueryStarted() {
+    if (!LoggingConfig.Current.enabled) return;
     this.getData.queryStarted();
   }
 
-  public dataQueryReceivedData(config: LoggingConfig) {
-    if (!config.logging) return;
+  public dataQueryReceivedData() {
+    if (!LoggingConfig.Current.enabled) return;
     this.getData.queryReceivedData();
   }
 
-  public dataQueryCompleted(config: LoggingConfig) {
-    if (!config.logging) return;
+  public dataQueryCompleted() {
+    if (!LoggingConfig.Current.enabled) return;
     this.getData.queryCompleted();
   }
 
-  public dataQueryFailed(config: LoggingConfig, error: Error) {
-    if (!config.logging) return;
+  public dataQueryFailed(error: Error) {
+    if (!LoggingConfig.Current.enabled) return;
     this.getData.queryFailed(error);
   }
 
-  public codeCreationFailed(config: LoggingConfig, error: Error) {
-    if (!config.logging) return;
+  public codeCreationFailed(error: Error) {
+    if (!LoggingConfig.Current.enabled) return;
     this.getCode.creationFailed(error);
   }
 
-  public proseCreationFailed(config: LoggingConfig, error: Error) {
-    if (!config.logging) return;
+  public proseCreationFailed(error: Error) {
+    if (!LoggingConfig.Current.enabled) return;
     this.getProse.creationFailed(error);
   }
 }

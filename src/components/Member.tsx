@@ -2,8 +2,7 @@ import * as React from "react";
 import {
   Component,
   ComponentLogs,
-  BaseProps,
-  Logging
+  BaseProps
 } from "../runtime";
 import {
   DAO,
@@ -77,17 +76,13 @@ class Member extends React.Component<RequiredProps>
 
     // TODO: doing Logging.Config everywhere is trash... just make it global?
     return (
-      <Logging.Config>
-      {config => (
-        <DAO.Entity>
-        {entity => (
-          <DAOMember address={address} dao={entity} loggingConfig={config}>
-          {children}
-          </DAOMember>
-        )}
-        </DAO.Entity>
+      <DAO.Entity>
+      {entity => (
+        <DAOMember address={address} dao={entity}>
+        {children}
+        </DAOMember>
       )}
-      </Logging.Config>
+      </DAO.Entity>
     )
   }
 

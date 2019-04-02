@@ -1,4 +1,4 @@
-import { ProtocolConfig } from "../runtime/configs/ProtocolConfig";
+import { ProtocolConfig } from "../runtime/ProtocolConfig";
 import { Arc as Connection } from "@daostack/client";
 
 export class ArcConfig extends ProtocolConfig
