@@ -4,5 +4,3 @@
 //   {data => (<div>{data.name}</div>)}
 //   </DAO.Data>
 // </DAO>
-
-// TODO: get rid of logging config context

@@ -22,7 +22,7 @@ export default () =>
           Component={DAO}
           Protocol={Arc}
           config={DefaultArcConfig}
-          // TODO: load these addresses from the graphnode
+          // TODO: add helper button to "Get DAO Addresses"
           propEditors={[
             {
               friendlyName: "DAO Address",
