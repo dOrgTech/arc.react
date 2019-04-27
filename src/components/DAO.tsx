@@ -2,7 +2,9 @@ import * as React from "react";
 import {
   Component,
   ComponentLogs,
-  BaseProps
+  BaseProps,
+  ContextFeed,
+  FeedProps
 } from "../runtime";
 import {
   Arc,
@@ -89,7 +91,11 @@ class DAO extends React.Component<RequiredProps>
   }
 
   public static get Data() {
-    return dataConsumer;
+    return (props: FeedProps) => (
+      <ContextFeed consumer={dataConsumer}>
+      {props.children}
+      </ContextFeed>
+    );
   }
 
   public static get Code() {

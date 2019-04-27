@@ -10,7 +10,8 @@ import {
   DAOCode,
   Member,
   MemberData,
-  ComponentLogs
+  ComponentLogs,
+  ArcConfig
 } from "../../src";
 
 export default () => 
@@ -58,6 +59,7 @@ export default () =>
       </>
     ))
     .add("DAO Test2", () => (
+      <>
       <Arc config={DefaultArcConfig}>
         <DAO address={"0xcB4e66eCA663FDB61818d52A152601cA6aFEf74F"}>
           {(entity: DAOEntity, data: DAOData, code: DAOCode, logs: ComponentLogs) => (
@@ -71,4 +73,5 @@ export default () =>
           )}
         </DAO>
       </Arc>
+      </>
     ));
