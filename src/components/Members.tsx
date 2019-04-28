@@ -48,7 +48,7 @@ class Members extends React.Component<RequiredProps>
 
     return (
       <DAO.Entity>
-      {dao =>
+      {(dao: DAOEntity) =>
         <DAOMembers dao={dao}>
         {children}
         </DAOMembers>

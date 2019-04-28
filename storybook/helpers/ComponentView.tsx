@@ -5,7 +5,6 @@ import {
   ObjectLabel
 } from "react-inspector";
 import {
-  CircularProgress,
   Typography,
   Divider
 } from '@material-ui/core';
@@ -55,48 +54,22 @@ export default class ComponentView extends React.Component<Props, State> {
       <PropertyEditors properties={propEditors} state={this.state} setState={(state) => this.setState(state)} />
       <Protocol config={config}>
         <Component {...this.state}>
-          <Typography variant="h6" component="h6">
-            Entity
-          </Typography>
           <Component.Entity>
-            {(entity: any | undefined) => (
-              <>
-              {entity ? (
-                <>
-                {objectInspector(entity, `${name}.Entity`, "Entity Instance")}
-                </>
-              ) : (
-                <div>
-                  <CircularProgress />
-                </div>
-              )}
-              </>
-            )}
-          </Component.Entity>
-          <Typography variant="h6" component="h6">
-            Data
-          </Typography>
           <Component.Data>
-            {(data: any | undefined) => (
-              <>
-              {data ? (
-                <>
-                {objectInspector(data, `${name}.Data`, "Semantic Data")}
-                </>
-              ) : (
-                <div>
-                  <CircularProgress />
-                </div>
-              )}
-              </>
-            )}
-          </Component.Data>
-          <Typography variant="h6" component="h6">
-            Logs
-          </Typography>
           <Component.Logs>
-            {(logs: ComponentLogs) => (
+            {(entity: any, data: any, logs: ComponentLogs) => (
               <>
+              <Typography variant="h6" component="h6">
+                Entity
+              </Typography>
+              {objectInspector(entity, `${name}.Entity`, "Entity Instance")}
+              <Typography variant="h6" component="h6">
+                Data
+              </Typography>
+              {objectInspector(data, `${name}.Data`, "Semantic Data")}
+              <Typography variant="h6" component="h6">
+                Logs
+              </Typography>
               {objectInspector(logs.react, `${name}.ReactLogs`, "React Logs")}
               {objectInspector(logs.entity, `${name}.EntityLogs`, "Entity Logs")}
               {objectInspector(logs.data, `${name}.DataLogs`, "Data Query Logs")}
@@ -105,6 +78,8 @@ export default class ComponentView extends React.Component<Props, State> {
               </>
             )}
           </Component.Logs>
+          </Component.Data>
+          </Component.Entity>
         </Component>
       </Protocol>
       </>

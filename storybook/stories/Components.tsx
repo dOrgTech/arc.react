@@ -6,8 +6,8 @@ import {
   DefaultArcConfig,
   DAO,
   DAOData,
-  DAOEntity,
   DAOCode,
+  DAOEntity,
   Member,
   MemberData,
   ComponentLogs
@@ -22,7 +22,7 @@ export default () =>
           Component={DAO}
           Protocol={Arc}
           config={DefaultArcConfig}
-          // TODO: load these addresses from the graphnode
+          // TODO: add helper button to "Get DAO Addresses"
           propEditors={[
             {
               friendlyName: "DAO Address",
@@ -58,6 +58,7 @@ export default () =>
       </>
     ))
     .add("DAO Test2", () => (
+      <>
       <Arc config={DefaultArcConfig}>
         <DAO address={"0xcB4e66eCA663FDB61818d52A152601cA6aFEf74F"}>
           {(entity: DAOEntity, data: DAOData, code: DAOCode, logs: ComponentLogs) => (
@@ -71,4 +72,32 @@ export default () =>
           )}
         </DAO>
       </Arc>
+      </>
+    ))
+    .add("Test", () => (
+      <>
+      <Arc config={DefaultArcConfig}>
+        <DAO address={"0xcb4e66eca663fdb61818d52a152601ca6afef74f"}>
+          <DAO.Entity>
+          <DAO.Data>
+          {(entity: DAOEntity, data: DAOData) => (
+            <div>{data.name}</div>
+          )}
+          </DAO.Data>
+          <DAO.Data>
+          {(entity: DAOEntity, data: DAOData) => (
+            <div>{data.address}</div>
+          )}
+          </DAO.Data>
+          </DAO.Entity>
+          <DAO.Data>
+          <DAO.Entity>
+          {(data: DAOData, entity: DAOEntity) => (
+            <div>{data.tokenName}</div>
+          )}
+          </DAO.Entity>
+          </DAO.Data>
+        </DAO>
+      </Arc>
+      </>
     ));

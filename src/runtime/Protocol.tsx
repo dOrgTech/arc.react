@@ -7,7 +7,6 @@ interface Props<Config extends ProtocolConfig> {
   config: Config
 }
 
-// TODO: this & Platform.tsx are pratically the same thing, abstract?
 export abstract class Protocol<
   Config extends ProtocolConfig
 > extends React.Component<Props<Config>>
