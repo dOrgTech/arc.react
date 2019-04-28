@@ -1,49 +1,86 @@
-// Idea Usage
-// <DAO address={"something"}>
-//   <DAO.Data spinner={() => (<spinner size={20}></spinner>)}>
-//   {data => (<div>{data.name}</div>)}
-//   </DAO.Data>
-// </DAO>
-
-// TODO:
-// - get consumer
-// - if null, render spinner
-// - if !null, render children w/ value
-
 import * as React from "react";
 
-export interface FeedProps extends React.PropsWithChildren<{}> {
-  prop?: any
+// TODO: remove this dep from the package, and instead have the user
+//       of the library provide their own loading component
+const Spinner = require("react-spinkit");
+
+type ConsumerComponent = React.ExoticComponent<React.ConsumerProps<any>>
+
+export interface Props extends React.PropsWithChildren<{}> {
+  _consumers?: ConsumerComponent[]
 }
 
-function isFeedProps(object: any): object is FeedProps {
-  return "prop" in object;
-}
-
-export interface Props {
-  consumer: any
-  // TODO: type for runtime type checking
-}
-
-export class ContextFeed extends React.Component<Props>
+class ContextFeed extends React.Component<Props>
 {
   constructor(props: Props) {
     super(props);
   }
 
-  render() {
-    if (!this.props.children || !this.props.children[0]) {
-       throw Error("Fuck off")
+  public render() {
+    const { children, _consumers } = this.props;
+
+    if (!_consumers) {
+      throw Error("Error: ContextFeed missing context consumer(s).");
     }
 
-    if (isFeedProps(this.props.children[0].props)) {
-
+    if (!children) {
+       throw Error("Error: A ContextFeed requires a child component.");
     }
 
-    return (
-      <div>
+    if (typeof children === "function") {
+      // TODO: make sure it's a function w/ the correct argument types
+      // var args: ArgumentTypes<typeof children> = ["foo", "foo"];
 
-      </div>
-    );
+      const length = _consumers.length;
+      const RelayValues = (index: number, values: Array<any> = []) => {
+        if (index < length) {
+          const Consumer = _consumers[index];
+          return (
+            <Consumer>
+            {(value) => (
+              RelayValues(index + 1, [...values, value])
+            )}
+            </Consumer>
+          )
+        } else {
+          if (values.indexOf(undefined) > -1) {
+            return <Spinner name='double-bounce' />
+          } else {
+            return children(...values);
+          }
+        }
+      };
+
+      return RelayValues(0);
+    }
+
+    // In this case, the child or children are components,
+    // so we'll inject them with our _consumers
+    if (children["length"]) {
+      const childrenArray = children as Array<any>;
+      const newChildren = new Array();
+
+      for (const child of childrenArray) {
+        newChildren.push(React.cloneElement(child, {
+          _consumers
+        }));
+      }
+
+      return (<>{newChildren}</>);
+    } else {
+      return React.cloneElement(children as React.ReactElement, {
+        _consumers
+      });
+    }
   }
 }
+
+export const CreateContextFeed = (consumer: ConsumerComponent) => (
+  (props: Props) => (
+    <ContextFeed _consumers={
+      props._consumers ?
+      [...props._consumers, consumer] :
+      [consumer]
+    } children={props.children} />
+  )
+);

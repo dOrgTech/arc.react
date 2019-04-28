@@ -6,12 +6,11 @@ import {
   DefaultArcConfig,
   DAO,
   DAOData,
-  DAOEntity,
   DAOCode,
+  DAOEntity,
   Member,
   MemberData,
-  ComponentLogs,
-  ArcConfig
+  ComponentLogs
 } from "../../src";
 
 export default () => 
@@ -71,6 +70,33 @@ export default () =>
               </>
             : <div>loading...</div>
           )}
+        </DAO>
+      </Arc>
+      </>
+    ))
+    .add("Test", () => (
+      <>
+      <Arc config={DefaultArcConfig}>
+        <DAO address={"0xcb4e66eca663fdb61818d52a152601ca6afef74f"}>
+          <DAO.Entity>
+          <DAO.Data>
+          {(entity: DAOEntity, data: DAOData) => (
+            <div>{data.name}</div>
+          )}
+          </DAO.Data>
+          <DAO.Data>
+          {(entity: DAOEntity, data: DAOData) => (
+            <div>{data.address}</div>
+          )}
+          </DAO.Data>
+          </DAO.Entity>
+          <DAO.Data>
+          <DAO.Entity>
+          {(data: DAOData, entity: DAOEntity) => (
+            <div>{data.tokenName}</div>
+          )}
+          </DAO.Entity>
+          </DAO.Data>
         </DAO>
       </Arc>
       </>

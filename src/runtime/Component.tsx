@@ -7,11 +7,8 @@ import { IStateful } from "@daostack/client/src/types"
 import { BaseProps, BaseComponent } from "./BaseComponent";
 import { ComponentLogs } from "./logging/ComponentLogs";
 
-interface State<Data, Code> {
-  // Context Feeds
+interface State<Data> {
   data?: Data;
-  code?: Code;
-  // TODO: Prose
 
   // Diagnostics for the component
   logs: ComponentLogs;
@@ -23,7 +20,7 @@ export abstract class Component<
   Data,
   Code
 > extends BaseComponent<
-    Props, State<Data, Code>
+    Props, State<Data>
   >
 {
   // Create the entity this component represents. This entity gives access
@@ -63,6 +60,9 @@ export abstract class Component<
     this.createEntityWithProps
   );
 
+  // TODO: implement this & prose
+  private code = memoize((entity: Entity | undefined) => ({ }));
+
   // Our graphql query's subscriber object
   private _subscription?: Subscription;
 
@@ -85,12 +85,13 @@ export abstract class Component<
     const LogsProvider   = Component.LogsContext().Provider;
 
     const children = this.props.children;
-    const { data, code, logs } = this.state;
+    const { data, logs } = this.state;
 
     // create & fetch the entity
     // TODO: this should throw errors. Upon first error, logging marks "loading started"
     // then when first success is seen, record that time too for timings
     const entity = this.entity(this.props)
+    const code = this.code(entity)
 
     logs.reactRendered();
 
@@ -123,6 +124,8 @@ export abstract class Component<
 
     logs.entityCreated();
 
+    // TODO: find a way to get rid of this, as it's
+    //       causing a react warning/error during render.
     this.clearPrevState();
 
     try {
@@ -137,7 +140,6 @@ export abstract class Component<
         this.onQueryComplete
       );
 
-      // TODO: create code + prose
       return entity;
     } catch (error) {
       logs.entityCreationFailed(error);

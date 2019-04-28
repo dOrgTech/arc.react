@@ -3,9 +3,10 @@ import {
   Component,
   ComponentLogs,
   BaseProps,
-  ContextFeed,
-  FeedProps
 } from "../runtime";
+import {
+  CreateContextFeed
+} from "../runtime/ContextFeed";
 import {
   Arc,
   ArcConfig
@@ -54,19 +55,19 @@ class ArcDAO extends Component<Props, Entity, Data, Code>
   }
 
   public static get Entity() {
-    return entityConsumer;
+    return CreateContextFeed(entityConsumer);
   }
 
   public static get Data() {
-    return dataConsumer;
+    return CreateContextFeed(dataConsumer);
   }
 
   public static get Code() {
-    return codeConsumer;
+    return CreateContextFeed(codeConsumer);
   }
 
   public static get Logs() {
-    return logsConsumer;
+    return CreateContextFeed(logsConsumer);
   }
 }
 
@@ -87,23 +88,19 @@ class DAO extends React.Component<RequiredProps>
   }
 
   public static get Entity() {
-    return entityConsumer;
+    return CreateContextFeed(entityConsumer);
   }
 
   public static get Data() {
-    return (props: FeedProps) => (
-      <ContextFeed consumer={dataConsumer}>
-      {props.children}
-      </ContextFeed>
-    );
+    return CreateContextFeed(dataConsumer);
   }
 
   public static get Code() {
-    return codeConsumer;
+    return CreateContextFeed(codeConsumer);
   }
 
   public static get Logs() {
-    return logsConsumer;
+    return CreateContextFeed(logsConsumer);
   }
 }
 

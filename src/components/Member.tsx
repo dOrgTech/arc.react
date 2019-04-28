@@ -5,6 +5,9 @@ import {
   BaseProps
 } from "../runtime";
 import {
+  CreateContextFeed
+} from "../runtime/ContextFeed";
+import {
   DAO,
   DAOEntity
 } from "./";
@@ -30,6 +33,7 @@ interface RequiredProps {
 }
 
 interface InferredProps {
+  // TODO: should this support undefined?
   // The DAO this member is apart of
   dao: DAOEntity | undefined;
 }
@@ -49,23 +53,24 @@ class DAOMember extends Component<Props, Entity, Data, Code>
     if (!dao) {
       throw Error("DAO Missing: Please provide this field as a prop, or use the inference component.");
     }
+
     return dao.member(address);
   }
 
   public static get Entity() {
-    return entityConsumer;
+    return CreateContextFeed(entityConsumer);
   }
 
   public static get Data() {
-    return dataConsumer;
+    return CreateContextFeed(dataConsumer);
   }
 
   public static get Code() {
-    return codeConsumer;
+    return CreateContextFeed(codeConsumer);
   }
 
   public static get Logs() {
-    return logsConsumer;
+    return CreateContextFeed(logsConsumer);
   }
 }
 
@@ -74,10 +79,9 @@ class Member extends React.Component<RequiredProps>
   render() {
     const { address, children } = this.props;
 
-    // TODO: doing Logging.Config everywhere is trash... just make it global?
     return (
       <DAO.Entity>
-      {entity => (
+      {(entity: DAOEntity) => (
         <DAOMember address={address} dao={entity}>
         {children}
         </DAOMember>
@@ -87,19 +91,19 @@ class Member extends React.Component<RequiredProps>
   }
 
   public static get Entity() {
-    return entityConsumer;
+    return CreateContextFeed(entityConsumer);
   }
 
   public static get Data() {
-    return dataConsumer;
+    return CreateContextFeed(dataConsumer);
   }
 
   public static get Code() {
-    return codeConsumer;
+    return CreateContextFeed(codeConsumer);
   }
 
   public static get Logs() {
-    return logsConsumer;
+    return CreateContextFeed(logsConsumer);
   }
 }
 
