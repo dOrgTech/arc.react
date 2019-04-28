@@ -13,40 +13,40 @@ Componentizing [DAOstack's client library](https://github.com/daostack/client), 
 ## Example 1: Simple Example  
 `App.tsx`
 ```html
-<DAO address="0x...">
-...any component rendered in this tree will have access to this DAO's contexts
-</DAO>
+<Arc config={new ArcConfig("web3", "graphql", "graphql-ws")}>
+  <DAO address="0x...">
+    <ExampleDAOView />
+  </DAO>
+</Arc>
 ```
-`ChildComponent.tsx`  
-You can access the DAO's Data context...
+
+Now that the DAO component has been added to the root of our application, any component rendered within its tree will have access to this DAO's contexts.  
+`ExampleDAOView.tsx`  
 ```html
-<div>
-...
+ExampleDAOView() => (
   <DAO.Data>
-    {(data: DAOData) => (
-      <div>
-        <div>{"DAO: " + data.name}</div>
-        <div>{"Token: " + data.tokenName}</div>
-      </div>
-    )}
+  {(data: DAOData) => (
+    <>
+    <div>{"DAO: " + data.name}</div>
+    <div>{"Token: " + data.tokenName}</div>
+    </>
+  )}
   </DAO.Data>
-...
-</div>
+)
 ```
-or you can interact with its Code...
+
+You can also interact with the Code context (**NOTE:** not implemented yet):
 ```html
 <DAO.Code>
-  {(code: DAOCode) => (
-    <div>
-      <Button onSubmit={async () => {
-        await code.upvoteProposal(...)
-      }} />
-    </div>
-  )}
+{(code: DAOCode) => (
+  <button onClick={async (e) => {
+    await code.createProposal(...)
+  }} />
+)}
 </DAO.Code>
 ```
 
-## Example 2: Context Aware Components
+## Example 2: Component Context Inference
 ```html
 <DAO address="0xMy_DAO">
 ...
@@ -58,7 +58,6 @@ or you can interact with its Code...
 ```
 
 **VS**
-
 ```html
 <Member address="0xMy_Address" daoAddress="0xMy_DAO">
 </Member>
@@ -68,22 +67,68 @@ or you can interact with its Code...
 
 ## Example 3: Component Lists
 ```html
-<div>DAO List<div>
 <DAOs>
   <div>DAO Details:</div>
   <DAO.Data>
-    {(data: DAOData) => (
-      <div>
-        <div>{"Name: " + data.name}</div>
-        <div>{"Token: " + data.tokenName}</div>
-      </div>
-    )}
+  {(dao: DAOData) => (
+    <>
+    <div>{"Name: " + dao.name}</div>
+    <div>{"Token: " + dao.tokenName}</div>
+    </>
+  )}
   </DAO.Data>
 </DAOs>
 ```
 
-TODO: add arc/web3/graphql configuration once it's finished  
-TODO: examples for two different child types (fn & components)
+## Example 4: Context Forwarding
+```html
+<DAO.Data>
+<Member.Data>
+{(dao: DAOData, member: MemberData) => (
+  <>
+  <div>{dao.address}</div>
+  <div>{member.address}</div>
+  </>
+)}
+</Memeber.Data>
+</DAO.Data>
+```
+
+## Example 5: All Together
+The below example will:
+* Render a list of all DAOs. For each DAO...
+  * Print the DAO's name.
+  * Render a list of all Members. For each member...
+    * Print the Member's information.
+    * Provide a button that allows you to propose a reward for that member.
+```html
+<DAOs>
+  <DAO.Data>
+  {(dao: DAOData) => (
+    <div>{dao.name}</div>
+  )}
+  </DAO.Data>
+  <Members>
+    <DAO.Code>
+    <Member.Data>
+    {(daoCode: DAOCode, member: MemberData) => (
+      <>
+      <div>{member.name}<div>
+      <div>{member.reputation}</div>
+      <button onClick={async (e) => {
+        await daoCode.createProposal(..., member.address, ...)
+      }}>
+      Propose Reward
+      </button>
+      </>
+    )}
+    </Member.Data>
+    </DAO.Code>
+  </Members>
+</DAOs>
+```
+
+TODO: examples of the different supported child types (fn & components)
 
 # Architecture  
 ## 1 Component, 1 Entity  
@@ -96,10 +141,14 @@ For Example: The component [**`<DAO address="0x...">`**](./src/components/DAO.ts
 Note: ComponentLists break this rule, but will be covered further down.  
 
 ## Component Contexts (Data, Code, Prose)  
-Each component has 3 parts:  
+Each component has 3 core contexts:  
 * Data - GraphQL Schema  
 * Code - Abstracted Protocol Functionality  
 * Prose - TBD  
+
+In addition to these core contexts, you can also access:
+* Entity - The raw backing entity from the client library.
+* Logs - The logs associated with this component.
 
 Each part of the component is exposed through a [React Contexts](https://reactjs.org/docs/context.html). This allows you to use different parts of the component throughout your application, while only defining it once farther up the DOM. See "Example 1" in this document.  
 
