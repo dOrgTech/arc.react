@@ -1,4 +1,4 @@
-import * as React from "react";
+/*import * as React from "react";
 import {
   Component,
   ComponentLogs,
@@ -8,8 +8,7 @@ import {
   CreateContextFeed
 } from "../runtime/ContextFeed";
 import {
-  DAO,
-  DAOEntity
+  DAO
 } from "./";
 import {
   Proposal as Entity,
@@ -38,74 +37,6 @@ type Props = RequiredProps & InferredProps & BaseProps;
 
 class DAOProposal extends Component<Props, Entity, Data, Code>
 {
-  createEntity(): Entity {
-    const { dao, id } = this.props;
 
-    if (!dao) {
-      throw Error("DAO Missing: Please provide this field as a prop, or use the inference component.");
-    }
-
-    return dao.proposal(id);
-  }
-
-  public static get Entity() {
-    return CreateContextFeed(entityConsumer);
-  }
-
-  public static get Data() {
-    return CreateContextFeed(dataConsumer);
-  }
-
-  public static get Code() {
-    return CreateContextFeed(codeConsumer);
-  }
-
-  public static get Logs() {
-    return CreateContextFeed(logsConsumer);
-  }
 }
-
-class Proposal extends React.Component<RequiredProps>
-{
-  render() {
-    const { id, children } = this.props;
-
-    return (
-      <DAO.Entity>
-      {(entity: DAOEntity) => (
-        <DAOProposal id={id} dao={entity}>
-        {children}
-        </DAOProposal>
-      )}
-      </DAO.Entity>
-    );
-  }
-
-  public static get Entity() {
-    return CreateContextFeed(entityConsumer);
-  }
-
-  public static get Data() {
-    return CreateContextFeed(dataConsumer);
-  }
-
-  public static get Code() {
-    return CreateContextFeed(codeConsumer);
-  }
-
-  public static get Logs() {
-    return CreateContextFeed(logsConsumer);
-  }
-}
-
-export default Proposal;
-
-export {
-  DAOProposal,
-  Proposal,
-  Props  as ProposalProps,
-  Entity as ProposalEntity,
-  Data   as ProposalData,
-  Code   as ProposalCode,
-  ComponentLogs
-};
+*/
