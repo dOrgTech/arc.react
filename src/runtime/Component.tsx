@@ -157,9 +157,7 @@ export abstract class Component<
 
   private onQueryData(data: Data) {
     const { logs } = this.state;
-
     logs.dataQueryReceivedData();
-
     this.mergeState({
       data: data
     });
@@ -168,10 +166,24 @@ export abstract class Component<
   private onQueryError(error: Error) {
     const { logs } = this.state;
     logs.dataQueryFailed(error);
+    // This is required to force a rerender. setState is
+    // used instead of mergeState because the class type
+    // is lost when using mergeState.
+    this.setState({
+      data: this.state.data,
+      logs: logs.clone()
+    });
   }
 
   private onQueryComplete() {
     const { logs } = this.state;
     logs.dataQueryCompleted();
+    // This is required to force a rerender. setState is
+    // used instead of mergeState because the class type
+    // is lost when using mergeState.
+    this.setState({
+      data: this.state.data,
+      logs: logs.clone()
+    });
   }
 }

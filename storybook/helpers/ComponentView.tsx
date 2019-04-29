@@ -55,26 +55,26 @@ export default class ComponentView extends React.Component<Props, State> {
           <Component.Entity>
           <Component.Data>
           <Component.Logs>
-            {(entity: any, data: any, logs: ComponentLogs) => (
-              <>
-              <Typography variant="h6" component="h6">
-                Entity
-              </Typography>
-              {objectInspector(entity, `${name}.Entity`, "Entity Instance")}
-              <Typography variant="h6" component="h6">
-                Data
-              </Typography>
-              {objectInspector(data, `${name}.Data`, "Semantic Data")}
-              <Typography variant="h6" component="h6">
-                Logs
-              </Typography>
-              {objectInspector(logs.react, `${name}.ReactLogs`, "React Logs")}
-              {objectInspector(logs.entity, `${name}.EntityLogs`, "Entity Logs")}
-              {objectInspector(logs.data, `${name}.DataLogs`, "Data Query Logs")}
-              {objectInspector(logs.code, `${name}.CodeLogs`, "Code Logs")}
-              {objectInspector(logs.prose, `${name}.ProseLogs`, "Prose Logs")}
-              </>
-            )}
+          {(entity: any, data: any, logs: ComponentLogs) => (
+            <>
+            <Typography variant="h6" component="h6">
+              Entity
+            </Typography>
+            {objectInspector(entity, `${name}.Entity`, "Entity Instance")}
+            <Typography variant="h6" component="h6">
+              Data
+            </Typography>
+            {objectInspector(data, `${name}.Data`, "Semantic Data")}
+            <Typography variant="h6" component="h6">
+              Logs
+            </Typography>
+            {objectInspector(logs.react, `${name}.ReactLogs`, "React Logs")}
+            {objectInspector(logs.entity, `${name}.EntityLogs`, "Entity Logs")}
+            {objectInspector(logs.data, `${name}.DataLogs`, "Data Query Logs")}
+            {objectInspector(logs.code, `${name}.CodeLogs`, "Code Logs")}
+            {objectInspector(logs.prose, `${name}.ProseLogs`, "Prose Logs")}
+            </>
+          )}
           </Component.Logs>
           </Component.Data>
           </Component.Entity>

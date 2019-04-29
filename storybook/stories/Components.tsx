@@ -10,6 +10,7 @@ import {
   DAOEntity,
   Member,
   MemberData,
+  Proposal,
   ComponentLogs
 } from "../../src";
 
@@ -59,6 +60,34 @@ export default () =>
               friendlyName: "Member Address",
               name: "address",
               defaultValue: "0xe11ba2b4d45eaed5996cd0823791e0c93114882d",
+              type: PropertyType.string
+            }
+          ]} />
+      )
+    })
+    .add("Proposal", () => {
+      return (
+        <ComponentView
+          name={"Proposal"}
+          Component={Proposal}
+          RequiredContext={(props) => (
+            <Arc config={DefaultArcConfig}>
+              <DAO address={props.dao}>
+              {props.children}
+              </DAO>
+            </Arc>
+          )}
+          propEditors={[
+            {
+              friendlyName: "DAO Address",
+              name: "dao",
+              defaultValue: "0x46d6cdc1dc33a3bf63bb2e654e5622173365ed6a",
+              type: PropertyType.string
+            },
+            {
+              friendlyName: "Proposal ID",
+              name: "id",
+              defaultValue: "0xb05514045d89957c1d43071dbe9cda72cefbe6a443f4dae72dd318e8727222c5",
               type: PropertyType.string
             }
           ]} />
