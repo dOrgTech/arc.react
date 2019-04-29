@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@daostack/client": "0.1.4",
-    "@daostack/subgraph": "0.0.3",
+    "@daostack/subgraph": "https://github.com/daostack/subgraph/archive/ganache-0.0.1-rc.16-v1-0.0.16.tar.gz",
     "memoize-one": "^5.0.0",
     "ramda": "^0.26.1",
     "react": "16.5.0",
