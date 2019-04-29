@@ -16,7 +16,7 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
-    "@daostack/client": "0.0.33",
+    "@daostack/client": "0.1.4",
     "@daostack/subgraph": "0.0.3",
     "memoize-one": "^5.0.0",
     "ramda": "^0.26.1",

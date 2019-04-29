@@ -16,11 +16,8 @@ import {
   IMemberState as Data
 } from "@daostack/client";
 
-type Code = {
-  // maybe wrap this better so the contracts
-  // are underneath the higher level functions?
-  // contractName: ContractType (TypeChain)
-}
+// TODO
+type Code = { }
 
 const entityConsumer = Component.EntityContext<Entity>().Consumer;
 const dataConsumer   = Component.DataContext<Data>().Consumer;
@@ -33,7 +30,6 @@ interface RequiredProps {
 }
 
 interface InferredProps {
-  // TODO: should this support undefined?
   // The DAO this member is apart of
   dao: DAOEntity | undefined;
 }
