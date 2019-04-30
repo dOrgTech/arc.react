@@ -9,7 +9,10 @@ import {
   DAOEntity,
   Members,
   Member,
-  MemberData
+  MemberData,
+  Proposal,
+  Proposals,
+  ProposalData
 } from "../../src/";
 
 export default () =>
@@ -63,6 +66,21 @@ export default () =>
               : <div>loading...</div>
             )}
           </DAOs>
+        </Arc>
+      )
+    })
+    .add("Proposals", () => {
+      return (
+        <Arc config={DefaultArcConfig}>
+          <DAO address={"0xe7a2c59e134ee81d4035ae6db2254f79308e334f"}>
+            <Proposals>
+              <Proposal.Data>
+              {(data: ProposalData) => (
+                <div>{data.id}</div>
+              )}
+              </Proposal.Data>
+            </Proposals>
+          </DAO>
         </Arc>
       )
     });

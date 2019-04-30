@@ -9,7 +9,7 @@ import {
 import {
   DAO,
   DAOEntity,
-  DAOMember
+  DAOProposal
 } from "./";
 
 interface RequiredProps { }
@@ -20,47 +20,45 @@ interface InferredProps {
 
 type Props = RequiredProps & InferredProps & BaseProps;
 
-class DAOMembers extends ComponentList<Props, DAOMember>
+class DAOProposals extends ComponentList<Props, DAOProposal>
 {
-  createObservableEntities(): Observable<CEntity<DAOMember>[]> {
+  createObservableEntities(): Observable<CEntity<DAOProposal>[]> {
     const { dao } = this.props;
-    // TODO: better error handling?
     if (!dao) {
       throw Error("DAO Entity Missing: Please provide this field as a prop, or use the inference component.");
     }
-    return dao.members();
+    return dao.proposals();
   }
 
-  renderComponent(entity: CEntity<DAOMember>, children: any): React.ComponentElement<CProps<DAOMember>, any> {
+  renderComponent(entity: CEntity<DAOProposal>, children: any): React.ComponentElement<CProps<DAOProposal>, any> {
     const { dao } = this.props;
     return (
-      <DAOMember address={entity.address} dao={dao}>
+      <DAOProposal id={entity.id} dao={dao}>
         {children}
-      </DAOMember>
+      </DAOProposal>
     );
   }
 }
 
-class Members extends React.Component<RequiredProps>
+class Proposals extends React.Component<RequiredProps>
 {
   render() {
     const { children } = this.props;
-
     return (
       <DAO.Entity>
-      {(dao: DAOEntity) =>(
-        <DAOMembers dao={dao}>
+      {(dao: DAOEntity) => (
+        <DAOProposals dao={dao}>
         {children}
-        </DAOMembers>
+        </DAOProposals>
       )}
       </DAO.Entity>
     );
   }
 }
 
-export default Members;
+export default Proposals;
 
 export {
-  DAOMembers,
-  Members
+  DAOProposals,
+  Proposals
 };
