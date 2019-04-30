@@ -1,5 +1,5 @@
-module.exports = (baseConfig, env, defaultConfig) => {
-  defaultConfig.module.rules.push({
+module.exports = ({ config }) => {
+  config.module.rules.push({
     test: /\.(ts|tsx)$/,
     use: [
       {
@@ -8,20 +8,20 @@ module.exports = (baseConfig, env, defaultConfig) => {
     ],
   });
 
-  defaultConfig.module.rules.push({
+  config.module.rules.push({
     test: /\.mjs$/,
     include: /node_modules/,
     type: 'javascript/auto'
   });
 
-  defaultConfig.resolve.extensions.push(
+  config.resolve.extensions.push(
     '.mjs', '.ts', '.tsx'
   );
 
   // Gets rid of verbose compilation warnings coming from
   // the 'graphql-language-service-interface' package.
   // See: https://github.com/graphql/graphql-language-service/issues/128
-  defaultConfig.module.rules.push({
+  config.module.rules.push({
     test: /\.js.flow$/,
     use: [
       {
@@ -30,5 +30,5 @@ module.exports = (baseConfig, env, defaultConfig) => {
     ]
   });
 
-  return defaultConfig;
+  return config;
 };

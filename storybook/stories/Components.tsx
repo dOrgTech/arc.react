@@ -31,7 +31,7 @@ export default () =>
             {
               friendlyName: "DAO Address",
               name: "address",
-              defaultValue: "0xcB4e66eCA663FDB61818d52A152601cA6aFEf74F",
+              defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
               type: PropertyType.string
             }
           ]} />
@@ -53,7 +53,7 @@ export default () =>
             {
               friendlyName: "DAO Address",
               name: "dao",
-              defaultValue: "0x46d6cdc1dc33a3bf63bb2e654e5622173365ed6a",
+              defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
               type: PropertyType.string
             },
             {
@@ -81,13 +81,13 @@ export default () =>
             {
               friendlyName: "DAO Address",
               name: "dao",
-              defaultValue: "0x46d6cdc1dc33a3bf63bb2e654e5622173365ed6a",
+              defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
               type: PropertyType.string
             },
             {
               friendlyName: "Proposal ID",
               name: "id",
-              defaultValue: "0xb05514045d89957c1d43071dbe9cda72cefbe6a443f4dae72dd318e8727222c5",
+              defaultValue: "0x6afee092a28c74f6358093d5376ac75014ac4d9fd42d296a5498ef42eecd7248",
               type: PropertyType.string
             }
           ]} />
