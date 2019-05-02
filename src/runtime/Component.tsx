@@ -101,9 +101,7 @@ export abstract class Component<
       <DataProvider value={data}>
       <CodeProvider value={code}>
       <LogsProvider value={logs}>
-      {typeof children === "function"
-      ? children(entity, data, code, logs)
-      : <>{children}</>}
+      {children}
       </LogsProvider>
       </CodeProvider>
       </DataProvider>

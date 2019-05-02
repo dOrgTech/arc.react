@@ -51,7 +51,7 @@ class DAOs extends React.Component<RequiredProps>
 
     return (
       <Arc.Config>
-      {arc =>
+      {(arc: ArcConfig) =>
         <ArcDAOs arcConfig={arc}>
           {children}
         </ArcDAOs>

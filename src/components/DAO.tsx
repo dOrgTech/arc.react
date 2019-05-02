@@ -77,7 +77,7 @@ class DAO extends React.Component<RequiredProps>
 
     return (
       <Arc.Config>
-      {arc => (
+      {(arc: ArcConfig) => (
         <ArcDAO address={address} arcConfig={arc}>
         {children}
         </ArcDAO>

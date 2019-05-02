@@ -12,9 +12,13 @@ import {
   MemberData,
   Proposal,
   Proposals,
-  ProposalData
+  ProposalData,
+  Reputations,
+  Reputation,
+  ReputationData
 } from "../../src/";
 
+// TODO: create ComponentListView similar to ComponentView
 export default () =>
   storiesOf("Component Lists", module)
     .add("DAOs", () => {
@@ -81,6 +85,22 @@ export default () =>
               </Proposal.Data>
             </Proposals>
           </DAO>
+        </Arc>
+      )
+    })
+    .add("Reputations", () => {
+      return (
+        <Arc config={DefaultArcConfig}>
+          <Reputations>
+            <Reputation.Data>
+            {(data: ReputationData) => (
+              <>
+              <div>{data.address}</div>
+              <div>{data.totalSupply.toString()}</div>
+              </>
+            )}
+            </Reputation.Data>
+          </Reputations>
         </Arc>
       )
     });

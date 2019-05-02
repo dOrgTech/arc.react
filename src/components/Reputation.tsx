@@ -15,6 +15,10 @@ import {
   Reputation as Entity,
   IReputationState as Data
 } from "@daostack/client";
+import {
+  DAO,
+  DAOData
+} from "./DAO";
 
 type Code = { }
 
@@ -25,7 +29,7 @@ const logsConsumer   = Component.LogsContext().Consumer;
 
 interface RequiredProps {
   // Address of the Reputation Token
-  address: string;
+  address?: string;
 }
 
 interface InferredProps {
@@ -41,6 +45,9 @@ class ArcReputation extends Component<Props, Entity, Data, Code>
     const { arcConfig, address } = this.props;
     if (!arcConfig) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
+    }
+    if (!address) {
+      throw Error("Address Missing: Please provide this field as a prop, or use the inference component.")
     }
     return new Entity(address, arcConfig.connection);
   }
@@ -67,15 +74,38 @@ class Reputation extends React.Component<RequiredProps>
   render() {
     const { address, children } = this.props;
 
-    return (
-      <Arc.Config>
-      {arc => (
-        <ArcReputation address={address} arcConfig={arc}>
-        {children}
-        </ArcReputation>
-      )}
-      </Arc.Config>
-    );
+    if (address !== undefined) {
+      return (
+        <Arc.Config>
+        {(arc: ArcConfig) => (
+          <ArcReputation address={address} arcConfig={arc}>
+          {children}
+          </ArcReputation>
+        )}
+        </Arc.Config>
+      )
+    } else {
+      return (
+        <Arc.Config>
+        <DAO.Data>
+        {(arc: ArcConfig, daoData: DAOData) => {
+          console.log("HERE");
+          console.log(typeof arc);
+          console.log(Object.keys(arc))
+          console.log(typeof daoData);
+          console.log("after");
+          console.log(Object.keys(daoData))
+          console.log(typeof daoData.reputation.address);
+          return (
+            <ArcReputation address={daoData.reputation.address} arcConfig={arc}>
+            {children}
+            </ArcReputation>
+          );
+        }}
+        </DAO.Data>
+        </Arc.Config>
+      )
+    }
   }
 
   public static get Entity() {
