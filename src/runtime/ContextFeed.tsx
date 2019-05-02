@@ -2,7 +2,7 @@ import * as React from "react";
 
 // TODO: remove this dep from the package, and instead have the user
 //       of the library provide their own loading component
-const Spinner = require("react-spinkit");
+//const Spinner = require("react-spinkit");
 
 type ConsumerComponent = React.ExoticComponent<React.ConsumerProps<any>>
 
@@ -43,11 +43,7 @@ class ContextFeed extends React.Component<Props>
             </Consumer>
           )
         } else {
-          if (values.indexOf(undefined) > -1) {
-            return <Spinner name='double-bounce' />
-          } else {
             return children(...values);
-          }
         }
       };
 
