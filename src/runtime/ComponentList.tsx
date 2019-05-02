@@ -8,10 +8,10 @@ import { ComponentListLogs } from "./logging/ComponentListLogs";
 export { ComponentListLogs };
 
 // Extract the derived component's template parameters
-export type CProps<Comp>  = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Props : undefined;
-export type CEntity<Comp> = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Entity : undefined;
-export type CData<Comp>   = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Data : undefined;
-export type CCode<Comp>   = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Code : undefined;
+export type CProps<Comp>   = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Props : undefined;
+export type CEntity<Comp>  = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Entity : undefined;
+export type CData<Comp>    = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Data : undefined;
+export type CCode<Comp>    = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Code : undefined;
 
 interface State<Entity> {
   entities: Entity[];

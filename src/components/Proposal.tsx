@@ -2,29 +2,22 @@ import * as React from "react";
 import {
   Component,
   ComponentLogs,
-  BaseProps,
+  BaseProps
 } from "../runtime";
 import {
   CreateContextFeed
 } from "../runtime/ContextFeed";
 import {
-  Arc,
-  ArcConfig
-} from "../protocol";
+  DAO,
+  DAOEntity
+} from "./";
 import {
-  DAO as Entity,
-  IDAOState as Data
+  Proposal as Entity,
+  IProposalState as Data
 } from "@daostack/client";
 
-// TODO: thought:
-// - base class that is constructed w/ entity
-// - derived class that defines public "nice" methods
-// - - methods use entity to invoke transactions
-type Code = {
-  // maybe wrap this better so the contracts
-  // are underneath the higher level functions?
-  // contractName: ContractType (TypeChain)
-}
+// TODO
+type Code = { }
 
 const entityConsumer = Component.EntityContext<Entity>().Consumer;
 const dataConsumer   = Component.DataContext<Data>().Consumer;
@@ -32,25 +25,27 @@ const codeConsumer   = Component.CodeContext<Code>().Consumer;
 const logsConsumer   = Component.LogsContext().Consumer;
 
 interface RequiredProps {
-  // Address of the DAO Avatar
-  address: string;
+  // Proposal ID
+  id: string;
 }
 
 interface InferredProps {
-  // Arc Instance
-  arcConfig: ArcConfig | undefined;
+  // The DAO this proposal is apart of
+  dao: DAOEntity | undefined;
 }
 
 type Props = RequiredProps & InferredProps & BaseProps;
 
-class ArcDAO extends Component<Props, Entity, Data, Code>
+class DAOProposal extends Component<Props, Entity, Data, Code>
 {
   createEntity(): Entity {
-    const { arcConfig, address } = this.props;
-    if (!arcConfig) {
-      throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
+    const { dao, id } = this.props;
+
+    if (!dao) {
+      throw Error("DAO Missing: Please provide this field as a prop, or use the inference component.");
     }
-    return arcConfig.connection.dao(address);
+
+    return dao.proposal(id);
   }
 
   public static get Entity() {
@@ -70,19 +65,19 @@ class ArcDAO extends Component<Props, Entity, Data, Code>
   }
 }
 
-class DAO extends React.Component<RequiredProps>
+class Proposal extends React.Component<RequiredProps>
 {
   render() {
-    const { address, children } = this.props;
+    const { id, children } = this.props;
 
     return (
-      <Arc.Config>
-      {(arc: ArcConfig) => (
-        <ArcDAO address={address} arcConfig={arc}>
+      <DAO.Entity>
+      {(entity: DAOEntity) => (
+        <DAOProposal id={id} dao={entity}>
         {children}
-        </ArcDAO>
+        </DAOProposal>
       )}
-      </Arc.Config>
+      </DAO.Entity>
     );
   }
 
@@ -103,14 +98,14 @@ class DAO extends React.Component<RequiredProps>
   }
 }
 
-export default DAO;
+export default Proposal;
 
 export {
-  ArcDAO,
-  DAO,
-  Props as DAOProps,
-  Entity as DAOEntity,
-  Data as DAOData,
-  Code as DAOCode,
+  DAOProposal,
+  Proposal,
+  Props  as ProposalProps,
+  Entity as ProposalEntity,
+  Data   as ProposalData,
+  Code   as ProposalCode,
   ComponentLogs
 };

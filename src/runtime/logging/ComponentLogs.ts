@@ -64,6 +64,16 @@ export class ComponentLogs {
   private _code?: CodeLogs;
   private _prose?: ProseLogs;
 
+  public clone(): ComponentLogs {
+    var clone = new ComponentLogs();
+    clone._react = this._react;
+    clone._entity = this._entity;
+    clone._data = this._data;
+    clone._code = this._code;
+    clone._prose = this._prose;
+    return clone;
+  }
+
   public reactRendered() {
     if (!LoggingConfig.Current.enabled) return;
     this.getReact.rendered();

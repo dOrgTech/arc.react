@@ -9,15 +9,14 @@ import {
   Divider
 } from '@material-ui/core';
 
-import { ComponentLogs, ProtocolConfig } from "../../src";
+import { ComponentLogs } from "../../src";
 import { PropertyEditors, PropertyData, PropertyType } from "./PropertyEditors";
 export { PropertyData, PropertyType };
 
 interface Props {
   name: string;
   Component: any;
-  Protocol: any;
-  config: ProtocolConfig;
+  RequiredContext: React.FunctionComponent<React.PropsWithChildren<State>>
   propEditors: PropertyData[];
 }
 
@@ -40,9 +39,9 @@ export default class ComponentView extends React.Component<Props, State> {
   }
 
   public render() {
-    const { name, Component, Protocol, config, propEditors } = this.props;
+    const { name, Component, RequiredContext, propEditors } = this.props;
 
-    return (
+    const renderComponent = (
       <>
       <Typography variant="h3" component="h3">
         {name}
@@ -52,38 +51,41 @@ export default class ComponentView extends React.Component<Props, State> {
         Properties
       </Typography>
       <PropertyEditors properties={propEditors} state={this.state} setState={(state) => this.setState(state)} />
-      <Protocol config={config}>
         <Component {...this.state}>
           <Component.Entity>
           <Component.Data>
           <Component.Logs>
-            {(entity: any, data: any, logs: ComponentLogs) => (
-              <>
-              <Typography variant="h6" component="h6">
-                Entity
-              </Typography>
-              {objectInspector(entity, `${name}.Entity`, "Entity Instance")}
-              <Typography variant="h6" component="h6">
-                Data
-              </Typography>
-              {objectInspector(data, `${name}.Data`, "Semantic Data")}
-              <Typography variant="h6" component="h6">
-                Logs
-              </Typography>
-              {objectInspector(logs.react, `${name}.ReactLogs`, "React Logs")}
-              {objectInspector(logs.entity, `${name}.EntityLogs`, "Entity Logs")}
-              {objectInspector(logs.data, `${name}.DataLogs`, "Data Query Logs")}
-              {objectInspector(logs.code, `${name}.CodeLogs`, "Code Logs")}
-              {objectInspector(logs.prose, `${name}.ProseLogs`, "Prose Logs")}
-              </>
-            )}
+          {(entity: any, data: any, logs: ComponentLogs) => (
+            <>
+            <Typography variant="h6" component="h6">
+              Entity
+            </Typography>
+            {objectInspector(entity, `${name}.Entity`, "Entity Instance")}
+            <Typography variant="h6" component="h6">
+              Data
+            </Typography>
+            {objectInspector(data, `${name}.Data`, "Semantic Data")}
+            <Typography variant="h6" component="h6">
+              Logs
+            </Typography>
+            {objectInspector(logs.react, `${name}.ReactLogs`, "React Logs")}
+            {objectInspector(logs.entity, `${name}.EntityLogs`, "Entity Logs")}
+            {objectInspector(logs.data, `${name}.DataLogs`, "Data Query Logs")}
+            {objectInspector(logs.code, `${name}.CodeLogs`, "Code Logs")}
+            {objectInspector(logs.prose, `${name}.ProseLogs`, "Prose Logs")}
+            </>
+          )}
           </Component.Logs>
           </Component.Data>
           </Component.Entity>
         </Component>
-      </Protocol>
       </>
-    )
+    );
+
+    return RequiredContext({
+      children: renderComponent,
+      ...this.state
+    });
   }
 }
 

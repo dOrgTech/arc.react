@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Context } from "react";
+import { CreateContextFeed } from "./ContextFeed";
 import { ProtocolConfig } from "./ProtocolConfig";
 export { ProtocolConfig };
 
@@ -12,7 +13,7 @@ export abstract class Protocol<
 > extends React.Component<Props<Config>>
 {
   public static get Config() {
-    return Protocol._ConfigContext.Consumer;
+    return CreateContextFeed(Protocol._ConfigContext.Consumer);
   }
 
   private static ConfigContext<Config extends ProtocolConfig>(): Context<Config> {

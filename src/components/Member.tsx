@@ -16,11 +16,8 @@ import {
   IMemberState as Data
 } from "@daostack/client";
 
-type Code = {
-  // maybe wrap this better so the contracts
-  // are underneath the higher level functions?
-  // contractName: ContractType (TypeChain)
-}
+// TODO
+type Code = { }
 
 const entityConsumer = Component.EntityContext<Entity>().Consumer;
 const dataConsumer   = Component.DataContext<Data>().Consumer;
@@ -33,7 +30,6 @@ interface RequiredProps {
 }
 
 interface InferredProps {
-  // TODO: should this support undefined?
   // The DAO this member is apart of
   dao: DAOEntity | undefined;
 }
@@ -42,8 +38,6 @@ type Props = RequiredProps & InferredProps & BaseProps;
 
 class DAOMember extends Component<Props, Entity, Data, Code>
 {
-  // TODO: Arc could be a contextualized prop on the DAO instead of in each component
-  // Just make "Arc" a component?
   createEntity(): Entity {
     const { dao, address } = this.props;
 
@@ -87,7 +81,7 @@ class Member extends React.Component<RequiredProps>
         </DAOMember>
       )}
       </DAO.Entity>
-    )
+    );
   }
 
   public static get Entity() {

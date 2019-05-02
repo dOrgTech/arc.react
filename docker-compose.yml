@@ -1,0 +1,40 @@
+# A composition of services that are needed to run the tests of the client
+# This is for DEVELOPMENT, not production
+
+version: "3"
+services:
+  graph-node:
+    image: graphprotocol/graph-node:latest@sha256:9a9e379c685c676e67be476a9fe9d22e0282764405900585f5c1f2ca53b9384f
+    ports:
+      - 8000:8000
+      - 8001:8001
+      - 8020:8020
+    links:
+      - ipfs
+      - postgres
+      - ganache
+    environment:
+      postgres_host: postgres:5432
+      postgres_user: postgres
+      postgres_pass: 'letmein'
+      postgres_db: postgres
+      ipfs: ipfs:5001
+      ethereum: development:http://ganache:8545
+      GRAPH_LOG: "graph.log"
+
+  ipfs:
+    image: daostack/subgraph-ipfs:ganache-0.0.1-rc.16-v1-0.0.16
+    ports:
+      - 5001:5001
+
+  postgres:
+    image: daostack/subgraph-postgres:ganache-0.0.1-rc.16-v1-0.0.16
+    ports:
+      - 9432:5432
+    environment:
+      POSTGRES_PASSWORD: 'letmein'
+
+  ganache:
+    image: daostack/migration:0.0.1-rc.16-v1
+    ports:
+      - 8545:8545
