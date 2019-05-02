@@ -5,7 +5,8 @@ import {
   ObjectRootLabel,
   ObjectLabel
 } from "react-inspector";
-//import { ComponentLogs } from "../../src";
+import { ComponentLogs } from "../../src";
+const _ = require('lodash')
 
 const objectInspector = (data: any, name: string, tooltip: string) => {
   return (
@@ -30,27 +31,31 @@ const nodeRenderer = (node: any, tooltip: string) => {
 
 const Spinner = require("react-spinkit");
 
-export default class LoadingView extends React.Component<any> {
-  constructor(props: any) {
+interface Props {
+  logs: ComponentLogs
+}
+
+export default class LoadingView extends React.Component<Props> {
+  constructor(props: Props) {
     super(props);
   }
 
   public render() {
-    const {values } = this.props;
+    const { logs } = this.props;
 
+    let render: Array<any> = []
+    _.forEach(logs, function (value: any, key: any) {
+      if (value && value["_error"]) render.push(key)
+    })
     return (
       <Popup
         trigger={<Spinner name='double-bounce'/>}
         position="right center"
         on="hover"
       >
-        <div>
-          {objectInspector(values.react, `${name}.ReactLogs`, "React Logs")}
-          {objectInspector(values.entity, `${name}.EntityLogs`, "Entity Logs")}
-          {objectInspector(values.data, `${name}.DataLogs`, "Data Query Logs")}
-          {objectInspector(values.prose, `${name}.ProseLogs`, "Prose Logs")}
-          {objectInspector(values.code, `${name}.CodeLogs`, "Code Logs")}
-        </div>
+        <>
+          {render.map(key => (objectInspector(logs[key], `${key}`, `${key} logs`)))}
+        </>
       </Popup>
     )
   }

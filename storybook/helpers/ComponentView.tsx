@@ -58,7 +58,7 @@ export default class ComponentView extends React.Component<Props, State> {
           <Component.Logs>
           {(entity: any, data: any, logs: ComponentLogs) => {
             if ( !entity || !data)
-              return <LoadingView values={logs}/>
+              return <LoadingView logs={logs}/>
             return (
               <>
               <Typography variant="h6" component="h6">
