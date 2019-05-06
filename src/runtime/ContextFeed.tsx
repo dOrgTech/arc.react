@@ -1,8 +1,8 @@
 import * as React from "react";
+import LoadingView from './LoadingView';
+const _  = require("lodash");
 
-// TODO: remove this dep from the package, and instead have the user
-//       of the library provide their own loading component
-//const Spinner = require("react-spinkit");
+// TODO: have the user of the library provide their own loading component
 
 type ConsumerComponent = React.ExoticComponent<React.ConsumerProps<any>>
 
@@ -43,7 +43,18 @@ class ContextFeed extends React.Component<Props>
             </Consumer>
           )
         } else {
+          if (values.indexOf(undefined) > -1) {
+            // Hacky way to find index of ComponentLogs in values
+            // TODO: find a better way to identify type of object
+            let i = _.findIndex(values, function(o: any) {
+              if (o && o["_react"])
+                  return true
+              return false
+            })
+            return <LoadingView logs={values[i]}/>
+          } else {
             return children(...values);
+          }
         }
       };
 
