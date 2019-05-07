@@ -1,8 +1,8 @@
 import * as React from "react";
+import LoadingView from './LoadingView';
+const R  = require("ramda");
 
-// TODO: remove this dep from the package, and instead have the user
-//       of the library provide their own loading component
-const Spinner = require("react-spinkit");
+// TODO: have the user of the library provide their own loading component
 
 type ConsumerComponent = React.ExoticComponent<React.ConsumerProps<any>>
 
@@ -44,7 +44,15 @@ class ContextFeed extends React.Component<Props>
           )
         } else {
           if (values.indexOf(undefined) > -1) {
-            return <Spinner name='double-bounce' />
+            // Hacky way to find index of ComponentLogs in values
+            // TODO: find a better way to identify type of object
+            let i = R.findIndex(function(o: any) {
+              if (o && o["_react"])
+                  return true
+              return false
+            })(values)
+            if ( i > -1)
+              return <LoadingView logs={values[i]}/>
           } else {
             return children(...values);
           }
