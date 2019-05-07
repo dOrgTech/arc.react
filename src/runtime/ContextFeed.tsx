@@ -1,6 +1,6 @@
 import * as React from "react";
 import LoadingView from './LoadingView';
-const _  = require("lodash");
+const R  = require("ramda");
 
 // TODO: have the user of the library provide their own loading component
 
@@ -46,12 +46,13 @@ class ContextFeed extends React.Component<Props>
           if (values.indexOf(undefined) > -1) {
             // Hacky way to find index of ComponentLogs in values
             // TODO: find a better way to identify type of object
-            let i = _.findIndex(values, function(o: any) {
+            let i = R.findIndex(function(o: any) {
               if (o && o["_react"])
                   return true
               return false
-            })
-            return <LoadingView logs={values[i]}/>
+            })(values)
+            if ( i > -1)
+              return <LoadingView logs={values[i]}/>
           } else {
             return children(...values);
           }

@@ -1,34 +1,8 @@
 import * as React from "react";
 import Popup from 'reactjs-popup'
-import {
-  ObjectInspector,
-  ObjectRootLabel,
-  ObjectLabel
-} from "react-inspector";
 import { ComponentLogs } from "../../src";
-const _ = require('lodash')
 
-const objectInspector = (data: any, name: string, tooltip: string) => {
-  return (
-    <ObjectInspector
-      data={{...data}}
-      name={name}
-      expandLevel={1}
-      theme={"chromeDark"}
-      nodeRenderer={(node: any) => nodeRenderer(node, tooltip)} />
-  );
-}
-
-const nodeRenderer = (node: any, tooltip: string) => {
-  const { depth, name, data, isNonenumerable } = node;
-
-  return (
-    depth === 0
-      ? <ObjectRootLabel name={name} data={tooltip} />
-      : <ObjectLabel name={name} data={data} isNonenumerable={isNonenumerable} />
-  );
-}
-
+const R = require('ramda')
 const Spinner = require("react-spinkit");
 
 interface Props {
@@ -40,22 +14,26 @@ export default class LoadingView extends React.Component<Props> {
     super(props);
   }
 
+  private keys: Array<any> = [];
+
+  private findErrorKeys = (value: any, key: any) => {
+    if (value && value["_error"]) this.keys.push(key)
+  }
+
   public render() {
     const { logs } = this.props;
 
-    let render: Array<any> = []
-    _.forEach(logs, function (value: any, key: any) {
-      if (value && value["_error"]) render.push(key)
-    })
+    R.forEachObjIndexed(this.findErrorKeys, logs);
     return (
       <Popup
         trigger={<Spinner name='double-bounce'/>}
         position="right center"
         on="hover"
+        contentStyle={{ width: "auto", display: "flex", flexWrap: "wrap" }}
       >
-        <>
-          {render.map(key => (objectInspector(logs[key], `${key}`, `${key} logs`)))}
-        </>
+        <div>
+          {this.keys.map(key => logs[key]["_error"].message)}
+        </div>
       </Popup>
     )
   }
