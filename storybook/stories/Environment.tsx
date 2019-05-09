@@ -13,6 +13,7 @@ import {
 } from "react-inspector";
 import {
   Typography,
+  Divider
 } from '@material-ui/core';
 
 const R = require('ramda')
@@ -65,8 +66,8 @@ export default () =>
           <Arc.Config>
             {(arc: ArcConfig) => {
               let render: Array<any> = []
+              arc.connection.setAccount(defaultAddress)
               R.forEachObjIndexed( (value: any, key: any) => {
-                arc.connection.setAccount(defaultAddress)
                 try {
                   let contract = arc.connection.getContract(key)
                   let methods = {}
@@ -85,11 +86,12 @@ export default () =>
                   <Typography variant="h4" component="h4">
                     Contract txMethods, viewMethods and properties
                   </Typography>
+                  <Divider />
                   {render.map(o => {
                     return (
                       <>
-                        <Typography variant="h6" component="h6">
-                          {`${o['key']} Contract`}
+                        <Typography variant="subtitle1" component="h6">
+                          {`${o['key']} Contract: ${o['contract']._address}`}
                         </Typography>
                         {objectInspector(o['contract'].methods, `${o['key']}Contract.methods`, `${o['key']} Contract Methods`)}
                       </>
