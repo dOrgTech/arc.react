@@ -46,7 +46,7 @@ class ArcReputations extends ComponentList<Props, ArcReputation>
         }
       }
     `;
-    return arc._getObservableList(
+    return arc.getObservableList(
       query,
       (r: any) => new Reputation(r.id, arc)
     ) as Observable<Reputation[]>;
