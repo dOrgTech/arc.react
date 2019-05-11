@@ -18,11 +18,6 @@ import {
 
 type Code = { }
 
-const entityConsumer = Component.EntityContext<Entity>().Consumer;
-const dataConsumer   = Component.DataContext<Data>().Consumer;
-const codeConsumer   = Component.CodeContext<Code>().Consumer;
-const logsConsumer   = Component.LogsContext().Consumer;
-
 interface RequiredProps {
   // Address of the Token
   address: string;
@@ -47,20 +42,25 @@ class ArcToken extends Component<Props, Entity, Data, Code>
   }
 
   public static get Entity() {
-    return CreateContextFeed(entityConsumer);
+    return CreateContextFeed(this._EntityContext.Consumer);
   }
 
   public static get Data() {
-    return CreateContextFeed(dataConsumer);
+    return CreateContextFeed(this._DataContext.Consumer);
   }
 
   public static get Code() {
-    return CreateContextFeed(codeConsumer);
+    return CreateContextFeed(this._CodeContext.Consumer);
   }
 
   public static get Logs() {
-    return CreateContextFeed(logsConsumer);
+    return CreateContextFeed(this._LogsContext.Consumer);
   }
+
+  protected static _EntityContext = React.createContext({ });
+  protected static _DataContext   = React.createContext({ });
+  protected static _CodeContext   = React.createContext({ });
+  protected static _LogsContext   = React.createContext({ });
 }
 
 class Token extends React.Component<RequiredProps>
@@ -80,19 +80,19 @@ class Token extends React.Component<RequiredProps>
   }
 
   public static get Entity() {
-    return CreateContextFeed(entityConsumer);
+    return ArcToken.Entity;
   }
 
   public static get Data() {
-    return CreateContextFeed(dataConsumer);
+    return ArcToken.Data;
   }
 
   public static get Code() {
-    return CreateContextFeed(codeConsumer);
+    return ArcToken.Code;
   }
 
   public static get Logs() {
-    return CreateContextFeed(logsConsumer);
+    return ArcToken.Logs;
   }
 }
 

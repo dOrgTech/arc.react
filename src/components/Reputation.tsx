@@ -22,11 +22,6 @@ import {
 
 type Code = { }
 
-const entityConsumer = Component.EntityContext<Entity>().Consumer;
-const dataConsumer   = Component.DataContext<Data>().Consumer;
-const codeConsumer   = Component.CodeContext<Code>().Consumer;
-const logsConsumer   = Component.LogsContext().Consumer;
-
 interface RequiredProps {
   // Address of the Reputation Token
   address?: string;
@@ -53,20 +48,25 @@ class ArcReputation extends Component<Props, Entity, Data, Code>
   }
 
   public static get Entity() {
-    return CreateContextFeed(entityConsumer);
+    return CreateContextFeed(this._EntityContext.Consumer);
   }
 
   public static get Data() {
-    return CreateContextFeed(dataConsumer);
+    return CreateContextFeed(this._DataContext.Consumer);
   }
 
   public static get Code() {
-    return CreateContextFeed(codeConsumer);
+    return CreateContextFeed(this._CodeContext.Consumer);
   }
 
   public static get Logs() {
-    return CreateContextFeed(logsConsumer);
+    return CreateContextFeed(this._LogsContext.Consumer);
   }
+
+  protected static _EntityContext = React.createContext({ });
+  protected static _DataContext   = React.createContext({ });
+  protected static _CodeContext   = React.createContext({ });
+  protected static _LogsContext   = React.createContext({ });
 }
 
 class Reputation extends React.Component<RequiredProps>
@@ -88,20 +88,11 @@ class Reputation extends React.Component<RequiredProps>
       return (
         <Arc.Config>
         <DAO.Data>
-        {(arc: ArcConfig, daoData: DAOData) => {
-          console.log("HERE");
-          console.log(typeof arc);
-          console.log(Object.keys(arc))
-          console.log(typeof daoData);
-          console.log("after");
-          console.log(Object.keys(daoData))
-          console.log(typeof daoData.reputation.address);
-          return (
-            <ArcReputation address={daoData.reputation.address} arcConfig={arc}>
-            {children}
-            </ArcReputation>
-          );
-        }}
+        {(arc: ArcConfig, daoData: DAOData) => (
+          <ArcReputation address={daoData.reputation.address} arcConfig={arc}>
+          {children}
+          </ArcReputation>
+        )}
         </DAO.Data>
         </Arc.Config>
       )
@@ -109,19 +100,19 @@ class Reputation extends React.Component<RequiredProps>
   }
 
   public static get Entity() {
-    return CreateContextFeed(entityConsumer);
+    return ArcReputation.Entity;
   }
 
   public static get Data() {
-    return CreateContextFeed(dataConsumer);
+    return ArcReputation.Data;
   }
 
   public static get Code() {
-    return CreateContextFeed(codeConsumer);
+    return ArcReputation.Code;
   }
 
   public static get Logs() {
-    return CreateContextFeed(logsConsumer);
+    return ArcReputation.Logs;
   }
 }
 
