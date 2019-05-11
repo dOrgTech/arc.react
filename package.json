@@ -64,7 +64,8 @@
     },
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "/dist/"
+      "/dist/",
+      "/test/declarations.d.ts"
     ],
     "testRegex": "(/test/.*|\\.(test|spec))\\.(jsx?|tsx?)$",
     "moduleFileExtensions": [

@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Context } from "react";
 import memoize from "memoize-one";
 import { Subscription } from "rxjs";
 import { IStateful } from "@daostack/client/src/types"
@@ -31,27 +30,10 @@ export abstract class Component<
 
   // See here for more information on the React.Context pattern:
   // https://reactjs.org/docs/context.html
-  public static EntityContext<Entity>(): Context<Entity> {
-    return Component._EntityContext as any;
-  }
-
-  public static DataContext<Data>(): Context<Data> {
-    return Component._DataContext as any;
-  }
-
-  public static CodeContext<Code>(): Context<Code> {
-    return Component._CodeContext as any;
-  }
-
-  public static LogsContext(): Context<ComponentLogs> {
-    return Component._LogsContext as any;
-  }
-
-  // Untemplatized static context objects
-  private static _EntityContext = React.createContext({ });
-  private static _DataContext   = React.createContext({ });
-  private static _CodeContext   = React.createContext({ });
-  private static _LogsContext   = React.createContext({ });
+  protected static _EntityContext: React.Context<{}>;
+  protected static _DataContext: React.Context<{}>;
+  protected static _CodeContext: React.Context<{}>;
+  protected static _LogsContext: React.Context<{}>;
 
   private entity = memoize(
     // This will only run when the function's arguments have changed :D
@@ -78,11 +60,16 @@ export abstract class Component<
     this.onQueryComplete = this.onQueryComplete.bind(this);
   }
 
+  // This trick allows us to access the static objects
+  // defined in the derived class. See this code sample:
+  // https://github.com/Microsoft/TypeScript/issues/5989#issuecomment-163066313
+  "constructor": typeof Component;
+
   public render() {
-    const EntityProvider = Component.EntityContext<Entity>().Provider as any;
-    const DataProvider   = Component.DataContext<Data>().Provider as any;
-    const CodeProvider   = Component.CodeContext<Code>().Provider as any;
-    const LogsProvider   = Component.LogsContext().Provider;
+    const EntityProvider = this.constructor._EntityContext.Provider as any;
+    const DataProvider   = this.constructor._DataContext.Provider as any;
+    const CodeProvider   = this.constructor._CodeContext.Provider as any;
+    const LogsProvider   = this.constructor._LogsContext.Provider;
 
     const children = this.props.children;
     const { data, logs } = this.state;

@@ -53,6 +53,8 @@ class ContextFeed extends React.Component<Props>
             })(values)
             if ( i > -1)
               return <LoadingView logs={values[i]}/>
+            else
+              return <div>loading...</div>
           } else {
             return children(...values);
           }
