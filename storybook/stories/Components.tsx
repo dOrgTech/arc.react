@@ -10,12 +10,6 @@ import {
   Reputation
 } from "../../src";
 
-// TODO: remove
-import {
-  DAOData,
-  MemberData
-} from "../../src";
-
 export default () =>
   storiesOf("Components", module)
     .add("DAO", () => (
@@ -126,48 +120,4 @@ export default () =>
             type: PropertyType.string
           }
         ]} />
-    ))
-    .add("Test", () => (
-      <Arc config={DefaultArcConfig}>
-        <DAO address={"0xe7a2c59e134ee81d4035ae6db2254f79308e334f"}>
-          <DAO.Data>
-          {(data: DAOData) => (
-            <>
-            <div>{data.address}</div>
-            <div>{data.name}</div>
-            </>
-          )}
-          </DAO.Data>
-          <Member address={"0xe11ba2b4d45eaed5996cd0823791e0c93114882d"}>
-          <Member address={"0x22d491bde2303f2f43325b2108d26f1eaba1e32b"}>
-          <Member.Data>
-          {(data: MemberData) => (
-            <>
-            <div>{data.address}</div>
-            <div>{data.reputation.toString()}</div>
-            </>
-          )}
-          </Member.Data>
-          </Member>
-          </Member>
-        </DAO>
-      </Arc>
     ));
-
-// 0xe7a2c59e134ee81d4035ae6db2254f79308e334f
-// "Nefarious Soaper"
-/// Members
-//// 0xe11ba2b4d45eaed5996cd0823791e0c93114882d
-//// 990000000000000000000
-//// 0x22d491bde2303f2f43325b2108d26f1eaba1e32b
-//// 980100000000000000000
-
-// 0x86072cbff48da3c1f01824a6761a03f105bcc697
-// "Turbulent Banjo"
-/// Members
-//// 0x95ced938f7991cd0dfcb48f0a06a40fa1af46ebc
-//// 0x93b3bb6e8b75a6f4086a4e31cb744253c267b4a6ce83aadf6be37ddc9a3e872c
-//// 1000000000000000000000
-//// 0xd03ea8624c8c5987235048901fb614fdca89b117
-//// 0x900a00c6b9230204c3950a9c228a647f65d614f9d587ac4fad7bb382f4dc70c4
-//// 1000000000000000000000
