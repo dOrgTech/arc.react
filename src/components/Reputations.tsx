@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Observable } from "rxjs";
 import {
-  CEntity,
   CProps,
   ComponentList,
   BaseProps
@@ -11,53 +10,54 @@ import {
   ArcConfig
 } from "../protocol";
 import {
-  ArcReputation
+  ArcReputation,
+  ReputationEntity
 } from "./";
 
 // TODO: remove once change is merged
-import {
-  Reputation
-} from "@daostack/client";
 import gql from "graphql-tag";
 
-interface RequiredProps { }
+interface RequiredProps extends BaseProps { }
 
-interface InferredProps {
+interface ArcInferredProps {
   // Arc Instance
   arcConfig: ArcConfig | undefined;
 }
 
-type Props = RequiredProps & InferredProps & BaseProps;
+type ArcProps = RequiredProps & ArcInferredProps;
 
-class ArcReputations extends ComponentList<Props, ArcReputation>
+class ArcReputations extends ComponentList<ArcProps, ArcReputation>
 {
-  createObservableEntities(): Observable<CEntity<ArcReputation>[]> {
+  createObservableEntities(): Observable<ReputationEntity[]> {
     const { arcConfig } = this.props;
     if (!arcConfig) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
+    // TODO: move all component lists to using the .search pattern + add filter options
+    // TODO: uncomment when PR is merged in daostack/client repo
+    // return ReputationEntity.search({}, arcConfig.connection);
 
-    // TODO: remove once change is merged
+    // TODO: remove this when ...search(...) is uncommented above
     const arc = arcConfig.connection;
     const query = gql`
       {
-        reputationContracts {
+        reps {
           id
         }
       }
     `;
     return arc.getObservableList(
       query,
-      (r: any) => new Reputation(r.id, arc)
-    ) as Observable<Reputation[]>;
+      (r: any) => new ReputationEntity(r.id, arc)
+    ) as Observable<ReputationEntity[]>
   }
 
-  renderComponent(entity: CEntity<ArcReputation>, children: any): React.ComponentElement<CProps<ArcReputation>, any> {
+  renderComponent(entity: ReputationEntity, children: any): React.ComponentElement<CProps<ArcReputation>, any> {
     const { arcConfig } = this.props;
 
     return (
       <ArcReputation address={entity.address} arcConfig={arcConfig}>
-        {children}
+      {children}
       </ArcReputation>
     );
   }

@@ -26,7 +26,7 @@ type Code = {
   // contractName: ContractType (TypeChain)
 }
 
-interface RequiredProps {
+interface RequiredProps extends BaseProps {
   // Address of the DAO Avatar
   address: string;
 }
@@ -36,7 +36,7 @@ interface InferredProps {
   arcConfig: ArcConfig | undefined;
 }
 
-type Props = RequiredProps & InferredProps & BaseProps;
+type Props = RequiredProps & InferredProps;
 
 class ArcDAO extends Component<Props, Entity, Data, Code>
 {

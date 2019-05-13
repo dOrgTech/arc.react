@@ -18,7 +18,7 @@ import {
 
 type Code = { }
 
-interface RequiredProps {
+interface RequiredProps extends BaseProps {
   // Address of the Token
   address: string;
 }
@@ -28,7 +28,7 @@ interface InferredProps {
   arcConfig: ArcConfig | undefined;
 }
 
-type Props = RequiredProps & InferredProps & BaseProps;
+type Props = RequiredProps & InferredProps;
 
 // TODO: DAOToken & DAOReputation
 class ArcToken extends Component<Props, Entity, Data, Code>

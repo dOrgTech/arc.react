@@ -22,7 +22,7 @@ import {
 
 type Code = { }
 
-interface RequiredProps {
+interface RequiredProps extends BaseProps {
   // Address of the Reputation Token
   address?: string;
 }
@@ -32,7 +32,7 @@ interface InferredProps {
   arcConfig: ArcConfig | undefined;
 }
 
-type Props = RequiredProps & InferredProps & BaseProps;
+type Props = RequiredProps & InferredProps;
 
 class ArcReputation extends Component<Props, Entity, Data, Code>
 {
@@ -88,8 +88,8 @@ class Reputation extends React.Component<RequiredProps>
       return (
         <Arc.Config>
         <DAO.Data>
-        {(arc: ArcConfig, daoData: DAOData) => (
-          <ArcReputation address={daoData.reputation.address} arcConfig={arc}>
+        {(arc: ArcConfig, dao: DAOData) => (
+          <ArcReputation address={dao.reputation.address} arcConfig={arc}>
           {children}
           </ArcReputation>
         )}
