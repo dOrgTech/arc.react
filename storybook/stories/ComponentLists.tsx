@@ -18,6 +18,8 @@ import {
   ReputationData
 } from "../../src/";
 
+import filters from "../helpers/QueryFilters";
+
 // TODO: create ComponentListView similar to ComponentView
 export default () =>
   storiesOf("Component Lists", module)
@@ -77,7 +79,7 @@ export default () =>
       return (
         <Arc config={DefaultArcConfig}>
           <DAO address={"0xe7a2c59e134ee81d4035ae6db2254f79308e334f"}>
-            <Proposals>
+            <Proposals filters={filters.filterProposalByProposer(2)}>
               <Proposal.Data>
               {(data: ProposalData) => (
                 <div>{data.id}</div>

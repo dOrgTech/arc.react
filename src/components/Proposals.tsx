@@ -12,7 +12,9 @@ import {
   DAOProposal
 } from "./";
 
-interface RequiredProps { }
+interface RequiredProps {
+  filters?: Object | undefined;
+}
 
 interface InferredProps {
   dao: DAOEntity | undefined;
@@ -23,11 +25,11 @@ type Props = RequiredProps & InferredProps & BaseProps;
 class DAOProposals extends ComponentList<Props, DAOProposal>
 {
   createObservableEntities(): Observable<CEntity<DAOProposal>[]> {
-    const { dao } = this.props;
+    const { dao, filters } = this.props;
     if (!dao) {
       throw Error("DAO Entity Missing: Please provide this field as a prop, or use the inference component.");
     }
-    return dao.proposals();
+    return dao.proposals(filters);
   }
 
   renderComponent(entity: CEntity<DAOProposal>, children: any): React.ComponentElement<CProps<DAOProposal>, any> {
@@ -43,11 +45,11 @@ class DAOProposals extends ComponentList<Props, DAOProposal>
 class Proposals extends React.Component<RequiredProps>
 {
   render() {
-    const { children } = this.props;
+    const { children, filters } = this.props;
     return (
       <DAO.Entity>
       {(dao: DAOEntity) => (
-        <DAOProposals dao={dao}>
+        <DAOProposals dao={dao} filters={filters}>
         {children}
         </DAOProposals>
       )}

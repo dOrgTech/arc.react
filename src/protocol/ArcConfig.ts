@@ -41,8 +41,8 @@ export const DefaultArcConfig = new ArcConfig(
 
 export const HostedArcConfig = new ArcConfig(
   "wss://mainnet.infura.io/ws/v3/e0cdf3bfda9b468fa908aa6ab03d5ba2",
-  "https://subgraph.daostack.io/subgraphs/name/v16-without-uc",
-  "wss://ws.subgraph.daostack.io/subgraphs/name/v16-without-uc",
+  "https://subgraph.daostack.io/subgraphs/name/v17",
+  "wss://ws.subgraph.daostack.io/subgraphs/name/v17",
   {
       "host": "subgraph.daostack.io",
       "port": "443",
