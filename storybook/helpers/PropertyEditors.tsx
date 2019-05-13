@@ -1,10 +1,15 @@
 import * as React from "react";
 import * as R from "ramda";
-import { TextField } from "@material-ui/core";
+import {
+  Checkbox,
+  TextField,
+  FormControlLabel
+} from "@material-ui/core";
 
 export enum PropertyType {
   string,
-  number
+  number,
+  boolean
 }
 
 export interface PropertyData {
@@ -22,10 +27,10 @@ interface Props {
 }
 
 export class PropertyEditors extends React.Component<Props> {
-  handleChange = (name: string) => (event: any) => {
+  handleChange = (name: string, prop: string) => (event: any) => {
     this.props.setState(
       R.merge(this.props.state, {
-        [name]: event.target.value
+        [name]: event.target[prop]
       })
     );
   }
@@ -55,13 +60,29 @@ export class PropertyEditors extends React.Component<Props> {
                 id={`prop-editor-${prop.name}`}
                 label={prop.friendlyName}
                 value={state[prop.name]}
-                onChange={this.handleChange(prop.name)}
+                onChange={this.handleChange(prop.name, "value")}
                 variant="outlined"
-                />
+              />
             )
           break;
           case PropertyType.number:
             return (<></>)
+          break;
+          case PropertyType.boolean:
+            return (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    id={`prop-editor-${prop.name}`}
+                    value={prop.friendlyName}
+                    checked={state[prop.name]}
+                    onChange={this.handleChange(prop.name, "checked")}
+                  />
+                }
+                label={prop.friendlyName}
+                labelPlacement="top"
+              />
+            )
           break;
           default:
             return (<></>)

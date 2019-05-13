@@ -15,12 +15,16 @@ import {
   Token as Entity,
   ITokenState as Data
 } from "@daostack/client";
+import {
+  DAO,
+  DAOData
+} from "./DAO";
 
 type Code = { }
 
 interface RequiredProps extends BaseProps {
   // Address of the Token
-  address: string;
+  address?: string;
 }
 
 interface InferredProps {
@@ -30,13 +34,15 @@ interface InferredProps {
 
 type Props = RequiredProps & InferredProps;
 
-// TODO: DAOToken & DAOReputation
 class ArcToken extends Component<Props, Entity, Data, Code>
 {
   createEntity(): Entity {
     const { arcConfig, address } = this.props;
     if (!arcConfig) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
+    }
+    if (!address) {
+      throw Error("Address Missing: Please provide this field as a prop, or use the inference component.")
     }
     return new Entity(address, arcConfig.connection);
   }
@@ -68,15 +74,29 @@ class Token extends React.Component<RequiredProps>
   render() {
     const { address, children } = this.props;
 
-    return (
-      <Arc.Config>
-      {(arc: ArcConfig) => (
-        <ArcToken address={address} arcConfig={arc}>
-        {children}
-        </ArcToken>
-      )}
-      </Arc.Config>
-    );
+    if (address !== undefined) {
+      return (
+        <Arc.Config>
+        {(arc: ArcConfig) => (
+          <ArcToken address={address} arcConfig={arc}>
+          {children}
+          </ArcToken>
+        )}
+        </Arc.Config>
+      );
+    } else {
+      return (
+        <Arc.Config>
+        <DAO.Data>
+        {(arc: ArcConfig, dao: DAOData) => (
+          <ArcToken address={dao.token.address} arcConfig={arc}>
+          {children}
+          </ArcToken>
+        )}
+        </DAO.Data>
+        </Arc.Config>
+      );
+    }
   }
 
   public static get Entity() {

@@ -83,7 +83,7 @@ class Reputation extends React.Component<RequiredProps>
           </ArcReputation>
         )}
         </Arc.Config>
-      )
+      );
     } else {
       return (
         <Arc.Config>
@@ -95,7 +95,7 @@ class Reputation extends React.Component<RequiredProps>
         )}
         </DAO.Data>
         </Arc.Config>
-      )
+      );
     }
   }
 

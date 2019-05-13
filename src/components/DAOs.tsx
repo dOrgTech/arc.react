@@ -38,7 +38,7 @@ class ArcDAOs extends ComponentList<Props, ArcDAO>
 
     return (
       <ArcDAO address={entity.address} arcConfig={arcConfig}>
-        {children}
+      {children}
       </ArcDAO>
     );
   }
@@ -53,7 +53,7 @@ class DAOs extends React.Component<RequiredProps>
       <Arc.Config>
       {(arc: ArcConfig) =>
         <ArcDAOs arcConfig={arc}>
-          {children}
+        {children}
         </ArcDAOs>
       }
       </Arc.Config>
