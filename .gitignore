@@ -1,5 +1,6 @@
 node_modules
 dist
+package
 *.log
 .cache
 .daostack
