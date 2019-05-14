@@ -1,4 +1,2 @@
-// TODO: @daostack/client scheme.ts needs updates to:
-// - implmenent state(...)
-// - use ISchemeState interface
-// - 
+// TODO: waiting on a response
+// https://github.com/daostack/client/issues/214
