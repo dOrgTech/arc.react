@@ -19,7 +19,7 @@ import {
 // TODO
 type Code = { }
 
-interface RequiredProps {
+interface RequiredProps extends BaseProps {
   // Address of the member
   address: string;
 }
@@ -29,7 +29,7 @@ interface InferredProps {
   dao: DAOEntity | undefined;
 }
 
-type Props = RequiredProps & InferredProps & BaseProps;
+type Props = RequiredProps & InferredProps;
 
 class DAOMember extends Component<Props, Entity, Data, Code>
 {

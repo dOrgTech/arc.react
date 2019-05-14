@@ -1,41 +1,92 @@
 import * as React from "react";
 import { Observable } from "rxjs";
 import {
-  CEntity,
   CProps,
   ComponentList,
   BaseProps
 } from "../runtime";
 import {
+  Arc,
+  ArcConfig
+} from "../protocol";
+import {
   DAO,
   DAOEntity,
-  DAOMember
+  DAOMember,
+  MemberEntity
 } from "./";
 
-interface RequiredProps { }
+// TODO: remove once change is merged
+import gql from "graphql-tag";
 
-interface InferredProps {
+interface RequiredProps extends BaseProps {
+  allDAOs?: boolean;
+}
+
+interface ArcInferredProps {
+  arcConfig: ArcConfig | undefined;
+}
+
+interface DAOInferredProps {
   dao: DAOEntity | undefined;
 }
 
-type Props = RequiredProps & InferredProps & BaseProps;
+type ArcProps = RequiredProps & ArcInferredProps;
+type DAOProps = RequiredProps & DAOInferredProps;
 
-class DAOMembers extends ComponentList<Props, DAOMember>
+class ArcMembers extends ComponentList<ArcProps, DAOMember>
 {
-  createObservableEntities(): Observable<CEntity<DAOMember>[]> {
+  createObservableEntities(): Observable<MemberEntity[]> {
+    const { arcConfig } = this.props;
+    if (!arcConfig) {
+      throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
+    }
+    // TODO: uncomment this once PR is merged
+    // return MemberEntity.search({}, arcConfig.connection);
+
+    // TODO: remove this once PR is merged
+    const arc = arcConfig.connection;
+    const query = gql`{
+      members {
+        id
+        address
+        dao {
+          id
+        }
+      }
+    }`;
+
+    return arc.getObservableList(
+      query,
+      (r: any) => new MemberEntity(r.address, r.dao.id, arc)
+    );
+  }
+
+  renderComponent(entity: MemberEntity, children: any): React.ComponentElement<CProps<DAOMember>, any> {
+    return (
+      <DAOMember address={entity.address} dao={new DAOEntity(entity.daoAddress, entity.context)}>
+      {children}
+      </DAOMember>
+    )
+  }
+}
+
+class DAOMembers extends ComponentList<DAOProps, DAOMember>
+{
+  createObservableEntities(): Observable<MemberEntity[]> {
     const { dao } = this.props;
     // TODO: better error handling?
     if (!dao) {
       throw Error("DAO Entity Missing: Please provide this field as a prop, or use the inference component.");
     }
-    return dao.members();
+    return dao.members({});
   }
 
-  renderComponent(entity: CEntity<DAOMember>, children: any): React.ComponentElement<CProps<DAOMember>, any> {
+  renderComponent(entity: MemberEntity, children: any): React.ComponentElement<CProps<DAOMember>, any> {
     const { dao } = this.props;
     return (
       <DAOMember address={entity.address} dao={dao}>
-        {children}
+      {children}
       </DAOMember>
     );
   }
@@ -44,23 +95,36 @@ class DAOMembers extends ComponentList<Props, DAOMember>
 class Members extends React.Component<RequiredProps>
 {
   render() {
-    const { children } = this.props;
+    const { children, allDAOs } = this.props;
 
-    return (
-      <DAO.Entity>
-      {(dao: DAOEntity) =>(
-        <DAOMembers dao={dao}>
-        {children}
-        </DAOMembers>
-      )}
-      </DAO.Entity>
-    );
+    if (allDAOs) {
+      return (
+        <Arc.Config>
+        {(arc: ArcConfig) => (
+          <ArcMembers arcConfig={arc}>
+          {children}
+          </ArcMembers>
+        )}
+        </Arc.Config>
+      );
+    } else {
+      return (
+        <DAO.Entity>
+        {(dao: DAOEntity) => (
+          <DAOMembers dao={dao}>
+          {children}
+          </DAOMembers>
+        )}
+        </DAO.Entity>
+      );
+    }
   }
 }
 
 export default Members;
 
 export {
+  ArcMembers,
   DAOMembers,
   Members
 };

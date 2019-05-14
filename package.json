@@ -1,4 +1,6 @@
 {
+  "name": "@dorgtech/daocomponents",
+  "version": "0.0.1-alpha",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
   "engines": {
@@ -8,11 +10,14 @@
     "start": "concurrently \"npm:start:subgraph\" \"npm:start:storybook\"",
     "start:storybook": "start-storybook -p 3000",
     "start:subgraph": "concurrently \"npm:start:graphnode\"",
-    "start:graphnode": "docker-compose -f ./docker-compose.yml up graph-node",
-    "stop:graphnode": "docker-compose -f ./docker-compose.yml down -v",
-    "compile": "tsc",
+    "start:graphnode": "docker-compose -f ./node_modules/@daostack/client/docker-compose.yml up graph-node",
+    "stop:graphnode": "docker-compose -f ./node_modules/@daostack/client/docker-compose.yml down -v",
     "test": "jest",
-    "build-storybook": "build-storybook"
+    "build": "tsc",
+    "build:release": "rm -rf ./dist && tsc && rm -rf ./dist/storybook",
+    "build:storybook": "build-storybook",
+    "package:release": "rm -rf ./package && mkdir ./package && cp -r ./dist/ ./package/dist && cp README.md package.json package-lock.json ./package && cp -r ./src ./package/src",
+    "release": "npm run build:release && npm run package:release && npm publish ./package --access public"
   },
   "dependencies": {
     "@daostack/client": "0.1.9",
@@ -22,7 +27,7 @@
     "react": "16.8.6",
     "react-spinkit": "^3.0.0",
     "reactjs-popup": "^1.3.2",
-    "rxjs": "^6.4.0"
+    "rxjs": "6.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.3.3",

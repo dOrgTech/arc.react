@@ -1,15 +1,11 @@
 import * as React from "react";
 import {
-  ObjectInspector,
-  ObjectRootLabel,
-  ObjectLabel
-} from "react-inspector";
-import {
   Typography,
   Divider
-} from '@material-ui/core';
+} from "@material-ui/core";
 
 import { ComponentLogs } from "../../src";
+import ObjectInspector from "./ObjectInspector";
 import { PropertyEditors, PropertyData, PropertyType } from "./PropertyEditors";
 export { PropertyData, PropertyType };
 
@@ -24,8 +20,8 @@ interface State {
   [name: string]: any
 }
 
-export default class ComponentView extends React.Component<Props, State> {
-
+export default class ComponentView extends React.Component<Props, State>
+{
   constructor(props: Props) {
     super(props);
 
@@ -51,34 +47,34 @@ export default class ComponentView extends React.Component<Props, State> {
         Properties
       </Typography>
       <PropertyEditors properties={propEditors} state={this.state} setState={(state) => this.setState(state)} />
-        <Component {...this.state}>
-          <Component.Entity>
-          <Component.Data>
-          <Component.Logs>
-          {(entity: any, data: any, logs: ComponentLogs) => (
-            <>
-            <Typography variant="h6" component="h6">
-              Entity
-            </Typography>
-            {objectInspector(entity, `${name}.Entity`, "Entity Instance")}
-            <Typography variant="h6" component="h6">
-              Data
-            </Typography>
-            {objectInspector(data, `${name}.Data`, "Semantic Data")}
-            <Typography variant="h6" component="h6">
-              Logs
-            </Typography>
-            {objectInspector(logs.react, `${name}.ReactLogs`, "React Logs")}
-            {objectInspector(logs.entity, `${name}.EntityLogs`, "Entity Logs")}
-            {objectInspector(logs.data, `${name}.DataLogs`, "Data Query Logs")}
-            {objectInspector(logs.code, `${name}.CodeLogs`, "Code Logs")}
-            {objectInspector(logs.prose, `${name}.ProseLogs`, "Prose Logs")}
-            </>
-          )}
-          </Component.Logs>
-          </Component.Data>
-          </Component.Entity>
-        </Component>
+      <Component {...this.state}>
+        <Component.Entity>
+        <Component.Data>
+        <Component.Logs>
+        {(entity: any, data: any, logs: ComponentLogs) => (
+          <>
+          <Typography variant="h6" component="h6">
+            Entity
+          </Typography>
+          {ObjectInspector(entity, `${name}.Entity`, "Entity Instance")}
+          <Typography variant="h6" component="h6">
+            Data
+          </Typography>
+          {ObjectInspector(data, `${name}.Data`, "Semantic Data")}
+          <Typography variant="h6" component="h6">
+            Logs
+          </Typography>
+          {ObjectInspector(logs.react, `${name}.ReactLogs`, "React Logs")}
+          {ObjectInspector(logs.entity, `${name}.EntityLogs`, "Entity Logs")}
+          {ObjectInspector(logs.data, `${name}.DataLogs`, "Data Query Logs")}
+          {ObjectInspector(logs.code, `${name}.CodeLogs`, "Code Logs")}
+          {ObjectInspector(logs.prose, `${name}.ProseLogs`, "Prose Logs")}
+          </>
+        )}
+        </Component.Logs>
+        </Component.Data>
+        </Component.Entity>
+      </Component>
       </>
     );
 
@@ -89,23 +85,3 @@ export default class ComponentView extends React.Component<Props, State> {
   }
 }
 
-const objectInspector = (data: any, name: string, tooltip: string) => {
-  return (
-    <ObjectInspector
-      data={{...data}}
-      name={name}
-      expandLevel={1}
-      theme={"chromeDark"}
-      nodeRenderer={(node: any) => nodeRenderer(node, tooltip)} />
-  );
-}
-
-const nodeRenderer = (node: any, tooltip: string) => {
-  const { depth, name, data, isNonenumerable } = node;
-
-  return (
-    depth === 0
-      ? <ObjectRootLabel name={name} data={tooltip} />
-      : <ObjectLabel name={name} data={data} isNonenumerable={isNonenumerable} />
-  );
-}
