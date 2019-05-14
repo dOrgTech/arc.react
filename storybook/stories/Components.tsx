@@ -8,7 +8,8 @@ import {
   Member,
   Proposal,
   Reputation,
-  Token
+  Token,
+  Reward
 } from "../../src";
 
 export default () =>
@@ -162,6 +163,25 @@ export default () =>
             friendlyName: "DAO Address",
             name: "dao",
             defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
+            type: PropertyType.string
+          }
+        ]}
+      />
+    ))
+    .add("Reward", () => (
+      <ComponentView
+        name={"Reward"}
+        Component={Reward}
+        RequiredContext={(props) => (
+          <Arc config={DefaultArcConfig}>
+            {props.children}
+          </Arc>
+        )}
+        propEditors={[
+          {
+            friendlyName: "Reward ID",
+            name: "id",
+            defaultValue: "0x679ee37af4f2e69b5c13d0827b873aaf5c6bbea03fe95e27751916e2571e8aea",
             type: PropertyType.string
           }
         ]}

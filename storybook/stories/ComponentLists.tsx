@@ -17,7 +17,10 @@ import {
   ReputationData,
   Tokens,
   Token,
-  TokenData
+  TokenData,
+  Rewards,
+  Reward,
+  RewardData
 } from "../../src/";
 import ComponentListView, { PropertyType } from "../helpers/ComponentListView";
 
@@ -122,5 +125,19 @@ export default () =>
         )}
         propEditors={[]}
         getId={(token: TokenData) => `Token: ${token.address}`}
+      />
+    ))
+    .add("Rewards", () => (
+      <ComponentListView
+        name={"Rewards"}
+        ComponentList={Rewards}
+        Component={Reward}
+        RequiredContext={(props) => (
+          <Arc config={DefaultArcConfig}>
+          {props.children}
+          </Arc>
+        )}
+        propEditors={[]}
+        getId={(reward: RewardData) => `Reward: ${reward.id}`}
       />
     ));

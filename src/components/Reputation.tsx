@@ -38,12 +38,15 @@ class ArcReputation extends Component<Props, Entity, Data, Code>
 {
   createEntity(): Entity {
     const { arcConfig, address } = this.props;
+
     if (!arcConfig) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
+
     if (!address) {
       throw Error("Address Missing: Please provide this field as a prop, or use the inference component.")
     }
+
     return new Entity(address, arcConfig.connection);
   }
 
