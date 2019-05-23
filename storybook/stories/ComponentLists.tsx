@@ -96,6 +96,12 @@ export default () =>
             name: "allDAOs",
             defaultValue: false,
             type: PropertyType.boolean
+          },
+          {
+            friendlyName: "Filters",
+            name: "filters",
+            defaultValue: filters.filterProposalByStage(2),
+            type: PropertyType.object
           }
         ]}
         getId={(proposal: ProposalData) => `Proposal: ${proposal.id}`}
@@ -143,4 +149,3 @@ export default () =>
         getId={(reward: RewardData) => `Reward: ${reward.id}`}
       />
     ));
->>>>>>> master

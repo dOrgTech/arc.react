@@ -1,9 +1,9 @@
 import * as React from "react";
 import { Observable } from "rxjs";
 import {
+  CEntity,
   CProps,
   ComponentList,
-  BaseProps
 } from "../runtime";
 import {
   Arc,
@@ -38,7 +38,7 @@ class ArcProposals extends ComponentList<ArcProps, DAOProposal>
 {
   createObservableEntities(): Observable<ProposalEntity[]> {
     const { arcConfig, filters } = this.props;
-    if (!arcConfig) {
+    if (!arcConfig || !filters) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
     return ProposalEntity.search(filters, arcConfig.connection);

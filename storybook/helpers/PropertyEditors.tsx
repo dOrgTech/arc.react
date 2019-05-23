@@ -8,6 +8,7 @@ import {
 
 export enum PropertyType {
   string,
+  object,
   number,
   boolean
 }

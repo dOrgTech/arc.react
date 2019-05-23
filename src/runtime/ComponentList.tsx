@@ -5,6 +5,7 @@ import { Observable, Subscription } from "rxjs";
 import { BaseProps, BaseComponent } from "./BaseComponent";
 import { Component } from "./Component";
 import { ComponentListLogs } from "./logging/ComponentListLogs";
+import LoadingView from './LoadingView';
 export { ComponentListLogs };
 
 // Extract the derived component's template parameters
@@ -75,7 +76,7 @@ export abstract class ComponentList<
         <>
         {this.renderComponent(entity, children)}
         </>
-      )) : <div>loading...</div>
+      )) : <LoadingView logs={logs}/>
     }
   }
 
