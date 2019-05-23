@@ -19,7 +19,7 @@ import {
 // TODO
 type Code = { }
 
-interface RequiredProps {
+interface RequiredProps extends BaseProps {
   // Proposal ID
   id: string;
 }
@@ -29,7 +29,7 @@ interface InferredProps {
   dao: DAOEntity | undefined;
 }
 
-type Props = RequiredProps & InferredProps & BaseProps;
+type Props = RequiredProps & InferredProps;
 
 class DAOProposal extends Component<Props, Entity, Data, Code>
 {
@@ -40,7 +40,7 @@ class DAOProposal extends Component<Props, Entity, Data, Code>
       throw Error("DAO Missing: Please provide this field as a prop, or use the inference component.");
     }
 
-    return dao.proposal(id);
+    return new Entity(id, dao.address, dao.context);
   }
 
   public static get Entity() {

@@ -6,7 +6,6 @@ import {
   DAOs,
   DAO,
   DAOData,
-  DAOEntity,
   Members,
   Member,
   MemberData,
@@ -15,94 +14,133 @@ import {
   ProposalData,
   Reputations,
   Reputation,
-  ReputationData
+  ReputationData,
+  Tokens,
+  Token,
+  TokenData,
+  Rewards,
+  Reward,
+  RewardData
 } from "../../src/";
+import ComponentListView, { PropertyType } from "../helpers/ComponentListView";
 
 import filters from "../helpers/QueryFilters";
 
 // TODO: create ComponentListView similar to ComponentView
 export default () =>
   storiesOf("Component Lists", module)
-    .add("DAOs", () => {
-      return (
-        <Arc config={DefaultArcConfig}>
-          <DAOs>
-            <div>something useful</div>
-            <DAO.Data>
-            {(data: DAOData | undefined) => (
-              data ?
-                <>
-                <div>{data.name}</div>
-                <div>{data.address}</div>
-                <div>{data.memberCount}</div>
-                </>
-              : <div>loading...</div>
-            )}
-            </DAO.Data>
-            <Members>
-              <Member.Data>
-              {(data: MemberData | undefined) => (
-                data ?
-                <>
-                <div>{data.address}</div>
-                <div>{data.tokens.toString()}</div>
-                <div>{data.reputation.toString()}</div>
-                </>
-                : <div>loading...</div>
-              )}
-              </Member.Data>
-            </Members>
-          </DAOs>
-        </Arc>
-      )
-    })
-    .add("DAO Entities", () => {
-      return (
-        <Arc config={DefaultArcConfig}>
-          <DAOs>
-            {(entities: DAOEntity[]) => (
-              entities ?
-              <>
-                {entities.map((entity, index) => (
-                  <React.Fragment key={index}>
-                  <div>{entity.address}</div>
-                  </React.Fragment>
-                ))}
-              </>
-              : <div>loading...</div>
-            )}
-          </DAOs>
-        </Arc>
-      )
-    })
-    .add("Proposals", () => {
-      return (
-        <Arc config={DefaultArcConfig}>
-          <DAO address={"0xe7a2c59e134ee81d4035ae6db2254f79308e334f"}>
-            <Proposals filters={filters.filterProposalByProposer(2)}>
-              <Proposal.Data>
-              {(data: ProposalData) => (
-                <div>{data.id}</div>
-              )}
-              </Proposal.Data>
-            </Proposals>
-          </DAO>
-        </Arc>
-      )
-    })
-    .add("Reputations", () => {
-      return (
-        <Arc config={DefaultArcConfig}>
-          <Reputations>
-            <Reputation.Data>
-            {(data: ReputationData) => (
-              <>
-              <div>{data.address}</div>
-              <div>{data.totalSupply.toString()}</div>
-              </>
-            )}
-            </Reputation.Data>
-          </Reputations>
-        </Arc>
-      )
-    });
+    .add("DAOs", () => (
+      <ComponentListView
+        name={"DAOs"}
+        ComponentList={DAOs}
+        Component={DAO}
+        RequiredContext={(props) => (
+          <Arc config={DefaultArcConfig}>
+          {props.children}
+          </Arc>
+        )}
+        propEditors={[]}
+        getId={(dao: DAOData) => `DAO: ${dao.address}`}
+      />
+    ))
+    .add("Members", () => (
+      <ComponentListView
+        name={"Members"}
+        ComponentList={Members}
+        Component={Member}
+        RequiredContext={(props) => (
+          <Arc config={DefaultArcConfig}>
+            <DAO address={props.dao}>
+            {props.children}
+            </DAO>
+          </Arc>
+        )}
+        propEditors={[
+          {
+            friendlyName: "DAO Address",
+            name: "dao",
+            defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
+            type: PropertyType.string
+          },
+          {
+            friendlyName: "All DAOs",
+            name: "allDAOs",
+            defaultValue: false,
+            type: PropertyType.boolean
+          }
+        ]}
+        getId={(member: MemberData) => `Member: ${member.address}`}
+      />
+    ))
+    .add("Proposals", () => (
+      <ComponentListView
+        name={"Proposals"}
+        ComponentList={Proposals}
+        Component={Proposal}
+        RequiredContext={(props) => (
+          <Arc config={DefaultArcConfig}>
+            <DAO address={props.dao}>
+            {props.children}
+            </DAO>
+          </Arc>
+        )}
+        propEditors={[
+          {
+            friendlyName: "DAO Address",
+            name: "dao",
+            defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
+            type: PropertyType.string
+          },
+          {
+            friendlyName: "All DAOs",
+            name: "allDAOs",
+            defaultValue: false,
+            type: PropertyType.boolean
+          }
+        ]}
+        getId={(proposal: ProposalData) => `Proposal: ${proposal.id}`}
+      />
+    ))
+    .add("Reputations", () => (
+      <ComponentListView
+        name={"Reputations"}
+        ComponentList={Reputations}
+        Component={Reputation}
+        RequiredContext={(props) => (
+          <Arc config={DefaultArcConfig}>
+          {props.children}
+          </Arc>
+        )}
+        propEditors={[]}
+        getId={(reputation: ReputationData) => `Reputation: ${reputation.address}`}
+      />
+    ))
+    .add("Tokens", () => (
+      <ComponentListView
+        name={"Tokens"}
+        ComponentList={Tokens}
+        Component={Token}
+        RequiredContext={(props) => (
+          <Arc config={DefaultArcConfig}>
+          {props.children}
+          </Arc>
+        )}
+        propEditors={[]}
+        getId={(token: TokenData) => `Token: ${token.address}`}
+      />
+    ))
+    .add("Rewards", () => (
+      <ComponentListView
+        name={"Rewards"}
+        ComponentList={Rewards}
+        Component={Reward}
+        RequiredContext={(props) => (
+          <Arc config={DefaultArcConfig}>
+          {props.children}
+          </Arc>
+        )}
+        propEditors={[]}
+        getId={(reward: RewardData) => `Reward: ${reward.id}`}
+      />
+    ));
+>>>>>>> master

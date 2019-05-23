@@ -10,8 +10,8 @@ import {
   ArcConfig
 } from "../protocol";
 import {
-  ArcReputation,
-  ReputationEntity
+  ArcReward,
+  RewardEntity
 } from "./";
 
 // TODO: remove once change is merged
@@ -26,44 +26,46 @@ interface InferredProps {
 
 type Props = RequiredProps & InferredProps;
 
-class ArcReputations extends ComponentList<Props, ArcReputation>
+class ArcRewards extends ComponentList<Props, ArcReward>
 {
-  createObservableEntities(): Observable<ReputationEntity[]> {
+  createObservableEntities(): Observable<RewardEntity[]> {
     const { arcConfig } = this.props;
+
     if (!arcConfig) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
-    // TODO: move all component lists to using the .search pattern + add filter options
-    // TODO: uncomment when PR is merged in daostack/client repo
-    // return ReputationEntity.search({}, arcConfig.connection);
+
+    // TODO: uncomment when this issue is resolved
+    // https://github.com/daostack/client/issues/213
+    // return RewardEntity.search({}, arcConfig.connection);
 
     // TODO: remove this when ...search(...) is uncommented above
     const arc = arcConfig.connection;
     const query = gql`
       {
-        reps {
+        gprewards {
           id
         }
       }
     `;
     return arc.getObservableList(
       query,
-      (r: any) => new ReputationEntity(r.id, arc)
-    ) as Observable<ReputationEntity[]>;
+      (r: any) => new RewardEntity(r.id, arc)
+    ) as Observable<RewardEntity[]>;
   }
 
-  renderComponent(entity: ReputationEntity, children: any): React.ComponentElement<CProps<ArcReputation>, any> {
+  renderComponent(entity: RewardEntity, children: any): React.ComponentElement<CProps<ArcReward>, any> {
     const { arcConfig } = this.props;
 
     return (
-      <ArcReputation address={entity.address} arcConfig={arcConfig}>
+      <ArcReward id={entity.id} arcConfig={arcConfig}>
       {children}
-      </ArcReputation>
+      </ArcReward>
     );
   }
 }
 
-class Reputations extends React.Component<RequiredProps>
+class Rewards extends React.Component<RequiredProps>
 {
   render() {
     const { children } = this.props;
@@ -71,18 +73,18 @@ class Reputations extends React.Component<RequiredProps>
     return (
       <Arc.Config>
       {(arc: ArcConfig) =>
-        <ArcReputations arcConfig={arc}>
+        <ArcRewards arcConfig={arc}>
         {children}
-        </ArcReputations>
+        </ArcRewards>
       }
       </Arc.Config>
     )
   }
 }
 
-export default Reputations;
+export default Rewards;
 
 export {
-  ArcReputations,
-  Reputations
+  ArcRewards,
+  Rewards
 };

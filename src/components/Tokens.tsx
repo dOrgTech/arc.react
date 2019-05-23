@@ -10,8 +10,8 @@ import {
   ArcConfig
 } from "../protocol";
 import {
-  ArcReputation,
-  ReputationEntity
+  ArcToken,
+  TokenEntity
 } from "./";
 
 // TODO: remove once change is merged
@@ -26,44 +26,44 @@ interface InferredProps {
 
 type Props = RequiredProps & InferredProps;
 
-class ArcReputations extends ComponentList<Props, ArcReputation>
+class ArcTokens extends ComponentList<Props, ArcToken>
 {
-  createObservableEntities(): Observable<ReputationEntity[]> {
+  createObservableEntities(): Observable<TokenEntity[]> {
     const { arcConfig } = this.props;
     if (!arcConfig) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
     // TODO: move all component lists to using the .search pattern + add filter options
     // TODO: uncomment when PR is merged in daostack/client repo
-    // return ReputationEntity.search({}, arcConfig.connection);
+    // return TokenEntity.search({}, arcConfig.connection);
 
     // TODO: remove this when ...search(...) is uncommented above
     const arc = arcConfig.connection;
     const query = gql`
       {
-        reps {
+        tokens {
           id
         }
       }
     `;
     return arc.getObservableList(
       query,
-      (r: any) => new ReputationEntity(r.id, arc)
-    ) as Observable<ReputationEntity[]>;
+      (r: any) => new TokenEntity(r.id, arc)
+    ) as Observable<TokenEntity[]>
   }
 
-  renderComponent(entity: ReputationEntity, children: any): React.ComponentElement<CProps<ArcReputation>, any> {
+  renderComponent(entity: TokenEntity, children: any): React.ComponentElement<CProps<ArcToken>, any> {
     const { arcConfig } = this.props;
 
     return (
-      <ArcReputation address={entity.address} arcConfig={arcConfig}>
+      <ArcToken address={entity.address} arcConfig={arcConfig}>
       {children}
-      </ArcReputation>
+      </ArcToken>
     );
   }
 }
 
-class Reputations extends React.Component<RequiredProps>
+class Tokens extends React.Component<RequiredProps>
 {
   render() {
     const { children } = this.props;
@@ -71,18 +71,18 @@ class Reputations extends React.Component<RequiredProps>
     return (
       <Arc.Config>
       {(arc: ArcConfig) =>
-        <ArcReputations arcConfig={arc}>
+        <ArcTokens arcConfig={arc}>
         {children}
-        </ArcReputations>
+        </ArcTokens>
       }
       </Arc.Config>
     )
   }
 }
 
-export default Reputations;
+export default Tokens;
 
 export {
-  ArcReputations,
-  Reputations
+  ArcTokens,
+  Tokens
 };

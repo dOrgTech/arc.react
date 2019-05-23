@@ -29,7 +29,7 @@ export abstract class Protocol<
 
     return (
       <ConfigProvider value={config}>
-        {children}
+      {children}
       </ConfigProvider>
     )
   }

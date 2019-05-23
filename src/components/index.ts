@@ -6,3 +6,7 @@ export * from "./Proposal";
 export * from "./Proposals";
 export * from "./Reputation";
 export * from "./Reputations";
+export * from "./Token";
+export * from "./Tokens";
+export * from "./Reward";
+export * from "./Rewards";
