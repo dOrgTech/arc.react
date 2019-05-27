@@ -14,9 +14,6 @@ import {
   ReputationEntity
 } from "./";
 
-// TODO: remove once change is merged
-import gql from "graphql-tag";
-
 interface RequiredProps extends BaseProps { }
 
 interface InferredProps {
@@ -33,23 +30,7 @@ class ArcReputations extends ComponentList<Props, ArcReputation>
     if (!arcConfig) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
-    // TODO: move all component lists to using the .search pattern + add filter options
-    // TODO: uncomment when PR is merged in daostack/client repo
-    // return ReputationEntity.search({}, arcConfig.connection);
-
-    // TODO: remove this when ...search(...) is uncommented above
-    const arc = arcConfig.connection;
-    const query = gql`
-      {
-        reps {
-          id
-        }
-      }
-    `;
-    return arc.getObservableList(
-      query,
-      (r: any) => new ReputationEntity(r.id, arc)
-    ) as Observable<ReputationEntity[]>;
+    return ReputationEntity.search({}, arcConfig.connection);
   }
 
   renderComponent(entity: ReputationEntity, children: any): React.ComponentElement<CProps<ArcReputation>, any> {

@@ -20,7 +20,7 @@
     "release": "npm run build:release && npm run package:release && npm publish ./package --access public"
   },
   "dependencies": {
-    "@daostack/client": "0.1.9",
+    "@daostack/client": "0.1.14",
     "@daostack/migration": "0.0.1-rc.16-v1",
     "memoize-one": "^5.0.0",
     "ramda": "^0.26.1",
