@@ -16,6 +16,8 @@ import {
   MemberEntity
 } from "./";
 
+const { first } = require('rxjs/operators')
+
 interface RequiredProps extends BaseProps {
   allDAOs?: boolean;
 }
@@ -41,9 +43,13 @@ class ArcMembers extends ComponentList<ArcProps, DAOMember>
     return MemberEntity.search({}, arcConfig.connection);
   }
 
-  renderComponent(entities: MemberEntity[], children: any): React.ComponentElement<CProps<DAOMember>, any> {
+  async fetchData(entity: MemberEntity): Promise<any>{
+    return entity.state().pipe(first()).toPromise();
+  }
+
+  renderComponent(entity: MemberEntity, children: any): React.ComponentElement<CProps<DAOMember>, any> {
     return (
-      <DAOMember address={entities[0].address} dao={new DAOEntity(entities[0].daoAddress, entities[0].context)}>
+      <DAOMember address={entity.address} dao={new DAOEntity(entity.daoAddress, entity.context)}>
       {children}
       </DAOMember>
     )
@@ -60,10 +66,14 @@ class DAOMembers extends ComponentList<DAOProps, DAOMember>
     return dao.members({});
   }
 
-  renderComponent(entities: MemberEntity[], children: any): React.ComponentElement<CProps<DAOMember>, any> {
+  async fetchData(entity: MemberEntity): Promise<any>{
+    return entity.state().pipe(first()).toPromise();
+  }
+
+  renderComponent(entity: MemberEntity, children: any): React.ComponentElement<CProps<DAOMember>, any> {
     const { dao } = this.props;
     return (
-      <DAOMember address={entities[0].address} dao={dao}>
+      <DAOMember address={entity.address} dao={dao}>
       {children}
       </DAOMember>
     );

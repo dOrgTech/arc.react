@@ -6,6 +6,7 @@ import { BaseProps, BaseComponent } from "./BaseComponent";
 import { Component } from "./Component";
 import { ComponentListLogs } from "./logging/ComponentListLogs";
 import LoadingView from './LoadingView';
+const R = require('ramda')
 export { ComponentListLogs };
 
 // Extract the derived component's template parameters
@@ -16,6 +17,7 @@ export type CCode<Comp>    = Comp extends Component<infer Props, infer Entity, i
 
 interface State<Entity> {
   entities: Entity[];
+  sorted: Array<any>;
 
   // Diagnostics for the component
   // TODO: logs aren't consumable, expose through a context?
@@ -36,7 +38,8 @@ export abstract class ComponentList<
   >
 {
   protected abstract createObservableEntities(): Observable<Entity[]>;
-  protected abstract renderComponent(entities: Entity[], children: any): React.ComponentElement<CProps<Comp>, any>;
+  protected abstract renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Comp>, any>;
+  protected async abstract fetchData(entity: Entity) : Promise<any>;
 
   private observableEntities = memoize(
     // This will only run when the function's arguments have changed :D
@@ -53,17 +56,21 @@ export abstract class ComponentList<
 
     this.state = {
       entities: [],
+      sorted: [],
       logs: new ComponentListLogs()
     };
 
     this.onQueryEntities = this.onQueryEntities.bind(this);
     this.onQueryError = this.onQueryError.bind(this);
     this.onQueryComplete = this.onQueryComplete.bind(this);
+    //this.fetchData = this.fetchData.bind(this);
   }
 
   public render() {
-    const children = this.props.children;
-    const { entities, logs } = this.state;
+    // @ts-ignore
+    const { children } = this.props;
+    const { entities, sorted, logs } = this.state;
+    console.log(this.state)
     this.observableEntities(this.props);
 
     logs.reactRendered();
@@ -73,25 +80,27 @@ export abstract class ComponentList<
     } else {
       // TODO: better loading handler
     if(entities) {
-      return this.renderComponent(entities, children)
-      /*
-      let test = entities.map(entity => (
+      if(sorted){
+        return sorted.map((item) => {
+          return(
+          <>
+          {this.renderComponent(item.entity, children)}
+          </>
+        )})
+      }
+      else return entities.map((entity) => {
+        return(
         <>
         {this.renderComponent(entity, children)}
         </>
-      ))
-      //console.log(typeof(this.props.sort))
-      console.log(this.props)
-      //console.log(test)
-      */
-      //return <div> work in progress </div>
+      )})
+      return test
     }
     else return <LoadingView logs={logs}/>
     }
   }
 
-  public componentWillMount() {
-    // prefetch the entities
+  public async componentWillMount() {
     this.observableEntities(this.props);
   }
 
@@ -133,14 +142,26 @@ export abstract class ComponentList<
     });
   }
 
-  private onQueryEntities(entities: Entity[]) {
+  private async onQueryEntities(entities: Entity[]) {
     const { logs } = this.state;
-
+    // @ts-ignore
+    const { sort } = this.props;
     logs.dataQueryReceivedData();
 
-    this.mergeState({
-      entities: entities
-    });
+    if (sort) {
+      const unsorted = entities.map(async (entity) => {
+        let value = await this.fetchData(entity)
+        let sortFeild = await sort(value)
+        return ({ entity: entity, value: sortFeild })
+      })
+      Promise.all(unsorted).then(unsorted => {
+        let sortByValue = R.sortBy(R.prop('value'))
+        this.mergeState({
+          entities: entities,
+          sorted: sortByValue(unsorted)
+        })
+      })
+    }
   }
 
   private onQueryError(error: Error) {

@@ -14,12 +14,15 @@ import {
   DAOEntity,
   DAOProposal,
   ProposalEntity,
+  ProposalData
 } from "./";
+
+const { first } = require('rxjs/operators')
 
 interface RequiredProps {
   allDAOs?: boolean;
   filters?: Object | undefined;
-  sort?: (proposal: ProposalEntity, sortedList: ProposalEntity[])=> any;
+  sort?: (proposal: ProposalData)=> number;
 }
 
 interface ArcInferredProps {
@@ -45,9 +48,21 @@ class ArcProposals extends ComponentList<ArcProps, DAOProposal>
     return ProposalEntity.search(filters, arcConfig.connection);
   }
 
-  renderComponent(entities: ProposalEntity[], children: any): React.ComponentElement<CProps<DAOProposal>, any> {
+  async fetchData(entity: ProposalEntity): Promise<any> {
+    const data = await new Promise((resolve, reject) => {
+      const state = entity.state()
+      state.subscribe(
+        (data: any) => {
+          resolve(data); 
+        },
+        (error: Error) => {reject(error)})
+    })
+    return data
+  }
+
+  renderComponent(entity: ProposalEntity, children: any): React.ComponentElement<CProps<DAOProposal>, any> {
     return (
-      <DAOProposal id={entities[0].id} dao={entities[0].dao}>
+      <DAOProposal id={entity.id} dao={entity.dao}>
       {children}
       </DAOProposal>
     );
@@ -61,40 +76,21 @@ class DAOProposals extends ComponentList<DAOProps, DAOProposal>
     if (!dao) {
       throw Error("DAO Missing: Please provide this field as a prop, or use the inference component.");
     }
-    //console.log(dao)
     return dao.proposals(filters);
   }
 
-  renderComponent(entities: ProposalEntity[], children: any): React.ComponentElement<CProps<DAOProposal>, any> {
-    const defaultRender = (
-      <DAOProposal id={entities[0].id} dao={entities[0].dao}>
+  async fetchData(entity: ProposalEntity): Promise<any>{
+    return entity.state().pipe(first()).toPromise();
+  }
+
+  renderComponent(entity: ProposalEntity, children: any): React.ComponentElement<CProps<DAOProposal>, any> {
+    //const sort = this.props.sort
+    //if (sort) console.log(typeof(sort))
+    return (
+      <DAOProposal id={entity.id} dao={entity.dao}>
       {children}
       </DAOProposal>
     )
-    const sort = this.props.sort
-    if (sort) {
-      let sorted: any = []
-      entities.map((entity: ProposalEntity) => {
-        sort(entity, sorted)
-        //console.log(sorted)
-      })
-      if (sorted){
-        let finalSorted: any = []
-        sorted.map((entity: ProposalEntity) => {
-          console.log("iterating sorted")
-          console.log(entity)
-          const temp = (
-            <DAOProposal id={entity.id} dao={entity.dao}>
-            {children}
-            </DAOProposal>
-          )
-          finalSorted.push(temp)
-        })
-        return defaultRender
-      }
-      return defaultRender
-    }
-    return defaultRender
   }
 }
 

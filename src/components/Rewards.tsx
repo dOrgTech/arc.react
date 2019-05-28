@@ -14,6 +14,8 @@ import {
   RewardEntity
 } from "./";
 
+const { first } = require('rxjs/operators')
+
 // TODO: remove once change is merged
 import gql from "graphql-tag";
 
@@ -28,6 +30,10 @@ type Props = RequiredProps & InferredProps;
 
 class ArcRewards extends ComponentList<Props, ArcReward>
 {
+  async fetchData(entity: RewardEntity): Promise<any>{
+    return entity.state().pipe(first()).toPromise();
+  }
+
   createObservableEntities(): Observable<RewardEntity[]> {
     const { arcConfig } = this.props;
 
@@ -54,11 +60,11 @@ class ArcRewards extends ComponentList<Props, ArcReward>
     ) as Observable<RewardEntity[]>;
   }
 
-  renderComponent(entities: RewardEntity[], children: any): React.ComponentElement<CProps<ArcReward>, any> {
+  renderComponent(entity: RewardEntity, children: any): React.ComponentElement<CProps<ArcReward>, any> {
     const { arcConfig } = this.props;
 
     return (
-      <ArcReward id={entities[0].id} arcConfig={arcConfig}>
+      <ArcReward id={entity.id} arcConfig={arcConfig}>
       {children}
       </ArcReward>
     );

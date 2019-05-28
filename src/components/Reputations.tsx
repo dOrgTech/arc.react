@@ -14,6 +14,8 @@ import {
   ReputationEntity
 } from "./";
 
+const { first } = require('rxjs/operators')
+
 interface RequiredProps extends BaseProps { }
 
 interface InferredProps {
@@ -33,11 +35,15 @@ class ArcReputations extends ComponentList<Props, ArcReputation>
     return ReputationEntity.search({}, arcConfig.connection);
   }
 
-  renderComponent(entities: ReputationEntity[], children: any): React.ComponentElement<CProps<ArcReputation>, any> {
+  async fetchData(entity: ReputationEntity): Promise<any>{
+    return entity.state().pipe(first()).toPromise();
+  }
+
+  renderComponent(entity: ReputationEntity, children: any): React.ComponentElement<CProps<ArcReputation>, any> {
     const { arcConfig } = this.props;
 
     return (
-      <ArcReputation address={entities[0].address} arcConfig={arcConfig}>
+      <ArcReputation address={entity.address} arcConfig={arcConfig}>
       {children}
       </ArcReputation>
     );

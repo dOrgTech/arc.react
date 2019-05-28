@@ -13,7 +13,6 @@ import {
   MemberData,
   Proposal,
   Proposals,
-  ProposalEntity,
   ProposalData,
   Reputations,
   Reputation,
@@ -32,7 +31,7 @@ import {
   IProposalState
 } from "@daostack/client";
 */
-const { first } = require('rxjs/operators')
+//const { first } = require('rxjs/operators')
 
 //import filters from "../helpers/QueryFilters";
 
@@ -116,23 +115,11 @@ export default () =>
           {
             friendlyName: "Sort",
             name: "sort",
-            defaultValue: async function(proposal: ProposalEntity, sortedList: ProposalEntity[]) {
-              let pData = await proposal.state().pipe(first()).toPromise()
-
-                /*
-                let t = new BN(pData.contributionReward!.ethReward).toNumber()
-                let i = R.findIndex(function(o: any) {
-                  return ((new BN(o.contributionReward!.ethReward)).toNumber() < t)
-                })(sortedList)
-                if (i > -1)
-                */
-            //    console.log("I have received")
-             //   console.log(pData)
-                sortedList.push(pData as ProposalEntity)
-                console.log(sortedList)
-                return sortedList
-              //sortedList = R.insert(0, pData, sortedList)
-              //return sortedList
+            defaultValue: function(proposal: ProposalData): any {
+              if (proposal)
+                return proposal.createdAt
+                //return (new BN(proposal.contributionReward!.ethReward).toNumber())
+              else return null
             },
             type: PropertyType.object
           }

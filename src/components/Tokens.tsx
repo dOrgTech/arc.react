@@ -14,6 +14,8 @@ import {
   TokenEntity
 } from "./";
 
+const { first } = require('rxjs/operators')
+
 // TODO: remove once change is merged
 import gql from "graphql-tag";
 
@@ -28,6 +30,10 @@ type Props = RequiredProps & InferredProps;
 
 class ArcTokens extends ComponentList<Props, ArcToken>
 {
+  async fetchData(entity: TokenEntity): Promise<any> {
+    return entity.state().pipe(first()).toPromise();
+  }
+
   createObservableEntities(): Observable<TokenEntity[]> {
     const { arcConfig } = this.props;
     if (!arcConfig) {
@@ -52,11 +58,11 @@ class ArcTokens extends ComponentList<Props, ArcToken>
     ) as Observable<TokenEntity[]>
   }
 
-  renderComponent(entities: TokenEntity[], children: any): React.ComponentElement<CProps<ArcToken>, any> {
+  renderComponent(entity: TokenEntity, children: any): React.ComponentElement<CProps<ArcToken>, any> {
     const { arcConfig } = this.props;
 
     return (
-      <ArcToken address={entities[0].address} arcConfig={arcConfig}>
+      <ArcToken address={entity.address} arcConfig={arcConfig}>
       {children}
       </ArcToken>
     );
