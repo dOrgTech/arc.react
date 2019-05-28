@@ -41,9 +41,9 @@ class ArcMembers extends ComponentList<ArcProps, DAOMember>
     return MemberEntity.search({}, arcConfig.connection);
   }
 
-  renderComponent(entity: MemberEntity, children: any): React.ComponentElement<CProps<DAOMember>, any> {
+  renderComponent(entities: MemberEntity[], children: any): React.ComponentElement<CProps<DAOMember>, any> {
     return (
-      <DAOMember address={entity.address} dao={new DAOEntity(entity.daoAddress, entity.context)}>
+      <DAOMember address={entities[0].address} dao={new DAOEntity(entities[0].daoAddress, entities[0].context)}>
       {children}
       </DAOMember>
     )
@@ -60,10 +60,10 @@ class DAOMembers extends ComponentList<DAOProps, DAOMember>
     return dao.members({});
   }
 
-  renderComponent(entity: MemberEntity, children: any): React.ComponentElement<CProps<DAOMember>, any> {
+  renderComponent(entities: MemberEntity[], children: any): React.ComponentElement<CProps<DAOMember>, any> {
     const { dao } = this.props;
     return (
-      <DAOMember address={entity.address} dao={dao}>
+      <DAOMember address={entities[0].address} dao={dao}>
       {children}
       </DAOMember>
     );

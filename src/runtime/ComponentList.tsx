@@ -36,7 +36,7 @@ export abstract class ComponentList<
   >
 {
   protected abstract createObservableEntities(): Observable<Entity[]>;
-  protected abstract renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Comp>, any>;
+  protected abstract renderComponent(entities: Entity[], children: any): React.ComponentElement<CProps<Comp>, any>;
 
   private observableEntities = memoize(
     // This will only run when the function's arguments have changed :D
@@ -72,11 +72,21 @@ export abstract class ComponentList<
       return children(entities);
     } else {
       // TODO: better loading handler
-      return entities ? entities.map(entity => (
+    if(entities) {
+      return this.renderComponent(entities, children)
+      /*
+      let test = entities.map(entity => (
         <>
         {this.renderComponent(entity, children)}
         </>
-      )) : <LoadingView logs={logs}/>
+      ))
+      //console.log(typeof(this.props.sort))
+      console.log(this.props)
+      //console.log(test)
+      */
+      //return <div> work in progress </div>
+    }
+    else return <LoadingView logs={logs}/>
     }
   }
 

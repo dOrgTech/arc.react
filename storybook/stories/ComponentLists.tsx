@@ -1,4 +1,6 @@
 import * as React from "react";
+//import BN from 'bignumber.js';
+//const R = require('ramda')
 import { storiesOf } from "@storybook/react";
 import {
   Arc,
@@ -11,6 +13,7 @@ import {
   MemberData,
   Proposal,
   Proposals,
+  ProposalEntity,
   ProposalData,
   Reputations,
   Reputation,
@@ -24,7 +27,14 @@ import {
 } from "../../src/";
 import ComponentListView, { PropertyType } from "../helpers/ComponentListView";
 
-import filters from "../helpers/QueryFilters";
+/*
+import {
+  IProposalState
+} from "@daostack/client";
+*/
+const { first } = require('rxjs/operators')
+
+//import filters from "../helpers/QueryFilters";
 
 // TODO: create ComponentListView similar to ComponentView
 export default () =>
@@ -100,7 +110,30 @@ export default () =>
           {
             friendlyName: "Filters",
             name: "filters",
-            defaultValue: filters.filterProposalByStage(2),
+            defaultValue: {},
+            type: PropertyType.object
+          },
+          {
+            friendlyName: "Sort",
+            name: "sort",
+            defaultValue: async function(proposal: ProposalEntity, sortedList: ProposalEntity[]) {
+              let pData = await proposal.state().pipe(first()).toPromise()
+
+                /*
+                let t = new BN(pData.contributionReward!.ethReward).toNumber()
+                let i = R.findIndex(function(o: any) {
+                  return ((new BN(o.contributionReward!.ethReward)).toNumber() < t)
+                })(sortedList)
+                if (i > -1)
+                */
+            //    console.log("I have received")
+             //   console.log(pData)
+                sortedList.push(pData as ProposalEntity)
+                console.log(sortedList)
+                return sortedList
+              //sortedList = R.insert(0, pData, sortedList)
+              //return sortedList
+            },
             type: PropertyType.object
           }
         ]}

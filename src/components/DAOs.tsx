@@ -33,11 +33,11 @@ class ArcDAOs extends ComponentList<Props, ArcDAO>
     return arcConfig.connection.daos();
   }
 
-  renderComponent(entity: DAOEntity, children: any): React.ComponentElement<CProps<ArcDAO>, any> {
+  renderComponent(entities: DAOEntity[], children: any): React.ComponentElement<CProps<ArcDAO>, any> {
     const { arcConfig } = this.props;
 
     return (
-      <ArcDAO address={entity.address} arcConfig={arcConfig}>
+      <ArcDAO address={entities[0].address} arcConfig={arcConfig}>
       {children}
       </ArcDAO>
     );

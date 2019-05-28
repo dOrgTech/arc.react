@@ -52,11 +52,11 @@ class ArcTokens extends ComponentList<Props, ArcToken>
     ) as Observable<TokenEntity[]>
   }
 
-  renderComponent(entity: TokenEntity, children: any): React.ComponentElement<CProps<ArcToken>, any> {
+  renderComponent(entities: TokenEntity[], children: any): React.ComponentElement<CProps<ArcToken>, any> {
     const { arcConfig } = this.props;
 
     return (
-      <ArcToken address={entity.address} arcConfig={arcConfig}>
+      <ArcToken address={entities[0].address} arcConfig={arcConfig}>
       {children}
       </ArcToken>
     );

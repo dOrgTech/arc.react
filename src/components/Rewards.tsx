@@ -54,11 +54,11 @@ class ArcRewards extends ComponentList<Props, ArcReward>
     ) as Observable<RewardEntity[]>;
   }
 
-  renderComponent(entity: RewardEntity, children: any): React.ComponentElement<CProps<ArcReward>, any> {
+  renderComponent(entities: RewardEntity[], children: any): React.ComponentElement<CProps<ArcReward>, any> {
     const { arcConfig } = this.props;
 
     return (
-      <ArcReward id={entity.id} arcConfig={arcConfig}>
+      <ArcReward id={entities[0].id} arcConfig={arcConfig}>
       {children}
       </ArcReward>
     );

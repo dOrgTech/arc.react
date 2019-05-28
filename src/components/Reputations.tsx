@@ -33,11 +33,11 @@ class ArcReputations extends ComponentList<Props, ArcReputation>
     return ReputationEntity.search({}, arcConfig.connection);
   }
 
-  renderComponent(entity: ReputationEntity, children: any): React.ComponentElement<CProps<ArcReputation>, any> {
+  renderComponent(entities: ReputationEntity[], children: any): React.ComponentElement<CProps<ArcReputation>, any> {
     const { arcConfig } = this.props;
 
     return (
-      <ArcReputation address={entity.address} arcConfig={arcConfig}>
+      <ArcReputation address={entities[0].address} arcConfig={arcConfig}>
       {children}
       </ArcReputation>
     );
