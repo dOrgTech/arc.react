@@ -16,9 +16,6 @@ import {
   MemberEntity
 } from "./";
 
-// TODO: remove once change is merged
-import gql from "graphql-tag";
-
 interface RequiredProps extends BaseProps {
   allDAOs?: boolean;
 }
@@ -41,25 +38,7 @@ class ArcMembers extends ComponentList<ArcProps, DAOMember>
     if (!arcConfig) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
-    // TODO: uncomment this once PR is merged
-    // return MemberEntity.search({}, arcConfig.connection);
-
-    // TODO: remove this once PR is merged
-    const arc = arcConfig.connection;
-    const query = gql`{
-      members {
-        id
-        address
-        dao {
-          id
-        }
-      }
-    }`;
-
-    return arc.getObservableList(
-      query,
-      (r: any) => new MemberEntity(r.address, r.dao.id, arc)
-    );
+    return MemberEntity.search({}, arcConfig.connection);
   }
 
   renderComponent(entity: MemberEntity, children: any): React.ComponentElement<CProps<DAOMember>, any> {
@@ -75,7 +54,6 @@ class DAOMembers extends ComponentList<DAOProps, DAOMember>
 {
   createObservableEntities(): Observable<MemberEntity[]> {
     const { dao } = this.props;
-    // TODO: better error handling?
     if (!dao) {
       throw Error("DAO Entity Missing: Please provide this field as a prop, or use the inference component.");
     }
