@@ -6,7 +6,7 @@ import { BaseProps, BaseComponent } from "./BaseComponent";
 import { Component } from "./Component";
 import { ComponentListLogs } from "./logging/ComponentListLogs";
 import LoadingView from './LoadingView';
-const R = require('ramda')
+//const R = require('ramda')
 export { ComponentListLogs };
 
 // Extract the derived component's template parameters
@@ -39,7 +39,7 @@ export abstract class ComponentList<
 {
   protected abstract createObservableEntities(): Observable<Entity[]>;
   protected abstract renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Comp>, any>;
-  protected async abstract fetchData(entity: Entity) : Promise<any>;
+  protected abstract fetchData(entity: Entity) : Promise<any>;
 
   private observableEntities = memoize(
     // This will only run when the function's arguments have changed :D
@@ -67,10 +67,8 @@ export abstract class ComponentList<
   }
 
   public render() {
-    // @ts-ignore
     const { children } = this.props;
     const { entities, sorted, logs } = this.state;
-    console.log(this.state)
     this.observableEntities(this.props);
 
     logs.reactRendered();
@@ -79,28 +77,18 @@ export abstract class ComponentList<
       return children(entities);
     } else {
       // TODO: better loading handler
-    if(entities) {
-      if(sorted){
-        return sorted.map((item) => {
-          return(
-          <>
-          {this.renderComponent(item.entity, children)}
-          </>
-        )})
-      }
-      else return entities.map((entity) => {
-        return(
-        <>
-        {this.renderComponent(entity, children)}
-        </>
-      )})
-      return test
-    }
-    else return <LoadingView logs={logs}/>
+      if(entities) {
+        if(sorted.length > 0)
+          return sorted.map((item) => this.renderComponent(item.entity, children)) 
+        else
+          return entities.map((entity) => this.renderComponent(entity, children))
+      } else
+        return <LoadingView logs={logs}/>
     }
   }
 
   public async componentWillMount() {
+    // prefetch the entities
     this.observableEntities(this.props);
   }
 
@@ -150,16 +138,18 @@ export abstract class ComponentList<
 
     if (sort) {
       const unsorted = entities.map(async (entity) => {
-        let value = await this.fetchData(entity)
-        let sortFeild = await sort(value)
-        return ({ entity: entity, value: sortFeild })
+        let data = await this.fetchData(entity)
+        return ({ entity: entity, data: data })
       })
       Promise.all(unsorted).then(unsorted => {
-        let sortByValue = R.sortBy(R.prop('value'))
         this.mergeState({
           entities: entities,
-          sorted: sortByValue(unsorted)
+          sorted: sort(unsorted)
         })
+      })
+    } else {
+      this.mergeState({
+        entities: entities,
       })
     }
   }

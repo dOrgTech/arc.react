@@ -11,10 +11,9 @@ import {
 } from "../protocol";
 import {
   ArcDAO,
-  DAOEntity
+  DAOData,
+  DAOEntity,
 } from "./";
-
-const { first } = require('rxjs/operators')
 
 interface RequiredProps extends BaseProps { }
 
@@ -35,8 +34,13 @@ class ArcDAOs extends ComponentList<Props, ArcDAO>
     return arcConfig.connection.daos();
   }
 
-  async fetchData(entity: DAOEntity): Promise<any>{
-    return entity.state().pipe(first()).toPromise();
+  fetchData(entity: DAOEntity): Promise<any>{
+    return new Promise((resolve, reject) => {
+      const state = entity.state()
+      state.subscribe(
+        (data: DAOData) => resolve(data),
+        (error: Error) => reject(error))
+    })
   }
 
   renderComponent(entity: DAOEntity, children: any): React.ComponentElement<CProps<ArcDAO>, any> {

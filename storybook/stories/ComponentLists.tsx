@@ -1,6 +1,6 @@
 import * as React from "react";
-//import BN from 'bignumber.js';
-//const R = require('ramda')
+import BN from 'bignumber.js';
+const R = require('ramda')
 import { storiesOf } from "@storybook/react";
 import {
   Arc,
@@ -115,11 +115,9 @@ export default () =>
           {
             friendlyName: "Sort",
             name: "sort",
-            defaultValue: function(proposal: ProposalData): any {
-              if (proposal)
-                return proposal.createdAt
-                //return (new BN(proposal.contributionReward!.ethReward).toNumber())
-              else return null
+            defaultValue: function(unsortedList: any): any {
+              const sortBySubmittedTime = (o:any) => (new BN(o.data.contributionReward!.ethReward).toNumber())
+              return R.sortBy(sortBySubmittedTime)(unsortedList)
             },
             type: PropertyType.object
           }

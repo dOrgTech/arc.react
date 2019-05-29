@@ -11,10 +11,9 @@ import {
 } from "../protocol";
 import {
   ArcReputation,
-  ReputationEntity
+  ReputationData,
+  ReputationEntity,
 } from "./";
-
-const { first } = require('rxjs/operators')
 
 interface RequiredProps extends BaseProps { }
 
@@ -35,8 +34,13 @@ class ArcReputations extends ComponentList<Props, ArcReputation>
     return ReputationEntity.search({}, arcConfig.connection);
   }
 
-  async fetchData(entity: ReputationEntity): Promise<any>{
-    return entity.state().pipe(first()).toPromise();
+  fetchData(entity: ReputationEntity): Promise<any>{
+    return new Promise((resolve, reject) => {
+      const state = entity.state()
+      state.subscribe(
+        (data: ReputationData) => resolve(data),
+        (error: Error) => reject(error))
+    })
   }
 
   renderComponent(entity: ReputationEntity, children: any): React.ComponentElement<CProps<ArcReputation>, any> {

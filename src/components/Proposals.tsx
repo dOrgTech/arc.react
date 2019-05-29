@@ -13,8 +13,8 @@ import {
   DAO,
   DAOEntity,
   DAOProposal,
+  ProposalData,
   ProposalEntity,
-  ProposalData
 } from "./";
 
 const { first } = require('rxjs/operators')
@@ -22,7 +22,7 @@ const { first } = require('rxjs/operators')
 interface RequiredProps {
   allDAOs?: boolean;
   filters?: Object | undefined;
-  sort?: (proposal: ProposalData)=> number;
+  sort?: (unsortedList: any)=> any;
 }
 
 interface ArcInferredProps {
@@ -48,16 +48,13 @@ class ArcProposals extends ComponentList<ArcProps, DAOProposal>
     return ProposalEntity.search(filters, arcConfig.connection);
   }
 
-  async fetchData(entity: ProposalEntity): Promise<any> {
-    const data = await new Promise((resolve, reject) => {
+  fetchData(entity: ProposalEntity): Promise<any> {
+    return new Promise((resolve, reject) => {
       const state = entity.state()
       state.subscribe(
-        (data: any) => {
-          resolve(data); 
-        },
-        (error: Error) => {reject(error)})
+        (data: ProposalData) => resolve(data),
+        (error: Error) => reject(error))
     })
-    return data
   }
 
   renderComponent(entity: ProposalEntity, children: any): React.ComponentElement<CProps<DAOProposal>, any> {

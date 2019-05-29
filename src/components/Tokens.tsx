@@ -11,10 +11,9 @@ import {
 } from "../protocol";
 import {
   ArcToken,
+  TokenData,
   TokenEntity
 } from "./";
-
-const { first } = require('rxjs/operators')
 
 // TODO: remove once change is merged
 import gql from "graphql-tag";
@@ -30,8 +29,13 @@ type Props = RequiredProps & InferredProps;
 
 class ArcTokens extends ComponentList<Props, ArcToken>
 {
-  async fetchData(entity: TokenEntity): Promise<any> {
-    return entity.state().pipe(first()).toPromise();
+  fetchData(entity: TokenEntity): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const state = entity.state()
+      state.subscribe(
+        (data: TokenData) => resolve(data),
+        (error: Error) => reject(error))
+    })
   }
 
   createObservableEntities(): Observable<TokenEntity[]> {

@@ -13,6 +13,7 @@ import {
   DAO,
   DAOEntity,
   DAOMember,
+  MemberData,
   MemberEntity
 } from "./";
 
@@ -43,8 +44,13 @@ class ArcMembers extends ComponentList<ArcProps, DAOMember>
     return MemberEntity.search({}, arcConfig.connection);
   }
 
-  async fetchData(entity: MemberEntity): Promise<any>{
-    return entity.state().pipe(first()).toPromise();
+  fetchData(entity: MemberEntity): Promise<any>{
+    return new Promise((resolve, reject) => {
+      const state = entity.state()
+      state.subscribe(
+        (data: MemberData) => resolve(data),
+        (error: Error) => reject(error))
+    })
   }
 
   renderComponent(entity: MemberEntity, children: any): React.ComponentElement<CProps<DAOMember>, any> {

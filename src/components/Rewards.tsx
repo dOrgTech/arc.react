@@ -11,10 +11,9 @@ import {
 } from "../protocol";
 import {
   ArcReward,
-  RewardEntity
+  RewardData,
+  RewardEntity,
 } from "./";
-
-const { first } = require('rxjs/operators')
 
 // TODO: remove once change is merged
 import gql from "graphql-tag";
@@ -30,8 +29,13 @@ type Props = RequiredProps & InferredProps;
 
 class ArcRewards extends ComponentList<Props, ArcReward>
 {
-  async fetchData(entity: RewardEntity): Promise<any>{
-    return entity.state().pipe(first()).toPromise();
+  fetchData(entity: RewardEntity): Promise<any>{
+    return new Promise((resolve, reject) => {
+      const state = entity.state()
+      state.subscribe(
+        (data: RewardData) => resolve(data),
+        (error: Error) => reject(error))
+    })
   }
 
   createObservableEntities(): Observable<RewardEntity[]> {
