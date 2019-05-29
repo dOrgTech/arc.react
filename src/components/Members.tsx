@@ -17,8 +17,6 @@ import {
   MemberEntity
 } from "./";
 
-const { first } = require('rxjs/operators')
-
 interface RequiredProps extends BaseProps {
   allDAOs?: boolean;
 }
@@ -72,8 +70,13 @@ class DAOMembers extends ComponentList<DAOProps, DAOMember>
     return dao.members({});
   }
 
-  async fetchData(entity: MemberEntity): Promise<any>{
-    return entity.state().pipe(first()).toPromise();
+  fetchData(entity: MemberEntity): Promise<any>{
+    return new Promise((resolve, reject) => {
+      const state = entity.state()
+      state.subscribe(
+        (data: MemberData) => resolve(data),
+        (error: Error) => reject(error))
+    })
   }
 
   renderComponent(entity: MemberEntity, children: any): React.ComponentElement<CProps<DAOMember>, any> {

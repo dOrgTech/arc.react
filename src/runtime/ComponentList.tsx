@@ -63,7 +63,6 @@ export abstract class ComponentList<
     this.onQueryEntities = this.onQueryEntities.bind(this);
     this.onQueryError = this.onQueryError.bind(this);
     this.onQueryComplete = this.onQueryComplete.bind(this);
-    //this.fetchData = this.fetchData.bind(this);
   }
 
   public render() {

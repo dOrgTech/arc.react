@@ -17,8 +17,6 @@ import {
   ProposalEntity,
 } from "./";
 
-const { first } = require('rxjs/operators')
-
 interface RequiredProps {
   allDAOs?: boolean;
   filters?: Object | undefined;
@@ -42,10 +40,10 @@ class ArcProposals extends ComponentList<ArcProps, DAOProposal>
 {
   createObservableEntities(): Observable<ProposalEntity[]> {
     const { arcConfig, filters } = this.props;
-    if (!arcConfig || !filters) {
+    if (!arcConfig) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
-    return ProposalEntity.search(filters, arcConfig.connection);
+    return ProposalEntity.search(filters ? filters : {}, arcConfig.connection);
   }
 
   fetchData(entity: ProposalEntity): Promise<any> {
@@ -76,13 +74,16 @@ class DAOProposals extends ComponentList<DAOProps, DAOProposal>
     return dao.proposals(filters);
   }
 
-  async fetchData(entity: ProposalEntity): Promise<any>{
-    return entity.state().pipe(first()).toPromise();
+  fetchData(entity: ProposalEntity): Promise<any>{
+    return new Promise((resolve, reject) => {
+      const state = entity.state()
+      state.subscribe(
+        (data: ProposalData) => resolve(data),
+        (error: Error) => reject(error))
+    })
   }
 
   renderComponent(entity: ProposalEntity, children: any): React.ComponentElement<CProps<DAOProposal>, any> {
-    //const sort = this.props.sort
-    //if (sort) console.log(typeof(sort))
     return (
       <DAOProposal id={entity.id} dao={entity.dao}>
       {children}
