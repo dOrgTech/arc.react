@@ -3,43 +3,43 @@ import { Observable } from "rxjs";
 import {
   CProps,
   ComponentList,
-  BaseProps
+  ComponentListProps
 } from "../runtime";
 import {
-  Arc,
-  ArcConfig
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig
 } from "../protocol";
 import {
-  ArcReputation,
-  ReputationEntity,
+  ArcReputation as Component,
+  ReputationEntity as Entity,
+  ReputationData as Data
 } from "./";
 
-interface RequiredProps extends BaseProps { }
+interface RequiredProps extends ComponentListProps<Entity, Data> { }
 
 interface InferredProps {
-  // Arc Instance
-  arcConfig: ArcConfig | undefined;
+  arcConfig: ProtocolConfig | undefined;
 }
 
 type Props = RequiredProps & InferredProps;
 
-class ArcReputations extends ComponentList<Props, ArcReputation>
+class ArcReputations extends ComponentList<Props, Component>
 {
-  createObservableEntities(): Observable<ReputationEntity[]> {
+  createObservableEntities(): Observable<Entity[]> {
     const { arcConfig } = this.props;
     if (!arcConfig) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
-    return ReputationEntity.search({}, arcConfig.connection);
+    return Entity.search(arcConfig.connection);
   }
 
-  renderComponent(entity: ReputationEntity, children: any): React.ComponentElement<CProps<ArcReputation>, any> {
+  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
     const { arcConfig } = this.props;
 
     return (
-      <ArcReputation address={entity.address} arcConfig={arcConfig}>
+      <Component address={entity.address} arcConfig={arcConfig}>
       {children}
-      </ArcReputation>
+      </Component>
     );
   }
 }
@@ -50,13 +50,13 @@ class Reputations extends React.Component<RequiredProps>
     const { children } = this.props;
 
     return (
-      <Arc.Config>
-      {(arc: ArcConfig) =>
+      <Protocol.Config>
+      {(arc: ProtocolConfig) =>
         <ArcReputations arcConfig={arc}>
         {children}
         </ArcReputations>
       }
-      </Arc.Config>
+      </Protocol.Config>
     )
   }
 }

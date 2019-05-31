@@ -3,64 +3,43 @@ import { Observable } from "rxjs";
 import {
   CProps,
   ComponentList,
-  BaseProps
+  ComponentListProps
 } from "../runtime";
 import {
-  Arc,
-  ArcConfig
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig
 } from "../protocol";
 import {
-  ArcReward,
-  RewardEntity,
+  ArcReward as Component,
+  RewardEntity as Entity,
+  RewardData as Data
 } from "./";
 
-// TODO: remove once change is merged
-import gql from "graphql-tag";
-
-interface RequiredProps extends BaseProps { }
+interface RequiredProps extends ComponentListProps<Entity, Data> { }
 
 interface InferredProps {
-  // Arc Instance
-  arcConfig: ArcConfig | undefined;
+  arcConfig: ProtocolConfig | undefined;
 }
 
 type Props = RequiredProps & InferredProps;
 
-class ArcRewards extends ComponentList<Props, ArcReward>
+class ArcRewards extends ComponentList<Props, Component>
 {
-  createObservableEntities(): Observable<RewardEntity[]> {
+  createObservableEntities(): Observable<Entity[]> {
     const { arcConfig } = this.props;
-
     if (!arcConfig) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
-
-    // TODO: uncomment when this issue is resolved
-    // https://github.com/daostack/client/issues/213
-    // return RewardEntity.search({}, arcConfig.connection);
-
-    // TODO: remove this when ...search(...) is uncommented above
-    const arc = arcConfig.connection;
-    const query = gql`
-      {
-        gprewards {
-          id
-        }
-      }
-    `;
-    return arc.getObservableList(
-      query,
-      (r: any) => new RewardEntity(r.id, arc)
-    ) as Observable<RewardEntity[]>;
+    return Entity.search(arcConfig.connection);
   }
 
-  renderComponent(entity: RewardEntity, children: any): React.ComponentElement<CProps<ArcReward>, any> {
+  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
     const { arcConfig } = this.props;
 
     return (
-      <ArcReward id={entity.id} arcConfig={arcConfig}>
+      <Component id={entity.id} arcConfig={arcConfig}>
       {children}
-      </ArcReward>
+      </Component>
     );
   }
 }
@@ -71,13 +50,13 @@ class Rewards extends React.Component<RequiredProps>
     const { children } = this.props;
 
     return (
-      <Arc.Config>
-      {(arc: ArcConfig) =>
+      <Protocol.Config>
+      {(arc: ProtocolConfig) =>
         <ArcRewards arcConfig={arc}>
         {children}
         </ArcRewards>
       }
-      </Arc.Config>
+      </Protocol.Config>
     )
   }
 }

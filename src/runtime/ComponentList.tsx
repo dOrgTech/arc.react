@@ -14,10 +14,15 @@ export type CProps<Comp>   = Comp extends Component<infer Props, infer Entity, i
 export type CEntity<Comp>  = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Entity : undefined;
 export type CData<Comp>    = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Data : undefined;
 export type CCode<Comp>    = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Code : undefined;
+export type EntityList<Entity, Data> = Array<{entity: Entity, data: Data}>;
+
+export interface ComponentListProps<Entity, Data> extends BaseProps {
+  sort?: (entities: EntityList<Entity, Data>) => EntityList<Entity, Data>;
+}
 
 interface State<Entity, Data> {
   entities: Entity[];
-  sorted: Array<{entity: Entity, data: Data}>;
+  sorted: EntityList<Entity, Data>;
 
   // Diagnostics for the component
   // TODO: logs aren't consumable, expose through a context?
@@ -25,7 +30,7 @@ interface State<Entity, Data> {
 }
 
 export abstract class ComponentList<
-  Props extends BaseProps,
+  Props extends ComponentListProps<Entity, Data>,
   Comp extends Component<
     CProps<Comp>,
     CEntity<Comp>,
@@ -141,7 +146,6 @@ export abstract class ComponentList<
 
   private async onQueryEntities(entities: Entity[]) {
     const { logs } = this.state;
-    // @ts-ignore
     const { sort } = this.props;
     logs.dataQueryReceivedData();
 

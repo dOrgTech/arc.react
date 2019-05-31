@@ -3,43 +3,43 @@ import { Observable } from "rxjs";
 import {
   CProps,
   ComponentList,
-  BaseProps
+  ComponentListProps
 } from "../runtime";
 import {
-  Arc,
-  ArcConfig
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig
 } from "../protocol";
 import {
-  ArcDAO,
-  DAOEntity,
+  ArcDAO as Component,
+  DAOEntity as Entity,
+  DAOData as Data
 } from "./";
 
-interface RequiredProps extends BaseProps { }
+interface RequiredProps extends ComponentListProps<Entity, Data> { }
 
 interface InferredProps {
-  // Arc Instance
-  arcConfig: ArcConfig | undefined;
+  arcConfig: ProtocolConfig | undefined;
 }
 
 type Props = RequiredProps & InferredProps;
 
-class ArcDAOs extends ComponentList<Props, ArcDAO>
+class ArcDAOs extends ComponentList<Props, Component>
 {
-  createObservableEntities(): Observable<DAOEntity[]> {
+  createObservableEntities(): Observable<Entity[]> {
     const { arcConfig } = this.props;
     if (!arcConfig) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
-    return arcConfig.connection.daos();
+    return Entity.search(arcConfig.connection);
   }
 
-  renderComponent(entity: DAOEntity, children: any): React.ComponentElement<CProps<ArcDAO>, any> {
+  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
     const { arcConfig } = this.props;
 
     return (
-      <ArcDAO address={entity.address} arcConfig={arcConfig}>
+      <Component address={entity.address} arcConfig={arcConfig}>
       {children}
-      </ArcDAO>
+      </Component>
     );
   }
 }
@@ -47,16 +47,16 @@ class ArcDAOs extends ComponentList<Props, ArcDAO>
 class DAOs extends React.Component<RequiredProps>
 {
   render() {
-    const { children } = this.props;
+    const { children, sort } = this.props;
 
     return (
-      <Arc.Config>
-      {(arc: ArcConfig) =>
-        <ArcDAOs arcConfig={arc}>
+      <Protocol.Config>
+      {(arcConfig: ProtocolConfig) =>
+        <ArcDAOs arcConfig={arcConfig} sort={sort}>
         {children}
         </ArcDAOs>
       }
-      </Arc.Config>
+      </Protocol.Config>
     )
   }
 }

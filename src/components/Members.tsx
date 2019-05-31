@@ -3,69 +3,72 @@ import { Observable } from "rxjs";
 import {
   CProps,
   ComponentList,
-  BaseProps
+  ComponentListProps
 } from "../runtime";
 import {
-  Arc,
-  ArcConfig
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig
 } from "../protocol";
 import {
-  DAO,
-  DAOEntity,
-  DAOMember,
-  MemberEntity
+  DAO as InferComponent,
+  DAOEntity as InferEntity,
+  DAOMember as Component,
+  MemberEntity as Entity,
+  MemberData as Data
 } from "./";
 
-interface RequiredProps extends BaseProps {
+interface RequiredProps extends ComponentListProps<Entity, Data> {
   allDAOs?: boolean;
 }
 
 interface ArcInferredProps {
-  arcConfig: ArcConfig | undefined;
+  arcConfig: ProtocolConfig | undefined;
 }
 
 interface DAOInferredProps {
-  dao: DAOEntity | undefined;
+  dao: InferEntity | undefined;
 }
 
 type ArcProps = RequiredProps & ArcInferredProps;
 type DAOProps = RequiredProps & DAOInferredProps;
 
-class ArcMembers extends ComponentList<ArcProps, DAOMember>
+class ArcMembers extends ComponentList<ArcProps, Component>
 {
-  createObservableEntities(): Observable<MemberEntity[]> {
+  createObservableEntities(): Observable<Entity[]> {
     const { arcConfig } = this.props;
     if (!arcConfig) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
-    return MemberEntity.search({}, arcConfig.connection);
+    return Entity.search(arcConfig.connection);
   }
 
-  renderComponent(entity: MemberEntity, children: any): React.ComponentElement<CProps<DAOMember>, any> {
+  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
     return (
-      <DAOMember address={entity.address} dao={new DAOEntity(entity.daoAddress, entity.context)}>
+      <Component address={entity.address} dao={new InferEntity(entity.daoAddress, entity.context)}>
       {children}
-      </DAOMember>
+      </Component>
     )
   }
 }
 
-class DAOMembers extends ComponentList<DAOProps, DAOMember>
+class DAOMembers extends ComponentList<DAOProps, Component>
 {
-  createObservableEntities(): Observable<MemberEntity[]> {
+  // TODO: remove this when filters are added
+  // also rename all instances of "Arc" to protocol?
+  createObservableEntities(): Observable<Entity[]> {
     const { dao } = this.props;
     if (!dao) {
       throw Error("DAO Entity Missing: Please provide this field as a prop, or use the inference component.");
     }
-    return dao.members({});
+    return Entity.search(dao.context, { dao: dao.address });
   }
 
-  renderComponent(entity: MemberEntity, children: any): React.ComponentElement<CProps<DAOMember>, any> {
+  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
     const { dao } = this.props;
     return (
-      <DAOMember address={entity.address} dao={dao}>
+      <Component address={entity.address} dao={dao}>
       {children}
-      </DAOMember>
+      </Component>
     );
   }
 }
@@ -77,23 +80,23 @@ class Members extends React.Component<RequiredProps>
 
     if (allDAOs) {
       return (
-        <Arc.Config>
-        {(arc: ArcConfig) => (
-          <ArcMembers arcConfig={arc}>
+        <Protocol.Config>
+        {(arcConfig: ProtocolConfig) => (
+          <ArcMembers arcConfig={arcConfig}>
           {children}
           </ArcMembers>
         )}
-        </Arc.Config>
+        </Protocol.Config>
       );
     } else {
       return (
-        <DAO.Entity>
-        {(dao: DAOEntity) => (
+        <InferComponent.Entity>
+        {(dao: InferEntity) => (
           <DAOMembers dao={dao}>
           {children}
           </DAOMembers>
         )}
-        </DAO.Entity>
+        </InferComponent.Entity>
       );
     }
   }
