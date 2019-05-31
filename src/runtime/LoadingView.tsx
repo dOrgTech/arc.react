@@ -1,12 +1,12 @@
 import * as React from "react";
 import Popup from 'reactjs-popup'
-import { ComponentLogs } from "../../src";
+import { ComponentLogs, ComponentListLogs } from "../../src";
 
 const R = require('ramda')
 const Spinner = require("react-spinkit");
 
 interface Props {
-  logs: ComponentLogs
+  logs: ComponentLogs | ComponentListLogs
 }
 
 export default class LoadingView extends React.Component<Props> {

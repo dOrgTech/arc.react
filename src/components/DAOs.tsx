@@ -11,7 +11,7 @@ import {
 } from "../protocol";
 import {
   ArcDAO,
-  DAOEntity
+  DAOEntity,
 } from "./";
 
 interface RequiredProps extends BaseProps { }

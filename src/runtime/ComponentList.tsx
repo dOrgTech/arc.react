@@ -1,10 +1,12 @@
 import * as React from "react";
 import memoize from "memoize-one";
 import { Observable, Subscription } from "rxjs";
+import { IStateful } from "@daostack/client/src/types";
 
 import { BaseProps, BaseComponent } from "./BaseComponent";
 import { Component } from "./Component";
 import { ComponentListLogs } from "./logging/ComponentListLogs";
+import LoadingView from './LoadingView';
 export { ComponentListLogs };
 
 // Extract the derived component's template parameters
@@ -13,8 +15,9 @@ export type CEntity<Comp>  = Comp extends Component<infer Props, infer Entity, i
 export type CData<Comp>    = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Data : undefined;
 export type CCode<Comp>    = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Code : undefined;
 
-interface State<Entity> {
+interface State<Entity, Data> {
   entities: Entity[];
+  sorted: Array<{entity: Entity, data: Data}>;
 
   // Diagnostics for the component
   // TODO: logs aren't consumable, expose through a context?
@@ -29,9 +32,10 @@ export abstract class ComponentList<
     CData<Comp>,
     CCode<Comp>
   >,
-  Entity = CEntity<Comp>
+  Entity extends IStateful<CData<Comp>> = CEntity<Comp>,
+  Data = CData<Comp>
 > extends BaseComponent<
-    Props, State<Entity>
+    Props, State<Entity, Data>
   >
 {
   protected abstract createObservableEntities(): Observable<Entity[]>;
@@ -52,6 +56,7 @@ export abstract class ComponentList<
 
     this.state = {
       entities: [],
+      sorted: [],
       logs: new ComponentListLogs()
     };
 
@@ -61,8 +66,8 @@ export abstract class ComponentList<
   }
 
   public render() {
-    const children = this.props.children;
-    const { entities, logs } = this.state;
+    const { children } = this.props;
+    const { entities, sorted, logs } = this.state;
     this.observableEntities(this.props);
 
     logs.reactRendered();
@@ -71,15 +76,17 @@ export abstract class ComponentList<
       return children(entities);
     } else {
       // TODO: better loading handler
-      return entities ? entities.map(entity => (
-        <>
-        {this.renderComponent(entity, children)}
-        </>
-      )) : <div>loading...</div>
+      if(entities) {
+        if(sorted.length > 0)
+          return sorted.map((item) => this.renderComponent(item.entity, children)) 
+        else
+          return entities.map((entity) => this.renderComponent(entity, children))
+      } else
+        return <LoadingView logs={logs}/>
     }
   }
 
-  public componentWillMount() {
+  public async componentWillMount() {
     // prefetch the entities
     this.observableEntities(this.props);
   }
@@ -122,14 +129,38 @@ export abstract class ComponentList<
     });
   }
 
-  private onQueryEntities(entities: Entity[]) {
-    const { logs } = this.state;
+  private fetchData(entity: Entity) : Promise<Data> {
+    return new Promise((resolve, reject) => {
+      const state = entity.state();
+      state.subscribe(
+        (data: Data) => resolve(data),
+        (error: Error) => reject(error)
+      );
+    });
+  }
 
+  private async onQueryEntities(entities: Entity[]) {
+    const { logs } = this.state;
+    // @ts-ignore
+    const { sort } = this.props;
     logs.dataQueryReceivedData();
 
-    this.mergeState({
-      entities: entities
-    });
+    if (sort) {
+      const unsorted = entities.map(async (entity) => {
+        const data = await this.fetchData(entity);
+        return { entity, data };
+      });
+      Promise.all(unsorted).then(unsorted => {
+        this.mergeState({
+          entities: entities,
+          sorted: sort(unsorted)
+        });
+      });
+    } else {
+      this.mergeState({
+        entities: entities,
+      });
+    }
   }
 
   private onQueryError(error: Error) {

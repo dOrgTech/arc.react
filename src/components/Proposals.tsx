@@ -1,9 +1,9 @@
 import * as React from "react";
 import { Observable } from "rxjs";
 import {
+  CEntity,
   CProps,
   ComponentList,
-  BaseProps
 } from "../runtime";
 import {
   Arc,
@@ -13,11 +13,13 @@ import {
   DAO,
   DAOEntity,
   DAOProposal,
-  ProposalEntity
+  ProposalEntity,
 } from "./";
 
-interface RequiredProps extends BaseProps {
+interface RequiredProps {
   allDAOs?: boolean;
+  filters?: Object | undefined;
+  sort?: (unsortedList: any)=> any;
 }
 
 interface ArcInferredProps {
@@ -36,11 +38,11 @@ type DAOProps = RequiredProps & DAOInferredProps;
 class ArcProposals extends ComponentList<ArcProps, DAOProposal>
 {
   createObservableEntities(): Observable<ProposalEntity[]> {
-    const { arcConfig } = this.props;
+    const { arcConfig, filters } = this.props;
     if (!arcConfig) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
-    return ProposalEntity.search({}, arcConfig.connection);
+    return ProposalEntity.search(filters ? filters : {}, arcConfig.connection);
   }
 
   renderComponent(entity: ProposalEntity, children: any): React.ComponentElement<CProps<DAOProposal>, any> {
@@ -54,12 +56,12 @@ class ArcProposals extends ComponentList<ArcProps, DAOProposal>
 
 class DAOProposals extends ComponentList<DAOProps, DAOProposal>
 {
-  createObservableEntities(): Observable<ProposalEntity[]> {
-    const { dao } = this.props;
+  createObservableEntities(): Observable<CEntity<DAOProposal>[]> {
+    const { dao, filters } = this.props;
     if (!dao) {
       throw Error("DAO Missing: Please provide this field as a prop, or use the inference component.");
     }
-    return dao.proposals({});
+    return dao.proposals(filters);
   }
 
   renderComponent(entity: ProposalEntity, children: any): React.ComponentElement<CProps<DAOProposal>, any> {
@@ -74,13 +76,13 @@ class DAOProposals extends ComponentList<DAOProps, DAOProposal>
 class Proposals extends React.Component<RequiredProps>
 {
   render() {
-    const { children, allDAOs } = this.props;
+    const { children, allDAOs, filters, sort } = this.props;
 
     if (allDAOs) {
       return (
         <Arc.Config>
         {(arc: ArcConfig) => (
-          <ArcProposals arcConfig={arc}>
+          <ArcProposals arcConfig={arc} filters={filters} sort={sort}>
           {children}
           </ArcProposals>
         )}
@@ -90,7 +92,7 @@ class Proposals extends React.Component<RequiredProps>
       return (
         <DAO.Entity>
         {(dao: DAOEntity) => (
-          <DAOProposals dao={dao}>
+          <DAOProposals dao={dao} filters={filters} sort={sort}>
           {children}
           </DAOProposals>
         )}

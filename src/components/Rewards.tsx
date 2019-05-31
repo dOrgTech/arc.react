@@ -11,7 +11,7 @@ import {
 } from "../protocol";
 import {
   ArcReward,
-  RewardEntity
+  RewardEntity,
 } from "./";
 
 // TODO: remove once change is merged

@@ -11,7 +11,7 @@ import {
 } from "../protocol";
 import {
   ArcReputation,
-  ReputationEntity
+  ReputationEntity,
 } from "./";
 
 interface RequiredProps extends BaseProps { }
