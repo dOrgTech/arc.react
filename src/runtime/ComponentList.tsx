@@ -1,13 +1,12 @@
 import * as React from "react";
 import memoize from "memoize-one";
 import { Observable, Subscription } from "rxjs";
-import { IStateful } from "@daostack/client/src/types"
+import { IStateful } from "@daostack/client/src/types";
 
 import { BaseProps, BaseComponent } from "./BaseComponent";
 import { Component } from "./Component";
 import { ComponentListLogs } from "./logging/ComponentListLogs";
 import LoadingView from './LoadingView';
-//const R = require('ramda')
 export { ComponentListLogs };
 
 // Extract the derived component's template parameters
