@@ -19,8 +19,6 @@ import {
 
 interface RequiredProps extends ComponentListProps<Entity, Data> {
   allDAOs?: boolean;
-  filters?: Object | undefined;
-  sort?: (unsortedList: any)=> any;
 }
 
 interface ArcInferredProps {
