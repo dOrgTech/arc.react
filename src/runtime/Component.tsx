@@ -77,8 +77,8 @@ export abstract class Component<
     // create & fetch the entity
     // TODO: this should throw errors. Upon first error, logging marks "loading started"
     // then when first success is seen, record that time too for timings
-    const entity = this.entity(this.props)
-    const code = this.code(entity)
+    const entity = this.entity(this.props);
+    const code = this.code(entity);
 
     logs.reactRendered();
 
