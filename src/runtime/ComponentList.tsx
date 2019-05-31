@@ -15,9 +15,9 @@ export type CEntity<Comp>  = Comp extends Component<infer Props, infer Entity, i
 export type CData<Comp>    = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Data : undefined;
 export type CCode<Comp>    = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Code : undefined;
 
-interface State<Entity> {
+interface State<Entity, Data> {
   entities: Entity[];
-  sorted: Array<any>;
+  sorted: Array<{entity: Entity, data: Data}>;
 
   // Diagnostics for the component
   // TODO: logs aren't consumable, expose through a context?
@@ -35,7 +35,7 @@ export abstract class ComponentList<
   Entity extends IStateful<CData<Comp>> = CEntity<Comp>,
   Data = CData<Comp>
 > extends BaseComponent<
-    Props, State<Entity>
+    Props, State<Entity, Data>
   >
 {
   protected abstract createObservableEntities(): Observable<Entity[]>;
@@ -147,19 +147,19 @@ export abstract class ComponentList<
 
     if (sort) {
       const unsorted = entities.map(async (entity) => {
-        let data = await this.fetchData(entity)
-        return ({ entity: entity, data: data })
-      })
+        const data = await this.fetchData(entity);
+        return { entity, data };
+      });
       Promise.all(unsorted).then(unsorted => {
         this.mergeState({
           entities: entities,
           sorted: sort(unsorted)
-        })
-      })
+        });
+      });
     } else {
       this.mergeState({
         entities: entities,
-      })
+      });
     }
   }
 
