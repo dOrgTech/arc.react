@@ -16,8 +16,12 @@ import {
   ProposalEntity as Entity,
   ProposalData as Data
 } from "./";
+// TODO: change the import path once the PR is merged
+import {
+  IProposalQueryOptions as FilterOptions
+} from "@daostack/client/src/proposal";
 
-interface RequiredProps extends ComponentListProps<Entity, Data> {
+interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> {
   allDAOs?: boolean;
 }
 
@@ -35,11 +39,11 @@ type DAOProps = RequiredProps & DAOInferredProps;
 class ArcProposals extends ComponentList<ArcProps, Component>
 {
   createObservableEntities(): Observable<Entity[]> {
-    const { arcConfig } = this.props;
+    const { arcConfig, filter } = this.props;
     if (!arcConfig) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
-    return Entity.search(arcConfig.connection);
+    return Entity.search(arcConfig.connection, filter);
   }
 
   renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
@@ -54,11 +58,13 @@ class ArcProposals extends ComponentList<ArcProps, Component>
 class DAOProposals extends ComponentList<DAOProps, Component>
 {
   createObservableEntities(): Observable<Entity[]> {
-    const { dao } = this.props;
+    const { dao, filter } = this.props;
     if (!dao) {
       throw Error("DAO Missing: Please provide this field as a prop, or use the inference component.");
     }
-    return Entity.search(dao.context, { dao: dao.address });
+    const daoFilter: FilterOptions = filter ? filter : { };
+    daoFilter.dao = dao.address;
+    return Entity.search(dao.context, daoFilter);
   }
 
   renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
@@ -73,13 +79,13 @@ class DAOProposals extends ComponentList<DAOProps, Component>
 class Proposals extends React.Component<RequiredProps>
 {
   render() {
-    const { children, allDAOs, sort } = this.props;
+    const { children, allDAOs, sort, filter } = this.props;
 
     if (allDAOs) {
       return (
         <Protocol.Config>
         {(arc: ProtocolConfig) => (
-          <ArcProposals arcConfig={arc} sort={sort}>
+          <ArcProposals arcConfig={arc} sort={sort} filter={filter}>
           {children}
           </ArcProposals>
         )}
@@ -89,7 +95,7 @@ class Proposals extends React.Component<RequiredProps>
       return (
         <InferComponent.Entity>
         {(dao: InferEntity) => (
-          <DAOProposals dao={dao} sort={sort}>
+          <DAOProposals dao={dao} sort={sort} filter={filter}>
           {children}
           </DAOProposals>
         )}

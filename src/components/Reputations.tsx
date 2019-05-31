@@ -14,8 +14,12 @@ import {
   ReputationEntity as Entity,
   ReputationData as Data
 } from "./";
+// TODO: change the import path once the PR is merged
+import {
+  IReputationQueryOptions as FilterOptions
+} from "@daostack/client/src/reputation";
 
-interface RequiredProps extends ComponentListProps<Entity, Data> { }
+interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> { }
 
 interface InferredProps {
   arcConfig: ProtocolConfig | undefined;
@@ -26,11 +30,11 @@ type Props = RequiredProps & InferredProps;
 class ArcReputations extends ComponentList<Props, Component>
 {
   createObservableEntities(): Observable<Entity[]> {
-    const { arcConfig } = this.props;
+    const { arcConfig, filter } = this.props;
     if (!arcConfig) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
-    return Entity.search(arcConfig.connection);
+    return Entity.search(arcConfig.connection, filter);
   }
 
   renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
@@ -47,17 +51,17 @@ class ArcReputations extends ComponentList<Props, Component>
 class Reputations extends React.Component<RequiredProps>
 {
   render() {
-    const { children } = this.props;
+    const { children, sort, filter } = this.props;
 
     return (
       <Protocol.Config>
       {(arc: ProtocolConfig) =>
-        <ArcReputations arcConfig={arc}>
+        <ArcReputations arcConfig={arc} sort={sort} filter={filter}>
         {children}
         </ArcReputations>
       }
       </Protocol.Config>
-    )
+    );
   }
 }
 

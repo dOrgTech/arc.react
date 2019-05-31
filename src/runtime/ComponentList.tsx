@@ -14,9 +14,15 @@ export type CProps<Comp>   = Comp extends Component<infer Props, infer Entity, i
 export type CEntity<Comp>  = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Entity : undefined;
 export type CData<Comp>    = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Data : undefined;
 export type CCode<Comp>    = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Code : undefined;
+
+// Helper type for the <entity, data> tuple used by the sort function
 export type EntityList<Entity, Data> = Array<{entity: Entity, data: Data}>;
 
-export interface ComponentListProps<Entity, Data> extends BaseProps {
+// Extract the filter options type from the derived component's props
+type PFilterOptions<Props> = Props extends ComponentListProps<infer Entity, infer Data, infer FilterOptions> ? FilterOptions : undefined;
+
+export interface ComponentListProps<Entity, Data, FilterOptions> extends BaseProps {
+  filter?: FilterOptions;
   sort?: (entities: EntityList<Entity, Data>) => EntityList<Entity, Data>;
 }
 
@@ -30,7 +36,7 @@ interface State<Entity, Data> {
 }
 
 export abstract class ComponentList<
-  Props extends ComponentListProps<Entity, Data>,
+  Props extends ComponentListProps<Entity, Data, PFilterOptions<Props>>,
   Comp extends Component<
     CProps<Comp>,
     CEntity<Comp>,
