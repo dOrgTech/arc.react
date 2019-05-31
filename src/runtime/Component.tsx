@@ -1,7 +1,7 @@
 import * as React from "react";
 import memoize from "memoize-one";
 import { Subscription } from "rxjs";
-import { IStateful } from "@daostack/client/src/types"
+import { IStateful } from "@daostack/client/src/types";
 
 import { BaseProps, BaseComponent } from "./BaseComponent";
 import { ComponentLogs } from "./logging/ComponentLogs";

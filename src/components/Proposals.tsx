@@ -13,7 +13,6 @@ import {
   DAO,
   DAOEntity,
   DAOProposal,
-  ProposalData,
   ProposalEntity,
 } from "./";
 
@@ -46,15 +45,6 @@ class ArcProposals extends ComponentList<ArcProps, DAOProposal>
     return ProposalEntity.search(filters ? filters : {}, arcConfig.connection);
   }
 
-  fetchData(entity: ProposalEntity): Promise<any> {
-    return new Promise((resolve, reject) => {
-      const state = entity.state()
-      state.subscribe(
-        (data: ProposalData) => resolve(data),
-        (error: Error) => reject(error))
-    })
-  }
-
   renderComponent(entity: ProposalEntity, children: any): React.ComponentElement<CProps<DAOProposal>, any> {
     return (
       <DAOProposal id={entity.id} dao={entity.dao}>
@@ -72,15 +62,6 @@ class DAOProposals extends ComponentList<DAOProps, DAOProposal>
       throw Error("DAO Missing: Please provide this field as a prop, or use the inference component.");
     }
     return dao.proposals(filters);
-  }
-
-  fetchData(entity: ProposalEntity): Promise<any>{
-    return new Promise((resolve, reject) => {
-      const state = entity.state()
-      state.subscribe(
-        (data: ProposalData) => resolve(data),
-        (error: Error) => reject(error))
-    })
   }
 
   renderComponent(entity: ProposalEntity, children: any): React.ComponentElement<CProps<DAOProposal>, any> {

@@ -11,7 +11,6 @@ import {
 } from "../protocol";
 import {
   ArcDAO,
-  DAOData,
   DAOEntity,
 } from "./";
 
@@ -32,15 +31,6 @@ class ArcDAOs extends ComponentList<Props, ArcDAO>
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
     return arcConfig.connection.daos();
-  }
-
-  fetchData(entity: DAOEntity): Promise<any>{
-    return new Promise((resolve, reject) => {
-      const state = entity.state()
-      state.subscribe(
-        (data: DAOData) => resolve(data),
-        (error: Error) => reject(error))
-    })
   }
 
   renderComponent(entity: DAOEntity, children: any): React.ComponentElement<CProps<ArcDAO>, any> {

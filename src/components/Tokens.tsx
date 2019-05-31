@@ -11,7 +11,6 @@ import {
 } from "../protocol";
 import {
   ArcToken,
-  TokenData,
   TokenEntity
 } from "./";
 
@@ -29,15 +28,6 @@ type Props = RequiredProps & InferredProps;
 
 class ArcTokens extends ComponentList<Props, ArcToken>
 {
-  fetchData(entity: TokenEntity): Promise<any> {
-    return new Promise((resolve, reject) => {
-      const state = entity.state()
-      state.subscribe(
-        (data: TokenData) => resolve(data),
-        (error: Error) => reject(error))
-    })
-  }
-
   createObservableEntities(): Observable<TokenEntity[]> {
     const { arcConfig } = this.props;
     if (!arcConfig) {

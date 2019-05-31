@@ -13,7 +13,6 @@ import {
   DAO,
   DAOEntity,
   DAOMember,
-  MemberData,
   MemberEntity
 } from "./";
 
@@ -42,15 +41,6 @@ class ArcMembers extends ComponentList<ArcProps, DAOMember>
     return MemberEntity.search({}, arcConfig.connection);
   }
 
-  fetchData(entity: MemberEntity): Promise<any>{
-    return new Promise((resolve, reject) => {
-      const state = entity.state()
-      state.subscribe(
-        (data: MemberData) => resolve(data),
-        (error: Error) => reject(error))
-    })
-  }
-
   renderComponent(entity: MemberEntity, children: any): React.ComponentElement<CProps<DAOMember>, any> {
     return (
       <DAOMember address={entity.address} dao={new DAOEntity(entity.daoAddress, entity.context)}>
@@ -68,15 +58,6 @@ class DAOMembers extends ComponentList<DAOProps, DAOMember>
       throw Error("DAO Entity Missing: Please provide this field as a prop, or use the inference component.");
     }
     return dao.members({});
-  }
-
-  fetchData(entity: MemberEntity): Promise<any>{
-    return new Promise((resolve, reject) => {
-      const state = entity.state()
-      state.subscribe(
-        (data: MemberData) => resolve(data),
-        (error: Error) => reject(error))
-    })
   }
 
   renderComponent(entity: MemberEntity, children: any): React.ComponentElement<CProps<DAOMember>, any> {

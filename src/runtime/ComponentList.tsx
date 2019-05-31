@@ -1,6 +1,7 @@
 import * as React from "react";
 import memoize from "memoize-one";
 import { Observable, Subscription } from "rxjs";
+import { IStateful } from "@daostack/client/src/types"
 
 import { BaseProps, BaseComponent } from "./BaseComponent";
 import { Component } from "./Component";
@@ -32,14 +33,14 @@ export abstract class ComponentList<
     CData<Comp>,
     CCode<Comp>
   >,
-  Entity = CEntity<Comp>
+  Entity extends IStateful<CData<Comp>> = CEntity<Comp>,
+  Data = CData<Comp>
 > extends BaseComponent<
     Props, State<Entity>
   >
 {
   protected abstract createObservableEntities(): Observable<Entity[]>;
   protected abstract renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Comp>, any>;
-  protected abstract fetchData(entity: Entity) : Promise<any>;
 
   private observableEntities = memoize(
     // This will only run when the function's arguments have changed :D
@@ -126,6 +127,16 @@ export abstract class ComponentList<
   private clearPrevState() {
     this.mergeState({
       entities: undefined
+    });
+  }
+
+  private fetchData(entity: Entity) : Promise<Data> {
+    return new Promise((resolve, reject) => {
+      const state = entity.state();
+      state.subscribe(
+        (data: Data) => resolve(data),
+        (error: Error) => reject(error)
+      );
     });
   }
 

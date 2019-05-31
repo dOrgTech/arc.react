@@ -11,7 +11,6 @@ import {
 } from "../protocol";
 import {
   ArcReward,
-  RewardData,
   RewardEntity,
 } from "./";
 
@@ -29,15 +28,6 @@ type Props = RequiredProps & InferredProps;
 
 class ArcRewards extends ComponentList<Props, ArcReward>
 {
-  fetchData(entity: RewardEntity): Promise<any>{
-    return new Promise((resolve, reject) => {
-      const state = entity.state()
-      state.subscribe(
-        (data: RewardData) => resolve(data),
-        (error: Error) => reject(error))
-    })
-  }
-
   createObservableEntities(): Observable<RewardEntity[]> {
     const { arcConfig } = this.props;
 
