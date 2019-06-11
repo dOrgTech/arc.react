@@ -37,6 +37,7 @@ interface State<Entity, Data> {
 
 export abstract class ComponentList<
   Props extends ComponentListProps<Entity, Data, PFilterOptions<Props>>,
+  // @ts-ignore: This should always work
   Comp extends Component<
     CProps<Comp>,
     CEntity<Comp>,

@@ -63,6 +63,7 @@ export abstract class Component<
   // This trick allows us to access the static objects
   // defined in the derived class. See this code sample:
   // https://github.com/Microsoft/TypeScript/issues/5989#issuecomment-163066313
+  // @ts-ignore: This should always be there
   "constructor": typeof Component;
 
   public render() {
