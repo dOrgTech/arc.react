@@ -4,7 +4,7 @@ const R = require('ramda')
 import { storiesOf } from "@storybook/react";
 import {
   Arc,
-  TestArcConfig as arcConfig,
+  DevArcConfig as arcConfig,
   DAOs,
   DAO,
   DAOData,

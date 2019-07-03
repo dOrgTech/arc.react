@@ -11,6 +11,7 @@ export abstract class Protocol<
   Config extends ProtocolConfig
 > extends React.Component<Props<Config>>
 {
+  // Complete any asynchronous initialization work needed by the ProtocolConfig
   protected async initialize() { }
 
   protected static _ConfigContext: React.Context<{}>;

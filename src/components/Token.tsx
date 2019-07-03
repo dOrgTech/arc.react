@@ -36,7 +36,7 @@ type Props = RequiredProps & InferredProps;
 
 class ArcToken extends Component<Props, Entity, Data, Code>
 {
-  createEntity(): Entity {
+  protected createEntity(): Entity {
     const { arcConfig, address } = this.props;
     if (!arcConfig) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
@@ -71,7 +71,7 @@ class ArcToken extends Component<Props, Entity, Data, Code>
 
 class Token extends React.Component<RequiredProps>
 {
-  render() {
+  public render() {
     const { address, children } = this.props;
 
     if (address !== undefined) {

@@ -6,7 +6,7 @@ import { IStateful } from "@daostack/client/src/types";
 import { BaseProps, BaseComponent } from "./BaseComponent";
 import { ComponentLogs } from "./logging/ComponentLogs";
 
-interface State<Data> {
+export interface State<Data> {
   data?: Data;
 
   // Diagnostics for the component
@@ -28,6 +28,9 @@ export abstract class Component<
   // property that will be recreated whenever necessary. See `private entity` below...
   protected abstract createEntity(): Entity;
 
+  // Complete any asynchronous initialization work needed by the Entity
+  protected async initialize(): Promise<void> { }
+
   // See here for more information on the React.Context pattern:
   // https://reactjs.org/docs/context.html
   protected static _EntityContext: React.Context<{}>;
@@ -48,8 +51,13 @@ export abstract class Component<
   // Our graphql query's subscriber object
   private _subscription?: Subscription;
 
+  // If the initialization logic after mount has finished
+  private _initialized: boolean;
+
   constructor(props: Props) {
     super(props);
+
+    this._initialized = false;
 
     this.state = {
       logs: new ComponentLogs()
@@ -78,8 +86,8 @@ export abstract class Component<
     // create & fetch the entity
     // TODO: this should throw errors. Upon first error, logging marks "loading started"
     // then when first success is seen, record that time too for timings
-    const entity = this.entity(this.props);
-    const code = this.code(entity);
+    const entity = this._initialized ? this.entity(this.props) : undefined;
+    const code = this._initialized ? this.code(entity) : undefined;
 
     logs.reactRendered();
 
@@ -96,6 +104,13 @@ export abstract class Component<
       </EntityProvider>
       </>
     )
+  }
+
+  public async componentDidMount(): Promise<void> {
+    await this.initialize();
+    this._initialized = true;
+    this.forceUpdate();
+    return Promise.resolve();
   }
 
   public componentWillUnmount() {

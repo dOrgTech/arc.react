@@ -3,7 +3,7 @@ import { storiesOf } from "@storybook/react";
 import ComponentView, { PropertyType } from "../helpers/ComponentView";
 import {
   Arc,
-  TestArcConfig as arcConfig,
+  DevArcConfig as arcConfig,
   DAO,
   Member,
   Proposal,

@@ -36,7 +36,7 @@ type Props = RequiredProps & InferredProps;
 
 class ArcReputation extends Component<Props, Entity, Data, Code>
 {
-  createEntity(): Entity {
+  protected createEntity(): Entity {
     const { arcConfig, address } = this.props;
 
     if (!arcConfig) {
@@ -74,7 +74,7 @@ class ArcReputation extends Component<Props, Entity, Data, Code>
 
 class Reputation extends React.Component<RequiredProps>
 {
-  render() {
+  public render() {
     const { address, children } = this.props;
 
     if (address !== undefined) {

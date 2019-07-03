@@ -5,7 +5,7 @@ import QuerySnippets from "../helpers/QuerySnippets";
 import {
   Arc,
   ArcConfig,
-  TestArcConfig as arcConfig
+  DevArcConfig as arcConfig
 } from "../../src";
 import {
   Typography,
