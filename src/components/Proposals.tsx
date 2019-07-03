@@ -62,8 +62,13 @@ class DAOProposals extends ComponentList<DAOProps, Component>
     if (!dao) {
       throw Error("DAO Missing: Please provide this field as a prop, or use the inference component.");
     }
-    const daoFilter: FilterOptions = filter ? filter : { };
-    daoFilter.dao = dao.address;
+
+    const daoFilter: FilterOptions = filter ? filter : { where: { } };
+    if (!daoFilter.where) {
+      daoFilter.where = { };
+    }
+    daoFilter.where.dao = dao.address;
+
     return Entity.search(dao.context, daoFilter);
   }
 

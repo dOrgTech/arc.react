@@ -45,7 +45,7 @@ class ArcDAO extends Component<Props, Entity, Data, Code>
     if (!arcConfig) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
-    return arcConfig.connection.dao(address);
+    return new Entity(address, arcConfig.connection);
   }
 
   public static get Entity() {

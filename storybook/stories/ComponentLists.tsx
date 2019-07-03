@@ -4,7 +4,7 @@ const R = require('ramda')
 import { storiesOf } from "@storybook/react";
 import {
   Arc,
-  DefaultArcConfig,
+  TestArcConfig as arcConfig,
   DAOs,
   DAO,
   DAOData,
@@ -44,7 +44,7 @@ export default () =>
         ComponentList={DAOs}
         Component={DAO}
         RequiredContext={(props) => (
-          <Arc config={DefaultArcConfig}>
+          <Arc config={arcConfig}>
           {props.children}
           </Arc>
         )}
@@ -58,7 +58,7 @@ export default () =>
         ComponentList={Members}
         Component={Member}
         RequiredContext={(props) => (
-          <Arc config={DefaultArcConfig}>
+          <Arc config={arcConfig}>
             <DAO address={props.dao}>
             {props.children}
             </DAO>
@@ -87,7 +87,7 @@ export default () =>
         ComponentList={Proposals}
         Component={Proposal}
         RequiredContext={(props) => (
-          <Arc config={DefaultArcConfig}>
+          <Arc config={arcConfig}>
             <DAO address={props.dao}>
             {props.children}
             </DAO>
@@ -131,7 +131,7 @@ export default () =>
         ComponentList={Reputations}
         Component={Reputation}
         RequiredContext={(props) => (
-          <Arc config={DefaultArcConfig}>
+          <Arc config={arcConfig}>
           {props.children}
           </Arc>
         )}
@@ -145,7 +145,7 @@ export default () =>
         ComponentList={Tokens}
         Component={Token}
         RequiredContext={(props) => (
-          <Arc config={DefaultArcConfig}>
+          <Arc config={arcConfig}>
           {props.children}
           </Arc>
         )}
@@ -159,7 +159,7 @@ export default () =>
         ComponentList={Rewards}
         Component={Reward}
         RequiredContext={(props) => (
-          <Arc config={DefaultArcConfig}>
+          <Arc config={arcConfig}>
           {props.children}
           </Arc>
         )}

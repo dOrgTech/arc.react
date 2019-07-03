@@ -40,7 +40,16 @@ class DAOProposal extends Component<Props, Entity, Data, Code>
       throw Error("DAO Missing: Please provide this field as a prop, or use the inference component.");
     }
 
-    return new Entity(id, dao.address, dao.context);
+    // TODO: this is a bad work around...
+    // see https://github.com/daostack/client/issues/234
+    const contracts = dao.context.contractAddresses;
+    return new Entity(
+      id,
+      dao.address,
+      contracts["ContributionReward"],
+      contracts["GenesisProtocol"],
+      dao.context
+    );
   }
 
   public static get Entity() {

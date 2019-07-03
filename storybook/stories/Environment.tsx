@@ -5,23 +5,24 @@ import QuerySnippets from "../helpers/QuerySnippets";
 import {
   Arc,
   ArcConfig,
-  DefaultArcConfig } from "../../src";
+  TestArcConfig as arcConfig
+} from "../../src";
 import {
   Typography,
   Divider
 } from '@material-ui/core';
-import * as R from "ramda";
 import ObjectInspector from "../helpers/ObjectInspector";
+import { IContractInfo } from "@daostack/client/src/arc";
 
 // TODO: make configurable
 const defaultAddress = "0x0000000000000000000000000000000000000000"
-const graphiql = setupGraphiQL({ url: "http://127.0.0.1:8000/subgraphs/name/daostack" });
+const graphiql = setupGraphiQL({ url: arcConfig.graphqlHttpUrl });
 
 export default () =>
   storiesOf("Environment", module)
     .add("Connections", () => {
       return (
-        <Arc config={DefaultArcConfig}>
+        <Arc config={arcConfig}>
           <Arc.Config>
             {(arc: ArcConfig) => {
               return (
@@ -37,24 +38,11 @@ export default () =>
         </Arc>
       )})
     .add("Contracts", () => (
-      <Arc config={DefaultArcConfig}>
+      <Arc config={arcConfig}>
         <Arc.Config>
           {(arc: ArcConfig) => {
-            let render: Array<any> = []
-            arc.connection.setAccount(defaultAddress)
-            R.forEachObjIndexed( (value: any, key: any) => {
-              try {
-                let contract = arc.connection.getContract(key)
-                let methods = {}
-                R.forEachObjIndexed((value: any, key: any) => {
-                  if (/[a-b]*\(/.test(key)) methods[key] = value
-                }, contract.methods)
-                contract.methods = methods
-                render.push({'key': key, 'contract': contract})
-              } catch (e) {
-                console.log(e.message)
-              }
-            }, arc.connection.contractAddresses)
+            const connection = arc.connection;
+            connection.setAccount(defaultAddress)
 
             return (
               <div>
@@ -62,13 +50,24 @@ export default () =>
                   Contract txMethods, viewMethods and properties
                 </Typography>
                 <Divider />
-                {render.map(o => {
+                {connection.contractAddresses.map((contractInfo: IContractInfo) => {
+                  const { name, address, version } = contractInfo;
+                  const abi = connection.getContract(address);
+
+                  // Filter out all methods hex signatures
+                  const methods = Object.keys(abi.methods)
+                    .filter(key => /[a-b]*\(/.test(key))
+                    .reduce((obj, key) => {
+                      obj[key] = abi.methods[key];
+                      return obj;
+                    }, { });
+
                   return (
                     <>
                       <Typography variant="subtitle1" component="h6">
-                        {`${o['key']} Contract: ${o['contract']._address}`}
+                        {`Name: ${name} Version: ${version} Address: ${address}`}
                       </Typography>
-                      {ObjectInspector(o['contract'].methods, `${o['key']}Contract.methods`, `${o['key']} Contract Methods`)}
+                      {ObjectInspector(methods, `${name}Contract.methods`, `${name} Contract Methods`)}
                     </>
                   )
                 })}

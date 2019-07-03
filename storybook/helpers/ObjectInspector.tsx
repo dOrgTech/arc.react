@@ -15,12 +15,12 @@ const nodeRenderer = (node: any, tooltip: string) => {
   );
 }
 
-export default (data: any, name: string, tooltip: string) => {
+export default (data: any, name: string, tooltip: string, expanded: boolean = true) => {
   return (
     <ObjectInspector
       data={{...data}}
       name={name}
-      expandLevel={1}
+      expandLevel={expanded ? 1 : 0}
       theme={"chromeDark"}
       nodeRenderer={(node: any) => nodeRenderer(node, tooltip)} />
   );
