@@ -1,6 +1,6 @@
 import * as React from "react";
-import BN from 'bignumber.js';
-const R = require('ramda')
+import BN from "bignumber.js";
+import * as R from "ramda";
 import { storiesOf } from "@storybook/react";
 import {
   Arc,
@@ -26,16 +26,6 @@ import {
 } from "../../src/";
 import ComponentListView, { PropertyType } from "../helpers/ComponentListView";
 
-/*
-import {
-  IProposalState
-} from "@daostack/client";
-*/
-//const { first } = require('rxjs/operators')
-
-//import filters from "../helpers/QueryFilters";
-
-// TODO: create ComponentListView similar to ComponentView
 export default () =>
   storiesOf("Component Lists", module)
     .add("DAOs", () => (
@@ -105,7 +95,9 @@ export default () =>
             name: "allDAOs",
             defaultValue: false,
             type: PropertyType.boolean
-          },
+          }
+          // TODO: add filtering and sorting to each component list editor
+          /*,
           {
             friendlyName: "Filters",
             name: "filters",
@@ -120,7 +112,7 @@ export default () =>
               return R.sortBy(sortBySubmittedTime)(unsortedList)
             },
             type: PropertyType.object
-          }
+          }*/
         ]}
         getId={(proposal: ProposalData) => `Proposal: ${proposal.id}`}
       />
