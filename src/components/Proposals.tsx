@@ -1,74 +1,82 @@
 import * as React from "react";
 import { Observable } from "rxjs";
 import {
-  CEntity,
   CProps,
   ComponentList,
+  ComponentListProps
 } from "../runtime";
 import {
-  Arc,
-  ArcConfig
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig
 } from "../protocol";
 import {
-  DAO,
-  DAOEntity,
-  DAOProposal,
-  ProposalEntity,
+  DAO as InferComponent,
+  DAOEntity as InferEntity,
+  DAOProposal as Component,
+  ProposalEntity as Entity,
+  ProposalData as Data
 } from "./";
+// TODO: change the import path once the PR is merged
+import {
+  IProposalQueryOptions as FilterOptions
+} from "@daostack/client/src/proposal";
 
-interface RequiredProps {
+interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> {
   allDAOs?: boolean;
-  filters?: Object | undefined;
-  sort?: (unsortedList: any)=> any;
 }
 
 interface ArcInferredProps {
-  // Arc Instance
-  arcConfig: ArcConfig | undefined;
+  arcConfig: ProtocolConfig | undefined;
 }
 
 interface DAOInferredProps {
-  // DAO Instance
-  dao: DAOEntity | undefined;
+  dao: InferEntity | undefined;
 }
 
 type ArcProps = RequiredProps & ArcInferredProps;
 type DAOProps = RequiredProps & DAOInferredProps;
 
-class ArcProposals extends ComponentList<ArcProps, DAOProposal>
+class ArcProposals extends ComponentList<ArcProps, Component>
 {
-  createObservableEntities(): Observable<ProposalEntity[]> {
-    const { arcConfig, filters } = this.props;
+  createObservableEntities(): Observable<Entity[]> {
+    const { arcConfig, filter } = this.props;
     if (!arcConfig) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
-    return ProposalEntity.search(filters ? filters : {}, arcConfig.connection);
+    return Entity.search(arcConfig.connection, filter);
   }
 
-  renderComponent(entity: ProposalEntity, children: any): React.ComponentElement<CProps<DAOProposal>, any> {
+  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
     return (
-      <DAOProposal id={entity.id} dao={entity.dao}>
+      <Component id={entity.id} dao={entity.dao}>
       {children}
-      </DAOProposal>
+      </Component>
     );
   }
 }
 
-class DAOProposals extends ComponentList<DAOProps, DAOProposal>
+class DAOProposals extends ComponentList<DAOProps, Component>
 {
-  createObservableEntities(): Observable<CEntity<DAOProposal>[]> {
-    const { dao, filters } = this.props;
+  createObservableEntities(): Observable<Entity[]> {
+    const { dao, filter } = this.props;
     if (!dao) {
       throw Error("DAO Missing: Please provide this field as a prop, or use the inference component.");
     }
-    return dao.proposals(filters);
+
+    const daoFilter: FilterOptions = filter ? filter : { where: { } };
+    if (!daoFilter.where) {
+      daoFilter.where = { };
+    }
+    daoFilter.where.dao = dao.address;
+
+    return Entity.search(dao.context, daoFilter);
   }
 
-  renderComponent(entity: ProposalEntity, children: any): React.ComponentElement<CProps<DAOProposal>, any> {
+  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
     return (
-      <DAOProposal id={entity.id} dao={entity.dao}>
+      <Component id={entity.id} dao={entity.dao}>
       {children}
-      </DAOProposal>
+      </Component>
     )
   }
 }
@@ -76,27 +84,27 @@ class DAOProposals extends ComponentList<DAOProps, DAOProposal>
 class Proposals extends React.Component<RequiredProps>
 {
   render() {
-    const { children, allDAOs, filters, sort } = this.props;
+    const { children, allDAOs, sort, filter } = this.props;
 
     if (allDAOs) {
       return (
-        <Arc.Config>
-        {(arc: ArcConfig) => (
-          <ArcProposals arcConfig={arc} filters={filters} sort={sort}>
+        <Protocol.Config>
+        {(arc: ProtocolConfig) => (
+          <ArcProposals arcConfig={arc} sort={sort} filter={filter}>
           {children}
           </ArcProposals>
         )}
-        </Arc.Config>
+        </Protocol.Config>
       );
     } else {
       return (
-        <DAO.Entity>
-        {(dao: DAOEntity) => (
-          <DAOProposals dao={dao} filters={filters} sort={sort}>
+        <InferComponent.Entity>
+        {(dao: InferEntity) => (
+          <DAOProposals dao={dao} sort={sort} filter={filter}>
           {children}
           </DAOProposals>
         )}
-        </DAO.Entity>
+        </InferComponent.Entity>
       );
     }
   }

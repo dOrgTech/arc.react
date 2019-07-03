@@ -33,7 +33,7 @@ type Props = RequiredProps & InferredProps;
 
 class DAOMember extends Component<Props, Entity, Data, Code>
 {
-  createEntity(): Entity {
+  protected createEntity(): Entity {
     const { dao, address } = this.props;
 
     // TODO: better error handling? maybe have another abstract function
@@ -70,7 +70,7 @@ class DAOMember extends Component<Props, Entity, Data, Code>
 
 class Member extends React.Component<RequiredProps>
 {
-  render() {
+  public render() {
     const { address, children } = this.props;
 
     return (

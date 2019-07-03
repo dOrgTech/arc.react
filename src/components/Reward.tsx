@@ -33,7 +33,7 @@ type Props = RequiredProps & InferredProps;
 
 class ArcReward extends Component<Props, Entity, Data, Code>
 {
-  createEntity(): Entity {
+  protected createEntity(): Entity {
     const { id, arcConfig } = this.props;
 
     if (!arcConfig) {
@@ -67,7 +67,7 @@ class ArcReward extends Component<Props, Entity, Data, Code>
 
 class Reward extends React.Component<RequiredProps>
 {
-  render() {
+  public render() {
     const { id, children } = this.props;
 
     return (

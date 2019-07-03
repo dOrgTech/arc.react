@@ -40,12 +40,12 @@ type Props = RequiredProps & InferredProps;
 
 class ArcDAO extends Component<Props, Entity, Data, Code>
 {
-  createEntity(): Entity {
+  protected createEntity(): Entity {
     const { arcConfig, address } = this.props;
     if (!arcConfig) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
-    return arcConfig.connection.dao(address);
+    return new Entity(address, arcConfig.connection);
   }
 
   public static get Entity() {
@@ -72,7 +72,7 @@ class ArcDAO extends Component<Props, Entity, Data, Code>
 
 class DAO extends React.Component<RequiredProps>
 {
-  render() {
+  public render() {
     const { address, children } = this.props;
 
     return (

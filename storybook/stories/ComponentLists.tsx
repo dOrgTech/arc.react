@@ -1,10 +1,10 @@
 import * as React from "react";
-import BN from 'bignumber.js';
-const R = require('ramda')
+import BN from "bignumber.js";
+import * as R from "ramda";
 import { storiesOf } from "@storybook/react";
 import {
   Arc,
-  DefaultArcConfig,
+  DevArcConfig as arcConfig,
   DAOs,
   DAO,
   DAOData,
@@ -26,16 +26,6 @@ import {
 } from "../../src/";
 import ComponentListView, { PropertyType } from "../helpers/ComponentListView";
 
-/*
-import {
-  IProposalState
-} from "@daostack/client";
-*/
-//const { first } = require('rxjs/operators')
-
-//import filters from "../helpers/QueryFilters";
-
-// TODO: create ComponentListView similar to ComponentView
 export default () =>
   storiesOf("Component Lists", module)
     .add("DAOs", () => (
@@ -44,7 +34,7 @@ export default () =>
         ComponentList={DAOs}
         Component={DAO}
         RequiredContext={(props) => (
-          <Arc config={DefaultArcConfig}>
+          <Arc config={arcConfig}>
           {props.children}
           </Arc>
         )}
@@ -58,7 +48,7 @@ export default () =>
         ComponentList={Members}
         Component={Member}
         RequiredContext={(props) => (
-          <Arc config={DefaultArcConfig}>
+          <Arc config={arcConfig}>
             <DAO address={props.dao}>
             {props.children}
             </DAO>
@@ -87,7 +77,7 @@ export default () =>
         ComponentList={Proposals}
         Component={Proposal}
         RequiredContext={(props) => (
-          <Arc config={DefaultArcConfig}>
+          <Arc config={arcConfig}>
             <DAO address={props.dao}>
             {props.children}
             </DAO>
@@ -105,7 +95,9 @@ export default () =>
             name: "allDAOs",
             defaultValue: false,
             type: PropertyType.boolean
-          },
+          }
+          // TODO: add filtering and sorting to each component list editor
+          /*,
           {
             friendlyName: "Filters",
             name: "filters",
@@ -120,7 +112,7 @@ export default () =>
               return R.sortBy(sortBySubmittedTime)(unsortedList)
             },
             type: PropertyType.object
-          }
+          }*/
         ]}
         getId={(proposal: ProposalData) => `Proposal: ${proposal.id}`}
       />
@@ -131,7 +123,7 @@ export default () =>
         ComponentList={Reputations}
         Component={Reputation}
         RequiredContext={(props) => (
-          <Arc config={DefaultArcConfig}>
+          <Arc config={arcConfig}>
           {props.children}
           </Arc>
         )}
@@ -145,7 +137,7 @@ export default () =>
         ComponentList={Tokens}
         Component={Token}
         RequiredContext={(props) => (
-          <Arc config={DefaultArcConfig}>
+          <Arc config={arcConfig}>
           {props.children}
           </Arc>
         )}
@@ -159,7 +151,7 @@ export default () =>
         ComponentList={Rewards}
         Component={Reward}
         RequiredContext={(props) => (
-          <Arc config={DefaultArcConfig}>
+          <Arc config={arcConfig}>
           {props.children}
           </Arc>
         )}

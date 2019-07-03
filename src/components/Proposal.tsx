@@ -16,6 +16,10 @@ import {
   IProposalState as Data
 } from "@daostack/client";
 
+// TODO: get rid of this
+import gql from "graphql-tag";
+import { first } from "rxjs/operators";
+
 // TODO
 type Code = { }
 
@@ -31,16 +35,64 @@ interface InferredProps {
 
 type Props = RequiredProps & InferredProps;
 
+// TODO: get rid of this and make it apart of the client library
+interface StaticState {
+  schemeAddress: string;
+  votingMachineAddress: string;
+}
+
 class DAOProposal extends Component<Props, Entity, Data, Code>
 {
-  createEntity(): Entity {
+  private staticState: StaticState = {
+    schemeAddress: "",
+    votingMachineAddress: ""
+  };
+
+  protected async initialize(): Promise<void> {
     const { dao, id } = this.props;
 
     if (!dao) {
       throw Error("DAO Missing: Please provide this field as a prop, or use the inference component.");
     }
 
-    return new Entity(id, dao.address, dao.context);
+    // TODO: get rid of this, and instead have this be "fetchStaticState"
+    const query = gql`
+    {
+      proposal (id: "${id}") {
+        votingMachine
+        scheme {
+          address
+        }
+      }
+    }`;
+
+    const itemMap = (item: any): StaticState => {
+      return {
+        schemeAddress: item.scheme.address,
+        votingMachineAddress: item.votingMachine
+      };
+    };
+
+    this.staticState = await dao.context.getObservableObject(
+      query,
+      itemMap
+    ).pipe(first()).toPromise();
+  }
+
+  protected createEntity(): Entity {
+    const { dao, id } = this.props;
+
+    if (!dao) {
+      throw Error("DAO Missing: Please provide this field as a prop, or use the inference component.");
+    }
+
+    return new Entity(
+      id,
+      dao.address,
+      this.staticState.schemeAddress,
+      this.staticState.votingMachineAddress,
+      dao.context
+    );
   }
 
   public static get Entity() {
@@ -67,7 +119,7 @@ class DAOProposal extends Component<Props, Entity, Data, Code>
 
 class Proposal extends React.Component<RequiredProps>
 {
-  render() {
+  public render() {
     const { id, children } = this.props;
 
     return (

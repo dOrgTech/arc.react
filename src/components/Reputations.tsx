@@ -3,43 +3,47 @@ import { Observable } from "rxjs";
 import {
   CProps,
   ComponentList,
-  BaseProps
+  ComponentListProps
 } from "../runtime";
 import {
-  Arc,
-  ArcConfig
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig
 } from "../protocol";
 import {
-  ArcReputation,
-  ReputationEntity,
+  ArcReputation as Component,
+  ReputationEntity as Entity,
+  ReputationData as Data
 } from "./";
+// TODO: change the import path once the PR is merged
+import {
+  IReputationQueryOptions as FilterOptions
+} from "@daostack/client/src/reputation";
 
-interface RequiredProps extends BaseProps { }
+interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> { }
 
 interface InferredProps {
-  // Arc Instance
-  arcConfig: ArcConfig | undefined;
+  arcConfig: ProtocolConfig | undefined;
 }
 
 type Props = RequiredProps & InferredProps;
 
-class ArcReputations extends ComponentList<Props, ArcReputation>
+class ArcReputations extends ComponentList<Props, Component>
 {
-  createObservableEntities(): Observable<ReputationEntity[]> {
-    const { arcConfig } = this.props;
+  createObservableEntities(): Observable<Entity[]> {
+    const { arcConfig, filter } = this.props;
     if (!arcConfig) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
-    return ReputationEntity.search({}, arcConfig.connection);
+    return Entity.search(arcConfig.connection, filter);
   }
 
-  renderComponent(entity: ReputationEntity, children: any): React.ComponentElement<CProps<ArcReputation>, any> {
+  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
     const { arcConfig } = this.props;
 
     return (
-      <ArcReputation address={entity.address} arcConfig={arcConfig}>
+      <Component address={entity.address} arcConfig={arcConfig}>
       {children}
-      </ArcReputation>
+      </Component>
     );
   }
 }
@@ -47,17 +51,17 @@ class ArcReputations extends ComponentList<Props, ArcReputation>
 class Reputations extends React.Component<RequiredProps>
 {
   render() {
-    const { children } = this.props;
+    const { children, sort, filter } = this.props;
 
     return (
-      <Arc.Config>
-      {(arc: ArcConfig) =>
-        <ArcReputations arcConfig={arc}>
+      <Protocol.Config>
+      {(arc: ProtocolConfig) =>
+        <ArcReputations arcConfig={arc} sort={sort} filter={filter}>
         {children}
         </ArcReputations>
       }
-      </Arc.Config>
-    )
+      </Protocol.Config>
+    );
   }
 }
 

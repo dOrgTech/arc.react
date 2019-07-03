@@ -3,7 +3,7 @@ import { storiesOf } from "@storybook/react";
 import ComponentView, { PropertyType } from "../helpers/ComponentView";
 import {
   Arc,
-  DefaultArcConfig,
+  DevArcConfig as arcConfig,
   DAO,
   Member,
   Proposal,
@@ -19,7 +19,7 @@ export default () =>
         name={"DAO"}
         Component={DAO}
         RequiredContext={(props) => (
-          <Arc config={DefaultArcConfig}>
+          <Arc config={arcConfig}>
           {props.children}
           </Arc>
         )}
@@ -39,7 +39,7 @@ export default () =>
         name={"Member"}
         Component={Member}
         RequiredContext={(props) => (
-          <Arc config={DefaultArcConfig}>
+          <Arc config={arcConfig}>
             <DAO address={props.dao}>
             {props.children}
             </DAO>
@@ -66,7 +66,7 @@ export default () =>
         name={"Proposal"}
         Component={Proposal}
         RequiredContext={(props) => (
-          <Arc config={DefaultArcConfig}>
+          <Arc config={arcConfig}>
             <DAO address={props.dao}>
             {props.children}
             </DAO>
@@ -93,7 +93,7 @@ export default () =>
         name={"Reputation"}
         Component={Reputation}
         RequiredContext={(props) => (
-          <Arc config={DefaultArcConfig}>
+          <Arc config={arcConfig}>
             {props.children}
           </Arc>
         )}
@@ -112,7 +112,7 @@ export default () =>
         name={"Reputation"}
         Component={Reputation}
         RequiredContext={(props) => (
-          <Arc config={DefaultArcConfig}>
+          <Arc config={arcConfig}>
             <DAO address={props.dao}>
             {props.children}
             </DAO>
@@ -133,7 +133,7 @@ export default () =>
         name={"Token"}
         Component={Token}
         RequiredContext={(props) => (
-          <Arc config={DefaultArcConfig}>
+          <Arc config={arcConfig}>
             {props.children}
           </Arc>
         )}
@@ -152,7 +152,7 @@ export default () =>
         name={"Token"}
         Component={Token}
         RequiredContext={(props) => (
-          <Arc config={DefaultArcConfig}>
+          <Arc config={arcConfig}>
             <DAO address={props.dao}>
             {props.children}
             </DAO>
@@ -173,7 +173,7 @@ export default () =>
         name={"Reward"}
         Component={Reward}
         RequiredContext={(props) => (
-          <Arc config={DefaultArcConfig}>
+          <Arc config={arcConfig}>
             {props.children}
           </Arc>
         )}
