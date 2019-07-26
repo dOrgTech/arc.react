@@ -181,7 +181,7 @@ export default () =>
           {
             friendlyName: "Reward ID",
             name: "id",
-            defaultValue: "0xe31aa6c8ef377fb8f716ae0c4a92e2f4f85da6c52bf9c3d35409300e132c0b44",
+            defaultValue: "0xbd983b9fdd7ca63ffedff0b430babfcb7cd16c436c03a94074f5138e37511ff2",
             type: PropertyType.string
           }
         ]}

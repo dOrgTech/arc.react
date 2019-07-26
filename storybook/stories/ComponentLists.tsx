@@ -1,6 +1,4 @@
 import * as React from "react";
-import BN from "bignumber.js";
-import * as R from "ramda";
 import { storiesOf } from "@storybook/react";
 import {
   Arc,

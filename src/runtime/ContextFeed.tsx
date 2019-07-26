@@ -1,6 +1,6 @@
 import * as React from "react";
 import LoadingView from './LoadingView';
-const R  = require("ramda");
+import { ComponentLogs, ComponentListLogs } from "./";
 
 // TODO: have the user of the library provide their own loading component
 
@@ -8,6 +8,7 @@ type ConsumerComponent = React.ExoticComponent<React.ConsumerProps<any>>
 
 export interface Props extends React.PropsWithChildren<{}> {
   _consumers?: ConsumerComponent[]
+  _logs?: (ConsumerComponent | undefined)[]
 }
 
 class ContextFeed extends React.Component<Props>
@@ -17,9 +18,9 @@ class ContextFeed extends React.Component<Props>
   }
 
   public render() {
-    const { children, _consumers } = this.props;
+    const { children, _consumers, _logs } = this.props;
 
-    if (!_consumers) {
+    if (!_consumers || !_logs) {
       throw Error("Error: ContextFeed missing context consumer(s).");
     }
 
@@ -34,7 +35,11 @@ class ContextFeed extends React.Component<Props>
       const length = _consumers.length;
       const RelayValues = (index: number, values: Array<any> = []) => {
         if (index < length) {
+          // If we are still iterating through _consumers
           const Consumer = _consumers[index];
+
+          // render the context consumers, and pass the
+          // value to this function recursively
           return (
             <Consumer>
             {(value) => (
@@ -43,18 +48,26 @@ class ContextFeed extends React.Component<Props>
             </Consumer>
           )
         } else {
-          if (values.indexOf(undefined) > -1) {
-            // Hacky way to find index of ComponentLogs in values
-            // TODO: find a better way to identify type of object
-            let i = R.findIndex(function(o: any) {
-              if (o && o["_react"])
-                  return true
-              return false
-            })(values)
-            if ( i > -1)
-              return <LoadingView logs={values[i]}/>
-            else
-              return <div>loading...</div>
+          // We've recursed through all consumers. Now let's
+          // check for undefined values and give logging information
+          // for why they're undefined.
+          const nullIndex = values.indexOf(undefined);
+
+          // If we have a value that is still undefined
+          if (nullIndex > -1) {
+            // Get its logs and pass them to the LoadingView component
+            const Logs = _logs[nullIndex];
+
+            // TODO: This is required because Protocol's don't have logs. Need to add this, or just make Protocol's components...
+            if (Logs === undefined) {
+              return <div>Loading...</div>
+            }
+
+            return (
+              <Logs>
+              {(logs: ComponentLogs | ComponentListLogs) => <LoadingView logs={logs} />}
+              </Logs>
+            )
           } else {
             return children(...values);
           }
@@ -72,25 +85,35 @@ class ContextFeed extends React.Component<Props>
 
       for (const child of childrenArray) {
         newChildren.push(React.cloneElement(child, {
-          _consumers
+          _consumers,
+          _logs
         }));
       }
 
       return (<>{newChildren}</>);
     } else {
       return React.cloneElement(children as React.ReactElement, {
-        _consumers
+        _consumers,
+        _logs
       });
     }
   }
 }
 
-export const CreateContextFeed = (consumer: ConsumerComponent) => (
+export const CreateContextFeed = (consumer: ConsumerComponent, logs: ConsumerComponent | undefined) => (
   (props: Props) => (
-    <ContextFeed _consumers={
-      props._consumers ?
-      [...props._consumers, consumer] :
-      [consumer]
-    } children={props.children} />
+    <ContextFeed
+      _consumers={
+        props._consumers ?
+        [...props._consumers, consumer] :
+        [consumer]
+      }
+      _logs={
+        props._logs ?
+        [...props._logs, logs] :
+        [logs]
+      }
+      children={props.children}
+    />
   )
 );
