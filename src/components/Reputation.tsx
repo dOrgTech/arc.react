@@ -51,19 +51,19 @@ class ArcReputation extends Component<Props, Entity, Data, Code>
   }
 
   public static get Entity() {
-    return CreateContextFeed(this._EntityContext.Consumer);
+    return CreateContextFeed(this._EntityContext.Consumer, this._LogsContext.Consumer);
   }
 
   public static get Data() {
-    return CreateContextFeed(this._DataContext.Consumer);
+    return CreateContextFeed(this._DataContext.Consumer, this._LogsContext.Consumer);
   }
 
   public static get Code() {
-    return CreateContextFeed(this._CodeContext.Consumer);
+    return CreateContextFeed(this._CodeContext.Consumer, this._LogsContext.Consumer);
   }
 
   public static get Logs() {
-    return CreateContextFeed(this._LogsContext.Consumer);
+    return CreateContextFeed(this._LogsContext.Consumer, this._LogsContext.Consumer);
   }
 
   protected static _EntityContext = React.createContext({ });

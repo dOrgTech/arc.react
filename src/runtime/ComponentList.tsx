@@ -87,7 +87,6 @@ export abstract class ComponentList<
     if (typeof children === "function") {
       return children(entities);
     } else {
-      // TODO: better loading handler
       if(entities) {
         if(sorted.length > 0)
           return sorted.map((item) => this.renderComponent(item.entity, children)) 

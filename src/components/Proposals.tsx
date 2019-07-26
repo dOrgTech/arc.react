@@ -19,7 +19,7 @@ import {
 // TODO: change the import path once the PR is merged
 import {
   IProposalQueryOptions as FilterOptions
-} from "@daostack/client/src/proposal";
+} from "@daostack/client";
 
 interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> {
   allDAOs?: boolean;

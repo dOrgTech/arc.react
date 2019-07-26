@@ -1,6 +1,6 @@
 {
   "name": "@dorgtech/daocomponents",
-  "version": "0.0.3-alpha",
+  "version": "0.0.4-alpha",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
   "engines": {
