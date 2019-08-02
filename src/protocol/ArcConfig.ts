@@ -39,8 +39,8 @@ export const DevArcConfig = new ArcConfig(
 
 export const TestArcConfig = new ArcConfig(
   "wss://rinkeby.infura.io/ws/v3/e0cdf3bfda9b468fa908aa6ab03d5ba2",
-  "https://rinkeby.subgraph.daostack.io/subgraphs/name/v23",
-  "wss://ws.rinkeby.subgraph.daostack.io/subgraphs/name/v23",
+  "https://rinkeby.subgraph.daostack.io/subgraphs/name/v24",
+  "wss://ws.rinkeby.subgraph.daostack.io/subgraphs/name/v24",
   {
     "host": "rinkeby.subgraph.daostack.io",
     "port": "443",
@@ -52,8 +52,8 @@ export const TestArcConfig = new ArcConfig(
 
 export const ProdArcConfig = new ArcConfig(
   "wss://mainnet.infura.io/ws/v3/e0cdf3bfda9b468fa908aa6ab03d5ba2",
-  "https://subgraph.daostack.io/subgraphs/name/v23",
-  "wss://ws.subgraph.daostack.io/subgraphs/name/v23",
+  "https://subgraph.daostack.io/subgraphs/name/v24",
+  "wss://ws.subgraph.daostack.io/subgraphs/name/v24",
   {
       "host": "subgraph.daostack.io",
       "port": "443",
