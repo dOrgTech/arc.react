@@ -24,7 +24,8 @@ export class ArcConfig extends ProtocolConfig
   }
 
   public async initialize(): Promise<boolean> {
-    this.isInitialized = await this.connection.initialize();
+    if(await this.connection.fetchContractInfos())
+      this.isInitialized = true;
     return this.isInitialized;
   }
 }

@@ -50,7 +50,7 @@ export default () =>
                   Contract txMethods, viewMethods and properties
                 </Typography>
                 <Divider />
-                {connection.contractAddresses.map((contractInfo: IContractInfo) => {
+                {connection.contractInfos.map((contractInfo: IContractInfo) => {
                   const { name, address, version } = contractInfo;
                   const abi = connection.getContract(address);
 

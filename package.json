@@ -1,6 +1,6 @@
 {
   "name": "@dorgtech/daocomponents",
-  "version": "0.0.5-alpha",
+  "version": "0.0.6-alpha",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
   "engines": {
@@ -20,7 +20,7 @@
     "release": "npm run build:release && npm run package:release && npm publish ./package --access public"
   },
   "dependencies": {
-    "@daostack/client": "0.1.24",
+    "@daostack/client": "0.2.6",
     "memoize-one": "^5.0.0",
     "ramda": "^0.26.1",
     "react": "16.8.6",

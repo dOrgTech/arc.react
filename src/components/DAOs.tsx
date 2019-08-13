@@ -41,7 +41,7 @@ class ArcDAOs extends ComponentList<Props, Component>
     const { arcConfig } = this.props;
 
     return (
-      <Component address={entity.address} arcConfig={arcConfig}>
+      <Component address={entity.id} arcConfig={arcConfig}>
       {children}
       </Component>
     );

@@ -88,9 +88,6 @@ class DAOProposal extends Component<Props, Entity, Data, Code>
 
     return new Entity(
       id,
-      dao.address,
-      this.staticState.schemeAddress,
-      this.staticState.votingMachineAddress,
       dao.context
     );
   }

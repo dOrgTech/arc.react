@@ -48,7 +48,7 @@ class ArcMembers extends ComponentList<ArcProps, Component>
 
   renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
     return (
-      <Component address={entity.address} dao={new InferEntity(entity.daoAddress, entity.context)}>
+      <Component address={entity.staticState!.address} dao={new InferEntity(entity.staticState!.dao, entity.context) as InferEntity}>
       {children}
       </Component>
     );
@@ -69,7 +69,7 @@ class DAOMembers extends ComponentList<DAOProps, Component>
     if (!daoFilter.where) {
       daoFilter.where = { };
     }
-    daoFilter.where.dao = dao.address;
+    daoFilter.where.dao = dao.id;
 
     return Entity.search(dao.context, daoFilter);
   }
@@ -77,7 +77,7 @@ class DAOMembers extends ComponentList<DAOProps, Component>
   renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
     const { dao } = this.props;
     return (
-      <Component address={entity.address} dao={dao}>
+      <Component address={entity.staticState!.address as string} dao={dao}>
       {children}
       </Component>
     );

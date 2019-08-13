@@ -47,8 +47,10 @@ class ArcProposals extends ComponentList<ArcProps, Component>
   }
 
   renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
+    entity.fetchStaticState()
+    console.log("hello world = ", entity.staticState)
     return (
-      <Component id={entity.id} dao={entity.dao}>
+      <Component id={entity.id} dao={entity.staticState!.dao}>
       {children}
       </Component>
     );
@@ -67,14 +69,15 @@ class DAOProposals extends ComponentList<DAOProps, Component>
     if (!daoFilter.where) {
       daoFilter.where = { };
     }
-    daoFilter.where.dao = dao.address;
+    daoFilter.where.dao = dao.id;
 
     return Entity.search(dao.context, daoFilter);
   }
 
   renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
+    const { dao } = this.props;
     return (
-      <Component id={entity.id} dao={entity.dao}>
+      <Component id={entity.id} dao={dao}>
       {children}
       </Component>
     )
