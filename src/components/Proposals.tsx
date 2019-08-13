@@ -47,8 +47,8 @@ class ArcProposals extends ComponentList<ArcProps, Component>
   }
 
   renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
+    // TODO: issue staticState not being set and dao is undefined
     entity.fetchStaticState()
-    console.log("hello world = ", entity.staticState)
     return (
       <Component id={entity.id} dao={entity.staticState!.dao}>
       {children}
