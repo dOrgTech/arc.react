@@ -8,17 +8,13 @@ import {
   CreateContextFeed
 } from "../runtime/ContextFeed";
 import {
-  DAO,
-  DAOEntity
-} from "./";
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig
+} from "../protocol";
 import {
   Proposal as Entity,
   IProposalState as Data
 } from "@daostack/client";
-
-// TODO: get rid of this
-import gql from "graphql-tag";
-import { first } from "rxjs/operators";
 
 // TODO
 type Code = { }
@@ -29,67 +25,30 @@ interface RequiredProps extends BaseProps {
 }
 
 interface InferredProps {
-  // The DAO this proposal is apart of
-  dao: DAOEntity | undefined;
+  // Arc Instance
+  arcConfig: ProtocolConfig | undefined;
 }
 
 type Props = RequiredProps & InferredProps;
 
-// TODO: get rid of this and make it apart of the client library
-interface StaticState {
-  schemeAddress: string;
-  votingMachineAddress: string;
-}
-
-class DAOProposal extends Component<Props, Entity, Data, Code>
+class ArcProposal extends Component<Props, Entity, Data, Code>
 {
-  private staticState: StaticState = {
-    schemeAddress: "",
-    votingMachineAddress: ""
-  };
+  protected createEntity(): Entity {
+    const { arcConfig, id } = this.props;
 
-  protected async initialize(): Promise<void> {
-    const { dao, id } = this.props;
-
-    if (!dao) {
-      throw Error("DAO Missing: Please provide this field as a prop, or use the inference component.");
+    if (!arcConfig) {
+      throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
 
-    // TODO: get rid of this, and instead have this be "fetchStaticState"
-    const query = gql`
-    {
-      proposal (id: "${id}") {
-        votingMachine
-        scheme {
-          address
-        }
-      }
-    }`;
-
-    const itemMap = (item: any): StaticState => {
-      return {
-        schemeAddress: item.scheme.address,
-        votingMachineAddress: item.votingMachine
-      };
-    };
-
-    this.staticState = await dao.context.getObservableObject(
-      query,
-      itemMap
-    ).pipe(first()).toPromise();
+    return new Entity(id, arcConfig.connection);
   }
 
-  protected createEntity(): Entity {
-    const { dao, id } = this.props;
-
-    if (!dao) {
-      throw Error("DAO Missing: Please provide this field as a prop, or use the inference component.");
+  protected async initialize(entity: Entity | undefined): Promise<void> {
+    if (entity) {
+      await entity.fetchStaticState();
     }
 
-    return new Entity(
-      id,
-      dao.context
-    );
+    return Promise.resolve();
   }
 
   public static get Entity() {
@@ -120,37 +79,37 @@ class Proposal extends React.Component<RequiredProps>
     const { id, children } = this.props;
 
     return (
-      <DAO.Entity>
-      {(entity: DAOEntity) => (
-        <DAOProposal id={id} dao={entity}>
+      <Protocol.Config>
+      {(arc: ProtocolConfig) => (
+        <ArcProposal id={id} arcConfig={arc}>
         {children}
-        </DAOProposal>
+        </ArcProposal>
       )}
-      </DAO.Entity>
+      </Protocol.Config>
     );
   }
 
   public static get Entity() {
-    return DAOProposal.Entity;
+    return ArcProposal.Entity;
   }
 
   public static get Data() {
-    return DAOProposal.Data;
+    return ArcProposal.Data;
   }
 
   public static get Code() {
-    return DAOProposal.Code;
+    return ArcProposal.Code;
   }
 
   public static get Logs() {
-    return DAOProposal.Logs;
+    return ArcProposal.Logs;
   }
 }
 
 export default Proposal;
 
 export {
-  DAOProposal,
+  ArcProposal,
   Proposal,
   Props  as ProposalProps,
   Entity as ProposalEntity,

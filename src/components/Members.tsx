@@ -47,8 +47,9 @@ class ArcMembers extends ComponentList<ArcProps, Component>
   }
 
   renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
+    // TODO: support creating Components with just an Entity, it makes no sense to recreate the Member entity here...
     return (
-      <Component address={entity.staticState!.address} dao={new InferEntity(entity.staticState!.dao, entity.context) as InferEntity}>
+      <Component address={entity.staticState!.address} dao={new InferEntity(entity.staticState!.dao, entity.context)}>
       {children}
       </Component>
     );

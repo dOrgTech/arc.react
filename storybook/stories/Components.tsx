@@ -74,12 +74,6 @@ export default () =>
         )}
         propEditors={[
           {
-            friendlyName: "DAO Address",
-            name: "dao",
-            defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
-            type: PropertyType.string
-          },
-          {
             friendlyName: "Proposal ID",
             name: "id",
             defaultValue: "0x6afee092a28c74f6358093d5376ac75014ac4d9fd42d296a5498ef42eecd7248",
@@ -181,7 +175,7 @@ export default () =>
           {
             friendlyName: "Reward ID",
             name: "id",
-            defaultValue: "0xbd983b9fdd7ca63ffedff0b430babfcb7cd16c436c03a94074f5138e37511ff2",
+            defaultValue: "0xc0c911eafd30e6bb1f1f2b4a8cf401bf355a5e066a3af50e8ef7b09dd68e65db",
             type: PropertyType.string
           }
         ]}

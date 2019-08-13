@@ -29,7 +29,7 @@ export abstract class Component<
   protected abstract createEntity(): Entity;
 
   // Complete any asynchronous initialization work needed by the Entity
-  protected async initialize(): Promise<void> { }
+  protected async initialize(entity: Entity | undefined): Promise<void> { }
 
   // See here for more information on the React.Context pattern:
   // https://reactjs.org/docs/context.html
@@ -107,7 +107,7 @@ export abstract class Component<
   }
 
   public async componentDidMount(): Promise<void> {
-    await this.initialize();
+    await this.initialize(this.entity(this.props));
     this._initialized = true;
     this.forceUpdate();
     return Promise.resolve();

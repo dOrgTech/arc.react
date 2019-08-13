@@ -43,7 +43,15 @@ class DAOMember extends Component<Props, Entity, Data, Code>
       throw Error("DAO Missing: Please provide this field as a prop, or use the inference component.");
     }
 
-    return dao.member(address);
+    return new Entity({ address, dao: dao.id }, dao.context)
+  }
+
+  protected async initialize(entity: Entity | undefined): Promise<void> {
+    if (entity) {
+      await entity.fetchStaticState();
+    }
+
+    return Promise.resolve();
   }
 
   public static get Entity() {

@@ -12,11 +12,10 @@ import {
 import {
   DAO as InferComponent,
   DAOEntity as InferEntity,
-  DAOProposal as Component,
+  ArcProposal as Component,
   ProposalEntity as Entity,
   ProposalData as Data
 } from "./";
-// TODO: change the import path once the PR is merged
 import {
   IProposalQueryOptions as FilterOptions
 } from "@daostack/client";
@@ -26,31 +25,26 @@ interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> 
 }
 
 interface ArcInferredProps {
-  arcConfig: ProtocolConfig | undefined;
+  arcConfig: ProtocolConfig;
 }
 
 interface DAOInferredProps {
-  dao: InferEntity | undefined;
+  dao: InferEntity;
 }
 
 type ArcProps = RequiredProps & ArcInferredProps;
-type DAOProps = RequiredProps & DAOInferredProps;
+type DAOProps = RequiredProps & ArcInferredProps & DAOInferredProps;
 
 class ArcProposals extends ComponentList<ArcProps, Component>
 {
   createObservableEntities(): Observable<Entity[]> {
     const { arcConfig, filter } = this.props;
-    if (!arcConfig) {
-      throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
-    }
     return Entity.search(arcConfig.connection, filter);
   }
 
   renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
-    // TODO: issue staticState not being set and dao is undefined
-    entity.fetchStaticState()
     return (
-      <Component id={entity.id} dao={entity.staticState!.dao}>
+      <Component id={entity.id} arcConfig={this.props.arcConfig}>
       {children}
       </Component>
     );
@@ -61,9 +55,6 @@ class DAOProposals extends ComponentList<DAOProps, Component>
 {
   createObservableEntities(): Observable<Entity[]> {
     const { dao, filter } = this.props;
-    if (!dao) {
-      throw Error("DAO Missing: Please provide this field as a prop, or use the inference component.");
-    }
 
     const daoFilter: FilterOptions = filter ? filter : { where: { } };
     if (!daoFilter.where) {
@@ -75,9 +66,9 @@ class DAOProposals extends ComponentList<DAOProps, Component>
   }
 
   renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
-    const { dao } = this.props;
+    const { arcConfig } = this.props;
     return (
-      <Component id={entity.id} dao={dao}>
+      <Component id={entity.id} arcConfig={arcConfig}>
       {children}
       </Component>
     )
@@ -101,13 +92,15 @@ class Proposals extends React.Component<RequiredProps>
       );
     } else {
       return (
+        <Protocol.Config>
         <InferComponent.Entity>
-        {(dao: InferEntity) => (
-          <DAOProposals dao={dao} sort={sort} filter={filter}>
+        {(arc: ProtocolConfig, dao: InferEntity) => (
+          <DAOProposals arcConfig={arc} dao={dao} sort={sort} filter={filter}>
           {children}
           </DAOProposals>
         )}
         </InferComponent.Entity>
+        </Protocol.Config>
       );
     }
   }

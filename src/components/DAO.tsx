@@ -48,6 +48,14 @@ class ArcDAO extends Component<Props, Entity, Data, Code>
     return new Entity(address, arcConfig.connection);
   }
 
+  protected async initialize(entity: Entity | undefined): Promise<void> {
+    if (entity) {
+      await entity.fetchStaticState();
+    }
+
+    return Promise.resolve();
+  }
+
   public static get Entity() {
     return CreateContextFeed(this._EntityContext.Consumer, this._LogsContext.Consumer);
   }
