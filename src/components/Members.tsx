@@ -16,11 +16,13 @@ import {
   MemberEntity as Entity,
   MemberData as Data
 } from "./";
-// TODO: change the import path once the PR is merged
 import {
   IMemberQueryOptions as FilterOptions
-} from "@daostack/client/src/member";
+} from "@daostack/client";
 
+// TODO: find better way of handling inference... this gets complicated when there are multiple
+// points of inferrance such as votes (MemberVotes, DAOVotes, ProposalVotes). Maybe have a prop
+// that is <Votes inferFrom={"Member"}
 interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> {
   allDAOs?: boolean;
 }
@@ -43,6 +45,7 @@ class ArcMembers extends ComponentList<ArcProps, Component>
     if (!arcConfig) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
+
     return Entity.search(arcConfig.connection, filter);
   }
 

@@ -14,10 +14,9 @@ import {
   RewardEntity as Entity,
   RewardData as Data
 } from "./";
-// TODO: change the import path once the PR is merged
 import {
   IRewardQueryOptions as FilterOptions
-} from "@daostack/client/src/reward";
+} from "@daostack/client";
 
 interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> { }
 

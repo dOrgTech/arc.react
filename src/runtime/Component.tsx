@@ -107,9 +107,20 @@ export abstract class Component<
   }
 
   public async componentDidMount(): Promise<void> {
-    await this.initialize(this.entity(this.props));
-    this._initialized = true;
-    this.forceUpdate();
+    const { logs } = this.state;
+
+    try {
+      await this.initialize(this.entity(this.props));
+      this._initialized = true;
+      this.forceUpdate();
+    } catch (error) {
+      logs.entityCreationFailed(error);
+      this.setState({
+        data: this.state.data,
+        logs: logs.clone()
+      });
+    }
+
     return Promise.resolve();
   }
 
@@ -144,6 +155,10 @@ export abstract class Component<
       return entity;
     } catch (error) {
       logs.entityCreationFailed(error);
+      this.setState({
+        data: this.state.data,
+        logs: logs.clone()
+      });
       return undefined;
     }
   }

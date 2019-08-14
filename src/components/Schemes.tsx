@@ -10,12 +10,12 @@ import {
   ArcConfig as ProtocolConfig
 } from "../protocol";
 import {
-  ArcDAO as Component,
-  DAOEntity as Entity,
-  DAOData as Data
+  ArcScheme as Component,
+  SchemeEntity as Entity,
+  SchemeData as Data
 } from "./";
 import {
-  IDAOQueryOptions as FilterOptions
+  ISchemeQueryOptions as FilterOptions
 } from "@daostack/client";
 
 interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> { }
@@ -26,7 +26,7 @@ interface InferredProps {
 
 type Props = RequiredProps & InferredProps;
 
-class ArcDAOs extends ComponentList<Props, Component>
+class ArcSchemes extends ComponentList<Props, Component>
 {
   createObservableEntities(): Observable<Entity[]> {
     const { arcConfig, filter } = this.props;
@@ -40,14 +40,14 @@ class ArcDAOs extends ComponentList<Props, Component>
     const { arcConfig } = this.props;
 
     return (
-      <Component address={entity.id} arcConfig={arcConfig}>
+      <Component id={entity.id} arcConfig={arcConfig}>
       {children}
       </Component>
     );
   }
 }
 
-class DAOs extends React.Component<RequiredProps>
+class Schemes extends React.Component<RequiredProps>
 {
   render() {
     const { children, sort, filter } = this.props;
@@ -55,18 +55,18 @@ class DAOs extends React.Component<RequiredProps>
     return (
       <Protocol.Config>
       {(arcConfig: ProtocolConfig) =>
-        <ArcDAOs arcConfig={arcConfig} sort={sort} filter={filter}>
+        <ArcSchemes arcConfig={arcConfig} sort={sort} filter={filter}>
         {children}
-        </ArcDAOs>
+        </ArcSchemes>
       }
       </Protocol.Config>
     );
   }
 }
 
-export default DAOs;
+export default Schemes;
 
 export {
-  ArcDAOs,
-  DAOs
+  ArcSchemes,
+  Schemes
 };

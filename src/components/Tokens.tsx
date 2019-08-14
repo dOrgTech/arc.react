@@ -14,10 +14,9 @@ import {
   TokenEntity as Entity,
   TokenData as Data
 } from "./";
-// TODO: change the import path once the PR is merged
 import {
   ITokenQueryOptions as FilterOptions
-} from "@daostack/client/src/token";
+} from "@daostack/client";
 
 interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> { }
 
@@ -51,15 +50,15 @@ class ArcTokens extends ComponentList<Props, Component>
 class Tokens extends React.Component<RequiredProps>
 {
   render() {
-    const { children, filter } = this.props;
+    const { children, sort, filter } = this.props;
 
     return (
       <Protocol.Config>
-      {(arc: ProtocolConfig) =>
-        <ArcTokens arcConfig={arc} filter={filter}>
+      {(arc: ProtocolConfig) => (
+        <ArcTokens arcConfig={arc} sort={sort} filter={filter}>
         {children}
         </ArcTokens>
-      }
+      )}
       </Protocol.Config>
     );
   }

@@ -20,7 +20,16 @@ import {
   TokenData,
   Rewards,
   Reward,
-  RewardData
+  RewardData,
+  Schemes,
+  Scheme,
+  SchemeData,
+  Stakes,
+  Stake,
+  StakeData,
+  Votes,
+  Vote,
+  VoteData
 } from "../../src/";
 import ComponentListView, { PropertyType } from "../helpers/ComponentListView";
 
@@ -129,20 +138,6 @@ export default () =>
         getId={(reputation: ReputationData) => `Reputation: ${reputation.address}`}
       />
     ))
-    .add("Tokens", () => (
-      <ComponentListView
-        name={"Tokens"}
-        ComponentList={Tokens}
-        Component={Token}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-          {props.children}
-          </Arc>
-        )}
-        propEditors={[]}
-        getId={(token: TokenData) => `Token: ${token.address}`}
-      />
-    ))
     .add("Rewards", () => (
       <ComponentListView
         name={"Rewards"}
@@ -155,5 +150,61 @@ export default () =>
         )}
         propEditors={[]}
         getId={(reward: RewardData) => `Reward: ${reward.id}`}
+      />
+    ))
+    .add("Schemes", () => (
+      <ComponentListView
+        name={"Schemes"}
+        ComponentList={Schemes}
+        Component={Scheme}
+        RequiredContext={(props) => (
+          <Arc config={arcConfig}>
+          {props.children}
+          </Arc>
+        )}
+        propEditors={[]}
+        getId={(scheme: SchemeData) => `Scheme (${scheme.name}): ${scheme.id}`}
+      />
+    ))
+    .add("Stakes", () => (
+      <ComponentListView
+        name={"Stakes"}
+        ComponentList={Stakes}
+        Component={Stake}
+        RequiredContext={(props) => (
+          <Arc config={arcConfig}>
+          {props.children}
+          </Arc>
+        )}
+        propEditors={[]}
+        getId={(stake: StakeData) => `Stake: ${stake.id}`}
+      />
+    ))
+    .add("Tokens", () => (
+      <ComponentListView
+        name={"Tokens"}
+        ComponentList={Tokens}
+        Component={Token}
+        RequiredContext={(props) => (
+          <Arc config={arcConfig}>
+          {props.children}
+          </Arc>
+        )}
+        propEditors={[]}
+        getId={(token: TokenData) => `Token (${token.name} - ${token.symbol}): ${token.address}`}
+      />
+    ))
+    .add("Votes", () => (
+      <ComponentListView
+        name={"Votes"}
+        ComponentList={Votes}
+        Component={Vote}
+        RequiredContext={(props) => (
+          <Arc config={arcConfig}>
+          {props.children}
+          </Arc>
+        )}
+        propEditors={[]}
+        getId={(vote: VoteData) => `Vote: ${vote.id}`}
       />
     ));

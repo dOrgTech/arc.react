@@ -10,12 +10,12 @@ import {
   ArcConfig as ProtocolConfig
 } from "../protocol";
 import {
-  ArcDAO as Component,
-  DAOEntity as Entity,
-  DAOData as Data
+  ArcStake as Component,
+  StakeEntity as Entity,
+  StakeData as Data
 } from "./";
 import {
-  IDAOQueryOptions as FilterOptions
+  IStakeQueryOptions as FilterOptions
 } from "@daostack/client";
 
 interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> { }
@@ -26,7 +26,7 @@ interface InferredProps {
 
 type Props = RequiredProps & InferredProps;
 
-class ArcDAOs extends ComponentList<Props, Component>
+class ArcStakes extends ComponentList<Props, Component>
 {
   createObservableEntities(): Observable<Entity[]> {
     const { arcConfig, filter } = this.props;
@@ -39,34 +39,38 @@ class ArcDAOs extends ComponentList<Props, Component>
   renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
     const { arcConfig } = this.props;
 
+    if (!entity.id) {
+      throw Error("Stake Entity ID undefined. This should never happen.");
+    }
+
     return (
-      <Component address={entity.id} arcConfig={arcConfig}>
+      <Component id={entity.id} arcConfig={arcConfig}>
       {children}
       </Component>
     );
   }
 }
 
-class DAOs extends React.Component<RequiredProps>
+class Stakes extends React.Component<RequiredProps>
 {
   render() {
     const { children, sort, filter } = this.props;
 
     return (
       <Protocol.Config>
-      {(arcConfig: ProtocolConfig) =>
-        <ArcDAOs arcConfig={arcConfig} sort={sort} filter={filter}>
+      {(arc: ProtocolConfig) =>
+        <ArcStakes arcConfig={arc} sort={sort} filter={filter}>
         {children}
-        </ArcDAOs>
+        </ArcStakes>
       }
       </Protocol.Config>
     );
   }
 }
 
-export default DAOs;
+export default Stakes;
 
 export {
-  ArcDAOs,
-  DAOs
+  ArcStakes,
+  Stakes
 };

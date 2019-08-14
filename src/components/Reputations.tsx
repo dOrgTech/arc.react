@@ -14,10 +14,9 @@ import {
   ReputationEntity as Entity,
   ReputationData as Data
 } from "./";
-// TODO: change the import path once the PR is merged
 import {
   IReputationQueryOptions as FilterOptions
-} from "@daostack/client/src/reputation";
+} from "@daostack/client";
 
 interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> { }
 

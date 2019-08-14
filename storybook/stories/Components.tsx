@@ -9,7 +9,10 @@ import {
   Proposal,
   Reputation,
   Token,
-  Reward
+  Reward,
+  Scheme,
+  Stake,
+  Vote
 } from "../../src";
 
 export default () =>
@@ -122,6 +125,63 @@ export default () =>
         ]}
       />
     ))
+    .add("Reward", () => (
+      <ComponentView
+        name={"Reward"}
+        Component={Reward}
+        RequiredContext={(props) => (
+          <Arc config={arcConfig}>
+            {props.children}
+          </Arc>
+        )}
+        propEditors={[
+          {
+            friendlyName: "Reward ID",
+            name: "id",
+            defaultValue: "0xc0c911eafd30e6bb1f1f2b4a8cf401bf355a5e066a3af50e8ef7b09dd68e65db",
+            type: PropertyType.string
+          }
+        ]}
+      />
+    ))
+    .add("Scheme", () => (
+      <ComponentView
+        name={"Scheme"}
+        Component={Scheme}
+        RequiredContext={(props) => (
+          <Arc config={arcConfig}>
+            {props.children}
+          </Arc>
+        )}
+        propEditors={[
+          {
+            friendlyName: "Scheme ID",
+            name: "id",
+            defaultValue: "0xe60210db33d48ffc3ba89a0a220500fa8f1a55ed0b4bf28bf7821b23a022cc28",
+            type: PropertyType.string
+          }
+        ]}
+      />
+    ))
+    .add("Stake", () => (
+      <ComponentView
+        name={"Stake"}
+        Component={Stake}
+        RequiredContext={(props) => (
+          <Arc config={arcConfig}>
+            {props.children}
+          </Arc>
+        )}
+        propEditors={[
+          {
+            friendlyName: "Stake ID",
+            name: "id",
+            defaultValue: "0xb6398a75633d9af9928ae4fe6c0db4105e52514bd0321a77ca6ae7a8d5e60971",
+            type: PropertyType.string
+          }
+        ]}
+      />
+    ))
     .add("Token", () => (
       <ComponentView
         name={"Token"}
@@ -162,10 +222,10 @@ export default () =>
         ]}
       />
     ))
-    .add("Reward", () => (
+    .add("Vote", () => (
       <ComponentView
-        name={"Reward"}
-        Component={Reward}
+        name={"Vote"}
+        Component={Vote}
         RequiredContext={(props) => (
           <Arc config={arcConfig}>
             {props.children}
@@ -173,9 +233,9 @@ export default () =>
         )}
         propEditors={[
           {
-            friendlyName: "Reward ID",
+            friendlyName: "Vote ID",
             name: "id",
-            defaultValue: "0xc0c911eafd30e6bb1f1f2b4a8cf401bf355a5e066a3af50e8ef7b09dd68e65db",
+            defaultValue: "0x2f3637f7d77d6b1ca3412e30bb9764f82267458b4f4e320a297a8ac9889e8160",
             type: PropertyType.string
           }
         ]}

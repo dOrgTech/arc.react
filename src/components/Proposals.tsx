@@ -32,6 +32,8 @@ interface DAOInferredProps {
   dao: InferEntity;
 }
 
+// TODO: SchemeProposals
+
 type ArcProps = RequiredProps & ArcInferredProps;
 type DAOProps = RequiredProps & ArcInferredProps & DAOInferredProps;
 

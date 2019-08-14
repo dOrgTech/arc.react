@@ -10,14 +10,21 @@ interface Props {
 }
 
 export default class LoadingView extends React.Component<Props> {
-  constructor(props: Props) {
-    super(props);
-  }
-
-  private keys: Array<any> = [];
+  private errors: string[] = [];
 
   private findErrorKeys = (value: any, key: any) => {
-    if (value && value["_error"]) this.keys.push(key)
+    if (value && value["_error"]) {
+      const error = value["_error"].message;
+
+      // make sure the error isn't a duplicate
+      const found = this.errors.findIndex((err) => 
+        err === error
+      ) > -1;
+
+      if (!found) {
+        this.errors.push(error);
+      }
+    }
   }
 
   public render() {
@@ -32,7 +39,7 @@ export default class LoadingView extends React.Component<Props> {
         contentStyle={{ width: "auto", display: "flex", flexWrap: "wrap" }}
       >
         <div>
-          {this.keys.map(key => logs[key]["_error"].message)}
+          {this.errors.map(error => error)}
         </div>
       </Popup>
     )
