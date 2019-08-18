@@ -24,18 +24,15 @@ interface RequiredProps extends BaseProps {
   id: string;
 }
 
-interface InferredProps {
-  // Arc Instance
-  arcConfig: ProtocolConfig;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig;
 }
 
-type Props = RequiredProps & InferredProps;
-
-class ArcScheme extends Component<Props, Entity, Data, Code>
+class InferredScheme extends Component<InferredProps, Entity, Data, Code>
 {
   protected createEntity(): Entity {
-    const { arcConfig, id } = this.props;
-    return new Entity(id, arcConfig.connection);
+    const { config, id } = this.props;
+    return new Entity(id, config.connection);
   }
 
   protected async initialize(entity: Entity | undefined): Promise<void> {
@@ -75,38 +72,37 @@ class Scheme extends React.Component<RequiredProps>
 
     return (
       <Protocol.Config>
-      {(arc: ProtocolConfig) => (
-        <ArcScheme id={id} arcConfig={arc}>
+      {(config: ProtocolConfig) => (
+        <InferredScheme id={id} config={config}>
         {children}
-        </ArcScheme>
+        </InferredScheme>
       )}
       </Protocol.Config>
     );
   }
 
   public static get Entity() {
-    return ArcScheme.Entity;
+    return InferredScheme.Entity;
   }
 
   public static get Data() {
-    return ArcScheme.Data;
+    return InferredScheme.Data;
   }
 
   public static get Code() {
-    return ArcScheme.Code;
+    return InferredScheme.Code;
   }
 
   public static get Logs() {
-    return ArcScheme.Logs;
+    return InferredScheme.Logs;
   }
 }
 
 export default Scheme;
 
 export {
-  ArcScheme,
   Scheme,
-  Props  as SchemeProps,
+  InferredScheme,
   Entity as SchemeEntity,
   Data   as SchemeData,
   Code   as SchemeCode,
