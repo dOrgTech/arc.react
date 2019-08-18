@@ -25,18 +25,13 @@ interface RequiredProps extends BaseProps {
 }
 
 interface InferredProps extends RequiredProps {
-  config: ProtocolConfig | undefined;
+  config: ProtocolConfig;
 }
 
 class InferredDAO extends Component<InferredProps, Entity, Data, Code>
 {
   protected createEntity(): Entity {
     const { config, address } = this.props;
-
-    if (!config) {
-      throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
-    }
-
     return new Entity(address, config.connection);
   }
 

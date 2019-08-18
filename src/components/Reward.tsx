@@ -8,8 +8,8 @@ import {
   CreateContextFeed
 } from "../runtime/ContextFeed";
 import {
-  Arc,
-  ArcConfig
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig
 } from "../protocol";
 import {
   Reward as Entity,
@@ -24,23 +24,15 @@ interface RequiredProps extends BaseProps {
   id: string;
 }
 
-interface InferredProps {
-  // Arc Instance
-  arcConfig: ArcConfig | undefined;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig;
 }
 
-type Props = RequiredProps & InferredProps;
-
-class ArcReward extends Component<Props, Entity, Data, Code>
+class InferredReward extends Component<InferredProps, Entity, Data, Code>
 {
   protected createEntity(): Entity {
-    const { id, arcConfig } = this.props;
-
-    if (!arcConfig) {
-      throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
-    }
-
-    return new Entity(id, arcConfig.connection);
+    const { id, config } = this.props;
+    return new Entity(id, config.connection);
   }
 
   public static get Entity() {
@@ -71,39 +63,38 @@ class Reward extends React.Component<RequiredProps>
     const { id, children } = this.props;
 
     return (
-      <Arc.Config>
-      {(arc: ArcConfig) => (
-        <ArcReward id={id} arcConfig={arc}>
+      <Protocol.Config>
+      {(config: ProtocolConfig) => (
+        <InferredReward id={id} config={config}>
         {children}
-        </ArcReward>
+        </InferredReward>
       )}
-      </Arc.Config>
+      </Protocol.Config>
     );
   }
 
   public static get Entity() {
-    return ArcReward.Entity;
+    return InferredReward.Entity;
   }
 
   public static get Data() {
-    return ArcReward.Data;
+    return InferredReward.Data;
   }
 
   public static get Code() {
-    return ArcReward.Code;
+    return InferredReward.Code;
   }
 
   public static get Logs() {
-    return ArcReward.Logs;
+    return InferredReward.Logs;
   }
 }
 
 export default Reward;
 
 export {
-  ArcReward,
   Reward,
-  Props  as RewardProps,
+  InferredReward,
   Entity as RewardEntity,
   Data   as RewardData,
   Code   as RewardCode,

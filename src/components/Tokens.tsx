@@ -21,7 +21,7 @@ import {
 interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> { }
 
 interface InferredProps {
-  arcConfig: ProtocolConfig | undefined;
+  arcConfig: ProtocolConfig;
 }
 
 type Props = RequiredProps & InferredProps;
@@ -30,9 +30,6 @@ class ArcTokens extends ComponentList<Props, Component>
 {
   createObservableEntities(): Observable<Entity[]> {
     const { arcConfig, filter } = this.props;
-    if (!arcConfig) {
-      throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
-    }
     return Entity.search(arcConfig.connection, filter);
   }
 

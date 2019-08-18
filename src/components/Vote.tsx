@@ -26,7 +26,7 @@ interface RequiredProps extends BaseProps {
 
 interface InferredProps {
   // Arc Instance
-  arcConfig: ProtocolConfig | undefined;
+  arcConfig: ProtocolConfig;
 }
 
 type Props = RequiredProps & InferredProps;
@@ -35,11 +35,6 @@ class ArcVote extends Component<Props, Entity, Data, Code>
 {
   protected createEntity(): Entity {
     const { arcConfig, id } = this.props;
-
-    if (!arcConfig) {
-      throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
-    }
-
     return new Entity(id, arcConfig.connection);
   }
 

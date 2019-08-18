@@ -10,7 +10,7 @@ import {
   ArcConfig as ProtocolConfig
 } from "../protocol";
 import {
-  ArcReputation as Component,
+  InferredReputation as Component,
   ReputationEntity as Entity,
   ReputationData as Data
 } from "./";
@@ -20,27 +20,22 @@ import {
 
 interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> { }
 
-interface InferredProps {
-  arcConfig: ProtocolConfig | undefined;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig;
 }
 
-type Props = RequiredProps & InferredProps;
-
-class ArcReputations extends ComponentList<Props, Component>
+class InferredReputations extends ComponentList<InferredProps, Component>
 {
   createObservableEntities(): Observable<Entity[]> {
-    const { arcConfig, filter } = this.props;
-    if (!arcConfig) {
-      throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
-    }
-    return Entity.search(arcConfig.connection, filter);
+    const { config, filter } = this.props;
+    return Entity.search(config.connection, filter);
   }
 
   renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
-    const { arcConfig } = this.props;
+    const { config } = this.props;
 
     return (
-      <Component address={entity.address} arcConfig={arcConfig}>
+      <Component address={entity.address} config={config}>
       {children}
       </Component>
     );
@@ -54,10 +49,10 @@ class Reputations extends React.Component<RequiredProps>
 
     return (
       <Protocol.Config>
-      {(arc: ProtocolConfig) =>
-        <ArcReputations arcConfig={arc} sort={sort} filter={filter}>
+      {(config: ProtocolConfig) =>
+        <InferredReputations config={config} sort={sort} filter={filter}>
         {children}
-        </ArcReputations>
+        </InferredReputations>
       }
       </Protocol.Config>
     );
@@ -67,6 +62,5 @@ class Reputations extends React.Component<RequiredProps>
 export default Reputations;
 
 export {
-  ArcReputations,
   Reputations
 };

@@ -25,7 +25,7 @@ interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> 
 }
 
 interface InferredProps extends RequiredProps {
-  config: ProtocolConfig | undefined;
+  config: ProtocolConfig;
 }
 
 interface DAOScopeProps extends InferredProps {
@@ -36,11 +36,6 @@ class InferredMembers extends ComponentList<InferredProps, Component>
 {
   createObservableEntities(): Observable<Entity[]> {
     const { config, filter } = this.props;
-
-    if (!config) {
-      throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
-    }
-
     return Entity.search(config.connection, filter);
   }
 
@@ -91,22 +86,23 @@ class Members extends React.Component<RequiredProps>
     return (
       <Protocol.Config>
       {(config: ProtocolConfig) => {
-        if (scope === "DAO") {
-          return (
-            <DAO.Entity>
-            {(dao: DAOEntity) => (
-              <DAOScopeMembers dao={dao.id} config={config} sort={sort} filter={filter}>
+        switch (scope) {
+          case "DAO":
+            return (
+              <DAO.Entity>
+              {(dao: DAOEntity) => (
+                <DAOScopeMembers dao={dao.id} config={config} sort={sort} filter={filter}>
+                {children}
+                </DAOScopeMembers>
+              )}
+              </DAO.Entity>
+            );
+          default:
+            return (
+              <InferredMembers config={config} sort={sort} filter={filter}>
               {children}
-              </DAOScopeMembers>
-            )}
-            </DAO.Entity>
-          );
-        } else {
-          return (
-            <InferredMembers config={config} sort={sort} filter={filter}>
-            {children}
-            </InferredMembers>
-          );
+              </InferredMembers>
+            );
         }
       }}
       </Protocol.Config>

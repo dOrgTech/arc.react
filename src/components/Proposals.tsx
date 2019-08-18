@@ -113,32 +113,33 @@ class Proposals extends React.Component<RequiredProps>
     return (
       <Protocol.Config>
       {(config: ProtocolConfig) => {
-        if (scope === "DAO") {
-          return (
-            <DAO.Entity>
-            {(dao: DAOEntity) => (
-              <DAOScopeProposals dao={dao.id} config={config} sort={sort} filter={filter}>
+        switch (scope) {
+          case "DAO":
+            return (
+              <DAO.Entity>
+              {(dao: DAOEntity) => (
+                <DAOScopeProposals dao={dao.id} config={config} sort={sort} filter={filter}>
+                {children}
+                </DAOScopeProposals>
+              )}
+              </DAO.Entity>
+            );
+          case "Member as proposer":
+            return (
+              <Member.Entity>
+              {(member: MemberEntity) => (
+                <ProposerScopeProposals proposer={member.staticState!.address} config={config} sort={sort} filter={filter}>
+                {children}
+                </ProposerScopeProposals>
+              )}
+              </Member.Entity>
+            );
+          default:
+            return (
+              <InferredProposals config={config} sort={sort} filter={filter}>
               {children}
-              </DAOScopeProposals>
-            )}
-            </DAO.Entity>
-          );
-        } else if (scope === "Member as proposer") {
-          return (
-            <Member.Entity>
-            {(member: MemberEntity) => (
-              <ProposerScopeProposals proposer={member.staticState!.address} config={config} sort={sort} filter={filter}>
-              {children}
-              </ProposerScopeProposals>
-            )}
-            </Member.Entity>
-          );
-        } else {
-          return (
-            <InferredProposals config={config} sort={sort} filter={filter}>
-            {children}
-            </InferredProposals>
-          );
+              </InferredProposals>
+            );
         }
       }}
       </Protocol.Config>

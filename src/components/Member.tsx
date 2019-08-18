@@ -31,7 +31,7 @@ interface RequiredProps extends BaseProps {
 }
 
 interface InferredProps extends RequiredProps {
-  config: ProtocolConfig | undefined;
+  config: ProtocolConfig;
 }
 
 class InferredMember extends Component<InferredProps, Entity, Data, Code>
@@ -41,9 +41,6 @@ class InferredMember extends Component<InferredProps, Entity, Data, Code>
 
     if (!dao) {
       throw Error("DAO Address Missing: Please provide this field as a prop, or use the inference component.");
-    }
-    if (!config) {
-      throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
 
     return new Entity({ address, dao }, config.connection);

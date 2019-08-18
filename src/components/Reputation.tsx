@@ -8,17 +8,17 @@ import {
   CreateContextFeed
 } from "../runtime/ContextFeed";
 import {
-  Arc,
-  ArcConfig
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig
 } from "../protocol";
+import {
+  DAO,
+  DAOData
+} from "./";
 import {
   Reputation as Entity,
   IReputationState as Data
 } from "@daostack/client";
-import {
-  DAO,
-  DAOData
-} from "./DAO";
 
 type Code = { }
 
@@ -27,27 +27,20 @@ interface RequiredProps extends BaseProps {
   address?: string;
 }
 
-interface InferredProps {
-  // Arc Instance
-  arcConfig: ArcConfig | undefined;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig;
 }
 
-type Props = RequiredProps & InferredProps;
-
-class ArcReputation extends Component<Props, Entity, Data, Code>
+class InferredReputation extends Component<InferredProps, Entity, Data, Code>
 {
   protected createEntity(): Entity {
-    const { arcConfig, address } = this.props;
-
-    if (!arcConfig) {
-      throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
-    }
+    const { config, address } = this.props;
 
     if (!address) {
       throw Error("Address Missing: Please provide this field as a prop, or use the inference component.")
     }
 
-    return new Entity(address, arcConfig.connection);
+    return new Entity(address, config.connection);
   }
 
   public static get Entity() {
@@ -77,54 +70,53 @@ class Reputation extends React.Component<RequiredProps>
   public render() {
     const { address, children } = this.props;
 
-    if (address !== undefined) {
-      return (
-        <Arc.Config>
-        {(arc: ArcConfig) => (
-          <ArcReputation address={address} arcConfig={arc}>
-          {children}
-          </ArcReputation>
-        )}
-        </Arc.Config>
-      );
-    } else {
-      return (
-        <Arc.Config>
-        <DAO.Data>
-        {(arc: ArcConfig, dao: DAOData) => (
-          <ArcReputation address={dao.reputation.address} arcConfig={arc}>
-          {children}
-          </ArcReputation>
-        )}
-        </DAO.Data>
-        </Arc.Config>
-      );
-    }
+    return (
+      <Protocol.Config>
+      {(config: ProtocolConfig) => {
+        if (address) {
+          return (
+            <InferredReputation address={address} config={config}>
+            {children}
+            </InferredReputation>
+          );
+        } else {
+          return (
+            <DAO.Data>
+            {(dao: DAOData) => (
+              <InferredReputation address={dao.reputation.address} config={config}>
+              {children}
+              </InferredReputation>
+            )}
+            </DAO.Data>
+          );
+        }
+      }}
+      </Protocol.Config>
+    );
   }
 
   public static get Entity() {
-    return ArcReputation.Entity;
+    return InferredReputation.Entity;
   }
 
   public static get Data() {
-    return ArcReputation.Data;
+    return InferredReputation.Data;
   }
 
   public static get Code() {
-    return ArcReputation.Code;
+    return InferredReputation.Code;
   }
 
   public static get Logs() {
-    return ArcReputation.Logs;
+    return InferredReputation.Logs;
   }
 }
 
 export default Reputation;
 
 export {
-  ArcReputation,
   Reputation,
-  Props as ReputationProps,
+  InferredReputation,
   Entity as ReputationEntity,
   Data as ReputationData,
   Code as ReputationCode,

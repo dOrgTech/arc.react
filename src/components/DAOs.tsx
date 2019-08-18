@@ -21,18 +21,13 @@ import {
 interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> { }
 
 interface InferredProps extends RequiredProps {
-  config: ProtocolConfig | undefined;
+  config: ProtocolConfig;
 }
 
 class InferredDAOs extends ComponentList<InferredProps, Component>
 {
   createObservableEntities(): Observable<Entity[]> {
     const { config, filter } = this.props;
-
-    if (!config) {
-      throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
-    }
-
     return Entity.search(config.connection, filter);
   }
 
