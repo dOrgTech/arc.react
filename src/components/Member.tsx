@@ -8,6 +8,10 @@ import {
   CreateContextFeed
 } from "../runtime/ContextFeed";
 import {
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig
+} from "../protocol";
+import {
   DAO,
   DAOEntity
 } from "./";
@@ -16,34 +20,33 @@ import {
   IMemberState as Data
 } from "@daostack/client";
 
-// TODO
+// TODO: remove me, just use entity
 type Code = { }
 
 interface RequiredProps extends BaseProps {
   // Address of the member
   address: string;
+  // Address of the DAO Avatar
+  dao?: string;
 }
 
-interface InferredProps {
-  // The DAO this member is apart of
-  dao: DAOEntity | undefined;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig | undefined;
 }
 
-type Props = RequiredProps & InferredProps;
-
-class DAOMember extends Component<Props, Entity, Data, Code>
+class InferredMember extends Component<InferredProps, Entity, Data, Code>
 {
   protected createEntity(): Entity {
-    const { dao, address } = this.props;
+    const { address, dao, config } = this.props;
 
-    // TODO: better error handling? maybe have another abstract function
-    // that's a predicate that lets you know if entity can be created w/
-    // provided data & gives user friendly sanitization errors?
     if (!dao) {
-      throw Error("DAO Missing: Please provide this field as a prop, or use the inference component.");
+      throw Error("DAO Address Missing: Please provide this field as a prop, or use the inference component.");
+    }
+    if (!config) {
+      throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
 
-    return new Entity({ address, dao: dao.id }, dao.context)
+    return new Entity({ address, dao }, config.connection);
   }
 
   protected async initialize(entity: Entity | undefined): Promise<void> {
@@ -79,42 +82,55 @@ class DAOMember extends Component<Props, Entity, Data, Code>
 class Member extends React.Component<RequiredProps>
 {
   public render() {
-    const { address, children } = this.props;
+    const { address, dao, children } = this.props;
 
     return (
-      <DAO.Entity>
-      {(entity: DAOEntity) => (
-        <DAOMember address={address} dao={entity}>
-        {children}
-        </DAOMember>
-      )}
-      </DAO.Entity>
+      <Protocol.Config>
+      {(config: ProtocolConfig) => {
+        if (dao) {
+          return (
+            <InferredMember address={address} dao={dao} config={config}>
+            {children}
+            </InferredMember>
+          )
+        } else {
+          return (
+            <DAO.Entity>
+            {(entity: DAOEntity) => (
+              <InferredMember address={address} dao={entity.id} config={config}>
+              {children}
+              </InferredMember>
+            )}
+            </DAO.Entity>
+          );
+        }
+      }}
+      </Protocol.Config>
     );
   }
 
   public static get Entity() {
-    return DAOMember.Entity;
+    return InferredMember.Entity;
   }
 
   public static get Data() {
-    return DAOMember.Data;
+    return InferredMember.Data;
   }
 
   public static get Code() {
-    return DAOMember.Code;
+    return InferredMember.Code;
   }
 
   public static get Logs() {
-    return DAOMember.Logs;
+    return InferredMember.Logs;
   }
 }
 
 export default Member;
 
 export {
-  DAOMember,
   Member,
-  Props  as MemberProps,
+  InferredMember,
   Entity as MemberEntity,
   Data   as MemberData,
   Code   as MemberCode,

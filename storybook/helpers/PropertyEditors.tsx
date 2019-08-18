@@ -13,11 +13,14 @@ export enum PropertyType {
   boolean
 }
 
+export type Converter = (value: any) => any;
+
 export interface PropertyData {
   friendlyName: string;
   name: string;
   type: PropertyType;
   defaultValue: any;
+  converter?: Converter;
   // TODO: dropdown -> possibleValues: any[]
 }
 
@@ -28,10 +31,14 @@ interface Props {
 }
 
 export class PropertyEditors extends React.Component<Props> {
-  handleChange = (name: string, prop: string) => (event: any) => {
+  handleChange = (name: string, prop: string, converter: Converter | undefined) => (event: any) => {
+    let value = event.target[prop];
+    if (converter) {
+      value = converter(value);
+    }
     this.props.setState(
       R.merge(this.props.state, {
-        [name]: event.target[prop]
+        [name]: value
       })
     );
   }
@@ -61,7 +68,7 @@ export class PropertyEditors extends React.Component<Props> {
                 id={`prop-editor-${prop.name}`}
                 label={prop.friendlyName}
                 value={state[prop.name]}
-                onChange={this.handleChange(prop.name, "value")}
+                onChange={this.handleChange(prop.name, "value", prop.converter)}
                 variant="outlined"
               />
             )
@@ -77,7 +84,7 @@ export class PropertyEditors extends React.Component<Props> {
                     id={`prop-editor-${prop.name}`}
                     value={prop.friendlyName}
                     checked={state[prop.name]}
-                    onChange={this.handleChange(prop.name, "checked")}
+                    onChange={this.handleChange(prop.name, "checked", prop.converter)}
                   />
                 }
                 label={prop.friendlyName}

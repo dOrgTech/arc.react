@@ -10,9 +10,11 @@ import {
   ArcConfig as ProtocolConfig
 } from "../protocol";
 import {
-  DAO as InferComponent,
-  DAOEntity as InferEntity,
-  ArcProposal as Component,
+  DAO,
+  DAOEntity,
+  Member,
+  MemberEntity,
+  InferredProposal as Component,
   ProposalEntity as Entity,
   ProposalData as Data
 } from "./";
@@ -21,56 +23,82 @@ import {
 } from "@daostack/client";
 
 interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> {
-  allDAOs?: boolean;
+  scope?: "DAO" | "Member as proposer";
 }
 
-interface ArcInferredProps {
-  arcConfig: ProtocolConfig;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig;
 }
 
-interface DAOInferredProps {
-  dao: InferEntity;
+interface DAOScopeProps extends InferredProps {
+  dao: string;
+}
+
+interface ProposerScopeProps extends InferredProps {
+  proposer: string;
 }
 
 // TODO: SchemeProposals
 
-type ArcProps = RequiredProps & ArcInferredProps;
-type DAOProps = RequiredProps & ArcInferredProps & DAOInferredProps;
-
-class ArcProposals extends ComponentList<ArcProps, Component>
+class InferredProposals extends ComponentList<InferredProps, Component>
 {
   createObservableEntities(): Observable<Entity[]> {
-    const { arcConfig, filter } = this.props;
-    return Entity.search(arcConfig.connection, filter);
+    const { config, filter } = this.props;
+    return Entity.search(config.connection, filter);
   }
 
   renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
+    const { config } = this.props;
     return (
-      <Component id={entity.id} arcConfig={this.props.arcConfig}>
+      <Component id={entity.id} config={config}>
       {children}
       </Component>
     );
   }
 }
 
-class DAOProposals extends ComponentList<DAOProps, Component>
+class DAOScopeProposals extends ComponentList<DAOScopeProps, Component>
 {
   createObservableEntities(): Observable<Entity[]> {
-    const { dao, filter } = this.props;
+    const { dao, config, filter } = this.props;
 
     const daoFilter: FilterOptions = filter ? filter : { where: { } };
     if (!daoFilter.where) {
       daoFilter.where = { };
     }
-    daoFilter.where.dao = dao.id;
+    daoFilter.where.dao = dao;
 
-    return Entity.search(dao.context, daoFilter);
+    return Entity.search(config.connection, daoFilter);
   }
 
   renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
-    const { arcConfig } = this.props;
+    const { config } = this.props;
     return (
-      <Component id={entity.id} arcConfig={arcConfig}>
+      <Component id={entity.id} config={config}>
+      {children}
+      </Component>
+    )
+  }
+}
+
+class ProposerScopeProposals extends ComponentList<ProposerScopeProps, Component>
+{
+  createObservableEntities(): Observable<Entity[]> {
+    const { proposer, config, filter } = this.props;
+
+    const proposerFilter: FilterOptions = filter ? filter : { where: { } };
+    if (!proposerFilter.where) {
+      proposerFilter.where = { };
+    }
+    proposerFilter.where.proposer = proposer;
+
+    return Entity.search(config.connection, proposerFilter);
+  }
+
+  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
+    const { config } = this.props;
+    return (
+      <Component id={entity.id} config={config}>
       {children}
       </Component>
     )
@@ -80,38 +108,46 @@ class DAOProposals extends ComponentList<DAOProps, Component>
 class Proposals extends React.Component<RequiredProps>
 {
   render() {
-    const { children, allDAOs, sort, filter } = this.props;
+    const { children, scope, sort, filter } = this.props;
 
-    if (allDAOs) {
-      return (
-        <Protocol.Config>
-        {(arc: ProtocolConfig) => (
-          <ArcProposals arcConfig={arc} sort={sort} filter={filter}>
-          {children}
-          </ArcProposals>
-        )}
-        </Protocol.Config>
-      );
-    } else {
-      return (
-        <Protocol.Config>
-        <InferComponent.Entity>
-        {(arc: ProtocolConfig, dao: InferEntity) => (
-          <DAOProposals arcConfig={arc} dao={dao} sort={sort} filter={filter}>
-          {children}
-          </DAOProposals>
-        )}
-        </InferComponent.Entity>
-        </Protocol.Config>
-      );
-    }
+    return (
+      <Protocol.Config>
+      {(config: ProtocolConfig) => {
+        if (scope === "DAO") {
+          return (
+            <DAO.Entity>
+            {(dao: DAOEntity) => (
+              <DAOScopeProposals dao={dao.id} config={config} sort={sort} filter={filter}>
+              {children}
+              </DAOScopeProposals>
+            )}
+            </DAO.Entity>
+          );
+        } else if (scope === "Member as proposer") {
+          return (
+            <Member.Entity>
+            {(member: MemberEntity) => (
+              <ProposerScopeProposals proposer={member.staticState!.address} config={config} sort={sort} filter={filter}>
+              {children}
+              </ProposerScopeProposals>
+            )}
+            </Member.Entity>
+          );
+        } else {
+          return (
+            <InferredProposals config={config} sort={sort} filter={filter}>
+            {children}
+            </InferredProposals>
+          );
+        }
+      }}
+      </Protocol.Config>
+    );
   }
 }
 
 export default Proposals;
 
 export {
-  ArcProposals,
-  DAOProposals,
   Proposals
 };

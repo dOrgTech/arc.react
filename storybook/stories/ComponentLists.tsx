@@ -69,10 +69,11 @@ export default () =>
             type: PropertyType.string
           },
           {
-            friendlyName: "All DAOs",
-            name: "allDAOs",
+            friendlyName: "Scope To DAO",
+            name: "scope",
             defaultValue: false,
-            type: PropertyType.boolean
+            type: PropertyType.boolean,
+            converter: (value: boolean) => value ? "DAO" : undefined
           }
         ]}
         getId={(member: MemberData) => `Member: ${member.address}`}

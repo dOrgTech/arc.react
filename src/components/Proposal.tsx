@@ -24,23 +24,20 @@ interface RequiredProps extends BaseProps {
   id: string;
 }
 
-interface InferredProps {
-  // Arc Instance
-  arcConfig: ProtocolConfig | undefined;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig | undefined;
 }
 
-type Props = RequiredProps & InferredProps;
-
-class ArcProposal extends Component<Props, Entity, Data, Code>
+class InferredProposal extends Component<InferredProps, Entity, Data, Code>
 {
   protected createEntity(): Entity {
-    const { arcConfig, id } = this.props;
+    const { config, id } = this.props;
 
-    if (!arcConfig) {
+    if (!config) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
 
-    return new Entity(id, arcConfig.connection);
+    return new Entity(id, config.connection);
   }
 
   protected async initialize(entity: Entity | undefined): Promise<void> {
@@ -80,38 +77,37 @@ class Proposal extends React.Component<RequiredProps>
 
     return (
       <Protocol.Config>
-      {(arc: ProtocolConfig) => (
-        <ArcProposal id={id} arcConfig={arc}>
+      {(config: ProtocolConfig) => (
+        <InferredProposal id={id} config={config}>
         {children}
-        </ArcProposal>
+        </InferredProposal>
       )}
       </Protocol.Config>
     );
   }
 
   public static get Entity() {
-    return ArcProposal.Entity;
+    return InferredProposal.Entity;
   }
 
   public static get Data() {
-    return ArcProposal.Data;
+    return InferredProposal.Data;
   }
 
   public static get Code() {
-    return ArcProposal.Code;
+    return InferredProposal.Code;
   }
 
   public static get Logs() {
-    return ArcProposal.Logs;
+    return InferredProposal.Logs;
   }
 }
 
 export default Proposal;
 
 export {
-  ArcProposal,
+  InferredProposal,
   Proposal,
-  Props  as ProposalProps,
   Entity as ProposalEntity,
   Data   as ProposalData,
   Code   as ProposalCode,

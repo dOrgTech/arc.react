@@ -8,44 +8,36 @@ import {
   CreateContextFeed
 } from "../runtime/ContextFeed";
 import {
-  Arc,
-  ArcConfig
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig
 } from "../protocol";
 import {
   DAO as Entity,
   IDAOState as Data
 } from "@daostack/client";
 
-// TODO: thought:
-// - base class that is constructed w/ entity
-// - derived class that defines public "nice" methods
-// - - methods use entity to invoke transactions
-type Code = {
-  // maybe wrap this better so the contracts
-  // are underneath the higher level functions?
-  // contractName: ContractType (TypeChain)
-}
+// TODO: remove code and just have user use entity
+type Code = { }
 
 interface RequiredProps extends BaseProps {
   // Address of the DAO Avatar
   address: string;
 }
 
-interface InferredProps {
-  // Arc Instance
-  arcConfig: ArcConfig | undefined;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig | undefined;
 }
 
-type Props = RequiredProps & InferredProps;
-
-class ArcDAO extends Component<Props, Entity, Data, Code>
+class InferredDAO extends Component<InferredProps, Entity, Data, Code>
 {
   protected createEntity(): Entity {
-    const { arcConfig, address } = this.props;
-    if (!arcConfig) {
+    const { config, address } = this.props;
+
+    if (!config) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
-    return new Entity(address, arcConfig.connection);
+
+    return new Entity(address, config.connection);
   }
 
   protected async initialize(entity: Entity | undefined): Promise<void> {
@@ -84,39 +76,38 @@ class DAO extends React.Component<RequiredProps>
     const { address, children } = this.props;
 
     return (
-      <Arc.Config>
-      {(arc: ArcConfig) => (
-        <ArcDAO address={address} arcConfig={arc}>
+      <Protocol.Config>
+      {(config: ProtocolConfig) => (
+        <InferredDAO address={address} config={config}>
         {children}
-        </ArcDAO>
+        </InferredDAO>
       )}
-      </Arc.Config>
+      </Protocol.Config>
     );
   }
 
   public static get Entity() {
-    return ArcDAO.Entity;
+    return InferredDAO.Entity;
   }
 
   public static get Data() {
-    return ArcDAO.Data;
+    return InferredDAO.Data;
   }
 
   public static get Code() {
-    return ArcDAO.Code;
+    return InferredDAO.Code;
   }
 
   public static get Logs() {
-    return ArcDAO.Logs;
+    return InferredDAO.Logs;
   }
 }
 
 export default DAO;
 
 export {
-  ArcDAO,
   DAO,
-  Props as DAOProps,
+  InferredDAO,
   Entity as DAOEntity,
   Data as DAOData,
   Code as DAOCode,

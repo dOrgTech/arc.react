@@ -10,7 +10,7 @@ import {
   ArcConfig as ProtocolConfig
 } from "../protocol";
 import {
-  ArcDAO as Component,
+  InferredDAO as Component,
   DAOEntity as Entity,
   DAOData as Data
 } from "./";
@@ -20,27 +20,27 @@ import {
 
 interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> { }
 
-interface InferredProps {
-  arcConfig: ProtocolConfig | undefined;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig | undefined;
 }
 
-type Props = RequiredProps & InferredProps;
-
-class ArcDAOs extends ComponentList<Props, Component>
+class InferredDAOs extends ComponentList<InferredProps, Component>
 {
   createObservableEntities(): Observable<Entity[]> {
-    const { arcConfig, filter } = this.props;
-    if (!arcConfig) {
+    const { config, filter } = this.props;
+
+    if (!config) {
       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
     }
-    return Entity.search(arcConfig.connection, filter);
+
+    return Entity.search(config.connection, filter);
   }
 
   renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
-    const { arcConfig } = this.props;
+    const { config } = this.props;
 
     return (
-      <Component address={entity.id} arcConfig={arcConfig}>
+      <Component address={entity.id} config={config}>
       {children}
       </Component>
     );
@@ -54,10 +54,10 @@ class DAOs extends React.Component<RequiredProps>
 
     return (
       <Protocol.Config>
-      {(arcConfig: ProtocolConfig) =>
-        <ArcDAOs arcConfig={arcConfig} sort={sort} filter={filter}>
+      {(config: ProtocolConfig) =>
+        <InferredDAOs config={config} sort={sort} filter={filter}>
         {children}
-        </ArcDAOs>
+        </InferredDAOs>
       }
       </Protocol.Config>
     );
@@ -67,6 +67,5 @@ class DAOs extends React.Component<RequiredProps>
 export default DAOs;
 
 export {
-  ArcDAOs,
   DAOs
 };
