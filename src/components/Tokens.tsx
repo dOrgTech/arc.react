@@ -10,7 +10,7 @@ import {
   ArcConfig as ProtocolConfig
 } from "../protocol";
 import {
-  ArcToken as Component,
+  InferredToken as Component,
   TokenEntity as Entity,
   TokenData as Data
 } from "./";
@@ -20,24 +20,22 @@ import {
 
 interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> { }
 
-interface InferredProps {
-  arcConfig: ProtocolConfig;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig;
 }
 
-type Props = RequiredProps & InferredProps;
-
-class ArcTokens extends ComponentList<Props, Component>
+class InferredTokens extends ComponentList<InferredProps, Component>
 {
   createObservableEntities(): Observable<Entity[]> {
-    const { arcConfig, filter } = this.props;
-    return Entity.search(arcConfig.connection, filter);
+    const { config, filter } = this.props;
+    return Entity.search(config.connection, filter);
   }
 
   renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
-    const { arcConfig } = this.props;
+    const { config } = this.props;
 
     return (
-      <Component address={entity.address} arcConfig={arcConfig}>
+      <Component address={entity.address} config={config}>
       {children}
       </Component>
     );
@@ -51,10 +49,10 @@ class Tokens extends React.Component<RequiredProps>
 
     return (
       <Protocol.Config>
-      {(arc: ProtocolConfig) => (
-        <ArcTokens arcConfig={arc} sort={sort} filter={filter}>
+      {(config: ProtocolConfig) => (
+        <InferredTokens config={config} sort={sort} filter={filter}>
         {children}
-        </ArcTokens>
+        </InferredTokens>
       )}
       </Protocol.Config>
     );
@@ -64,6 +62,5 @@ class Tokens extends React.Component<RequiredProps>
 export default Tokens;
 
 export {
-  ArcTokens,
   Tokens
 };

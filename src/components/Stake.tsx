@@ -24,18 +24,15 @@ interface RequiredProps extends BaseProps {
   id: string;
 }
 
-interface InferredProps {
-  // Arc Instance
-  arcConfig: ProtocolConfig;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig;
 }
 
-type Props = RequiredProps & InferredProps;
-
-class ArcStake extends Component<Props, Entity, Data, Code>
+class InferredStake extends Component<InferredProps, Entity, Data, Code>
 {
   protected createEntity(): Entity {
-    const { arcConfig, id } = this.props;
-    return new Entity(id, arcConfig.connection);
+    const { config, id } = this.props;
+    return new Entity(id, config.connection);
   }
 
   protected async initialize(entity: Entity | undefined): Promise<void> {
@@ -75,38 +72,37 @@ class Stake extends React.Component<RequiredProps>
 
     return (
       <Protocol.Config>
-      {(arc: ProtocolConfig) => (
-        <ArcStake id={id} arcConfig={arc}>
+      {(config: ProtocolConfig) => (
+        <InferredStake id={id} config={config}>
         {children}
-        </ArcStake>
+        </InferredStake>
       )}
       </Protocol.Config>
     );
   }
 
   public static get Entity() {
-    return ArcStake.Entity;
+    return InferredStake.Entity;
   }
 
   public static get Data() {
-    return ArcStake.Data;
+    return InferredStake.Data;
   }
 
   public static get Code() {
-    return ArcStake.Code;
+    return InferredStake.Code;
   }
 
   public static get Logs() {
-    return ArcStake.Logs;
+    return InferredStake.Logs;
   }
 }
 
 export default Stake;
 
 export {
-  ArcStake,
   Stake,
-  Props  as StakeProps,
+  InferredStake,
   Entity as StakeEntity,
   Data   as StakeData,
   Code   as StakeCode,

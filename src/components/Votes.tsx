@@ -10,7 +10,13 @@ import {
   ArcConfig as ProtocolConfig
 } from "../protocol";
 import {
-  ArcVote as Component,
+  DAO,
+  DAOEntity,
+  Member,
+  MemberEntity,
+  Proposal,
+  ProposalEntity,
+  InferredVote as Component,
   VoteEntity as Entity,
   VoteData as Data
 } from "./";
@@ -18,48 +24,187 @@ import {
   IVoteQueryOptions as FilterOptions
 } from "@daostack/client";
 
-interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> { }
-
-interface InferredProps {
-  arcConfig: ProtocolConfig;
+interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> {
+  scope?: "DAO" | "Member as voter" | "Proposal";
 }
 
-type Props = RequiredProps & InferredProps;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig;
+}
 
-class ArcVotes extends ComponentList<Props, Component>
+interface DAOScopeProps extends InferredProps {
+  dao: string;
+}
+
+interface VoterScopeProps extends InferredProps {
+  voter: string;
+}
+
+interface ProposalScopeProps extends InferredProps {
+  proposal: string;
+}
+
+class InferredVotes extends ComponentList<InferredProps, Component>
 {
   createObservableEntities(): Observable<Entity[]> {
-    const { arcConfig, filter } = this.props;
-    return Entity.search(arcConfig.connection, filter);
+    const { config, filter } = this.props;
+    return Entity.search(config.connection, filter);
   }
 
   renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
-    const { arcConfig } = this.props;
+    const { config } = this.props;
 
     if (!entity.id) {
       throw Error("Vote Entity ID undefined. This should never happen.");
     }
 
     return (
-      <Component id={entity.id} arcConfig={arcConfig}>
+      <Component id={entity.id} config={config}>
       {children}
       </Component>
     );
   }
 }
 
+class DAOScopeVotes extends ComponentList<DAOScopeProps, Component>
+{
+  createObservableEntities(): Observable<Entity[]> {
+    const { dao, config, filter } = this.props;
+
+    const daoFilter: FilterOptions = filter ? filter : { where: { } };
+    if (!daoFilter.where) {
+      daoFilter.where = { };
+    }
+    daoFilter.where.dao = dao;
+
+    return Entity.search(config.connection, daoFilter);
+  }
+
+  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
+    const { config } = this.props;
+
+    if (!entity.id) {
+      throw Error("Vote Entity ID undefined. This should never happen.");
+    }
+
+    return (
+      <Component id={entity.id} config={config}>
+      {children}
+      </Component>
+    )
+  }
+}
+
+class VoterScopeVotes extends ComponentList<VoterScopeProps, Component>
+{
+  createObservableEntities(): Observable<Entity[]> {
+    const { voter, config, filter } = this.props;
+
+    const voterFilter: FilterOptions = filter ? filter : { where: { } };
+    if (!voterFilter.where) {
+      voterFilter.where = { };
+    }
+    voterFilter.where.voter = voter;
+
+    return Entity.search(config.connection, voterFilter);
+  }
+
+  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
+    const { config } = this.props;
+
+    if (!entity.id) {
+      throw Error("Vote Entity ID undefined. This should never happen.");
+    }
+
+    return (
+      <Component id={entity.id} config={config}>
+      {children}
+      </Component>
+    )
+  }
+}
+
+class ProposalScopeVotes extends ComponentList<ProposalScopeProps, Component>
+{
+  createObservableEntities(): Observable<Entity[]> {
+    const { proposal, config, filter } = this.props;
+
+    const proposalFilter: FilterOptions = filter ? filter : { where: { } };
+    if (!proposalFilter.where) {
+      proposalFilter.where = { };
+    }
+    proposalFilter.where.proposal = proposal;
+
+    return Entity.search(config.connection, proposalFilter);
+  }
+
+  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
+    const { config } = this.props;
+
+    if (!entity.id) {
+      throw Error("Vote Entity ID undefined. This should never happen.");
+    }
+
+    return (
+      <Component id={entity.id} config={config}>
+      {children}
+      </Component>
+    )
+  }
+}
+
 class Votes extends React.Component<RequiredProps>
 {
   render() {
-    const { children, sort, filter } = this.props;
+    const { children, scope, sort, filter } = this.props;
 
     return (
       <Protocol.Config>
-      {(arc: ProtocolConfig) =>
-        <ArcVotes arcConfig={arc} sort={sort} filter={filter}>
-        {children}
-        </ArcVotes>
-      }
+      {(config: ProtocolConfig) => {
+        switch (scope) {
+          case "DAO":
+            return (
+              <DAO.Entity>
+              {(dao: DAOEntity) =>(
+                <DAOScopeVotes dao={dao.id} config={config} sort={sort} filter={filter}>
+                {children}
+                </DAOScopeVotes>
+              )}
+              </DAO.Entity>
+            );
+          case "Member as voter":
+            return (
+              <Member.Entity>
+              {(voter: MemberEntity) =>{
+                if (!voter.id) {
+                  throw Error("Member Entity ID undefined. This should never happen.");
+                }
+                return (
+                  <VoterScopeVotes voter={voter.id} config={config} sort={sort} filter={filter}>
+                  {children}
+                  </VoterScopeVotes>
+                );
+              }}
+              </Member.Entity>
+            );
+          case "Proposal":
+            return (
+              <Proposal.Entity>
+              {(proposal: ProposalEntity) =>(
+                <ProposalScopeVotes proposal={proposal.id} config={config} sort={sort} filter={filter}>
+                {children}
+                </ProposalScopeVotes>
+              )}
+              </Proposal.Entity>
+            );
+          default:
+            return (
+              <InferredVotes config={config} sort={sort} filter={filter}>
+              {children}
+              </InferredVotes>
+            );
+        }
+      }}
       </Protocol.Config>
     );
   }
@@ -68,6 +213,5 @@ class Votes extends React.Component<RequiredProps>
 export default Votes;
 
 export {
-  ArcVotes,
   Votes
 };

@@ -8,17 +8,17 @@ import {
   CreateContextFeed
 } from "../runtime/ContextFeed";
 import {
-  Arc,
-  ArcConfig
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig
 } from "../protocol";
-import {
-  Token as Entity,
-  ITokenState as Data
-} from "@daostack/client";
 import {
   DAO,
   DAOData
 } from "./DAO";
+import {
+  Token as Entity,
+  ITokenState as Data
+} from "@daostack/client";
 
 type Code = { }
 
@@ -27,24 +27,20 @@ interface RequiredProps extends BaseProps {
   address?: string;
 }
 
-interface InferredProps {
-  // Arc Instance
-  arcConfig: ArcConfig | undefined;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig;
 }
 
-type Props = RequiredProps & InferredProps;
-
-class ArcToken extends Component<Props, Entity, Data, Code>
+class InferredToken extends Component<InferredProps, Entity, Data, Code>
 {
   protected createEntity(): Entity {
-    const { arcConfig, address } = this.props;
-    if (!arcConfig) {
-      throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
-    }
+    const { config, address } = this.props;
+
     if (!address) {
       throw Error("Address Missing: Please provide this field as a prop, or use the inference component.")
     }
-    return new Entity(address, arcConfig.connection);
+
+    return new Entity(address, config.connection);
   }
 
   public static get Entity() {
@@ -74,54 +70,53 @@ class Token extends React.Component<RequiredProps>
   public render() {
     const { address, children } = this.props;
 
-    if (address !== undefined) {
-      return (
-        <Arc.Config>
-        {(arc: ArcConfig) => (
-          <ArcToken address={address} arcConfig={arc}>
-          {children}
-          </ArcToken>
-        )}
-        </Arc.Config>
-      );
-    } else {
-      return (
-        <Arc.Config>
-        <DAO.Data>
-        {(arc: ArcConfig, dao: DAOData) => (
-          <ArcToken address={dao.token.address} arcConfig={arc}>
-          {children}
-          </ArcToken>
-        )}
-        </DAO.Data>
-        </Arc.Config>
-      );
-    }
+    return (
+      <Protocol.Config>
+      {(config: ProtocolConfig) => {
+        if (address) {
+          return (
+            <InferredToken address={address} config={config}>
+            {children}
+            </InferredToken>
+          );
+        } else {
+          return (
+            <DAO.Data>
+            {(dao: DAOData) => (
+              <InferredToken address={dao.token.address} config={config}>
+              {children}
+              </InferredToken>
+            )}
+            </DAO.Data>
+          );
+        }
+      }}
+      </Protocol.Config>
+    );
   }
 
   public static get Entity() {
-    return ArcToken.Entity;
+    return InferredToken.Entity;
   }
 
   public static get Data() {
-    return ArcToken.Data;
+    return InferredToken.Data;
   }
 
   public static get Code() {
-    return ArcToken.Code;
+    return InferredToken.Code;
   }
 
   public static get Logs() {
-    return ArcToken.Logs;
+    return InferredToken.Logs;
   }
 }
 
 export default Token;
 
 export {
-  ArcToken,
   Token,
-  Props as TokenProps,
+  InferredToken,
   Entity as TokenEntity,
   Data as TokenData,
   Code as TokenCode,
