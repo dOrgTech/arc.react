@@ -92,9 +92,9 @@ class Member extends React.Component<RequiredProps>
           )
         } else {
           return (
-            <DAO.Entity>
-            {(entity: DAOEntity) => (
-              <InferredMember address={address} dao={entity.id} config={config}>
+            <DAO.Entity noLoad>
+            {(entity: DAOEntity | undefined, data: any) => (
+              <InferredMember address={address} dao={entity ? entity.id : undefined} config={config}>
               {children}
               </InferredMember>
             )}

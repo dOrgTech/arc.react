@@ -81,7 +81,7 @@ class Token extends React.Component<RequiredProps>
           );
         } else {
           return (
-            <DAO.Data>
+            <DAO.Data noLoad>
             {(dao: DAOData) => (
               <InferredToken address={dao.token.address} config={config}>
               {children}

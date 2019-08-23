@@ -81,7 +81,7 @@ class Reputation extends React.Component<RequiredProps>
           );
         } else {
           return (
-            <DAO.Data>
+            <DAO.Data noLoad>
             {(dao: DAOData) => (
               <InferredReputation address={dao.reputation.address} config={config}>
               {children}

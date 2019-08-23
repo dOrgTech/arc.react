@@ -5,25 +5,33 @@ import {
   ExpansionPanel,
   ExpansionPanelSummary,
   ExpansionPanelDetails,
-  Grid
+  Grid,
+  Select,
+  MenuItem
 } from "@material-ui/core";
 
-import { ComponentLogs } from "../../src";
+import { ComponentLogs, ProtocolConfig } from "../../src";
 import ObjectInspector from "./ObjectInspector";
 import { PropertyEditors, PropertyData, PropertyType } from "./PropertyEditors";
 export { PropertyData, PropertyType };
 
 interface Props {
   name: string;
-  ComponentList: any;
-  Component: any;
-  RequiredContext: React.FunctionComponent<React.PropsWithChildren<State>>;
+  ComponentListType: any;
+  ComponentType: any;
+  ProtocolType: any;
+  protocolConfig: ProtocolConfig;
+  scopes?: string[];
+  AddedContext?: React.FunctionComponent<React.PropsWithChildren<PropBag>>;
   propEditors: PropertyData[];
   getId: (data: any) => string;
 }
 
+type PropBag = {[name: string]: any};
+
 interface State {
-  [name: string]: any;
+  scopeSelect: string
+  props: PropBag
 }
 
 export default class ComponentListView extends React.Component<Props, State>
@@ -31,28 +39,73 @@ export default class ComponentListView extends React.Component<Props, State>
   constructor(props: Props) {
     super(props);
 
-    let newState: {[name: string]: any} = { };
+    let stateProps: {[name: string]: any} = { };
 
     props.propEditors.forEach(editor => {
-      newState[editor.name] = editor.defaultValue;
+      stateProps[editor.name] = editor.defaultValue;
     });
 
-    this.state = newState;
+    this.state = {
+      scopeSelect: "",
+      props: stateProps
+    };
   }
 
   public render() {
-    const { name, ComponentList, Component, RequiredContext, propEditors, getId } = this.props;
+    const {
+      name,
+      ComponentListType,
+      ComponentType,
+      ProtocolType,
+      protocolConfig,
+      scopes,
+      AddedContext,
+      propEditors,
+      getId
+    } = this.props;
+    const {
+      scopeSelect,
+      props
+    } = this.state;
+
+    const setProps = (props: any) => this.setState({
+      props,
+      scopeSelect
+    });
+
+    const setScope = (scope: string) => this.setState({
+      scopeSelect: scope,
+      ...this.state
+    });
+
+    const ScopeSelect = ({}) => (
+      <>
+      {scopes ?
+        <Select value={scopeSelect} onChange={(event) => setScope(event.target.value)}>
+          <MenuItem value={""}>Null</MenuItem>
+          {scopes.map(scope => 
+            <MenuItem value={scope}>{scope}</MenuItem>
+          )}
+        </Select>
+      : <></>}
+      </>
+    );
+
+    const scope = scopeSelect === "" ? undefined : scopeSelect;
+
     const renderComponentList = (
       <>
       <Typography variant="h3" component="h3">
         {name}
       </Typography>
       <Divider />
-      <PropertyEditors properties={propEditors} state={this.state} setState={(state) => this.setState(state)} />
-      <ComponentList {...this.state}>
-        <Component.Entity>
-        <Component.Data>
-        <Component.Logs>
+      <ScopeSelect />
+      <Divider />
+      <PropertyEditors properties={propEditors} state={this.state.props} setState={setProps} />
+      <ComponentListType scope={scope} {...props}>
+        <ComponentType.Entity>
+        <ComponentType.Data>
+        <ComponentType.Logs>
         {(entity: any, data: any, logs: ComponentLogs) => {
           const id = getId(data);
           return (
@@ -85,16 +138,22 @@ export default class ComponentListView extends React.Component<Props, State>
             </>
           );
         }}
-        </Component.Logs>
-        </Component.Data>
-        </Component.Entity>
-      </ComponentList>
+        </ComponentType.Logs>
+        </ComponentType.Data>
+        </ComponentType.Entity>
+      </ComponentListType>
       </>
     );
 
-    return RequiredContext({
-      children: renderComponentList,
-      ...this.state
-    });
+    return (
+      <ProtocolType config={protocolConfig}>
+      {AddedContext ?
+        AddedContext({
+          children: renderComponentList,
+          ...props
+        })
+      : renderComponentList}
+      </ProtocolType>
+    );
   }
 }

@@ -6,13 +6,16 @@ import {
 
 import { ComponentLogs } from "../../src";
 import ObjectInspector from "./ObjectInspector";
+import { ProtocolConfig } from "../../src/runtime";
 import { PropertyEditors, PropertyData, PropertyType } from "./PropertyEditors";
 export { PropertyData, PropertyType };
 
 interface Props {
   name: string;
-  Component: any;
-  RequiredContext: React.FunctionComponent<React.PropsWithChildren<State>>
+  ComponentType: any;
+  ProtocolType: any;
+  protocolConfig: ProtocolConfig;
+  AddedContext?: React.FunctionComponent<React.PropsWithChildren<State>>
   propEditors: PropertyData[];
 }
 
@@ -35,7 +38,14 @@ export default class ComponentView extends React.Component<Props, State>
   }
 
   public render() {
-    const { name, Component, RequiredContext, propEditors } = this.props;
+    const {
+      name,
+      ComponentType,
+      ProtocolType,
+      protocolConfig,
+      AddedContext,
+      propEditors
+    } = this.props;
 
     const renderComponent = (
       <>
@@ -47,10 +57,10 @@ export default class ComponentView extends React.Component<Props, State>
         Properties
       </Typography>
       <PropertyEditors properties={propEditors} state={this.state} setState={(state) => this.setState(state)} />
-      <Component {...this.state}>
-        <Component.Entity>
-        <Component.Data>
-        <Component.Logs>
+      <ComponentType {...this.state}>
+        <ComponentType.Entity>
+        <ComponentType.Data>
+        <ComponentType.Logs>
         {(entity: any, data: any, logs: ComponentLogs) => (
           <>
           <Typography variant="h6" component="h6">
@@ -71,17 +81,23 @@ export default class ComponentView extends React.Component<Props, State>
           {ObjectInspector(logs.prose, `${name}.ProseLogs`, "Prose Logs")}
           </>
         )}
-        </Component.Logs>
-        </Component.Data>
-        </Component.Entity>
-      </Component>
+        </ComponentType.Logs>
+        </ComponentType.Data>
+        </ComponentType.Entity>
+      </ComponentType>
       </>
     );
 
-    return RequiredContext({
-      children: renderComponent,
-      ...this.state
-    });
+    return (
+      <ProtocolType config={protocolConfig}>
+      {AddedContext ? 
+        AddedContext({
+          children: renderComponent,
+          ...this.state
+        })
+      : renderComponent}
+      </ProtocolType>
+    );
   }
 }
 

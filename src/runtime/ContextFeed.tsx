@@ -9,6 +9,7 @@ type ConsumerComponent = React.ExoticComponent<React.ConsumerProps<any>>
 export interface Props extends React.PropsWithChildren<{}> {
   _consumers?: ConsumerComponent[]
   _logs?: (ConsumerComponent | undefined)[]
+  noLoad?: boolean
 }
 
 class ContextFeed extends React.Component<Props>
@@ -18,7 +19,7 @@ class ContextFeed extends React.Component<Props>
   }
 
   public render() {
-    const { children, _consumers, _logs } = this.props;
+    const { children, _consumers, _logs, noLoad } = this.props;
 
     if (!_consumers || !_logs) {
       throw Error("Error: ContextFeed missing context consumer(s).");
@@ -46,7 +47,7 @@ class ContextFeed extends React.Component<Props>
               RelayValues(index + 1, [...values, value])
             )}
             </Consumer>
-          )
+          );
         } else {
           // We've recursed through all consumers. Now let's
           // check for undefined values and give logging information
@@ -54,7 +55,8 @@ class ContextFeed extends React.Component<Props>
           const nullIndex = values.indexOf(undefined);
 
           // If we have a value that is still undefined
-          if (nullIndex > -1) {
+          // AND we want to handle loading in this component
+          if (nullIndex > -1 && !noLoad) {
             // Get its logs and pass them to the LoadingView component
             const Logs = _logs[nullIndex];
 
@@ -112,6 +114,9 @@ export const CreateContextFeed = (consumer: ConsumerComponent, logs: ConsumerCom
         props._logs ?
         [...props._logs, logs] :
         [logs]
+      }
+      noLoad={
+        props.noLoad
       }
       children={props.children}
     />

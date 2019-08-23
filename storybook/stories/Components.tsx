@@ -20,12 +20,9 @@ export default () =>
     .add("DAO", () => (
       <ComponentView
         name={"DAO"}
-        Component={DAO}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-          {props.children}
-          </Arc>
-        )}
+        ComponentType={DAO}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
         // TODO: add helper button to "Get DAO Addresses"
         propEditors={[
           {
@@ -40,13 +37,13 @@ export default () =>
     .add("Member", () => (
       <ComponentView
         name={"Member"}
-        Component={Member}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-            <DAO address={props.dao}>
-            {props.children}
-            </DAO>
-          </Arc>
+        ComponentType={Member}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        AddedContext={(props) => (
+          <DAO address={props.dao}>
+          {props.children}
+          </DAO>
         )}
         propEditors={[
           {
@@ -67,13 +64,13 @@ export default () =>
     .add("Proposal", () => (
       <ComponentView
         name={"Proposal"}
-        Component={Proposal}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-            <DAO address={props.dao}>
-            {props.children}
-            </DAO>
-          </Arc>
+        ComponentType={Proposal}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        AddedContext={(props) => (
+          <DAO address={props.dao}>
+          {props.children}
+          </DAO>
         )}
         propEditors={[
           {
@@ -85,15 +82,13 @@ export default () =>
         ]}
       />
     ))
+    // TODO: single editor for Reputation & Token
     .add("Reputation", () => (
       <ComponentView
         name={"Reputation"}
-        Component={Reputation}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-            {props.children}
-          </Arc>
-        )}
+        ComponentType={Reputation}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
         propEditors={[
           {
             friendlyName: "Reputation Address",
@@ -107,13 +102,13 @@ export default () =>
     .add("DAO Reputation", () => (
       <ComponentView
         name={"Reputation"}
-        Component={Reputation}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-            <DAO address={props.dao}>
-            {props.children}
-            </DAO>
-          </Arc>
+        ComponentType={Reputation}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        AddedContext={(props) => (
+          <DAO address={props.dao}>
+          {props.children}
+          </DAO>
         )}
         propEditors={[
           {
@@ -128,12 +123,9 @@ export default () =>
     .add("Reward", () => (
       <ComponentView
         name={"Reward"}
-        Component={Reward}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-            {props.children}
-          </Arc>
-        )}
+        ComponentType={Reward}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
         propEditors={[
           {
             friendlyName: "Reward ID",
@@ -147,12 +139,9 @@ export default () =>
     .add("Scheme", () => (
       <ComponentView
         name={"Scheme"}
-        Component={Scheme}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-            {props.children}
-          </Arc>
-        )}
+        ComponentType={Scheme}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
         propEditors={[
           {
             friendlyName: "Scheme ID",
@@ -166,12 +155,9 @@ export default () =>
     .add("Stake", () => (
       <ComponentView
         name={"Stake"}
-        Component={Stake}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-            {props.children}
-          </Arc>
-        )}
+        ComponentType={Stake}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
         propEditors={[
           {
             friendlyName: "Stake ID",
@@ -185,12 +171,9 @@ export default () =>
     .add("Token", () => (
       <ComponentView
         name={"Token"}
-        Component={Token}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-            {props.children}
-          </Arc>
-        )}
+        ComponentType={Token}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
         propEditors={[
           {
             friendlyName: "Token Address",
@@ -204,13 +187,13 @@ export default () =>
     .add("DAO Token", () => (
       <ComponentView
         name={"Token"}
-        Component={Token}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-            <DAO address={props.dao}>
-            {props.children}
-            </DAO>
-          </Arc>
+        ComponentType={Token}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        AddedContext={(props) => (
+          <DAO address={props.dao}>
+          {props.children}
+          </DAO>
         )}
         propEditors={[
           {
@@ -225,12 +208,9 @@ export default () =>
     .add("Vote", () => (
       <ComponentView
         name={"Vote"}
-        Component={Vote}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-            {props.children}
-          </Arc>
-        )}
+        ComponentType={Vote}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
         propEditors={[
           {
             friendlyName: "Vote ID",

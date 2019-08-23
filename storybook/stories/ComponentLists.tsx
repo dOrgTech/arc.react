@@ -31,20 +31,45 @@ import {
   Vote,
   VoteData
 } from "../../src/";
-import ComponentListView, { PropertyType } from "../helpers/ComponentListView";
+import ComponentListView, { PropertyType, PropertyData } from "../helpers/ComponentListView";
+
+const DAOProp: PropertyData = {
+  friendlyName: "DAO Address",
+  name: "dao",
+  defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
+  type: PropertyType.string
+};
+
+const MemberProp: PropertyData = {
+  friendlyName: "Member Address",
+  name: "member",
+  defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
+  type: PropertyType.string
+};
+
+const ProposalProp: PropertyData = {
+  friendlyName: "Proposal ID",
+  name: "proposal",
+  defaultValue: "",
+  type: PropertyType.string
+};
+
+const TokenProp: PropertyData = {
+  friendlyName: "Token Address",
+  name: "token",
+  defaultValue: "",
+  type: PropertyType.string
+};
 
 export default () =>
   storiesOf("Component Lists", module)
     .add("DAOs", () => (
       <ComponentListView
         name={"DAOs"}
-        ComponentList={DAOs}
-        Component={DAO}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-          {props.children}
-          </Arc>
-        )}
+        ComponentListType={DAOs}
+        ComponentType={DAO}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
         propEditors={[]}
         getId={(dao: DAOData) => `DAO: ${dao.address}`}
       />
@@ -52,89 +77,46 @@ export default () =>
     .add("Members", () => (
       <ComponentListView
         name={"Members"}
-        ComponentList={Members}
-        Component={Member}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-            <DAO address={props.dao}>
-            {props.children}
-            </DAO>
-          </Arc>
+        ComponentListType={Members}
+        ComponentType={Member}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        scopes={["DAO"]}
+        AddedContext={(props) => (
+          <DAO address={props.dao}>
+          {props.children}
+          </DAO>
         )}
-        propEditors={[
-          {
-            friendlyName: "DAO Address",
-            name: "dao",
-            defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
-            type: PropertyType.string
-          },
-          {
-            friendlyName: "Scope To DAO",
-            name: "scope",
-            defaultValue: false,
-            type: PropertyType.boolean,
-            converter: (value: boolean) => value ? "DAO" : undefined
-          }
-        ]}
+        propEditors={[DAOProp]}
         getId={(member: MemberData) => `Member: ${member.address}`}
       />
     ))
     .add("Proposals", () => (
       <ComponentListView
         name={"Proposals"}
-        ComponentList={Proposals}
-        Component={Proposal}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-            <DAO address={props.dao}>
+        ComponentListType={Proposals}
+        ComponentType={Proposal}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        scopes={["DAO", "Member as proposer"]}
+        AddedContext={(props) => (
+          <DAO address={props.dao}>
+            <Member address={props.member}>
             {props.children}
-            </DAO>
-          </Arc>
+            </Member>
+          </DAO>
         )}
-        propEditors={[
-          {
-            friendlyName: "DAO Address",
-            name: "dao",
-            defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
-            type: PropertyType.string
-          },
-          {
-            friendlyName: "All DAOs",
-            name: "allDAOs",
-            defaultValue: false,
-            type: PropertyType.boolean
-          }
-          // TODO: add filtering and sorting to each component list editor
-          /*,
-          {
-            friendlyName: "Filters",
-            name: "filters",
-            defaultValue: {},
-            type: PropertyType.object
-          },
-          {
-            friendlyName: "Sort",
-            name: "sort",
-            defaultValue: function(unsortedList: any): any {
-              const sortBySubmittedTime = (o:any) => (new BN(o.data.contributionReward!.ethReward).toNumber())
-              return R.sortBy(sortBySubmittedTime)(unsortedList)
-            },
-            type: PropertyType.object
-          }*/
-        ]}
+        propEditors={[DAOProp, MemberProp]}
         getId={(proposal: ProposalData) => `Proposal: ${proposal.id}`}
       />
     ))
     .add("Reputations", () => (
       <ComponentListView
         name={"Reputations"}
-        ComponentList={Reputations}
-        Component={Reputation}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-          {props.children}
-          </Arc>
-        )}
+        ComponentListType={Reputations}
+        ComponentType={Reputation}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
         propEditors={[]}
         getId={(reputation: ReputationData) => `Reputation: ${reputation.address}`}
       />
@@ -142,55 +124,71 @@ export default () =>
     .add("Rewards", () => (
       <ComponentListView
         name={"Rewards"}
-        ComponentList={Rewards}
-        Component={Reward}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-          {props.children}
-          </Arc>
+        ComponentListType={Rewards}
+        ComponentType={Reward}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        scopes={["DAO", "Member as beneficiary", "Proposal", "Token"]}
+        AddedContext={(props) => (
+          <DAO address={props.dao}>
+            <Member address={props.member}>
+              <Proposal id={props.proposal}>
+                <Token address={props.token}>
+                {props.children}
+                </Token>
+              </Proposal>
+            </Member>
+          </DAO>
         )}
-        propEditors={[]}
+        propEditors={[DAOProp, MemberProp, ProposalProp, TokenProp]}
         getId={(reward: RewardData) => `Reward: ${reward.id}`}
       />
     ))
     .add("Schemes", () => (
       <ComponentListView
         name={"Schemes"}
-        ComponentList={Schemes}
-        Component={Scheme}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>
+        ComponentListType={Schemes}
+        ComponentType={Scheme}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        scopes={["DAO"]}
+        AddedContext={(props) => (
+          <DAO address={props.dao}>
           {props.children}
-          </Arc>
+          </DAO>
         )}
-        propEditors={[]}
+        propEditors={[DAOProp]}
         getId={(scheme: SchemeData) => `Scheme (${scheme.name}): ${scheme.id}`}
       />
     ))
     .add("Stakes", () => (
       <ComponentListView
         name={"Stakes"}
-        ComponentList={Stakes}
-        Component={Stake}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-          {props.children}
-          </Arc>
+        ComponentListType={Stakes}
+        ComponentType={Stake}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        scopes={["DAO", "Member as staker", "Proposal"]}
+        AddedContext={(props) => (
+          <DAO address={props.dao}>
+            <Member address={props.member}>
+              <Proposal id={props.proposal}>
+              {props.children}
+              </Proposal>
+            </Member>
+          </DAO>
         )}
-        propEditors={[]}
+        propEditors={[DAOProp, MemberProp, ProposalProp]}
         getId={(stake: StakeData) => `Stake: ${stake.id}`}
       />
     ))
     .add("Tokens", () => (
       <ComponentListView
         name={"Tokens"}
-        ComponentList={Tokens}
-        Component={Token}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-          {props.children}
-          </Arc>
-        )}
+        ComponentListType={Tokens}
+        ComponentType={Token}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
         propEditors={[]}
         getId={(token: TokenData) => `Token (${token.name} - ${token.symbol}): ${token.address}`}
       />
@@ -198,14 +196,21 @@ export default () =>
     .add("Votes", () => (
       <ComponentListView
         name={"Votes"}
-        ComponentList={Votes}
-        Component={Vote}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-          {props.children}
-          </Arc>
+        ComponentListType={Votes}
+        ComponentType={Vote}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        scopes={["DAO", "Member as voter", "Proposal"]}
+        AddedContext={(props) => (
+          <DAO address={props.dao}>
+            <Member address={props.member}>
+              <Proposal id={props.proposal}>
+              {props.children}
+              </Proposal>
+            </Member>
+          </DAO>
         )}
-        propEditors={[]}
+        propEditors={[DAOProp, MemberProp, ProposalProp]}
         getId={(vote: VoteData) => `Vote: ${vote.id}`}
       />
     ));
