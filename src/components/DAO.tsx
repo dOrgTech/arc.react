@@ -35,12 +35,10 @@ class InferredDAO extends Component<InferredProps, Entity, Data, Code>
     return new Entity(address, config.connection);
   }
 
-  protected async initialize(entity: Entity | undefined): Promise<void> {
-    if (entity) {
-      await entity.fetchStaticState();
-    }
-
-    return Promise.resolve();
+  protected async initialize(entity: Entity): Promise<void> {
+    // TODO: remove this when this issue is resolved: https://github.com/daostack/client/issues/291
+    entity.staticState = undefined;
+    await entity.fetchStaticState();
   }
 
   public static get Entity() {

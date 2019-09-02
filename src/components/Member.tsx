@@ -20,6 +20,9 @@ import {
   IMemberState as Data
 } from "@daostack/client";
 
+// TODO: remove me when the bug is fixed
+import { first } from 'rxjs/operators'
+
 // TODO: remove me, just use entity
 type Code = { }
 
@@ -46,12 +49,15 @@ class InferredMember extends Component<InferredProps, Entity, Data, Code>
     return new Entity({ address, dao }, config.connection);
   }
 
-  protected async initialize(entity: Entity | undefined): Promise<void> {
-    if (entity) {
-      await entity.fetchStaticState();
+  protected async initialize(entity: Entity): Promise<void> {
+    // TODO: remove this when this issue is resolved: https://github.com/daostack/client/issues/291
+    const state = await entity.state().pipe(first()).toPromise()
+    entity.id = state.id
+    entity.staticState = {
+      address: state.address,
+      dao: state.dao
     }
-
-    return Promise.resolve();
+    // await entity.fetchStaticState();
   }
 
   public static get Entity() {
@@ -92,8 +98,8 @@ class Member extends React.Component<RequiredProps>
           )
         } else {
           return (
-            <DAO.Entity noLoad>
-            {(entity: DAOEntity | undefined, data: any) => (
+            <DAO.Entity>
+            {(entity: DAOEntity | undefined) => (
               <InferredMember address={address} dao={entity ? entity.id : undefined} config={config}>
               {children}
               </InferredMember>

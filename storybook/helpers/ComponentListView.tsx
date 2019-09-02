@@ -21,16 +21,15 @@ interface Props {
   ComponentType: any;
   ProtocolType: any;
   protocolConfig: ProtocolConfig;
-  scopes?: string[];
-  AddedContext?: React.FunctionComponent<React.PropsWithChildren<PropBag>>;
-  propEditors: PropertyData[];
+  scopes?: {name: string, prop: PropertyData}[];
+  ScopeContext?: React.FunctionComponent<React.PropsWithChildren<PropBag>>;
   getId: (data: any) => string;
 }
 
 type PropBag = {[name: string]: any};
 
 interface State {
-  scopeSelect: string
+  scopeSelect: number
   props: PropBag
 }
 
@@ -41,12 +40,14 @@ export default class ComponentListView extends React.Component<Props, State>
 
     let stateProps: {[name: string]: any} = { };
 
-    props.propEditors.forEach(editor => {
-      stateProps[editor.name] = editor.defaultValue;
-    });
+    if (props.scopes) {
+      props.scopes.forEach(({ prop }) => {
+        stateProps[prop.name] = prop.defaultValue;
+      });
+    }
 
     this.state = {
-      scopeSelect: "",
+      scopeSelect: -1,
       props: stateProps
     };
   }
@@ -59,8 +60,7 @@ export default class ComponentListView extends React.Component<Props, State>
       ProtocolType,
       protocolConfig,
       scopes,
-      AddedContext,
-      propEditors,
+      ScopeContext,
       getId
     } = this.props;
     const {
@@ -74,35 +74,30 @@ export default class ComponentListView extends React.Component<Props, State>
     });
 
     const setScope = (scope: string) => this.setState({
-      scopeSelect: scope,
-      ...this.state
+      scopeSelect: Number(scope),
+      props
     });
 
     const ScopeSelect = ({}) => (
       <>
       {scopes ?
         <Select value={scopeSelect} onChange={(event) => setScope(event.target.value)}>
-          <MenuItem value={""}>Null</MenuItem>
-          {scopes.map(scope => 
-            <MenuItem value={scope}>{scope}</MenuItem>
+          <MenuItem value={-1}>Null</MenuItem>
+          {scopes.map(({ name }, index) => 
+            <MenuItem value={index}>{name}</MenuItem>
           )}
         </Select>
       : <></>}
       </>
     );
 
-    const scope = scopeSelect === "" ? undefined : scopeSelect;
+    let scope = undefined;
+    if (scopes && scopeSelect > -1) {
+      scope = scopes[scopeSelect];
+    }
 
     const renderComponentList = (
-      <>
-      <Typography variant="h3" component="h3">
-        {name}
-      </Typography>
-      <Divider />
-      <ScopeSelect />
-      <Divider />
-      <PropertyEditors properties={propEditors} state={this.state.props} setState={setProps} />
-      <ComponentListType scope={scope} {...props}>
+      <ComponentListType scope={scope ? scope.name : undefined}>
         <ComponentType.Entity>
         <ComponentType.Data>
         <ComponentType.Logs>
@@ -142,13 +137,21 @@ export default class ComponentListView extends React.Component<Props, State>
         </ComponentType.Data>
         </ComponentType.Entity>
       </ComponentListType>
-      </>
     );
 
     return (
       <ProtocolType config={protocolConfig}>
-      {AddedContext ?
-        AddedContext({
+      <Typography variant="h3" component="h3">
+        {name}
+      </Typography>
+      <Divider />
+      <ScopeSelect />
+      <Divider />
+      {scope ?
+        <PropertyEditors properties={[scope.prop]} state={this.state.props} setState={setProps} />
+      : <></>}
+      {ScopeContext ?
+        ScopeContext({
           children: renderComponentList,
           ...props
         })

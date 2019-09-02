@@ -35,12 +35,10 @@ class InferredVote extends Component<InferredProps, Entity, Data, Code>
     return new Entity(id, config.connection);
   }
 
-  protected async initialize(entity: Entity | undefined): Promise<void> {
-    if (entity) {
-      await entity.fetchStaticState();
-    }
-
-    return Promise.resolve();
+  protected async initialize(entity: Entity): Promise<void> {
+    // TODO: this is a bug, fix it...
+    entity.staticState = undefined;
+    entity.staticState = await entity.fetchStaticState();
   }
 
   public static get Entity() {

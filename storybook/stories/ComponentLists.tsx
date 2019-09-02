@@ -43,21 +43,21 @@ const DAOProp: PropertyData = {
 const MemberProp: PropertyData = {
   friendlyName: "Member Address",
   name: "member",
-  defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
+  defaultValue: "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
   type: PropertyType.string
 };
 
 const ProposalProp: PropertyData = {
   friendlyName: "Proposal ID",
   name: "proposal",
-  defaultValue: "",
+  defaultValue: "0x6afee092a28c74f6358093d5376ac75014ac4d9fd42d296a5498ef42eecd7248",
   type: PropertyType.string
 };
 
 const TokenProp: PropertyData = {
   friendlyName: "Token Address",
   name: "token",
-  defaultValue: "",
+  defaultValue: "0x81920caf1f99bb0f7d72fdfba840cff21d63ccc5",
   type: PropertyType.string
 };
 
@@ -70,7 +70,6 @@ export default () =>
         ComponentType={DAO}
         ProtocolType={Arc}
         protocolConfig={arcConfig}
-        propEditors={[]}
         getId={(dao: DAOData) => `DAO: ${dao.address}`}
       />
     ))
@@ -81,13 +80,14 @@ export default () =>
         ComponentType={Member}
         ProtocolType={Arc}
         protocolConfig={arcConfig}
-        scopes={["DAO"]}
-        AddedContext={(props) => (
+        scopes={[
+          { name: "DAO", prop: DAOProp }
+        ]}
+        ScopeContext={(props) => (
           <DAO address={props.dao}>
           {props.children}
           </DAO>
         )}
-        propEditors={[DAOProp]}
         getId={(member: MemberData) => `Member: ${member.address}`}
       />
     ))
@@ -98,15 +98,17 @@ export default () =>
         ComponentType={Proposal}
         ProtocolType={Arc}
         protocolConfig={arcConfig}
-        scopes={["DAO", "Member as proposer"]}
-        AddedContext={(props) => (
+        scopes={[
+          { name: "DAO", prop: DAOProp },
+          { name: "Member as proposer", prop: MemberProp }
+        ]}
+        ScopeContext={(props) => (
           <DAO address={props.dao}>
             <Member address={props.member}>
             {props.children}
             </Member>
           </DAO>
         )}
-        propEditors={[DAOProp, MemberProp]}
         getId={(proposal: ProposalData) => `Proposal: ${proposal.id}`}
       />
     ))
@@ -117,7 +119,6 @@ export default () =>
         ComponentType={Reputation}
         ProtocolType={Arc}
         protocolConfig={arcConfig}
-        propEditors={[]}
         getId={(reputation: ReputationData) => `Reputation: ${reputation.address}`}
       />
     ))
@@ -128,8 +129,13 @@ export default () =>
         ComponentType={Reward}
         ProtocolType={Arc}
         protocolConfig={arcConfig}
-        scopes={["DAO", "Member as beneficiary", "Proposal", "Token"]}
-        AddedContext={(props) => (
+        scopes={[
+          { name: "DAO", prop: DAOProp },
+          { name: "Member as beneficiary", prop: MemberProp },
+          { name: "Proposal", prop: ProposalProp },
+          { name: "Token", prop: TokenProp }
+        ]}
+        ScopeContext={(props) => (
           <DAO address={props.dao}>
             <Member address={props.member}>
               <Proposal id={props.proposal}>
@@ -140,7 +146,6 @@ export default () =>
             </Member>
           </DAO>
         )}
-        propEditors={[DAOProp, MemberProp, ProposalProp, TokenProp]}
         getId={(reward: RewardData) => `Reward: ${reward.id}`}
       />
     ))
@@ -151,13 +156,14 @@ export default () =>
         ComponentType={Scheme}
         ProtocolType={Arc}
         protocolConfig={arcConfig}
-        scopes={["DAO"]}
-        AddedContext={(props) => (
+        scopes={[
+          { name: "DAO", prop: DAOProp }
+        ]}
+        ScopeContext={(props) => (
           <DAO address={props.dao}>
           {props.children}
           </DAO>
         )}
-        propEditors={[DAOProp]}
         getId={(scheme: SchemeData) => `Scheme (${scheme.name}): ${scheme.id}`}
       />
     ))
@@ -168,8 +174,12 @@ export default () =>
         ComponentType={Stake}
         ProtocolType={Arc}
         protocolConfig={arcConfig}
-        scopes={["DAO", "Member as staker", "Proposal"]}
-        AddedContext={(props) => (
+        scopes={[
+          { name: "DAO", prop: DAOProp },
+          { name: "Member as staker", prop: MemberProp },
+          { name: "Proposal", prop: ProposalProp }
+        ]}
+        ScopeContext={(props) => (
           <DAO address={props.dao}>
             <Member address={props.member}>
               <Proposal id={props.proposal}>
@@ -178,7 +188,6 @@ export default () =>
             </Member>
           </DAO>
         )}
-        propEditors={[DAOProp, MemberProp, ProposalProp]}
         getId={(stake: StakeData) => `Stake: ${stake.id}`}
       />
     ))
@@ -189,7 +198,6 @@ export default () =>
         ComponentType={Token}
         ProtocolType={Arc}
         protocolConfig={arcConfig}
-        propEditors={[]}
         getId={(token: TokenData) => `Token (${token.name} - ${token.symbol}): ${token.address}`}
       />
     ))
@@ -200,8 +208,12 @@ export default () =>
         ComponentType={Vote}
         ProtocolType={Arc}
         protocolConfig={arcConfig}
-        scopes={["DAO", "Member as voter", "Proposal"]}
-        AddedContext={(props) => (
+        scopes={[
+          { name: "DAO", prop: DAOProp },
+          { name: "Member as voter", prop: MemberProp },
+          { name: "Proposal", prop: ProposalProp }
+        ]}
+        ScopeContext={(props) => (
           <DAO address={props.dao}>
             <Member address={props.member}>
               <Proposal id={props.proposal}>
@@ -210,7 +222,6 @@ export default () =>
             </Member>
           </DAO>
         )}
-        propEditors={[DAOProp, MemberProp, ProposalProp]}
         getId={(vote: VoteData) => `Vote: ${vote.id}`}
       />
     ));
