@@ -146,7 +146,7 @@ export abstract class Component<
       logs.dataQueryStarted();
 
       // subscribe to this entity's state changes
-      this._subscription = entity.state().subscribe(
+      this._subscription = entity.state({}).subscribe(
         this.onQueryData,
         this.onQueryError,
         this.onQueryComplete
