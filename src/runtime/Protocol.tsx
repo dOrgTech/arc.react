@@ -1,5 +1,4 @@
 import * as React from "react";
-import { CreateContextFeed } from "./ContextFeed";
 import { ProtocolConfig } from "./ProtocolConfig";
 export { ProtocolConfig };
 

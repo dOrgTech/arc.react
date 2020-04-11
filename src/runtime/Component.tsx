@@ -150,6 +150,10 @@ export abstract class Component<
 
       logs.dataQueryStarted();
 
+      if (this._subscription) { 
+        this._subscription.unsubscribe()
+      }
+
       // subscribe to this entity's state changes
       this._subscription = entity.state().subscribe(
         this.onQueryData,
@@ -172,7 +176,6 @@ export abstract class Component<
     this.mergeState({
       data: undefined,
       code: undefined,
-      // TOOD: prose: undefined
     });
   }
 
@@ -191,7 +194,6 @@ export abstract class Component<
     // used instead of mergeState because the class type
     // is lost when using mergeState.
     this.setState({
-      data: this.state.data,
       logs: logs.clone()
     });
   }
@@ -203,7 +205,6 @@ export abstract class Component<
     // used instead of mergeState because the class type
     // is lost when using mergeState.
     this.setState({
-      data: this.state.data,
       logs: logs.clone()
     });
   }

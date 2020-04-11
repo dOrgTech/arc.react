@@ -1,4 +1,3 @@
-export abstract class ProtocolConfig
-{
+export abstract class ProtocolConfig {
   public abstract isInitialized: boolean;
 }
