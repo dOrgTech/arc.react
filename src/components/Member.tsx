@@ -16,9 +16,6 @@ import {
   IMemberState as Data
 } from "@daostack/client";
 
-// TODO
-type Code = { }
-
 interface RequiredProps extends BaseProps {
   // Address of the member
   address: string;
@@ -31,7 +28,7 @@ interface InferredProps {
 
 type Props = RequiredProps & InferredProps;
 
-class DAOMember extends Component<Props, Entity, Data, Code>
+class DAOMember extends Component<Props, Entity, Data>
 {
   protected createEntity(): Entity {
     const { dao, address } = this.props;
@@ -62,17 +59,12 @@ class DAOMember extends Component<Props, Entity, Data, Code>
     return CreateContextFeed(this._DataContext.Consumer, this._LogsContext.Consumer);
   }
 
-  public static get Code() {
-    return CreateContextFeed(this._CodeContext.Consumer, this._LogsContext.Consumer);
-  }
-
   public static get Logs() {
     return CreateContextFeed(this._LogsContext.Consumer, this._LogsContext.Consumer);
   }
 
   protected static _EntityContext = React.createContext({ });
   protected static _DataContext   = React.createContext({ });
-  protected static _CodeContext   = React.createContext({ });
   protected static _LogsContext   = React.createContext({ });
 }
 
@@ -100,10 +92,6 @@ class Member extends React.Component<RequiredProps>
     return DAOMember.Data;
   }
 
-  public static get Code() {
-    return DAOMember.Code;
-  }
-
   public static get Logs() {
     return DAOMember.Logs;
   }
@@ -117,6 +105,5 @@ export {
   Props  as MemberProps,
   Entity as MemberEntity,
   Data   as MemberData,
-  Code   as MemberCode,
   ComponentLogs
 };

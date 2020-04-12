@@ -35,6 +35,7 @@ ExampleDAOView() => (
 )
 ```
 
+(?)
 You can also interact with the Code context (**NOTE:** not implemented yet):
 ```html
 <DAO.Code>
@@ -109,6 +110,7 @@ The below example will:
   )}
   </DAO.Data>
   <Members>
+    (?)
     <DAO.Code>
     <Member.Data>
     {(daoCode: DAOCode, member: MemberData) => (
@@ -140,11 +142,10 @@ For Example: The component [**`<DAO address="0x...">`**](./src/components/DAO.ts
 
 Note: ComponentLists break this rule, but will be covered further down.  
 
-## Component Contexts (Data, Code, Prose)  
-Each component has 3 core contexts:  
+## Component Contexts (Data)  
+Each component has one core context:  
 * Data - GraphQL Schema  
-* Code - Abstracted Protocol Functionality  
-* Prose - TBD  
+* NOT Code - Abstracted Protocol Functionality (?)
 
 In addition to these core contexts, you can also access:
 * Entity - The raw backing entity from the client library.

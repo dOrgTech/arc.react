@@ -16,9 +16,6 @@ import {
   IProposalState as Data
 } from "@daostack/client";
 
-// TODO
-type Code = { }
-
 interface RequiredProps extends BaseProps {
   // Proposal ID
   id: string;
@@ -31,7 +28,7 @@ interface InferredProps {
 
 type Props = RequiredProps & InferredProps;
 
-class ArcProposal extends Component<Props, Entity, Data, Code>
+class ArcProposal extends Component<Props, Entity, Data>
 {
   protected createEntity(): Entity {
     const { arcConfig, id } = this.props;
@@ -59,17 +56,12 @@ class ArcProposal extends Component<Props, Entity, Data, Code>
     return CreateContextFeed(this._DataContext.Consumer, this._LogsContext.Consumer);
   }
 
-  public static get Code() {
-    return CreateContextFeed(this._CodeContext.Consumer, this._LogsContext.Consumer);
-  }
-
   public static get Logs() {
     return CreateContextFeed(this._LogsContext.Consumer, this._LogsContext.Consumer);
   }
 
   protected static _EntityContext = React.createContext({ });
   protected static _DataContext   = React.createContext({ });
-  protected static _CodeContext   = React.createContext({ });
   protected static _LogsContext   = React.createContext({ });
 }
 
@@ -97,10 +89,6 @@ class Proposal extends React.Component<RequiredProps>
     return ArcProposal.Data;
   }
 
-  public static get Code() {
-    return ArcProposal.Code;
-  }
-
   public static get Logs() {
     return ArcProposal.Logs;
   }
@@ -114,6 +102,5 @@ export {
   Props  as ProposalProps,
   Entity as ProposalEntity,
   Data   as ProposalData,
-  Code   as ProposalCode,
   ComponentLogs
 };

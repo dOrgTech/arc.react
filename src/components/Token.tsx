@@ -20,7 +20,6 @@ import {
   DAOData
 } from "./DAO";
 
-type Code = { }
 
 interface RequiredProps extends BaseProps {
   // Address of the Token
@@ -34,7 +33,7 @@ interface InferredProps {
 
 type Props = RequiredProps & InferredProps;
 
-class ArcToken extends Component<Props, Entity, Data, Code>
+class ArcToken extends Component<Props, Entity, Data>
 {
   protected createEntity(): Entity {
     const { arcConfig, address } = this.props;
@@ -55,17 +54,12 @@ class ArcToken extends Component<Props, Entity, Data, Code>
     return CreateContextFeed(this._DataContext.Consumer, this._LogsContext.Consumer);
   }
 
-  public static get Code() {
-    return CreateContextFeed(this._CodeContext.Consumer, this._LogsContext.Consumer);
-  }
-
   public static get Logs() {
     return CreateContextFeed(this._LogsContext.Consumer, this._LogsContext.Consumer);
   }
 
   protected static _EntityContext = React.createContext({ });
   protected static _DataContext   = React.createContext({ });
-  protected static _CodeContext   = React.createContext({ });
   protected static _LogsContext   = React.createContext({ });
 }
 
@@ -107,10 +101,6 @@ class Token extends React.Component<RequiredProps>
     return ArcToken.Data;
   }
 
-  public static get Code() {
-    return ArcToken.Code;
-  }
-
   public static get Logs() {
     return ArcToken.Logs;
   }
@@ -124,6 +114,5 @@ export {
   Props as TokenProps,
   Entity as TokenEntity,
   Data as TokenData,
-  Code as TokenCode,
   ComponentLogs
 };

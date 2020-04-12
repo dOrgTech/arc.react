@@ -16,15 +16,6 @@ import {
   IDAOState as Data
 } from "@daostack/client";
 
-// TODO: thought:
-// - base class that is constructed w/ entity
-// - derived class that defines public "nice" methods
-// - - methods use entity to invoke transactions
-type Code = {
-  // maybe wrap this better so the contracts
-  // are underneath the higher level functions?
-  // contractName: ContractType (TypeChain)
-}
 
 interface RequiredProps extends BaseProps {
   // Address of the DAO Avatar
@@ -38,7 +29,7 @@ interface InferredProps {
 
 type Props = RequiredProps & InferredProps;
 
-class ArcDAO extends Component<Props, Entity, Data, Code>
+class ArcDAO extends Component<Props, Entity, Data>
 {
   protected createEntity(): Entity {
     const { arcConfig, address } = this.props;
@@ -64,17 +55,12 @@ class ArcDAO extends Component<Props, Entity, Data, Code>
     return CreateContextFeed(this._DataContext.Consumer, this._LogsContext.Consumer);
   }
 
-  public static get Code() {
-    return CreateContextFeed(this._CodeContext.Consumer, this._LogsContext.Consumer);
-  }
-
   public static get Logs() {
     return CreateContextFeed(this._LogsContext.Consumer, this._LogsContext.Consumer);
   }
 
   protected static _EntityContext = React.createContext({ });
   protected static _DataContext   = React.createContext({ });
-  protected static _CodeContext   = React.createContext({ });
   protected static _LogsContext   = React.createContext({ });
 }
 
@@ -102,10 +88,6 @@ class DAO extends React.Component<RequiredProps>
     return ArcDAO.Data;
   }
 
-  public static get Code() {
-    return ArcDAO.Code;
-  }
-
   public static get Logs() {
     return ArcDAO.Logs;
   }
@@ -119,6 +101,5 @@ export {
   Props as DAOProps,
   Entity as DAOEntity,
   Data as DAOData,
-  Code as DAOCode,
   ComponentLogs
 };

@@ -11,7 +11,7 @@ import { GraphqlCodeBlock } from "graphql-syntax-highlighter-react";
 const queries = [
 {
   name: "All DAOs",
-  code: 
+  data: 
 `{
   daos {
     id
@@ -27,7 +27,7 @@ const queries = [
 },
 {
   name: "All Proposals",
-  code:
+  data:
 `{
   proposals {
     id
@@ -39,7 +39,7 @@ const queries = [
 },
 {
   name: "All Members",
-  code:
+  data:
 `{
   members {
     id
@@ -104,7 +104,7 @@ const QuerySnippets: React.SFC = () => (
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <GraphqlCodeBlock 
-            queryBody={query.code} />
+            queryBody={query.data} />
         </ExpansionPanelDetails>
       </ExpansionPanel>
     ))}

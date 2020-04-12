@@ -16,9 +16,6 @@ import {
   IStakeState as Data
 } from "@daostack/client";
 
-// TODO
-type Code = { }
-
 interface RequiredProps extends BaseProps {
   // Stake ID
   id: string;
@@ -31,7 +28,7 @@ interface InferredProps {
 
 type Props = RequiredProps & InferredProps;
 
-class ArcStake extends Component<Props, Entity, Data, Code>
+class ArcStake extends Component<Props, Entity, Data>
 {
   protected createEntity(): Entity {
     const { arcConfig, id } = this.props;
@@ -59,17 +56,12 @@ class ArcStake extends Component<Props, Entity, Data, Code>
     return CreateContextFeed(this._DataContext.Consumer, this._LogsContext.Consumer);
   }
 
-  public static get Code() {
-    return CreateContextFeed(this._CodeContext.Consumer, this._LogsContext.Consumer);
-  }
-
   public static get Logs() {
     return CreateContextFeed(this._LogsContext.Consumer, this._LogsContext.Consumer);
   }
 
   protected static _EntityContext = React.createContext({ });
   protected static _DataContext   = React.createContext({ });
-  protected static _CodeContext   = React.createContext({ });
   protected static _LogsContext   = React.createContext({ });
 }
 
@@ -97,10 +89,6 @@ class Stake extends React.Component<RequiredProps>
     return ArcStake.Data;
   }
 
-  public static get Code() {
-    return ArcStake.Code;
-  }
-
   public static get Logs() {
     return ArcStake.Logs;
   }
@@ -114,6 +102,5 @@ export {
   Props  as StakeProps,
   Entity as StakeEntity,
   Data   as StakeData,
-  Code   as StakeCode,
   ComponentLogs
 };
