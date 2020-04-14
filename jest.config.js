@@ -1,11 +1,15 @@
 module.exports = {
   transform: {
-    ".(ts|tsx)$": "ts-jest"
+    ".(ts|tsx)$": "ts-jest",
   },
-  testPathIgnorePatterns: ["/node_modules/", "/dist/", "/test/declarations.d.ts"],
+  testPathIgnorePatterns: [
+    "/node_modules/",
+    "/dist/",
+    "/test/declarations.d.ts",
+  ],
   testRegex: "(/test/.*(spec).*|\\.(test|spec))\\.(ts|tsx|js)$",
   moduleNameMapper: {
-    "\\.(css)$": "identity-obj-proxy"
+    "\\.(css)$": "identity-obj-proxy",
   },
-  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"]
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
 };

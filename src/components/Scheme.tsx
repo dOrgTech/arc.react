@@ -16,8 +16,6 @@ import {
   ISchemeState as Data
 } from "@daostack/client";
 
-// TODO
-type Code = { }
 
 interface RequiredProps extends BaseProps {
   // Scheme ID
@@ -31,7 +29,7 @@ interface InferredProps {
 
 type Props = RequiredProps & InferredProps;
 
-class ArcScheme extends Component<Props, Entity, Data, Code>
+class ArcScheme extends Component<Props, Entity, Data>
 {
   protected createEntity(): Entity {
     const { arcConfig, id } = this.props;
@@ -59,17 +57,12 @@ class ArcScheme extends Component<Props, Entity, Data, Code>
     return CreateContextFeed(this._DataContext.Consumer, this._LogsContext.Consumer);
   }
 
-  public static get Code() {
-    return CreateContextFeed(this._CodeContext.Consumer, this._LogsContext.Consumer);
-  }
-
   public static get Logs() {
     return CreateContextFeed(this._LogsContext.Consumer, this._LogsContext.Consumer);
   }
 
   protected static _EntityContext = React.createContext({ });
   protected static _DataContext   = React.createContext({ });
-  protected static _CodeContext   = React.createContext({ });
   protected static _LogsContext   = React.createContext({ });
 }
 
@@ -97,10 +90,6 @@ class Scheme extends React.Component<RequiredProps>
     return ArcScheme.Data;
   }
 
-  public static get Code() {
-    return ArcScheme.Code;
-  }
-
   public static get Logs() {
     return ArcScheme.Logs;
   }
@@ -114,6 +103,5 @@ export {
   Props  as SchemeProps,
   Entity as SchemeEntity,
   Data   as SchemeData,
-  Code   as SchemeCode,
   ComponentLogs
 };

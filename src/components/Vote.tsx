@@ -16,8 +16,6 @@ import {
   IVoteState as Data
 } from "@daostack/client";
 
-// TODO
-type Code = { }
 
 interface RequiredProps extends BaseProps {
   // Vote ID
@@ -31,7 +29,7 @@ interface InferredProps {
 
 type Props = RequiredProps & InferredProps;
 
-class ArcVote extends Component<Props, Entity, Data, Code>
+class ArcVote extends Component<Props, Entity, Data>
 {
   protected createEntity(): Entity {
     const { arcConfig, id } = this.props;
@@ -59,17 +57,12 @@ class ArcVote extends Component<Props, Entity, Data, Code>
     return CreateContextFeed(this._DataContext.Consumer, this._LogsContext.Consumer);
   }
 
-  public static get Code() {
-    return CreateContextFeed(this._CodeContext.Consumer, this._LogsContext.Consumer);
-  }
-
   public static get Logs() {
     return CreateContextFeed(this._LogsContext.Consumer, this._LogsContext.Consumer);
   }
 
   protected static _EntityContext = React.createContext({ });
   protected static _DataContext   = React.createContext({ });
-  protected static _CodeContext   = React.createContext({ });
   protected static _LogsContext   = React.createContext({ });
 }
 
@@ -97,10 +90,6 @@ class Vote extends React.Component<RequiredProps>
     return ArcVote.Data;
   }
 
-  public static get Code() {
-    return ArcVote.Code;
-  }
-
   public static get Logs() {
     return ArcVote.Logs;
   }
@@ -114,6 +103,5 @@ export {
   Props  as VoteProps,
   Entity as VoteEntity,
   Data   as VoteData,
-  Code   as VoteCode,
   ComponentLogs
 };

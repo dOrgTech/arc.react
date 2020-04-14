@@ -67,8 +67,6 @@ export default class ComponentView extends React.Component<Props, State>
           {ObjectInspector(logs.react, `${name}.ReactLogs`, "React Logs")}
           {ObjectInspector(logs.entity, `${name}.EntityLogs`, "Entity Logs")}
           {ObjectInspector(logs.data, `${name}.DataLogs`, "Data Query Logs")}
-          {ObjectInspector(logs.code, `${name}.CodeLogs`, "Code Logs")}
-          {ObjectInspector(logs.prose, `${name}.ProseLogs`, "Prose Logs")}
           </>
         )}
         </Component.Logs>

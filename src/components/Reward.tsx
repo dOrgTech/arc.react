@@ -16,9 +16,6 @@ import {
   IRewardState as Data
 } from "@daostack/client";
 
-// TODO
-type Code = { }
-
 interface RequiredProps extends BaseProps {
   // Reward ID
   id: string;
@@ -31,7 +28,7 @@ interface InferredProps {
 
 type Props = RequiredProps & InferredProps;
 
-class ArcReward extends Component<Props, Entity, Data, Code>
+class ArcReward extends Component<Props, Entity, Data>
 {
   protected createEntity(): Entity {
     const { id, arcConfig } = this.props;
@@ -51,17 +48,12 @@ class ArcReward extends Component<Props, Entity, Data, Code>
     return CreateContextFeed(this._DataContext.Consumer, this._LogsContext.Consumer);
   }
 
-  public static get Code() {
-    return CreateContextFeed(this._CodeContext.Consumer, this._LogsContext.Consumer);
-  }
-
   public static get Logs() {
     return CreateContextFeed(this._LogsContext.Consumer, this._LogsContext.Consumer);
   }
 
   protected static _EntityContext = React.createContext({ });
   protected static _DataContext   = React.createContext({ });
-  protected static _CodeContext   = React.createContext({ });
   protected static _LogsContext   = React.createContext({ });
 }
 
@@ -89,10 +81,6 @@ class Reward extends React.Component<RequiredProps>
     return ArcReward.Data;
   }
 
-  public static get Code() {
-    return ArcReward.Code;
-  }
-
   public static get Logs() {
     return ArcReward.Logs;
   }
@@ -106,6 +94,5 @@ export {
   Props  as RewardProps,
   Entity as RewardEntity,
   Data   as RewardData,
-  Code   as RewardCode,
   ComponentLogs
 };

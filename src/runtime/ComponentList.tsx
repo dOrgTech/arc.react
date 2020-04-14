@@ -10,10 +10,9 @@ import LoadingView from './LoadingView';
 export { ComponentListLogs };
 
 // Extract the derived component's template parameters
-export type CProps<Comp>   = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Props : undefined;
-export type CEntity<Comp>  = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Entity : undefined;
-export type CData<Comp>    = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Data : undefined;
-export type CCode<Comp>    = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Code : undefined;
+export type CProps<Comp>   = Comp extends Component<infer Props, infer Entity, infer Data> ? Props : undefined;
+export type CEntity<Comp>  = Comp extends Component<infer Props, infer Entity, infer Data> ? Entity : undefined;
+export type CData<Comp>    = Comp extends Component<infer Props, infer Entity, infer Data> ? Data : undefined;
 
 // Helper type for the <entity, data> tuple used by the sort function
 export type EntityList<Entity, Data> = Array<{entity: Entity, data: Data}>;
@@ -41,8 +40,7 @@ export abstract class ComponentList<
   Comp extends Component<
     CProps<Comp>,
     CEntity<Comp>,
-    CData<Comp>,
-    CCode<Comp>
+    CData<Comp>
   >,
   Entity extends IStateful<CData<Comp>> = CEntity<Comp>,
   Data = CData<Comp>

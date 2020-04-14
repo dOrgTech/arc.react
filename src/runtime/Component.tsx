@@ -16,14 +16,13 @@ export interface State<Data> {
 export abstract class Component<
   Props extends BaseProps,
   Entity extends IStateful<Data>,
-  Data,
-  Code
+  Data
 > extends BaseComponent<
     Props, State<Data>
   >
 {
   // Create the entity this component represents. This entity gives access
-  // to the component's code, prose, and data. For example: DAO, Proposal, Member.
+  // to the component's data. For example: DAO, Proposal, Member.
   // Note: This entity is not within the component's state, but instead a memoized
   // property that will be recreated whenever necessary. See `private entity` below...
   protected abstract createEntity(): Entity;
@@ -35,7 +34,6 @@ export abstract class Component<
   // https://reactjs.org/docs/context.html
   protected static _EntityContext: React.Context<{}>;
   protected static _DataContext: React.Context<{}>;
-  protected static _CodeContext: React.Context<{}>;
   protected static _LogsContext: React.Context<{}>;
 
   private entity = memoize(
@@ -44,9 +42,6 @@ export abstract class Component<
     // See: https://reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html#what-about-memoization
     this.createEntityWithProps
   );
-
-  // TODO: implement this & prose
-  private code = memoize((entity: Entity | undefined) => ({ }));
 
   // Our graphql query's subscriber object
   private _subscription?: Subscription;
@@ -77,7 +72,6 @@ export abstract class Component<
   public render() {
     const EntityProvider = this.constructor._EntityContext.Provider as any;
     const DataProvider   = this.constructor._DataContext.Provider as any;
-    const CodeProvider   = this.constructor._CodeContext.Provider as any;
     const LogsProvider   = this.constructor._LogsContext.Provider;
 
     const children = this.props.children;
@@ -87,7 +81,6 @@ export abstract class Component<
     // TODO: this should throw errors. Upon first error, logging marks "loading started"
     // then when first success is seen, record that time too for timings
     const entity = this._initialized ? this.entity(this.props) : undefined;
-    const code = this._initialized ? this.code(entity) : undefined;
 
     logs.reactRendered();
 
@@ -95,11 +88,9 @@ export abstract class Component<
       <>
       <EntityProvider value={entity}>
       <DataProvider value={data}>
-      <CodeProvider value={code}>
       <LogsProvider value={logs}>
       {children}
       </LogsProvider>
-      </CodeProvider>
       </DataProvider>
       </EntityProvider>
       </>
@@ -165,9 +156,7 @@ export abstract class Component<
 
   private clearPrevState() {
     this.mergeState({
-      data: undefined,
-      code: undefined,
-      // TOOD: prose: undefined
+      data: undefined
     });
   }
 
