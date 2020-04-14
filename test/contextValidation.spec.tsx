@@ -1,18 +1,16 @@
-import React = require("react");
+import React from "react";
 import { create } from "react-test-renderer";
-import {
-  DAOs,
-  DAOEntity
-} from "../src";
+import { Arc, DevArcConfig as arcConfig, DAO } from "../src";
 
-test("Nested Context: Same Type", () => {
-  let daos = [];
-  create(
-    <DAOs>
-    {(entities: DAOEntity[]) => {
-      daos = entities;
-    }}
-    </DAOs>
-  );
-  console.log(daos.map(dao => dao.name));
-})
+describe("DAO component renders", () => {
+  it("Component renders", async () => {
+    const arc = await create(
+      <Arc config={arcConfig}>
+        <DAO address="0x">
+          <DAO.Data />
+        </DAO>
+      </Arc>
+    );
+    expect(arc.root.findByType(DAO).props.address).toBe("0x");
+  });
+});
