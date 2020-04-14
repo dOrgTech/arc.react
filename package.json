@@ -3,9 +3,6 @@
   "version": "0.0.8-alpha",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
-  "engines": {
-    "node": "8.10.0"
-  },
   "scripts": {
     "start": "concurrently \"npm:start:subgraph\" \"npm:start:storybook\"",
     "start:storybook": "start-storybook -p 3000",
@@ -23,13 +20,11 @@
     "@daostack/client": "0.2.6",
     "memoize-one": "^5.0.0",
     "ramda": "^0.26.1",
-    "react": "16.8.6",
     "react-spinkit": "^3.0.0",
     "reactjs-popup": "^1.3.2",
     "rxjs": "6.4.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.3.3",
     "@material-ui/core": "^3.9.2",
     "@storybook/addon-actions": "5.0.11",
     "@storybook/addon-console": "^1.1.0",
@@ -47,36 +42,28 @@
     "@types/react-test-renderer": "16.0.1",
     "@types/storybook__react": "4.0.1",
     "awesome-typescript-loader": "^5.2.1",
-    "babel-loader": "^8.0.5",
     "concurrently": "^4.1.0",
     "graphql-language-service": "^2.0.0",
     "graphql-syntax-highlighter-react": "^0.3.5",
-    "ignore-loader": "^0.1.2",
-    "jest": "^20.0.4",
+    "husky": "^4.2.5",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^24.9.0",
+    "prettier": "^2.0.4",
+    "pretty-quick": "^2.0.1",
+    "react": "^16.8.6",
     "react-dom": "16.8.2",
     "react-inspector": "^2.3.1",
     "react-object-inspector": "^0.2.1",
-    "react-test-renderer": "^16.8.2",
-    "ts-jest": "^20.0.6",
-    "typescript": "^3.4.5",
-    "wait-on": "^3.2.0"
+    "react-test-renderer": "^16.8.6",
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.4.5"
   },
-  "jest": {
-    "transform": {
-      "\\.(jsx?|tsx?)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
-    },
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/dist/",
-      "/test/declarations.d.ts"
-    ],
-    "testRegex": "(/test/.*|\\.(test|spec))\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json"
-    ]
+  "peerDependencies": {
+    "react": "^16.8.6"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
   }
 }

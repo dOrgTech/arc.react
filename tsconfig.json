@@ -24,6 +24,7 @@
     "noImplicitThis": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
+    "esModuleInterop": true
   },
   "include": ["src", "storybook"]
 }
