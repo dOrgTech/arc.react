@@ -1,7 +1,7 @@
 import * as React from "react";
 import Popup from "reactjs-popup";
 import { ComponentLogs, ComponentListLogs } from "../../src";
-import { Loader } from "./Loader";
+import { Loader, customLoader } from "./Loader";
 
 const R = require("ramda");
 const Spinner = require("react-spinkit");
@@ -32,11 +32,7 @@ export default class LoadingView extends React.Component<Props> {
     R.forEachObjIndexed(this.findErrorKeys, logs);
     return (
       <Loader.Render>
-        {(
-          CustomLoader:
-            | React.ComponentClass<any>
-            | React.StatelessComponent<any>
-        ) =>
+        {(CustomLoader: customLoader) =>
           CustomLoader ? (
             <CustomLoader errors={this.errors} />
           ) : (
