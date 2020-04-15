@@ -1,32 +1,23 @@
 import React, { Component } from "react";
 
+export type LoaderProps = { errors: React.ReactNode[] };
 interface Props {
-  render: JSX.Element | undefined;
+  render:
+    | React.ComponentClass<LoaderProps>
+    | React.StatelessComponent<LoaderProps>;
 }
-export const LoaderContext = React.createContext(undefined);
-
 export class Loader extends Component<Props> {
-  public state = {
-    render: undefined,
-  };
-
-  public componentDidMount() {
-    console.log(this.props.render);
-    if (this.props.render) {
-      this.setState({ render: this.props.render });
-    }
-  }
+  private static _LoaderContext = React.createContext<any>(undefined);
 
   public static get Render() {
-    return LoaderContext.Consumer;
+    return Loader._LoaderContext.Consumer;
   }
 
   public render() {
-    const { render } = this.state;
+    const LoaderProvider = Loader._LoaderContext.Provider;
+    const loader = this.props.render;
     return (
-      <LoaderContext.Provider value={render}>
-        {this.props.children}
-      </LoaderContext.Provider>
+      <LoaderProvider value={loader}>{this.props.children}</LoaderProvider>
     );
   }
 }

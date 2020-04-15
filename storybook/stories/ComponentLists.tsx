@@ -31,14 +31,9 @@ import {
   Vote,
   VoteData,
   Loader,
+  LoaderProps,
 } from "../../src/";
 import ComponentListView, { PropertyType } from "../helpers/ComponentListView";
-
-class Test extends React.Component {
-  render() {
-    return <div>I'M YOUR CUSTOM LOADER COMPONENT</div>;
-  }
-}
 
 export default () =>
   storiesOf("Component Lists", module)
@@ -48,9 +43,7 @@ export default () =>
         ComponentList={DAOs}
         Component={DAO}
         RequiredContext={(props) => (
-          <Loader render={<Test />}>
-            <Arc config={arcConfig}>{props.children}</Arc>
-          </Loader>
+          <Arc config={arcConfig}>{props.children}</Arc>
         )}
         propEditors={[]}
         getId={(dao: DAOData) => `DAO: ${dao.address}`}
@@ -201,5 +194,27 @@ export default () =>
         )}
         propEditors={[]}
         getId={(vote: VoteData) => `Vote: ${vote.id}`}
+      />
+    ))
+    .add("Schemes with custom loader", () => (
+      <ComponentListView
+        name={"Schemes"}
+        ComponentList={Schemes}
+        Component={Scheme}
+        RequiredContext={(props) => (
+          <Loader
+            render={(props: LoaderProps) => (
+              <div>
+                {props.errors.length > 0
+                  ? props.errors.map((error) => error)
+                  : "Loading without errors"}
+              </div>
+            )}
+          >
+            <Arc config={arcConfig}>{props.children}</Arc>
+          </Loader>
+        )}
+        propEditors={[]}
+        getId={(scheme: SchemeData) => `Scheme (${scheme.name}): ${scheme.id}`}
       />
     ));

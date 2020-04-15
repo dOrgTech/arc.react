@@ -18,7 +18,7 @@ export default class LoadingView extends React.Component<Props> {
       const error = value["_error"].message;
 
       // make sure the error isn't a duplicate
-      const found = this.errors.findIndex((err) => err === error) > -1;
+      const found = this.errors.indexOf(error) > -1;
 
       if (!found) {
         this.errors.push(error);
@@ -32,8 +32,14 @@ export default class LoadingView extends React.Component<Props> {
     R.forEachObjIndexed(this.findErrorKeys, logs);
     return (
       <Loader.Render>
-        {(CustomLoader: JSX.Element | undefined) =>
-          CustomLoader || (
+        {(
+          CustomLoader:
+            | React.ComponentClass<any>
+            | React.StatelessComponent<any>
+        ) =>
+          CustomLoader ? (
+            <CustomLoader errors={this.errors} />
+          ) : (
             <Popup
               trigger={<Spinner name="double-bounce" />}
               position="right center"
