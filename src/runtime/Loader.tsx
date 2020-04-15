@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 export type LoaderProps = { errors: React.ReactNode[] };
 interface Props {
-  render: React.FunctionComponent<LoaderProps>;
+  render: React.ComponentProps<any>;
 }
 export class Loader extends Component<Props> {
   private static _LoaderContext = React.createContext<any>(undefined);
