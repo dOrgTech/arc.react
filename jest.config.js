@@ -12,4 +12,5 @@ module.exports = {
     "\\.(css)$": "identity-obj-proxy",
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
+  setupFilesAfterEnv: ["<rootDir>/test/setup.ts"],
 };

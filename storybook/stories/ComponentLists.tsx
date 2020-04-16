@@ -31,7 +31,7 @@ import {
   Vote,
   VoteData,
   Loader,
-  LoaderProps,
+  RenderProps,
 } from "../../src/";
 import ComponentListView, { PropertyType } from "../helpers/ComponentListView";
 
@@ -203,7 +203,7 @@ export default () =>
         Component={Scheme}
         RequiredContext={(props) => (
           <Loader
-            render={(props: LoaderProps) => (
+            render={(props: RenderProps) => (
               <div>
                 {props.errors.length > 0
                   ? props.errors.map((error) => error)

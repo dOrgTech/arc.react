@@ -1,8 +1,14 @@
 language: node_js
 node_js:
   - 10
+
+services:
+  - docker
+
 before_script:
   - yarn
+  - docker-compose -f ./node_modules/@daostack/client/docker-compose.yml up graph-node -d
 
 script:
+  - sleep 5 #making sure the graph is up and running
   - yarn test
