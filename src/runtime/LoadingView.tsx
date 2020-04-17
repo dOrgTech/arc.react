@@ -37,7 +37,11 @@ export default class LoadingView extends React.Component<Props> {
             customLoader({ errors: this.errors })
           ) : (
             <Popup
-              trigger={<Spinner name="double-bounce" />}
+              trigger={
+                <div style={{ width: "30px" }}>
+                  <Spinner name="double-bounce" />
+                </div>
+              }
               position="right center"
               on="hover"
               contentStyle={{
