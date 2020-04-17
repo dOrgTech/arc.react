@@ -29,7 +29,9 @@ import {
   StakeData,
   Votes,
   Vote,
-  VoteData
+  VoteData,
+  Loader,
+  RenderProps,
 } from "../../src/";
 import ComponentListView, { PropertyType } from "../helpers/ComponentListView";
 
@@ -41,9 +43,7 @@ export default () =>
         ComponentList={DAOs}
         Component={DAO}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-          {props.children}
-          </Arc>
+          <Arc config={arcConfig}>{props.children}</Arc>
         )}
         propEditors={[]}
         getId={(dao: DAOData) => `DAO: ${dao.address}`}
@@ -56,9 +56,7 @@ export default () =>
         Component={Member}
         RequiredContext={(props) => (
           <Arc config={arcConfig}>
-            <DAO address={props.dao}>
-            {props.children}
-            </DAO>
+            <DAO address={props.dao}>{props.children}</DAO>
           </Arc>
         )}
         propEditors={[
@@ -66,14 +64,14 @@ export default () =>
             friendlyName: "DAO Address",
             name: "dao",
             defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
-            type: PropertyType.string
+            type: PropertyType.string,
           },
           {
             friendlyName: "All DAOs",
             name: "allDAOs",
             defaultValue: false,
-            type: PropertyType.boolean
-          }
+            type: PropertyType.boolean,
+          },
         ]}
         getId={(member: MemberData) => `Member: ${member.address}`}
       />
@@ -85,9 +83,7 @@ export default () =>
         Component={Proposal}
         RequiredContext={(props) => (
           <Arc config={arcConfig}>
-            <DAO address={props.dao}>
-            {props.children}
-            </DAO>
+            <DAO address={props.dao}>{props.children}</DAO>
           </Arc>
         )}
         propEditors={[
@@ -95,14 +91,14 @@ export default () =>
             friendlyName: "DAO Address",
             name: "dao",
             defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
-            type: PropertyType.string
+            type: PropertyType.string,
           },
           {
             friendlyName: "All DAOs",
             name: "allDAOs",
             defaultValue: false,
-            type: PropertyType.boolean
-          }
+            type: PropertyType.boolean,
+          },
           // TODO: add filtering and sorting to each component list editor
           /*,
           {
@@ -130,12 +126,12 @@ export default () =>
         ComponentList={Reputations}
         Component={Reputation}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-          {props.children}
-          </Arc>
+          <Arc config={arcConfig}>{props.children}</Arc>
         )}
         propEditors={[]}
-        getId={(reputation: ReputationData) => `Reputation: ${reputation.address}`}
+        getId={(reputation: ReputationData) =>
+          `Reputation: ${reputation.address}`
+        }
       />
     ))
     .add("Rewards", () => (
@@ -144,9 +140,7 @@ export default () =>
         ComponentList={Rewards}
         Component={Reward}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-          {props.children}
-          </Arc>
+          <Arc config={arcConfig}>{props.children}</Arc>
         )}
         propEditors={[]}
         getId={(reward: RewardData) => `Reward: ${reward.id}`}
@@ -158,9 +152,7 @@ export default () =>
         ComponentList={Schemes}
         Component={Scheme}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-          {props.children}
-          </Arc>
+          <Arc config={arcConfig}>{props.children}</Arc>
         )}
         propEditors={[]}
         getId={(scheme: SchemeData) => `Scheme (${scheme.name}): ${scheme.id}`}
@@ -172,9 +164,7 @@ export default () =>
         ComponentList={Stakes}
         Component={Stake}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-          {props.children}
-          </Arc>
+          <Arc config={arcConfig}>{props.children}</Arc>
         )}
         propEditors={[]}
         getId={(stake: StakeData) => `Stake: ${stake.id}`}
@@ -186,12 +176,12 @@ export default () =>
         ComponentList={Tokens}
         Component={Token}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-          {props.children}
-          </Arc>
+          <Arc config={arcConfig}>{props.children}</Arc>
         )}
         propEditors={[]}
-        getId={(token: TokenData) => `Token (${token.name} - ${token.symbol}): ${token.address}`}
+        getId={(token: TokenData) =>
+          `Token (${token.name} - ${token.symbol}): ${token.address}`
+        }
       />
     ))
     .add("Votes", () => (
@@ -200,11 +190,31 @@ export default () =>
         ComponentList={Votes}
         Component={Vote}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-          {props.children}
-          </Arc>
+          <Arc config={arcConfig}>{props.children}</Arc>
         )}
         propEditors={[]}
         getId={(vote: VoteData) => `Vote: ${vote.id}`}
+      />
+    ))
+    .add("Schemes with custom loader", () => (
+      <ComponentListView
+        name={"Schemes"}
+        ComponentList={Schemes}
+        Component={Scheme}
+        RequiredContext={(props) => (
+          <Loader
+            render={(props: RenderProps) => (
+              <div>
+                {props.errors.length > 0
+                  ? props.errors.map((error) => error)
+                  : "Loading without errors"}
+              </div>
+            )}
+          >
+            <Arc config={arcConfig}>{props.children}</Arc>
+          </Loader>
+        )}
+        propEditors={[]}
+        getId={(scheme: SchemeData) => `Scheme (${scheme.name}): ${scheme.id}`}
       />
     ));
