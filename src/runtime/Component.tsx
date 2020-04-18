@@ -3,7 +3,6 @@ import memoize from "memoize-one";
 import { Subscription } from "rxjs";
 import { IStateful } from "@daostack/client/src/types";
 
-import { BaseProps, BaseComponent } from "./BaseComponent";
 import { ComponentLogs } from "./logging/ComponentLogs";
 
 export interface State<Data> {
@@ -14,13 +13,10 @@ export interface State<Data> {
 }
 
 export abstract class Component<
-  Props extends BaseProps,
+  Props,
   Entity extends IStateful<Data>,
   Data
-> extends BaseComponent<
-    Props, State<Data>
-  >
-{
+> extends React.Component<Props, State<Data>> {
   // Create the entity this component represents. This entity gives access
   // to the component's data. For example: DAO, Proposal, Member.
   // Note: This entity is not within the component's state, but instead a memoized
@@ -28,7 +24,7 @@ export abstract class Component<
   protected abstract createEntity(): Entity;
 
   // Complete any asynchronous initialization work needed by the Entity
-  protected async initialize(entity: Entity | undefined): Promise<void> { }
+  protected async initialize(entity: Entity | undefined): Promise<void> {}
 
   // See here for more information on the React.Context pattern:
   // https://reactjs.org/docs/context.html
@@ -55,7 +51,7 @@ export abstract class Component<
     this._initialized = false;
 
     this.state = {
-      logs: new ComponentLogs()
+      logs: new ComponentLogs(),
     };
 
     this.onQueryData = this.onQueryData.bind(this);
@@ -71,8 +67,8 @@ export abstract class Component<
 
   public render() {
     const EntityProvider = this.constructor._EntityContext.Provider as any;
-    const DataProvider   = this.constructor._DataContext.Provider as any;
-    const LogsProvider   = this.constructor._LogsContext.Provider;
+    const DataProvider = this.constructor._DataContext.Provider as any;
+    const LogsProvider = this.constructor._LogsContext.Provider;
 
     const children = this.props.children;
     const { data, logs } = this.state;
@@ -86,15 +82,13 @@ export abstract class Component<
 
     return (
       <>
-      <EntityProvider value={entity}>
-      <DataProvider value={data}>
-      <LogsProvider value={logs}>
-      {children}
-      </LogsProvider>
-      </DataProvider>
-      </EntityProvider>
+        <EntityProvider value={entity}>
+          <DataProvider value={data}>
+            <LogsProvider value={logs}>{children}</LogsProvider>
+          </DataProvider>
+        </EntityProvider>
       </>
-    )
+    );
   }
 
   public async componentDidMount(): Promise<void> {
@@ -108,7 +102,7 @@ export abstract class Component<
       logs.entityCreationFailed(error);
       this.setState({
         data: this.state.data,
-        logs: logs.clone()
+        logs: logs.clone(),
       });
     }
 
@@ -128,7 +122,7 @@ export abstract class Component<
     logs.entityCreated();
 
     // TODO: find a way to get rid of this, as it's
-    //       causing a react warning/error during render.
+    //causing a react warning/error during render.
     this.clearPrevState();
 
     try {
@@ -137,58 +131,50 @@ export abstract class Component<
       logs.dataQueryStarted();
 
       // subscribe to this entity's state changes
-      this._subscription = entity.state().subscribe(
-        this.onQueryData,
-        this.onQueryError,
-        this.onQueryComplete
-      );
+      this._subscription = entity
+        .state()
+        .subscribe(this.onQueryData, this.onQueryError, this.onQueryComplete);
 
       return entity;
     } catch (error) {
       logs.entityCreationFailed(error);
       this.setState({
         data: this.state.data,
-        logs: logs.clone()
+        logs: logs.clone(),
       });
       return undefined;
     }
   }
 
   private clearPrevState() {
-    this.mergeState({
-      data: undefined
+    this.setState({
+      data: undefined,
     });
   }
 
   private onQueryData(data: Data) {
     const { logs } = this.state;
     logs.dataQueryReceivedData();
-    this.mergeState({
-      data: data
+    this.setState({
+      data,
     });
   }
 
   private onQueryError(error: Error) {
     const { logs } = this.state;
     logs.dataQueryFailed(error);
-    // This is required to force a rerender. setState is
-    // used instead of mergeState because the class type
-    // is lost when using mergeState.
     this.setState({
       data: this.state.data,
-      logs: logs.clone()
+      logs: logs.clone(),
     });
   }
 
   private onQueryComplete() {
     const { logs } = this.state;
     logs.dataQueryCompleted();
-    // This is required to force a rerender. setState is
-    // used instead of mergeState because the class type
-    // is lost when using mergeState.
     this.setState({
       data: this.state.data,
-      logs: logs.clone()
+      logs: logs.clone(),
     });
   }
 }

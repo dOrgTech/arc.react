@@ -1,23 +1,10 @@
 import * as React from "react";
-import {
-  Component,
-  ComponentLogs,
-  BaseProps
-} from "../runtime";
-import {
-  CreateContextFeed
-} from "../runtime/ContextFeed";
-import {
-  Arc as Protocol,
-  ArcConfig as ProtocolConfig
-} from "../protocol";
-import {
-  Scheme as Entity,
-  ISchemeState as Data
-} from "@daostack/client";
+import { Component, ComponentLogs } from "../runtime";
+import { CreateContextFeed } from "../runtime/ContextFeed";
+import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
+import { Scheme as Entity, ISchemeState as Data } from "@daostack/client";
 
-
-interface RequiredProps extends BaseProps {
+interface RequiredProps {
   // Scheme ID
   id: string;
 }
@@ -29,13 +16,14 @@ interface InferredProps {
 
 type Props = RequiredProps & InferredProps;
 
-class ArcScheme extends Component<Props, Entity, Data>
-{
+class ArcScheme extends Component<Props, Entity, Data> {
   protected createEntity(): Entity {
     const { arcConfig, id } = this.props;
 
     if (!arcConfig) {
-      throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
+      throw Error(
+        "Arc Config Missing: Please provide this field as a prop, or use the inference component."
+      );
     }
 
     return new Entity(id, arcConfig.connection);
@@ -50,34 +38,42 @@ class ArcScheme extends Component<Props, Entity, Data>
   }
 
   public static get Entity() {
-    return CreateContextFeed(this._EntityContext.Consumer, this._LogsContext.Consumer);
+    return CreateContextFeed(
+      this._EntityContext.Consumer,
+      this._LogsContext.Consumer
+    );
   }
 
   public static get Data() {
-    return CreateContextFeed(this._DataContext.Consumer, this._LogsContext.Consumer);
+    return CreateContextFeed(
+      this._DataContext.Consumer,
+      this._LogsContext.Consumer
+    );
   }
 
   public static get Logs() {
-    return CreateContextFeed(this._LogsContext.Consumer, this._LogsContext.Consumer);
+    return CreateContextFeed(
+      this._LogsContext.Consumer,
+      this._LogsContext.Consumer
+    );
   }
 
-  protected static _EntityContext = React.createContext({ });
-  protected static _DataContext   = React.createContext({ });
-  protected static _LogsContext   = React.createContext({ });
+  protected static _EntityContext = React.createContext({});
+  protected static _DataContext = React.createContext({});
+  protected static _LogsContext = React.createContext({});
 }
 
-class Scheme extends React.Component<RequiredProps>
-{
+class Scheme extends React.Component<RequiredProps> {
   public render() {
     const { id, children } = this.props;
 
     return (
       <Protocol.Config>
-      {(arc: ProtocolConfig) => (
-        <ArcScheme id={id} arcConfig={arc}>
-        {children}
-        </ArcScheme>
-      )}
+        {(arc: ProtocolConfig) => (
+          <ArcScheme id={id} arcConfig={arc}>
+            {children}
+          </ArcScheme>
+        )}
       </Protocol.Config>
     );
   }
@@ -100,8 +96,8 @@ export default Scheme;
 export {
   ArcScheme,
   Scheme,
-  Props  as SchemeProps,
+  Props as SchemeProps,
   Entity as SchemeEntity,
-  Data   as SchemeData,
-  ComponentLogs
+  Data as SchemeData,
+  ComponentLogs,
 };
