@@ -1,26 +1,14 @@
 import * as React from "react";
-import {
-  Component,
-  ComponentLogs,
-  BaseProps,
-} from "../runtime";
-import {
-  CreateContextFeed
-} from "../runtime/ContextFeed";
-import {
-  Arc,
-  ArcConfig
-} from "../protocol";
+import { Component, ComponentLogs } from "../runtime";
+import { CreateContextFeed } from "../runtime/ContextFeed";
+import { Arc, ArcConfig } from "../protocol";
 import {
   Reputation as Entity,
-  IReputationState as Data
+  IReputationState as Data,
 } from "@daostack/client";
-import {
-  DAO,
-  DAOData
-} from "./DAO";
+import { DAO, DAOData } from "./DAO";
 
-interface RequiredProps extends BaseProps {
+interface RequiredProps {
   // Address of the Reputation Token
   address?: string;
 }
@@ -32,64 +20,75 @@ interface InferredProps {
 
 type Props = RequiredProps & InferredProps;
 
-class ArcReputation extends Component<Props, Entity, Data>
-{
+class ArcReputation extends Component<Props, Entity, Data> {
   protected createEntity(): Entity {
     const { arcConfig, address } = this.props;
 
     if (!arcConfig) {
-      throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
+      throw Error(
+        "Arc Config Missing: Please provide this field as a prop, or use the inference component."
+      );
     }
 
     if (!address) {
-      throw Error("Address Missing: Please provide this field as a prop, or use the inference component.")
+      throw Error(
+        "Address Missing: Please provide this field as a prop, or use the inference component."
+      );
     }
 
     return new Entity(address, arcConfig.connection);
   }
 
   public static get Entity() {
-    return CreateContextFeed(this._EntityContext.Consumer, this._LogsContext.Consumer);
+    return CreateContextFeed(
+      this._EntityContext.Consumer,
+      this._LogsContext.Consumer
+    );
   }
 
   public static get Data() {
-    return CreateContextFeed(this._DataContext.Consumer, this._LogsContext.Consumer);
+    return CreateContextFeed(
+      this._DataContext.Consumer,
+      this._LogsContext.Consumer
+    );
   }
 
   public static get Logs() {
-    return CreateContextFeed(this._LogsContext.Consumer, this._LogsContext.Consumer);
+    return CreateContextFeed(
+      this._LogsContext.Consumer,
+      this._LogsContext.Consumer
+    );
   }
 
-  protected static _EntityContext = React.createContext({ });
-  protected static _DataContext   = React.createContext({ });
-  protected static _LogsContext   = React.createContext({ });
+  protected static _EntityContext = React.createContext({});
+  protected static _DataContext = React.createContext({});
+  protected static _LogsContext = React.createContext({});
 }
 
-class Reputation extends React.Component<RequiredProps>
-{
+class Reputation extends React.Component<RequiredProps> {
   public render() {
     const { address, children } = this.props;
 
     if (address !== undefined) {
       return (
         <Arc.Config>
-        {(arc: ArcConfig) => (
-          <ArcReputation address={address} arcConfig={arc}>
-          {children}
-          </ArcReputation>
-        )}
+          {(arc: ArcConfig) => (
+            <ArcReputation address={address} arcConfig={arc}>
+              {children}
+            </ArcReputation>
+          )}
         </Arc.Config>
       );
     } else {
       return (
         <Arc.Config>
-        <DAO.Data>
-        {(arc: ArcConfig, dao: DAOData) => (
-          <ArcReputation address={dao.reputation.address} arcConfig={arc}>
-          {children}
-          </ArcReputation>
-        )}
-        </DAO.Data>
+          <DAO.Data>
+            {(arc: ArcConfig, dao: DAOData) => (
+              <ArcReputation address={dao.reputation.address} arcConfig={arc}>
+                {children}
+              </ArcReputation>
+            )}
+          </DAO.Data>
         </Arc.Config>
       );
     }
@@ -116,5 +115,5 @@ export {
   Props as ReputationProps,
   Entity as ReputationEntity,
   Data as ReputationData,
-  ComponentLogs
+  ComponentLogs,
 };
