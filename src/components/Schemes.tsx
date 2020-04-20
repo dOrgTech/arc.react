@@ -1,24 +1,15 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import {
-  CProps,
-  ComponentList,
-  ComponentListProps
-} from "../runtime";
-import {
-  Arc as Protocol,
-  ArcConfig as ProtocolConfig
-} from "../protocol";
+import { CProps, ComponentList, ComponentListProps } from "../runtime";
+import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
 import {
   ArcScheme as Component,
   SchemeEntity as Entity,
-  SchemeData as Data
+  SchemeData as Data,
 } from "./";
-import {
-  ISchemeQueryOptions as FilterOptions
-} from "@daostack/client";
+import { ISchemeQueryOptions as FilterOptions } from "@daostack/client";
 
-interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> { }
+type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
 
 interface InferredProps {
   arcConfig: ProtocolConfig | undefined;
@@ -26,39 +17,42 @@ interface InferredProps {
 
 type Props = RequiredProps & InferredProps;
 
-class ArcSchemes extends ComponentList<Props, Component>
-{
+class ArcSchemes extends ComponentList<Props, Component> {
   createObservableEntities(): Observable<Entity[]> {
     const { arcConfig, filter } = this.props;
     if (!arcConfig) {
-      throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
+      throw Error(
+        "Arc Config Missing: Please provide this field as a prop, or use the inference component."
+      );
     }
     return Entity.search(arcConfig.connection, filter);
   }
 
-  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
+  renderComponent(
+    entity: Entity,
+    children: any
+  ): React.ComponentElement<CProps<Component>, any> {
     const { arcConfig } = this.props;
 
     return (
       <Component id={entity.id} arcConfig={arcConfig}>
-      {children}
+        {children}
       </Component>
     );
   }
 }
 
-class Schemes extends React.Component<RequiredProps>
-{
+class Schemes extends React.Component<RequiredProps> {
   render() {
     const { children, sort, filter } = this.props;
 
     return (
       <Protocol.Config>
-      {(arcConfig: ProtocolConfig) =>
-        <ArcSchemes arcConfig={arcConfig} sort={sort} filter={filter}>
-        {children}
-        </ArcSchemes>
-      }
+        {(arcConfig: ProtocolConfig) => (
+          <ArcSchemes arcConfig={arcConfig} sort={sort} filter={filter}>
+            {children}
+          </ArcSchemes>
+        )}
       </Protocol.Config>
     );
   }
@@ -66,7 +60,4 @@ class Schemes extends React.Component<RequiredProps>
 
 export default Schemes;
 
-export {
-  ArcSchemes,
-  Schemes
-};
+export { ArcSchemes, Schemes };

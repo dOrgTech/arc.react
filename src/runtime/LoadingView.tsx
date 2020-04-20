@@ -2,9 +2,8 @@ import * as React from "react";
 import Popup from "reactjs-popup";
 import { ComponentLogs, ComponentListLogs } from "../../src";
 import { Loader, RenderFunc } from "./Loader";
-
-const R = require("ramda");
-const Spinner = require("react-spinkit");
+import * as R from "ramda";
+import Spinner from "react-spinkit";
 
 interface Props {
   logs: ComponentLogs | ComponentListLogs;
