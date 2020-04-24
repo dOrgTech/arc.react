@@ -1,5 +1,14 @@
 import React from "react";
-import { Arc, DevArcConfig as arcConfig, DAO, DAOData, DAOs } from "../src";
+import {
+  Arc,
+  DevArcConfig as arcConfig,
+  DAO,
+  DAOData,
+  DAOs,
+  Members,
+  Member,
+  MemberData,
+} from "../src";
 import {
   render,
   screen,
@@ -57,5 +66,41 @@ describe("DAO List", () => {
     });
     const daos = await findAllByText(/DAO address:/);
     expect(daos.length).toBeGreaterThan(1);
+  });
+
+  it("List every DAO with their members", async () => {
+    class DAOListWithMembers extends React.Component {
+      render() {
+        return (
+          <Arc config={arcConfig}>
+            DAOS
+            <DAOs>
+              <DAO.Data>
+                {(dao: DAOData) => <div>{"DAO address: " + dao.id}</div>}
+              </DAO.Data>
+              <Members>
+                <Member.Data>
+                  {(member: MemberData) => (
+                    <div>{"Member address: " + member.address}</div>
+                  )}
+                </Member.Data>
+              </Members>
+            </DAOs>
+          </Arc>
+        );
+      }
+    }
+    const { findAllByText, queryAllByTestId, rerender } = render(
+      <DAOListWithMembers />
+    );
+    rerender(<DAOListWithMembers />);
+    await waitFor(() => findAllByText(/Member address:/), {
+      timeout: 3000,
+    });
+    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
+      timeout: 4000,
+    });
+    const members = await findAllByText(/Member address:/);
+    expect(members.length).toBeGreaterThan(1);
   });
 });
