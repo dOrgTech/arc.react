@@ -37,7 +37,7 @@ export default class LoadingView extends React.Component<Props> {
           ) : (
             <Popup
               trigger={
-                <div style={{ width: "30px" }}>
+                <div data-testid="default-loader" style={{ width: "30px" }}>
                   <Spinner name="double-bounce" />
                 </div>
               }

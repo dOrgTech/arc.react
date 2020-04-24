@@ -1,6 +1,11 @@
 import React from "react";
-import { Arc, DevArcConfig as arcConfig, VoteData, Vote } from "../src";
-import { render, screen } from "@testing-library/react";
+import { Arc, DevArcConfig as arcConfig, VoteData, Vote, Votes } from "../src";
+import {
+  render,
+  screen,
+  waitForElementToBeRemoved,
+  waitFor,
+} from "@testing-library/react";
 
 describe("Vote component ", () => {
   it("Shows vote id", async () => {
@@ -23,5 +28,36 @@ describe("Vote component ", () => {
         Vote id: ${voteId}
       </div>
     `);
+  });
+});
+
+describe("Vote List", () => {
+  class VoteList extends React.Component {
+    render() {
+      return (
+        <Arc config={arcConfig}>
+          Votes
+          <Votes>
+            <Vote.Data>
+              {(vote: VoteData) => <div>{"Vote id: " + vote.id}</div>}
+            </Vote.Data>
+          </Votes>
+        </Arc>
+      );
+    }
+  }
+
+  it("Show list of vote ", async () => {
+    const { findAllByText, queryAllByTestId, findByText } = render(
+      <VoteList />
+    );
+    await waitFor(() => findByText(/Vote id/), {
+      timeout: 3000,
+    });
+    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
+      timeout: 5000,
+    });
+    const votes = await findAllByText(/Vote id:/);
+    expect(votes.length).toBeGreaterThan(1);
   });
 });

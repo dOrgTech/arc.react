@@ -39,7 +39,7 @@ class ArcStakes extends ComponentList<Props, Component> {
     }
 
     return (
-      <Component id={entity.id} arcConfig={arcConfig}>
+      <Component key={entity.id} id={entity.id} arcConfig={arcConfig}>
         {children}
       </Component>
     );

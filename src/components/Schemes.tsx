@@ -35,7 +35,7 @@ class ArcSchemes extends ComponentList<Props, Component> {
     const { arcConfig } = this.props;
 
     return (
-      <Component id={entity.id} arcConfig={arcConfig}>
+      <Component key={entity.id} id={entity.id} arcConfig={arcConfig}>
         {children}
       </Component>
     );

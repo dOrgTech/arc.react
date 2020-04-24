@@ -4,9 +4,15 @@ import {
   DevArcConfig as arcConfig,
   ReputationData,
   Reputation,
+  Reputations,
   DAO,
 } from "../src";
-import { render, screen } from "@testing-library/react";
+import {
+  render,
+  screen,
+  waitForElementToBeRemoved,
+  waitFor,
+} from "@testing-library/react";
 
 describe("Reputation component ", () => {
   it("Shows reputation address", async () => {
@@ -55,5 +61,38 @@ describe("Reputation component ", () => {
         Reputation DAO address: ${daoAddress}
       </div>
     `);
+  });
+});
+
+describe("Reputation List", () => {
+  class ReputationList extends React.Component {
+    render() {
+      return (
+        <Arc config={arcConfig}>
+          Reputations
+          <Reputations>
+            <Reputation.Data>
+              {(reputation: ReputationData) => (
+                <div>{"Reputation address: " + reputation.address}</div>
+              )}
+            </Reputation.Data>
+          </Reputations>
+        </Arc>
+      );
+    }
+  }
+
+  it("Show list of reputation ", async () => {
+    const { findAllByText, queryAllByTestId, findByText } = render(
+      <ReputationList />
+    );
+    await waitFor(() => findByText(/Reputation address:/), {
+      timeout: 3000,
+    });
+    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
+      timeout: 4000,
+    });
+    const reputations = await findAllByText(/Reputation address:/);
+    expect(reputations.length).toBeGreaterThan(1);
   });
 });
