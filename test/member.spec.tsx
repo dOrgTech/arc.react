@@ -121,10 +121,10 @@ describe("Member List", () => {
       <MemberList />
     );
     await waitFor(() => findByText(/Member address:/), {
-      timeout: 3000,
+      timeout: 8000,
     });
     await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
-      timeout: 4000,
+      timeout: 8000,
     });
     const members = await findAllByText(/Member address:/);
     expect(members.length).toBeGreaterThan(1);

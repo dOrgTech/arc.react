@@ -9,7 +9,7 @@
     "start:subgraph": "concurrently \"npm:start:graphnode\"",
     "start:graphnode": "docker-compose -f ./node_modules/@daostack/client/docker-compose.yml up graph-node",
     "stop:graphnode": "docker-compose -f ./node_modules/@daostack/client/docker-compose.yml down -v",
-    "test": "jest --forceExit",
+    "test": "jest --forceExit --runInBand",
     "lint": "eslint --quiet src/**/*.tsx test/**/*.tsx",
     "build": "tsc",
     "build:release": "rm -rf ./dist && tsc && rm -rf ./dist/storybook",

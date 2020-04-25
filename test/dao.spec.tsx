@@ -59,22 +59,22 @@ describe("DAO List", () => {
   it("Show list of DAOS ", async () => {
     const { findAllByText, queryAllByTestId, findByText } = render(<DAOList />);
     await waitFor(() => findByText(/DAO address:/), {
-      timeout: 3000,
+      timeout: 8000,
     });
     await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
-      timeout: 4000,
+      timeout: 8000,
     });
     const daos = await findAllByText(/DAO address:/);
     expect(daos.length).toBeGreaterThan(1);
   });
 
-  it("List every DAO with their members", async () => {
-    class DAOListWithMembers extends React.Component {
+  it("List DAO with members", async () => {
+    class DAOWithMembers extends React.Component {
       render() {
         return (
           <Arc config={arcConfig}>
             DAOS
-            <DAOs>
+            <DAO address={daoAddress}>
               <DAO.Data>
                 {(dao: DAOData) => <div>{"DAO address: " + dao.id}</div>}
               </DAO.Data>
@@ -85,20 +85,19 @@ describe("DAO List", () => {
                   )}
                 </Member.Data>
               </Members>
-            </DAOs>
+            </DAO>
           </Arc>
         );
       }
     }
-    const { findAllByText, queryAllByTestId, rerender } = render(
-      <DAOListWithMembers />
+    const { findAllByText, queryAllByTestId, findByText } = render(
+      <DAOWithMembers />
     );
-    rerender(<DAOListWithMembers />);
-    await waitFor(() => findAllByText(/Member address:/), {
-      timeout: 3000,
+    await waitFor(() => findByText(/Member address:/), {
+      timeout: 8000,
     });
     await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
-      timeout: 4000,
+      timeout: 8000,
     });
     const members = await findAllByText(/Member address:/);
     expect(members.length).toBeGreaterThan(1);

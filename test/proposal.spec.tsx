@@ -66,10 +66,10 @@ describe("Proposal List", () => {
       <ProposalList />
     );
     await waitFor(() => findByText(/Proposal id/), {
-      timeout: 3000,
+      timeout: 8000,
     });
     await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
-      timeout: 4000,
+      timeout: 8000,
     });
     const proposals = await findAllByText(/Proposal id:/);
     expect(proposals.length).toBeGreaterThan(1);

@@ -58,10 +58,10 @@ describe("Stake List", () => {
       <StakeList />
     );
     await waitFor(() => findByText(/Stake id:/), {
-      timeout: 3000,
+      timeout: 8000,
     });
     await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
-      timeout: 4000,
+      timeout: 8000,
     });
     const stakes = await findAllByText(/Stake id:/);
     expect(stakes.length).toBeGreaterThan(1);

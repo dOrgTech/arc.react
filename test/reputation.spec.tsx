@@ -87,10 +87,10 @@ describe("Reputation List", () => {
       <ReputationList />
     );
     await waitFor(() => findByText(/Reputation address:/), {
-      timeout: 3000,
+      timeout: 8000,
     });
     await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
-      timeout: 4000,
+      timeout: 8000,
     });
     const reputations = await findAllByText(/Reputation address:/);
     expect(reputations.length).toBeGreaterThan(1);

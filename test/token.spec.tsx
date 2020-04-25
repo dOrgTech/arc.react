@@ -86,11 +86,11 @@ describe("Token List", () => {
     const { findAllByText, queryAllByTestId, findByText } = render(
       <TokenList />
     );
-    await waitFor(() => findByText(/Token address:/), {
-      timeout: 3000,
+    await waitFor(() => findByText(/Token address/), {
+      timeout: 8000,
     });
     await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
-      timeout: 4000,
+      timeout: 8000,
     });
     const tokens = await findAllByText(/Token address:/);
     expect(tokens.length).toBeGreaterThan(1);

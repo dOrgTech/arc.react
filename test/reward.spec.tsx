@@ -58,10 +58,10 @@ describe("Reward List", () => {
       <RewardList />
     );
     await waitFor(() => findByText(/Reward id:/), {
-      timeout: 3000,
+      timeout: 8000,
     });
     await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
-      timeout: 5000,
+      timeout: 8000,
     });
     const rewards = await findAllByText(/Reward id:/);
     expect(rewards.length).toBeGreaterThan(1);

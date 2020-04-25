@@ -52,10 +52,10 @@ describe("Vote List", () => {
       <VoteList />
     );
     await waitFor(() => findByText(/Vote id/), {
-      timeout: 3000,
+      timeout: 8000,
     });
     await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
-      timeout: 5000,
+      timeout: 8000,
     });
     const votes = await findAllByText(/Vote id:/);
     expect(votes.length).toBeGreaterThan(1);

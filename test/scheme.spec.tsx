@@ -58,10 +58,10 @@ describe("Scheme List", () => {
       <SchemeList />
     );
     await waitFor(() => findByText(/Scheme id:/), {
-      timeout: 3000,
+      timeout: 8000,
     });
     await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
-      timeout: 5000,
+      timeout: 8000,
     });
     const schemes = await findAllByText(/Scheme id:/);
     expect(schemes.length).toBeGreaterThan(1);
