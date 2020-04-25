@@ -9,3 +9,4 @@ script:
   - sleep 5 #making sure the graph is up and running
   - yarn test
   - yarn lint
+  - yarn build:release && yarn package:release
