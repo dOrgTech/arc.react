@@ -53,7 +53,7 @@ interface State<Entity, Data> {
   sorted: EntityList<Entity, Data>;
 
   // Diagnostics for the component
-  // TODO: logs aren't consumable, expose through a context?
+  // TODO: logs aren't consumable, expose through a context
   logs: ComponentListLogs;
 }
 
@@ -70,6 +70,10 @@ export abstract class ComponentList<
     children: any
   ): React.ComponentElement<CProps<Comp>, any>;
 
+  // See here for more information on the React.Context pattern:
+  // https://reactjs.org/docs/context.html
+  protected static _LogsContext: React.Context<{}>;
+
   private observableEntities = memoize(
     // This will only run when the function's arguments have changed :D
     // allowing us to only recreated/refetch the entity data when the props or arc context have changed.
@@ -79,6 +83,12 @@ export abstract class ComponentList<
 
   // Our graphql query's subscriber object
   private _subscription?: Subscription;
+
+  // This trick allows us to access the static objects
+  // defined in the derived class. See this code sample:
+  // https://github.com/Microsoft/TypeScript/issues/5989#issuecomment-163066313
+  // @ts-ignore: This should always be there
+  "constructor": typeof ComponentList;
 
   constructor(props: Props) {
     super(props);
@@ -95,26 +105,32 @@ export abstract class ComponentList<
   }
 
   public render() {
+    const LogsProvider = this.constructor._LogsContext.Provider;
+
     const { children } = this.props;
     const { entities, sorted, logs } = this.state;
     this.observableEntities(this.props);
 
     logs.reactRendered();
 
-    if (typeof children === "function") {
-      return children(entities);
-    } else {
-      if (entities) {
-        if (sorted.length > 0)
-          return sorted.map((item) =>
-            this.renderComponent(item.entity, children)
-          );
-        else
-          return entities.map((entity) =>
-            this.renderComponent(entity, children)
-          );
-      } else return <LoadingView logs={logs} />;
-    }
+    const renderChildren = () => {
+      if (typeof children === "function") {
+        return children(entities);
+      } else {
+        if (entities) {
+          if (sorted.length > 0)
+            return sorted.map((item) =>
+              this.renderComponent(item.entity, children)
+            );
+          else
+            return entities.map((entity) =>
+              this.renderComponent(entity, children)
+            );
+        } else return <LoadingView logs={logs} />;
+      }
+    };
+
+    return <LogsProvider value={logs}>{renderChildren()}</LogsProvider>;
   }
 
   public async componentWillMount() {

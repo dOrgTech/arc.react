@@ -1,18 +1,21 @@
 import * as React from "react";
-import { CreateContextFeed } from "./ContextFeed";
 import { ProtocolConfig } from "./ProtocolConfig";
 export { ProtocolConfig };
 
 interface Props<Config extends ProtocolConfig> {
-  config: Config
+  config: Config;
+}
+
+interface State {
+  // Diagnostics for the component
+  logs: ProtocolLogs;
 }
 
 export abstract class Protocol<
   Config extends ProtocolConfig
-> extends React.Component<Props<Config>>
-{
+> extends React.Component<Props<Config>> {
   // Complete any asynchronous initialization work needed by the ProtocolConfig
-  protected async initialize() { }
+  protected async initialize() {}
 
   protected static _ConfigContext: React.Context<{}>;
 
@@ -29,9 +32,9 @@ export abstract class Protocol<
 
     return (
       <ConfigProvider value={config.isInitialized ? config : undefined}>
-      {children}
+        {children}
       </ConfigProvider>
-    )
+    );
   }
 
   public async componentDidMount() {
