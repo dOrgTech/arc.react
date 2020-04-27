@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Arc,
-  DevArcConfig as arcConfig,
-  DAO,
-  Loader,
-  RenderProps,
-  DAOData,
-} from "../src";
+import { Arc, getConfig, DAO, Loader, RenderProps, DAOData } from "../src";
 import { render, screen } from "@testing-library/react";
 
 describe("Custom loader ", () => {
@@ -22,7 +15,7 @@ describe("Custom loader ", () => {
           </div>
         )}
       >
-        <Arc config={arcConfig}>
+        <Arc config={getConfig("private")}>
           <DAO address={daoAddress}>
             <DAO.Data>
               {(dao: DAOData) => <div>{"DAO address: " + dao.id}</div>}
