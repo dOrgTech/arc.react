@@ -1,5 +1,6 @@
 import * as React from "react";
 import { ProtocolConfig } from "./ProtocolConfig";
+import { ProtocolLogs } from "./logging/ProtocolLogs";
 export { ProtocolConfig };
 
 interface Props<Config extends ProtocolConfig> {
@@ -13,11 +14,18 @@ interface State {
 
 export abstract class Protocol<
   Config extends ProtocolConfig
-> extends React.Component<Props<Config>> {
+> extends React.Component<Props<Config>, State> {
+  constructor(props: Props<Config>) {
+    super(props);
+    this.state = {
+      logs: new ProtocolLogs(),
+    };
+  }
   // Complete any asynchronous initialization work needed by the ProtocolConfig
   protected async initialize() {}
 
   protected static _ConfigContext: React.Context<{}>;
+  protected static _LogsContext: React.Context<{}>;
 
   // This trick allows us to access the static objects
   // defined in the derived class. See this code sample:
@@ -27,18 +35,26 @@ export abstract class Protocol<
 
   public render() {
     const ConfigProvider = this.constructor._ConfigContext.Provider as any;
-
+    const LogsProvider = this.constructor._LogsContext.Provider;
+    const { logs } = this.state;
     const { config, children } = this.props;
-
+    console.log(logs);
     return (
       <ConfigProvider value={config.isInitialized ? config : undefined}>
-        {children}
+        <LogsProvider value={logs}>{children}</LogsProvider>
       </ConfigProvider>
     );
   }
 
   public async componentDidMount() {
-    await this.initialize();
-    this.forceUpdate();
+    try {
+      await this.initialize();
+      this.forceUpdate();
+    } catch (e) {
+      console.log(e);
+      this.setState({
+        logs: e,
+      });
+    }
   }
 }
