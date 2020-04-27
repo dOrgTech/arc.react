@@ -2,7 +2,7 @@ import * as React from "react";
 import { storiesOf } from "@storybook/react";
 import {
   Arc,
-  DevArcConfig as arcConfig,
+  getConfig,
   DAOs,
   DAO,
   DAOData,
@@ -43,7 +43,7 @@ export default () =>
         ComponentList={DAOs}
         Component={DAO}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>{props.children}</Arc>
+          <Arc config={getConfig("private")}>{props.children}</Arc>
         )}
         propEditors={[]}
         getId={(dao: DAOData) => `DAO: ${dao.address}`}
@@ -55,7 +55,7 @@ export default () =>
         ComponentList={Members}
         Component={Member}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>
+          <Arc config={getConfig("private")}>
             <DAO address={props.dao}>{props.children}</DAO>
           </Arc>
         )}
@@ -82,7 +82,7 @@ export default () =>
         ComponentList={Proposals}
         Component={Proposal}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>
+          <Arc config={getConfig("private")}>
             <DAO address={props.dao}>{props.children}</DAO>
           </Arc>
         )}
@@ -126,7 +126,7 @@ export default () =>
         ComponentList={Reputations}
         Component={Reputation}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>{props.children}</Arc>
+          <Arc config={getConfig("private")}>{props.children}</Arc>
         )}
         propEditors={[]}
         getId={(reputation: ReputationData) =>
@@ -140,7 +140,7 @@ export default () =>
         ComponentList={Rewards}
         Component={Reward}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>{props.children}</Arc>
+          <Arc config={getConfig("private")}>{props.children}</Arc>
         )}
         propEditors={[]}
         getId={(reward: RewardData) => `Reward: ${reward.id}`}
@@ -152,7 +152,7 @@ export default () =>
         ComponentList={Schemes}
         Component={Scheme}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>{props.children}</Arc>
+          <Arc config={getConfig("private")}>{props.children}</Arc>
         )}
         propEditors={[]}
         getId={(scheme: SchemeData) => `Scheme (${scheme.name}): ${scheme.id}`}
@@ -164,7 +164,7 @@ export default () =>
         ComponentList={Stakes}
         Component={Stake}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>{props.children}</Arc>
+          <Arc config={getConfig("private")}>{props.children}</Arc>
         )}
         propEditors={[]}
         getId={(stake: StakeData) => `Stake: ${stake.id}`}
@@ -176,7 +176,7 @@ export default () =>
         ComponentList={Tokens}
         Component={Token}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>{props.children}</Arc>
+          <Arc config={getConfig("private")}>{props.children}</Arc>
         )}
         propEditors={[]}
         getId={(token: TokenData) =>
@@ -190,7 +190,7 @@ export default () =>
         ComponentList={Votes}
         Component={Vote}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>{props.children}</Arc>
+          <Arc config={getConfig("private")}>{props.children}</Arc>
         )}
         propEditors={[]}
         getId={(vote: VoteData) => `Vote: ${vote.id}`}
@@ -211,7 +211,7 @@ export default () =>
               </div>
             )}
           >
-            <Arc config={arcConfig}>{props.children}</Arc>
+            <Arc config={getConfig("private")}>{props.children}</Arc>
           </Loader>
         )}
         propEditors={[]}

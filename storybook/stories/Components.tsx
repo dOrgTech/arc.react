@@ -3,7 +3,7 @@ import { storiesOf } from "@storybook/react";
 import ComponentView, { PropertyType } from "../helpers/ComponentView";
 import {
   Arc,
-  DevArcConfig as arcConfig,
+  getConfig,
   DAO,
   Member,
   Proposal,
@@ -24,7 +24,7 @@ export default () =>
         name={"DAO"}
         Component={DAO}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>{props.children}</Arc>
+          <Arc config={getConfig("private")}>{props.children}</Arc>
         )}
         // TODO: add helper button to "Get DAO Addresses"
         propEditors={[
@@ -51,7 +51,7 @@ export default () =>
               </div>
             )}
           >
-            <Arc config={arcConfig}>{props.children}</Arc>
+            <Arc config={getConfig("private")}>{props.children}</Arc>
           </Loader>
         )}
         // TODO: add helper button to "Get DAO Addresses"
@@ -70,7 +70,7 @@ export default () =>
         name={"Member"}
         Component={Member}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>
+          <Arc config={getConfig("private")}>
             <DAO address={props.dao}>{props.children}</DAO>
           </Arc>
         )}
@@ -95,7 +95,7 @@ export default () =>
         name={"Proposal"}
         Component={Proposal}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>
+          <Arc config={getConfig("private")}>
             <DAO address={props.dao}>{props.children}</DAO>
           </Arc>
         )}
@@ -115,7 +115,7 @@ export default () =>
         name={"Reputation"}
         Component={Reputation}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>{props.children}</Arc>
+          <Arc config={getConfig("private")}>{props.children}</Arc>
         )}
         propEditors={[
           {
@@ -132,7 +132,7 @@ export default () =>
         name={"Reputation"}
         Component={Reputation}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>
+          <Arc config={getConfig("private")}>
             <DAO address={props.dao}>{props.children}</DAO>
           </Arc>
         )}
@@ -151,7 +151,7 @@ export default () =>
         name={"Reward"}
         Component={Reward}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>{props.children}</Arc>
+          <Arc config={getConfig("private")}>{props.children}</Arc>
         )}
         propEditors={[
           {
@@ -169,7 +169,7 @@ export default () =>
         name={"Scheme"}
         Component={Scheme}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>{props.children}</Arc>
+          <Arc config={getConfig("private")}>{props.children}</Arc>
         )}
         propEditors={[
           {
@@ -187,7 +187,7 @@ export default () =>
         name={"Stake"}
         Component={Stake}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>{props.children}</Arc>
+          <Arc config={getConfig("private")}>{props.children}</Arc>
         )}
         propEditors={[
           {
@@ -205,7 +205,7 @@ export default () =>
         name={"Token"}
         Component={Token}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>{props.children}</Arc>
+          <Arc config={getConfig("private")}>{props.children}</Arc>
         )}
         propEditors={[
           {
@@ -222,7 +222,7 @@ export default () =>
         name={"Token"}
         Component={Token}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>
+          <Arc config={getConfig("private")}>
             <DAO address={props.dao}>{props.children}</DAO>
           </Arc>
         )}
@@ -241,7 +241,7 @@ export default () =>
         name={"Vote"}
         Component={Vote}
         RequiredContext={(props) => (
-          <Arc config={arcConfig}>{props.children}</Arc>
+          <Arc config={getConfig("private")}>{props.children}</Arc>
         )}
         propEditors={[
           {
