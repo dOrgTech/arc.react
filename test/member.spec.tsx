@@ -5,7 +5,9 @@ import {
   DAO,
   MemberData,
   Member,
+  DAOMember,
   DAOData,
+  DAOEntity,
   Members,
 } from "../src";
 import {
@@ -54,16 +56,15 @@ describe("Member component ", () => {
     `);
   });
 
-  /* 
-  This doesn't works because Member component just accept the members address
-  props, so this might change (?)
-
   it("Shows member and dao address without inferred props", async () => {
     const daoAddress = "0xe7a2c59e134ee81d4035ae6db2254f79308e334f";
     const memberAddress = "0xe11ba2b4d45eaed5996cd0823791e0c93114882d";
     const { container } = render(
       <Arc config={arcConfig}>
-        <Member address={memberAddress} daoAddress={daoAddress}>
+        <DAOMember
+          address={memberAddress}
+          dao={new DAOEntity(daoAddress, arcConfig.connection)}
+        >
           <DAO.Data>
             <Member.Data>
               {(dao: DAOData, member: MemberData) => (
@@ -74,7 +75,7 @@ describe("Member component ", () => {
               )}
             </Member.Data>
           </DAO.Data>
-        </Member>
+        </DAOMember>
       </Arc>
     );
 
@@ -92,8 +93,7 @@ describe("Member component ", () => {
         </div>
       </div>
     `);
-  }); 
-  */
+  });
 });
 
 describe("Member List", () => {
