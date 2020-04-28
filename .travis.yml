@@ -6,5 +6,9 @@ before_script:
   - yarn
 script:
   - docker-compose -f ./node_modules/@daostack/client/docker-compose.yml up -d graph-node
-  - sleep 5 #making sure the graph is up and running
+  - sleep 20 #making sure the graph is up and running
   - yarn test
+  - yarn lint
+  - yarn build:release && yarn package:release
+after_success:
+  - codecov

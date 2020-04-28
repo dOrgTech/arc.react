@@ -117,7 +117,7 @@ export abstract class ComponentList<
     }
   }
 
-  public async componentWillMount() {
+  public async UNSAFE_componentWillMount() {
     // prefetch the entities
     this.observableEntities(this.props);
   }
