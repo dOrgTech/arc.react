@@ -65,16 +65,14 @@ describe("Member component ", () => {
           address={memberAddress}
           dao={new DAOEntity(daoAddress, arcConfig.connection)}
         >
-          <DAO.Data>
-            <Member.Data>
-              {(dao: DAOData, member: MemberData) => (
-                <>
-                  <div>{"Member address: " + member.address}</div>
-                  <div>{"DAO address: " + dao.id}</div>
-                </>
-              )}
-            </Member.Data>
-          </DAO.Data>
+          <Member.Data>
+            {(member: MemberData) => (
+              <>
+                <div>{"Member address: " + member.address}</div>
+                <div>{"DAO address: " + member.dao}</div>
+              </>
+            )}
+          </Member.Data>
         </DAOMember>
       </Arc>
     );
