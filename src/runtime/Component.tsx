@@ -79,7 +79,6 @@ export abstract class Component<
     const entity = this._initialized ? this.entity(this.props) : undefined;
 
     logs.reactRendered();
-    console.log("componenet", logs);
     return (
       <>
         <EntityProvider value={entity}>

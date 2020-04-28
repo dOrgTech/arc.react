@@ -11,7 +11,6 @@ export interface Props extends React.PropsWithChildren<{}> {
 
 class ContextFeed extends React.Component<Props> {
   constructor(props: Props) {
-    console.log(props);
     super(props);
   }
 

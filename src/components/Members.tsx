@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Observable } from "rxjs";
+import { Observable, throwError } from "rxjs";
 import { CProps, ComponentList, ComponentListProps } from "../runtime";
 import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
 import { CreateContextFeed } from "../runtime/ContextFeed";
@@ -18,31 +18,45 @@ import { IMemberQueryOptions as FilterOptions } from "@daostack/client";
 interface RequiredProps
   extends ComponentListProps<Entity, Data, FilterOptions> {
   allDAOs?: boolean;
+  inferred: boolean;
 }
 
 interface ArcInferredProps {
-  arcConfig: ProtocolConfig | undefined;
+  arcConfig?: ProtocolConfig | undefined;
 }
 
 interface DAOInferredProps {
-  dao: InferEntity | undefined;
+  dao?: InferEntity | undefined;
 }
 
-type ArcProps = RequiredProps & ArcInferredProps;
-type DAOProps = RequiredProps & DAOInferredProps;
+type ArcProps = RequiredProps & ArcInferredProps & DAOInferredProps;
 
 class ArcMembers extends ComponentList<ArcProps, Component> {
   createObservableEntities(): Observable<Entity[]> {
-    const { arcConfig, filter } = this.props;
-    if (!arcConfig) {
-      throw Error(
-        "Arc Config Missing: Please provide this field as a prop, or use the inference component."
-      );
+    const { arcConfig, filter, dao, inferred } = this.props;
+    if (inferred) {
+      if (!dao) {
+        throw Error(
+          "DAO Entity Missing: Please provide this field as a prop, or use the inference component."
+        );
+      }
+
+      const daoFilter: FilterOptions = filter ? filter : { where: {} };
+      if (!daoFilter.where) {
+        daoFilter.where = {};
+      }
+      daoFilter.where.dao = dao.id;
+
+      return Entity.search(dao.context, daoFilter);
+    } else {
+      if (!arcConfig) {
+        throw new Error(
+          "Arc Config Missing: Please provide this field as a prop, or use the inference component."
+        );
+      }
+      return Entity.search(arcConfig.connection, filter);
     }
-
-    return Entity.search(arcConfig.connection, filter);
   }
-
   renderComponent(
     entity: Entity,
     children: any
@@ -58,44 +72,10 @@ class ArcMembers extends ComponentList<ArcProps, Component> {
     );
   }
 
-  protected static _LogsContext = React.createContext({});
-  public static get Logs() {
+  public static get Entity() {
     return CreateContextFeed(
-      this._LogsContext.Consumer,
+      this._EntityContext.Consumer,
       this._LogsContext.Consumer
-    );
-  }
-}
-
-class DAOMembers extends ComponentList<DAOProps, Component> {
-  // TODO: remove this when filters are added
-  // also rename all instances of "Arc" to protocol?
-  createObservableEntities(): Observable<Entity[]> {
-    const { dao, filter } = this.props;
-    if (!dao) {
-      throw Error(
-        "DAO Entity Missing: Please provide this field as a prop, or use the inference component."
-      );
-    }
-
-    const daoFilter: FilterOptions = filter ? filter : { where: {} };
-    if (!daoFilter.where) {
-      daoFilter.where = {};
-    }
-    daoFilter.where.dao = dao.id;
-
-    return Entity.search(dao.context, daoFilter);
-  }
-
-  renderComponent(
-    entity: Entity,
-    children: any
-  ): React.ComponentElement<CProps<Component>, any> {
-    const { dao } = this.props;
-    return (
-      <Component address={entity.staticState!.address as string} dao={dao}>
-        {children}
-      </Component>
     );
   }
 
@@ -106,6 +86,7 @@ class DAOMembers extends ComponentList<DAOProps, Component> {
     );
   }
   protected static _LogsContext = React.createContext({});
+  protected static _EntityContext = React.createContext({});
 }
 
 class Members extends React.Component<RequiredProps> {
@@ -116,7 +97,12 @@ class Members extends React.Component<RequiredProps> {
       return (
         <Protocol.Config>
           {(arcConfig: ProtocolConfig) => (
-            <ArcMembers arcConfig={undefined} sort={sort} filter={filter}>
+            <ArcMembers
+              inferred={false}
+              arcConfig={arcConfig}
+              sort={sort}
+              filter={filter}
+            >
               {children}
             </ArcMembers>
           )}
@@ -126,9 +112,9 @@ class Members extends React.Component<RequiredProps> {
       return (
         <InferComponent.Entity>
           {(dao: InferEntity) => (
-            <DAOMembers dao={dao} sort={sort} filter={filter}>
+            <ArcMembers inferred={true} dao={dao} sort={sort} filter={filter}>
               {children}
-            </DAOMembers>
+            </ArcMembers>
           )}
         </InferComponent.Entity>
       );
@@ -137,8 +123,12 @@ class Members extends React.Component<RequiredProps> {
   public static get Logs() {
     return ArcMembers.Logs;
   }
+
+  public static get Entity() {
+    return ArcMembers.Entity;
+  }
 }
 
 export default Members;
 
-export { ArcMembers, DAOMembers, Members };
+export { ArcMembers, Members };
