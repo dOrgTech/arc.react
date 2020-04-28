@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Observable, throwError } from "rxjs";
+import { Observable } from "rxjs";
 import { CProps, ComponentList, ComponentListProps } from "../runtime";
 import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
 import { CreateContextFeed } from "../runtime/ContextFeed";

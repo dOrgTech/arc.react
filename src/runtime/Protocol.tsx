@@ -55,7 +55,7 @@ export abstract class Protocol<
         ...e,
         message: "No connection to the graph - did you set the right network?",
       };
-      logs.arcError(error);
+      logs.initialiseError(error);
       this.setState({
         logs: logs.clone(),
       });

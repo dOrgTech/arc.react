@@ -13,7 +13,7 @@ export class ProtocolLogs {
 
   private _config?: ConfigLogs;
 
-  public arcError(error: Error) {
+  public initialiseError(error: Error) {
     if (!LoggingConfig.Current.enabled) return;
     this.getConfig.connectionFailed(error);
   }
