@@ -57,6 +57,7 @@ class ArcMembers extends ComponentList<ArcProps, Component> {
       return Entity.search(arcConfig.connection, filter);
     }
   }
+
   renderComponent(
     entity: Entity,
     children: any
@@ -72,9 +73,9 @@ class ArcMembers extends ComponentList<ArcProps, Component> {
     );
   }
 
-  public static get Entity() {
+  public static get Entities() {
     return CreateContextFeed(
-      this._EntityContext.Consumer,
+      this._EntitiesContext.Consumer,
       this._LogsContext.Consumer
     );
   }
@@ -85,8 +86,9 @@ class ArcMembers extends ComponentList<ArcProps, Component> {
       this._LogsContext.Consumer
     );
   }
+
+  protected static _EntitiesContext = React.createContext({});
   protected static _LogsContext = React.createContext({});
-  protected static _EntityContext = React.createContext({});
 }
 
 class Members extends React.Component<RequiredProps> {
@@ -120,12 +122,13 @@ class Members extends React.Component<RequiredProps> {
       );
     }
   }
-  public static get Logs() {
-    return ArcMembers.Logs;
+
+  public static get Entities() {
+    return ArcMembers.Entities;
   }
 
-  public static get Entity() {
-    return ArcMembers.Entity;
+  public static get Logs() {
+    return ArcMembers.Logs;
   }
 }
 

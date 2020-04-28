@@ -53,7 +53,6 @@ interface State<Entity, Data> {
   sorted: EntityList<Entity, Data>;
 
   // Diagnostics for the component
-  // TODO: logs aren't consumable, expose through a context
   logs: ComponentListLogs;
 }
 
@@ -72,8 +71,8 @@ export abstract class ComponentList<
 
   // See here for more information on the React.Context pattern:
   // https://reactjs.org/docs/context.html
+  protected static _EntitiesContext: React.Context<{}>;
   protected static _LogsContext: React.Context<{}>;
-  protected static _EntityContext: React.Context<{}>;
 
   private observableEntities = memoize(
     // This will only run when the function's arguments have changed :D
@@ -107,30 +106,32 @@ export abstract class ComponentList<
 
   public render() {
     const LogsProvider = this.constructor._LogsContext.Provider;
-    const EntityProvider = this.constructor._EntityContext.Provider;
+    const EntitiesProvider = this.constructor._EntitiesContext.Provider;
 
     const { children } = this.props;
-    const { entities, sorted, logs } = this.state;
+    const { entities: unsorted, sorted, logs } = this.state;
+    let entities = unsorted;
+
+    if (sorted.length > 0) {
+      entities = sorted.map((item) => item.entity);
+    }
+
     this.observableEntities(this.props);
     logs.reactRendered();
     return (
-      <EntityProvider value={entities}>
+      <EntitiesProvider value={entities}>
         <LogsProvider value={logs}>
           {typeof children === "function" ? (
             children(entities)
           ) : logs.entity?.error ? (
             <LoadingView logs={logs} />
           ) : entities ? (
-            sorted.length > 0 ? (
-              sorted.map((item) => this.renderComponent(item.entity, children))
-            ) : (
-              entities.map((entity) => this.renderComponent(entity, children))
-            )
+            entities.map((entity) => this.renderComponent(entity, children))
           ) : (
             <LoadingView logs={logs} />
           )}
         </LogsProvider>
-      </EntityProvider>
+      </EntitiesProvider>
     );
   }
 
