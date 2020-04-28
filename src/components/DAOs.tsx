@@ -31,7 +31,7 @@ class ArcDAOs extends ComponentList<Props, Component> {
     children: any
   ): React.ComponentElement<CProps<Component>, any> {
     const { arcConfig } = this.props;
-
+    console.log(entity.id);
     return (
       <Component address={entity.id} arcConfig={arcConfig}>
         {children}
@@ -63,8 +63,8 @@ class DAOs extends React.Component<RequiredProps> {
 
     return (
       <Protocol.Config>
-        {(arcConfig: ProtocolConfig) => (
-          <ArcDAOs arcConfig={arcConfig} sort={sort} filter={filter}>
+        {(arc: ProtocolConfig) => (
+          <ArcDAOs arcConfig={arc} sort={sort} filter={filter}>
             {children}
           </ArcDAOs>
         )}
@@ -80,7 +80,5 @@ class DAOs extends React.Component<RequiredProps> {
     return ArcDAOs.Logs;
   }
 }
-
-export default DAOs;
 
 export { ArcDAOs, DAOs };

@@ -78,7 +78,7 @@ class ContextFeed extends React.Component<Props> {
     // so we'll inject them with our _consumers
     if (children["length"]) {
       const childrenArray = children as Array<any>;
-      const newChildren = new Array();
+      const newChildren = [];
 
       for (const child of childrenArray) {
         newChildren.push(
