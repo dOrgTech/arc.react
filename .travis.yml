@@ -5,7 +5,7 @@ services:
 before_script:
   - yarn
 script:
-  - yarn start:graphnode &
+  - docker-compose -f ./node_modules/@daostack/client/docker-compose.yml up -d graph-node
   - sleep 20 #making sure the graph is up and running
   - ./script/wait-for-subgraph.sh
   - yarn test
