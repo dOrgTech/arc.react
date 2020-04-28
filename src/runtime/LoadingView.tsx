@@ -16,7 +16,6 @@ export default class LoadingView extends React.Component<Props> {
   private findErrorKeys = (value: any, key: any) => {
     if (value && value["_error"]) {
       const error = value["_error"].message;
-
       // make sure the error isn't a duplicate
       const found = this.errors.indexOf(error) > -1;
 

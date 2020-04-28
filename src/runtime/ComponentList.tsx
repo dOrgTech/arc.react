@@ -112,8 +112,9 @@ export abstract class ComponentList<
     this.observableEntities(this.props);
 
     logs.reactRendered();
-
+    console.log(typeof children);
     const renderChildren = () => {
+      console.log("component list", logs);
       if (typeof children === "function") {
         return children(entities);
       } else {

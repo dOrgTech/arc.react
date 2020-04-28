@@ -38,6 +38,14 @@ class ArcDAOs extends ComponentList<Props, Component> {
       </Component>
     );
   }
+  public static get Logs() {
+    return CreateContextFeed(
+      this._LogsContext.Consumer,
+      this._LogsContext.Consumer
+    );
+  }
+
+  protected static _LogsContext = React.createContext({});
 }
 
 class DAOs extends React.Component<RequiredProps> {
@@ -56,13 +64,8 @@ class DAOs extends React.Component<RequiredProps> {
   }
 
   public static get Logs() {
-    return CreateContextFeed(
-      this._LogsContext.Consumer,
-      this._LogsContext.Consumer
-    );
+    return ArcDAOs.Logs;
   }
-
-  protected static _LogsContext = React.createContext({});
 }
 
 export default DAOs;

@@ -5,16 +5,14 @@ import { CreateContextFeed } from "../runtime/ContextFeed";
 
 export class Arc extends Protocol<ArcConfig> {
   protected async initialize() {
-    try {
-      await this.props.config.initialize();
-    } catch (e) {
-      this.state.logs.arcError(e);
-      throw new Error(e.message);
-    }
+    await this.props.config.initialize();
   }
 
   public static get Config() {
-    return CreateContextFeed(this._ConfigContext.Consumer, undefined);
+    return CreateContextFeed(
+      this._ConfigContext.Consumer,
+      this._LogsContext.Consumer
+    );
   }
 
   public static get Logs() {

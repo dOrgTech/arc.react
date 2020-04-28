@@ -15,17 +15,17 @@ interface State {
 export abstract class Protocol<
   Config extends ProtocolConfig
 > extends React.Component<Props<Config>, State> {
+  // Complete any asynchronous initialization work needed by the ProtocolConfig
+  protected async initialize() {}
+  protected static _ConfigContext: React.Context<{}>;
+  protected static _LogsContext: React.Context<{}>;
+
   constructor(props: Props<Config>) {
     super(props);
     this.state = {
       logs: new ProtocolLogs(),
     };
   }
-  // Complete any asynchronous initialization work needed by the ProtocolConfig
-  protected async initialize() {}
-
-  protected static _ConfigContext: React.Context<{}>;
-  protected static _LogsContext: React.Context<{}>;
 
   // This trick allows us to access the static objects
   // defined in the derived class. See this code sample:
@@ -38,7 +38,6 @@ export abstract class Protocol<
     const LogsProvider = this.constructor._LogsContext.Provider;
     const { logs } = this.state;
     const { config, children } = this.props;
-    console.log(logs);
     return (
       <ConfigProvider value={config.isInitialized ? config : undefined}>
         <LogsProvider value={logs}>{children}</LogsProvider>
@@ -47,13 +46,18 @@ export abstract class Protocol<
   }
 
   public async componentDidMount() {
+    const { logs } = this.state;
     try {
       await this.initialize();
       this.forceUpdate();
     } catch (e) {
-      console.log(e);
+      const error: Error = {
+        ...e,
+        message: "No connection to the graph - did you set the right network?",
+      };
+      logs.arcError(error);
       this.setState({
-        logs: e,
+        logs: logs.clone(),
       });
     }
   }

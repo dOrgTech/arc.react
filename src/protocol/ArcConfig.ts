@@ -30,7 +30,7 @@ export class ArcConfig extends ProtocolConfig {
 
 export const DevArcConfig = new ArcConfig(
   "ws://127.0.0.1:8545",
-  "http://127.0.0.1:8000/subgraphs/name/daostac",
+  "http://127.0.0.1:8000/subgraphs/name/daostack",
   "ws://127.0.0.1:8001/subgraphs/name/daostack",
   "localhost",
   "private"

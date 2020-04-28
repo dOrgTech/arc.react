@@ -17,4 +17,10 @@ export class ProtocolLogs {
     if (!LoggingConfig.Current.enabled) return;
     this.getConfig.connectionFailed(error);
   }
+
+  public clone(): ProtocolLogs {
+    var clone = new ProtocolLogs();
+    clone._config = this.config;
+    return clone;
+  }
 }
