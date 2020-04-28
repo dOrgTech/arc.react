@@ -7,6 +7,7 @@ before_script:
 script:
   - yarn start:graphnode &
   - sleep 20 #making sure the graph is up and running
+  - ./script/wait-for-subgraph.sh
   - yarn test
   - yarn lint
   - yarn build:release && yarn package:release
