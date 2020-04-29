@@ -79,6 +79,7 @@ export abstract class Component<
     const entity = this._initialized ? this.entity(this.props) : undefined;
 
     logs.reactRendered();
+
     return (
       <>
         <EntityProvider value={entity}>
@@ -97,8 +98,8 @@ export abstract class Component<
       await this.initialize(this.entity(this.props));
       this._initialized = true;
       this.forceUpdate();
-    } catch (error) {
-      logs.entityCreationFailed(error);
+    } catch (e) {
+      logs.entityCreationFailed(e);
       this.setState({
         data: this.state.data,
         logs: logs.clone(),
@@ -135,8 +136,8 @@ export abstract class Component<
         .subscribe(this.onQueryData, this.onQueryError, this.onQueryComplete);
 
       return entity;
-    } catch (error) {
-      logs.entityCreationFailed(error);
+    } catch (e) {
+      logs.entityCreationFailed(e);
       this.setState({
         data: this.state.data,
         logs: logs.clone(),

@@ -18,7 +18,7 @@ export class ConfigLogs {
     this._error = undefined;
   }
 
-  public connectionFailed(error: Error) {
+  public initializeFailed(error: Error) {
     this._createTime = undefined;
     this._error = error;
   }

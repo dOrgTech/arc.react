@@ -6,7 +6,7 @@ type ConsumerComponent = React.ExoticComponent<React.ConsumerProps<any>>;
 
 export interface Props extends React.PropsWithChildren<{}> {
   _consumers?: ConsumerComponent[];
-  _logs?: (ConsumerComponent | undefined)[];
+  _logs?: ConsumerComponent[];
 }
 
 class ContextFeed extends React.Component<Props> {
@@ -53,11 +53,6 @@ class ContextFeed extends React.Component<Props> {
             // Get its logs and pass them to the LoadingView component
             const Logs = _logs[nullIndex];
 
-            // TODO: This is required because Protocol's don't have logs. Need to add this, or just make Protocol's components...
-            if (Logs === undefined) {
-              return <div>Loading...</div>;
-            }
-
             return (
               <Logs>
                 {(logs: ComponentLogs | ComponentListLogs | ProtocolLogs) => (
@@ -101,7 +96,7 @@ class ContextFeed extends React.Component<Props> {
 
 export const CreateContextFeed = (
   consumer: ConsumerComponent,
-  logs: ConsumerComponent | undefined
+  logs: ConsumerComponent
 ) => (props: Props) => (
   <ContextFeed
     _consumers={props._consumers ? [...props._consumers, consumer] : [consumer]}

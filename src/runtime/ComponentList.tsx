@@ -168,10 +168,10 @@ export abstract class ComponentList<
       );
 
       return entities;
-    } catch (error) {
-      logs.entityCreationFailed(error);
+    } catch (e) {
+      logs.entityCreationFailed(e);
       this.setState({
-        logs,
+        logs: logs.clone(),
       });
       return undefined;
     }
@@ -218,7 +218,7 @@ export abstract class ComponentList<
     } catch (e) {
       logs.dataQueryFailed(e);
       this.setState({
-        logs,
+        logs: logs.clone(),
       });
     }
   }
@@ -227,7 +227,7 @@ export abstract class ComponentList<
     const { logs } = this.state;
     logs.dataQueryFailed(error);
     this.setState({
-      logs,
+      logs: logs.clone,
     });
   }
 

@@ -51,11 +51,7 @@ export abstract class Protocol<
       await this.initialize();
       this.forceUpdate();
     } catch (e) {
-      const error: Error = {
-        ...e,
-        message: "No connection to the graph - did you set the right network?",
-      };
-      logs.initialiseError(error);
+      logs.configInitializeFailed(e);
       this.setState({
         logs: logs.clone(),
       });

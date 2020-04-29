@@ -13,9 +13,9 @@ export class ProtocolLogs {
 
   private _config?: ConfigLogs;
 
-  public initialiseError(error: Error) {
+  public configInitializeFailed(error: Error) {
     if (!LoggingConfig.Current.enabled) return;
-    this.getConfig.connectionFailed(error);
+    this.getConfig.initializeFailed(error);
   }
 
   public clone(): ProtocolLogs {

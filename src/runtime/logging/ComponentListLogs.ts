@@ -1,8 +1,4 @@
-import {
-  ReactLogs,
-  EntityLogs,
-  DataLogs
-} from "./types";
+import { ReactLogs, EntityLogs, DataLogs } from "./types";
 import { LoggingConfig } from "./LoggingConfig";
 
 // The goal of this class is to:
@@ -75,4 +71,6 @@ export class ComponentListLogs {
     if (!LoggingConfig.Current.enabled) return;
     this.getData.queryFailed(error);
   }
+
+  // TODO @cesar add a clone function here (see ComponentLogs.ts)
 }
