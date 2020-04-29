@@ -77,7 +77,7 @@ describe("DAO List", () => {
               <DAO.Data>
                 {(dao: DAOData) => <div>{"DAO address: " + dao.id}</div>}
               </DAO.Data>
-              <Members inferred={true}>
+              <Members>
                 <Member.Data>
                   {(member: MemberData) => (
                     <div>{"Member address: " + member.address}</div>

@@ -18,7 +18,7 @@ import { IMemberQueryOptions as FilterOptions } from "@daostack/client";
 interface RequiredProps
   extends ComponentListProps<Entity, Data, FilterOptions> {
   allDAOs?: boolean;
-  inferred: boolean;
+  inferred?: boolean;
 }
 
 interface ArcInferredProps {
@@ -35,19 +35,18 @@ class ArcMembers extends ComponentList<ArcProps, Component> {
   createObservableEntities(): Observable<Entity[]> {
     const { arcConfig, filter, dao, inferred } = this.props;
     if (inferred) {
-      if (!dao) {
+      if (Object.keys(dao!).length) {
         throw Error(
           "DAO Entity Missing: Please provide this field as a prop, or use the inference component."
         );
       }
-
       const daoFilter: FilterOptions = filter ? filter : { where: {} };
       if (!daoFilter.where) {
         daoFilter.where = {};
       }
-      daoFilter.where.dao = dao.id;
+      daoFilter.where.dao = dao!.id;
 
-      return Entity.search(dao.context, daoFilter);
+      return Entity.search(dao!.context, daoFilter);
     } else {
       if (!arcConfig) {
         throw new Error(

@@ -89,8 +89,6 @@ class DAO extends React.Component<RequiredProps> {
   }
 }
 
-export default DAO;
-
 export {
   ArcDAO,
   DAO,

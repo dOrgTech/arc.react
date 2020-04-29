@@ -6,8 +6,7 @@ import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
 import { ArcDAO as Component, DAOEntity as Entity, DAOData as Data } from "./";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
-interface RequiredProps
-  extends ComponentListProps<Entity, Data, FilterOptions> {}
+type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
 
 interface InferredProps {
   arcConfig: ProtocolConfig | undefined;
@@ -31,7 +30,7 @@ class ArcDAOs extends ComponentList<Props, Component> {
     children: any
   ): React.ComponentElement<CProps<Component>, any> {
     const { arcConfig } = this.props;
-    console.log(entity.id);
+
     return (
       <Component address={entity.id} arcConfig={arcConfig}>
         {children}

@@ -101,7 +101,7 @@ describe("Member List", () => {
         <Arc config={arcConfig}>
           Members
           <DAO address={daoAddress}>
-            <Members inferred={true}>
+            <Members>
               <Member.Data>
                 {(member: MemberData) => (
                   <div>{"Member address: " + member.address}</div>

@@ -106,6 +106,7 @@ export const CreateContextFeed = (
   <ContextFeed
     _consumers={props._consumers ? [...props._consumers, consumer] : [consumer]}
     _logs={props._logs ? [...props._logs, logs] : [logs]}
-    children={props.children}
-  />
+  >
+    {props.children}
+  </ContextFeed>
 );

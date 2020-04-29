@@ -15,7 +15,7 @@ import { IProposalQueryOptions as FilterOptions } from "@daostack/client";
 interface RequiredProps
   extends ComponentListProps<Entity, Data, FilterOptions> {
   allDAOs?: boolean;
-  inferred: boolean;
+  inferred?: boolean;
 }
 
 interface ArcInferredProps {
@@ -35,7 +35,7 @@ class ArcProposals extends ComponentList<ArcProps, Component> {
     const { arcConfig, filter, dao, inferred } = this.props;
 
     if (inferred) {
-      if (!dao) {
+      if (Object.keys(dao!).length) {
         throw Error(
           "DAO Entity Missing: Please provide this field as a prop, or use the inference component."
         );
@@ -44,9 +44,9 @@ class ArcProposals extends ComponentList<ArcProps, Component> {
       if (!daoFilter.where) {
         daoFilter.where = {};
       }
-      daoFilter.where.dao = dao.id;
+      daoFilter.where.dao = dao!.id;
 
-      return Entity.search(dao.context, daoFilter);
+      return Entity.search(dao!.context, daoFilter);
     } else {
       if (!arcConfig) {
         throw new Error(

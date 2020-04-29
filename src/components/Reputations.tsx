@@ -10,8 +10,7 @@ import {
 import { IReputationQueryOptions as FilterOptions } from "@daostack/client";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
-interface RequiredProps
-  extends ComponentListProps<Entity, Data, FilterOptions> {}
+type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
 
 interface InferredProps {
   arcConfig: ProtocolConfig | undefined;

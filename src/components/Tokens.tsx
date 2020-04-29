@@ -10,8 +10,7 @@ import {
 } from "./";
 import { ITokenQueryOptions as FilterOptions } from "@daostack/client";
 
-interface RequiredProps
-  extends ComponentListProps<Entity, Data, FilterOptions> {}
+type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
 
 interface InferredProps {
   arcConfig: ProtocolConfig | undefined;
