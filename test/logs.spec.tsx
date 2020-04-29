@@ -60,7 +60,10 @@ describe("Components with logs ", () => {
     const { findByTestId, container } = render(<DAOWithMembers />);
     const loader = await findByTestId("default-loader");
     fireEvent.mouseEnter(loader);
-    const daoAddressError = await findByText(container, /DAO Entity Missing/);
+    const daoAddressError = await findByText(
+      container,
+      /Entity search failed, make sure you provide the DAO/
+    );
     expect(daoAddressError).toBeInTheDocument();
   });
 });

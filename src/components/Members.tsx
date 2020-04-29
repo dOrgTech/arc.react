@@ -35,7 +35,7 @@ class ArcMembers extends ComponentList<ArcProps, Component> {
   createObservableEntities(): Observable<Entity[]> {
     const { arcConfig, filter, dao, inferred } = this.props;
     if (inferred) {
-      if (Object.keys(dao!).length) {
+      if (!dao) {
         throw Error(
           "DAO Entity Missing: Please provide this field as a prop, or use the inference component."
         );
@@ -44,9 +44,14 @@ class ArcMembers extends ComponentList<ArcProps, Component> {
       if (!daoFilter.where) {
         daoFilter.where = {};
       }
-      daoFilter.where.dao = dao!.id;
-
-      return Entity.search(dao!.context, daoFilter);
+      daoFilter.where.dao = dao.id;
+      try {
+        return Entity.search(dao.context, daoFilter);
+      } catch (e) {
+        throw new Error(
+          "Entity search failed, make sure you provide the DAO props or used the inference component"
+        );
+      }
     } else {
       if (!arcConfig) {
         throw new Error(
