@@ -227,7 +227,7 @@ export abstract class ComponentList<
     const { logs } = this.state;
     logs.dataQueryFailed(error);
     this.setState({
-      logs: logs.clone,
+      logs: logs.clone(),
     });
   }
 

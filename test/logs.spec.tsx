@@ -36,7 +36,7 @@ describe("Components with logs ", () => {
     fireEvent.mouseEnter(loader);
     const arcConnectionError = await findByText(
       container,
-      /No connection to the graph/
+      /this.props.config.initialize is not a function/
     );
     expect(arcConnectionError).toBeInTheDocument();
   });
@@ -60,10 +60,7 @@ describe("Components with logs ", () => {
     const { findByTestId, container } = render(<DAOWithMembers />);
     const loader = await findByTestId("default-loader");
     fireEvent.mouseEnter(loader);
-    const daoAddressError = await findByText(
-      container,
-      /Entity search failed, make sure you provide the DAO/
-    );
+    const daoAddressError = await findByText(container, /getObservableList/);
     expect(daoAddressError).toBeInTheDocument();
   });
 });

@@ -6,15 +6,23 @@ export class ConfigLogs {
     return this._error;
   }
 
+  public get connected(): boolean | undefined {
+    return this._connected;
+  }
+
   private _createTime: number | undefined;
+  private _connected: boolean;
   private _error?: Error;
 
   constructor() {
     this._createTime = -1;
+    this._connected = false;
+    this._error = undefined;
   }
 
-  public connectionStarted() {
+  public initializeCompleted() {
     this._createTime = Date.now();
+    this._connected = true;
     this._error = undefined;
   }
 

@@ -36,7 +36,7 @@ class ArcTokens extends ComponentList<Props, Component> {
     const { arcConfig } = this.props;
 
     return (
-      <Component address={entity.address} arcConfig={arcConfig}>
+      <Component key={entity.id} address={entity.address} arcConfig={arcConfig}>
         {children}
       </Component>
     );

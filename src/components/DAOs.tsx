@@ -31,9 +31,8 @@ class ArcDAOs extends ComponentList<Props, Component> {
   ): React.ComponentElement<CProps<Component>, any> {
     const { arcConfig } = this.props;
 
-    // TODO @cesar: add back key={entity.id}
     return (
-      <Component address={entity.id} arcConfig={arcConfig}>
+      <Component key={entity.id} address={entity.id} arcConfig={arcConfig}>
         {children}
       </Component>
     );

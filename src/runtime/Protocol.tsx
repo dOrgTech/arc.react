@@ -50,6 +50,7 @@ export abstract class Protocol<
     try {
       await this.initialize();
       this.forceUpdate();
+      logs.configInitializeCompleted();
     } catch (e) {
       logs.configInitializeFailed(e);
       this.setState({

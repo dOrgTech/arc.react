@@ -33,6 +33,14 @@ export class ComponentListLogs {
     return this._data;
   }
 
+  public clone(): ComponentListLogs {
+    var clone = new ComponentListLogs();
+    clone._react = this._react;
+    clone._entity = this._entity;
+    clone._data = this._data;
+    return clone;
+  }
+
   private _react?: ReactLogs;
   private _entity?: EntityLogs;
   private _data?: DataLogs;
@@ -71,6 +79,4 @@ export class ComponentListLogs {
     if (!LoggingConfig.Current.enabled) return;
     this.getData.queryFailed(error);
   }
-
-  // TODO @cesar add a clone function here (see ComponentLogs.ts)
 }
