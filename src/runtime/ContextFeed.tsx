@@ -51,7 +51,7 @@ class ContextFeed extends React.Component<Props> {
           if (nullIndex > -1) {
             // Get its logs and pass them to the LoadingView component
             const Logs = _logs[nullIndex];
-
+            console.log(_logs);
             return (
               <Logs>
                 {(logs: ComponentLogs | ComponentListLogs | ProtocolLogs) => (

@@ -27,6 +27,7 @@ export default class LoadingView extends React.Component<Props> {
   public render() {
     const { logs } = this.props;
     R.forEachObjIndexed(this.findErrorKeys, logs);
+    console.log(logs);
     return (
       <Loader.Render>
         {(customLoader: RenderFunc) =>

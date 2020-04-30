@@ -55,24 +55,6 @@ class ArcProposals extends ComponentList<ArcProps, Component> {
       </Component>
     );
   }
-  public static get Entities() {
-    return CreateContextFeed(
-      this._EntitiesContext.Consumer,
-      this._LogsContext.Consumer
-    );
-  }
-
-  public static get Logs() {
-    return CreateContextFeed(
-      this._LogsContext.Consumer,
-      this._LogsContext.Consumer
-    );
-  }
-
-  protected static _EntitiesContext = React.createContext<{} | undefined>(
-    undefined
-  );
-  protected static _LogsContext = React.createContext<{} | undefined>({});
 }
 
 class DAOProposals extends ComponentList<DAOProps, Component> {

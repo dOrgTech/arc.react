@@ -62,12 +62,12 @@ export default () =>
           </Arc>
         )}
         propEditors={[
-          // {
-          //   friendlyName: "DAO Address",
-          //   name: "dao",
-          //   defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
-          //   type: PropertyType.string,
-          // },
+          {
+            friendlyName: "DAO Address",
+            name: "dao",
+            defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
+            type: PropertyType.string,
+          },
           {
             friendlyName: "All DAOs",
             name: "allDAOs",

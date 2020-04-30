@@ -130,22 +130,6 @@ class Members extends React.Component<RequiredProps> {
         </Protocol.Config>
       );
     } else {
-      if (!this.props["dao"]) {
-        return (
-          <Protocol.Config>
-            {(arc: ProtocolConfig) => (
-              <DAOMembers
-                dao={undefined}
-                sort={sort}
-                arcConfig={arc}
-                filter={filter}
-              >
-                {children}
-              </DAOMembers>
-            )}
-          </Protocol.Config>
-        );
-      }
       return (
         <Protocol.Config>
           <InferComponent.Entity>
