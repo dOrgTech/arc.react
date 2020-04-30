@@ -43,15 +43,12 @@ describe("Components with logs ", () => {
 
   // it("ComponentList shows error", async () => {
   //   const { findByTestId, container } = render(
-  //     <Arc config={arcConfig}>
-  //       <Members>
-  //         <Member.Data>
-  //           {(member: MemberData) => (
-  //             <div>{"Member address: " + member.address}</div>
-  //           )}
-  //         </Member.Data>
-  //       </Members>
-  //     </Arc>
+  //
+  // <Arc config={arcConfig}>
+  //   <Members>
+  //     <Member.Data>{(member: MemberData) => <div>{"Member address: " + member.address}</div>}</Member.Data>
+  //   </Members>
+  // </Arc>;
   //   );
   //   const loader = await findByTestId("default-loader");
   //   fireEvent.mouseEnter(loader);

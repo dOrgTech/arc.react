@@ -132,7 +132,6 @@ export abstract class ComponentList<
   }
 
   public async UNSAFE_componentWillMount() {
-    console.log("mounted");
     // prefetch the entities
     this.observableEntities(this.props);
   }
