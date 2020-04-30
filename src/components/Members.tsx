@@ -50,7 +50,7 @@ class ArcMembers extends ComponentList<ArcProps, Component> {
     return (
       <Component
         address={entity.staticState!.address}
-        dao={new InferEntity(entity.staticState!.dao, entity.context)}
+        dao={new InferEntity("0x", entity.context)}
       >
         {children}
       </Component>
