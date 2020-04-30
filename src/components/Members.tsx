@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Observable } from "rxjs";
 import { CProps, ComponentList, ComponentListProps } from "../runtime";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
 import {
   DAO as InferComponent,
@@ -10,7 +11,6 @@ import {
   MemberData as Data,
 } from "./";
 import { IMemberQueryOptions as FilterOptions } from "@daostack/client";
-import { CreateContextFeed } from "../runtime/ContextFeed";
 
 // TODO: find better way of handling inference... this gets complicated when there are multiple
 // points of inferrance such as votes (MemberVotes, DAOVotes, ProposalVotes). Maybe have a prop
@@ -112,6 +112,7 @@ class DAOMembers extends ComponentList<DAOProps, Component> {
       </Component>
     );
   }
+
   public static get Entities() {
     return CreateContextFeed(
       this._EntitiesContext.Consumer,
@@ -156,7 +157,9 @@ class Members extends React.Component<RequiredProps> {
       );
     }
   }
+
   public static get Entities() {
+    // TODO: this is a bug, will be fixed in the infer-prop branch
     return DAOMembers.Entities;
   }
 
