@@ -60,8 +60,10 @@ class ArcVotes extends ComponentList<Props, Component> {
     );
   }
 
-  protected static _EntitiesContext = React.createContext({});
-  protected static _LogsContext = React.createContext({});
+  protected static _EntitiesContext = React.createContext<{} | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<{} | undefined>({});
 }
 
 class Votes extends React.Component<RequiredProps> {

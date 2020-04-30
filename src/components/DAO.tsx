@@ -56,9 +56,15 @@ class ArcDAO extends Component<Props, Entity, Data> {
     );
   }
 
-  protected static _EntityContext = React.createContext({});
-  protected static _DataContext = React.createContext({});
-  protected static _LogsContext = React.createContext({});
+  protected static _EntityContext = React.createContext<{} | undefined>(
+    undefined
+  );
+  protected static _DataContext = React.createContext<{} | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<{} | undefined>(
+    undefined
+  );
 }
 
 class DAO extends React.Component<RequiredProps> {

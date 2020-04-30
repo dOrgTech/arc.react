@@ -16,7 +16,6 @@ class ContextFeed extends React.Component<Props> {
 
   public render() {
     const { children, _consumers, _logs } = this.props;
-
     if (!_consumers || !_logs) {
       throw Error("Error: ContextFeed missing context consumer(s).");
     }

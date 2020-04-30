@@ -22,6 +22,10 @@ export class Arc extends Protocol<ArcConfig> {
     );
   }
 
-  protected static _ConfigContext = React.createContext({});
-  protected static _LogsContext = React.createContext({});
+  protected static _ConfigContext = React.createContext<{} | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<{} | undefined>(
+    undefined
+  );
 }

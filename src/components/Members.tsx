@@ -29,7 +29,7 @@ interface DAOInferredProps {
 }
 
 type ArcProps = RequiredProps & ArcInferredProps;
-type DAOProps = RequiredProps & DAOInferredProps;
+type DAOProps = RequiredProps & DAOInferredProps & ArcInferredProps;
 
 class ArcMembers extends ComponentList<ArcProps, Component> {
   createObservableEntities(): Observable<Entity[]> {
@@ -58,23 +58,6 @@ class ArcMembers extends ComponentList<ArcProps, Component> {
       </Component>
     );
   }
-
-  public static get Entities() {
-    return CreateContextFeed(
-      this._EntitiesContext.Consumer,
-      this._LogsContext.Consumer
-    );
-  }
-
-  public static get Logs() {
-    return CreateContextFeed(
-      this._LogsContext.Consumer,
-      this._LogsContext.Consumer
-    );
-  }
-
-  protected static _EntitiesContext = React.createContext({});
-  protected static _LogsContext = React.createContext({});
 }
 
 class DAOMembers extends ComponentList<DAOProps, Component> {
@@ -82,9 +65,10 @@ class DAOMembers extends ComponentList<DAOProps, Component> {
   // also rename all instances of "Arc" to protocol?
   createObservableEntities(): Observable<Entity[]> {
     const { dao, filter } = this.props;
+
     if (!dao) {
       throw Error(
-        "DAO Entity Missing: Please provide this field as a prop, or use the inference component."
+        "DAO Missing Entity: Please provide this field as a prop, or use the inference component."
       );
     }
 
@@ -102,6 +86,7 @@ class DAOMembers extends ComponentList<DAOProps, Component> {
     children: any
   ): React.ComponentElement<CProps<Component>, any> {
     const { dao } = this.props;
+
     return (
       <Component
         key={entity.staticState!.address}
@@ -127,14 +112,13 @@ class DAOMembers extends ComponentList<DAOProps, Component> {
     );
   }
 
-  protected static _EntitiesContext = React.createContext({});
-  protected static _LogsContext = React.createContext({});
+  protected static _EntitiesContext = React.createContext<{} | undefined>({});
+  protected static _LogsContext = React.createContext<{} | undefined>({});
 }
 
 class Members extends React.Component<RequiredProps> {
   render() {
     const { children, allDAOs, sort, filter } = this.props;
-
     if (allDAOs) {
       return (
         <Protocol.Config>
@@ -146,14 +130,32 @@ class Members extends React.Component<RequiredProps> {
         </Protocol.Config>
       );
     } else {
+      if (!this.props["dao"]) {
+        return (
+          <Protocol.Config>
+            {(arc: ProtocolConfig) => (
+              <DAOMembers
+                dao={undefined}
+                sort={sort}
+                arcConfig={arc}
+                filter={filter}
+              >
+                {children}
+              </DAOMembers>
+            )}
+          </Protocol.Config>
+        );
+      }
       return (
-        <InferComponent.Entity>
-          {(dao: InferEntity) => (
-            <DAOMembers dao={dao} sort={sort} filter={filter}>
-              {children}
-            </DAOMembers>
-          )}
-        </InferComponent.Entity>
+        <Protocol.Config>
+          <InferComponent.Entity>
+            {(arc: ProtocolConfig, dao: InferEntity) => (
+              <DAOMembers dao={dao} sort={sort} arcConfig={arc} filter={filter}>
+                {children}
+              </DAOMembers>
+            )}
+          </InferComponent.Entity>
+        </Protocol.Config>
       );
     }
   }

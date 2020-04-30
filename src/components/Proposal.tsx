@@ -58,9 +58,13 @@ class ArcProposal extends Component<Props, Entity, Data> {
     );
   }
 
-  protected static _EntityContext = React.createContext({});
-  protected static _DataContext = React.createContext({});
-  protected static _LogsContext = React.createContext({});
+  protected static _EntityContext = React.createContext<{} | undefined>(
+    undefined
+  );
+  protected static _DataContext = React.createContext<{} | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<{} | undefined>({});
 }
 
 class Proposal extends React.Component<RequiredProps> {

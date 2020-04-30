@@ -33,6 +33,11 @@ type DAOProps = RequiredProps & ArcInferredProps & DAOInferredProps;
 class ArcProposals extends ComponentList<ArcProps, Component> {
   createObservableEntities(): Observable<Entity[]> {
     const { arcConfig, filter } = this.props;
+    if (!arcConfig) {
+      throw Error(
+        "Arc Config Missing: Please provide this field as a prop, or use the inference component."
+      );
+    }
     return Entity.search(arcConfig.connection, filter);
   }
 
@@ -64,8 +69,10 @@ class ArcProposals extends ComponentList<ArcProps, Component> {
     );
   }
 
-  protected static _EntitiesContext = React.createContext({});
-  protected static _LogsContext = React.createContext({});
+  protected static _EntitiesContext = React.createContext<{} | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<{} | undefined>({});
 }
 
 class DAOProposals extends ComponentList<DAOProps, Component> {
@@ -106,8 +113,10 @@ class DAOProposals extends ComponentList<DAOProps, Component> {
     );
   }
 
-  protected static _EntitiesContext = React.createContext({});
-  protected static _LogsContext = React.createContext({});
+  protected static _EntitiesContext = React.createContext<{} | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<{} | undefined>({});
 }
 
 class Proposals extends React.Component<RequiredProps> {

@@ -17,8 +17,8 @@ export abstract class Protocol<
 > extends React.Component<Props<Config>, State> {
   // Complete any asynchronous initialization work needed by the ProtocolConfig
   protected async initialize() {}
-  protected static _ConfigContext: React.Context<{}>;
-  protected static _LogsContext: React.Context<{}>;
+  protected static _ConfigContext: React.Context<{} | undefined>;
+  protected static _LogsContext: React.Context<{} | undefined>;
 
   constructor(props: Props<Config>) {
     super(props);

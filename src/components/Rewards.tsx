@@ -56,8 +56,10 @@ class ArcRewards extends ComponentList<Props, Component> {
     );
   }
 
-  protected static _EntitiesContext = React.createContext({});
-  protected static _LogsContext = React.createContext({});
+  protected static _EntitiesContext = React.createContext<{} | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<{} | undefined>({});
 }
 
 class Rewards extends React.Component<RequiredProps> {

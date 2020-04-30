@@ -28,9 +28,9 @@ export abstract class Component<
 
   // See here for more information on the React.Context pattern:
   // https://reactjs.org/docs/context.html
-  protected static _EntityContext: React.Context<{}>;
-  protected static _DataContext: React.Context<{}>;
-  protected static _LogsContext: React.Context<{}>;
+  protected static _EntityContext: React.Context<{} | undefined>;
+  protected static _DataContext: React.Context<{} | undefined>;
+  protected static _LogsContext: React.Context<{} | undefined>;
 
   private entity = memoize(
     // This will only run when the function's arguments have changed :D
@@ -53,7 +53,6 @@ export abstract class Component<
     this.state = {
       logs: new ComponentLogs(),
     };
-
     this.onQueryData = this.onQueryData.bind(this);
     this.onQueryError = this.onQueryError.bind(this);
     this.onQueryComplete = this.onQueryComplete.bind(this);
