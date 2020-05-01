@@ -1,5 +1,6 @@
 import { ProtocolConfig } from "../runtime/ProtocolConfig";
 import { Arc as Connection } from "@daostack/client";
+import { RetryLink } from "apollo-link-retry";
 
 export class ArcConfig extends ProtocolConfig {
   public isInitialized: boolean;
@@ -10,7 +11,8 @@ export class ArcConfig extends ProtocolConfig {
     public graphqlHttpUrl: string,
     public graphqlWsUrl: string,
     public ipfsProvider: any,
-    public network: "private" | "kovan" | "rinkeby" | "mainnet"
+    public network: "private" | "kovan" | "rinkeby" | "mainnet",
+    public retryLink?: RetryLink
   ) {
     super();
     this.isInitialized = false;
@@ -19,6 +21,7 @@ export class ArcConfig extends ProtocolConfig {
       graphqlWsProvider: graphqlWsUrl,
       web3Provider: web3HttpUrl,
       ipfsProvider: ipfsProvider,
+      graphqlRetryLink: retryLink,
     });
   }
 
@@ -28,12 +31,28 @@ export class ArcConfig extends ProtocolConfig {
   }
 }
 
+const retryLink = new RetryLink({
+  attempts: {
+    max: Infinity,
+    retryIf: (error, _operation) => {
+      console.error("Error occurred fetching data, retrying...");
+      return !!error;
+    },
+  },
+  delay: {
+    initial: 500,
+    max: 10000,
+    jitter: true,
+  },
+});
+
 export const DevArcConfig = new ArcConfig(
   "ws://127.0.0.1:8545",
   "http://127.0.0.1:8000/subgraphs/name/daostack",
   "ws://127.0.0.1:8001/subgraphs/name/daostack",
   "localhost",
-  "private"
+  "private",
+  retryLink
 );
 
 export const TestArcConfig = new ArcConfig(
@@ -46,7 +65,8 @@ export const TestArcConfig = new ArcConfig(
     protocol: "https",
     "api-path": "/ipfs/api/v0/",
   },
-  "rinkeby"
+  "rinkeby",
+  retryLink
 );
 
 export const ProdArcConfig = new ArcConfig(
@@ -59,5 +79,6 @@ export const ProdArcConfig = new ArcConfig(
     protocol: "https",
     "api-path": "/ipfs/api/v0/",
   },
-  "mainnet"
+  "mainnet",
+  retryLink
 );

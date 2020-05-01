@@ -7,8 +7,8 @@
     "start": "concurrently \"npm:start:subgraph\" \"npm:start:storybook\"",
     "start:storybook": "start-storybook -p 3000",
     "start:subgraph": "concurrently \"npm:start:graphnode\"",
-    "start:graphnode": "docker-compose -f ./node_modules/@daostack/client/docker-compose.yml up graph-node",
-    "stop:graphnode": "docker-compose -f ./node_modules/@daostack/client/docker-compose.yml down -v",
+    "start:graphnode": "docker-compose -f ./env/docker-compose.yml up graph-node",
+    "stop:graphnode": "docker-compose -f ./env/docker-compose.yml down -v",
     "test": "jest --forceExit --runInBand",
     "lint": "eslint --quiet src/**/*.tsx test/**/*.tsx",
     "build": "tsc",
@@ -18,7 +18,8 @@
     "release": "npm run build:release && npm run package:release && npm publish ./package --access public"
   },
   "dependencies": {
-    "@daostack/client": "0.2.6",
+    "@daostack/client": "0.2.67",
+    "apollo-link-retry": "^2.2.16",
     "memoize-one": "^5.0.0",
     "ramda": "^0.26.1",
     "react-spinkit": "^3.0.0",

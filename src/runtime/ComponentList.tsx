@@ -183,7 +183,7 @@ export abstract class ComponentList<
 
   private fetchData(entity: Entity): Promise<Data> {
     return new Promise((resolve, reject) => {
-      const state = entity.state();
+      const state = entity.state({});
       state.subscribe(
         (data: Data) => resolve(data),
         (error: Error) => reject(error)
