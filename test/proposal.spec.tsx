@@ -17,7 +17,7 @@ import {
 describe("Proposal component ", () => {
   it("Shows proposal id", async () => {
     const proposalId =
-      "0x6afee092a28c74f6358093d5376ac75014ac4d9fd42d296a5498ef42eecd7248";
+      "0x02fd1079f9a842581eb742ea44507a461466b791c2990783732bfe660aa6a711";
     const { container } = render(
       <Arc config={arcConfig}>
         <Proposal id={proposalId}>
@@ -41,7 +41,7 @@ describe("Proposal component ", () => {
 });
 
 describe("Proposal List", () => {
-  const daoAddress = "0xe7a2c59e134ee81d4035ae6db2254f79308e334f";
+  const daoAddress = "0x02981ec0aefe7329442c39dfe5a52fb8781e7659";
   class ProposalList extends React.Component {
     render() {
       return (

@@ -16,7 +16,7 @@ import {
 describe("Stake component ", () => {
   it("Shows stake id", async () => {
     const stakeId =
-      "0xb6398a75633d9af9928ae4fe6c0db4105e52514bd0321a77ca6ae7a8d5e60971";
+      "0x3d6b71c0fa97d433642c45b0b2f9642e0c79d0258ad4ff4dce667222dc15f526";
     const { container } = render(
       <Arc config={arcConfig}>
         <Stake id={stakeId}>

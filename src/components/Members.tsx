@@ -46,11 +46,17 @@ class ArcMembers extends ComponentList<ArcProps, Component> {
     entity: Entity,
     children: any
   ): React.ComponentElement<CProps<Component>, any> {
+    if (!entity.staticState?.dao) {
+      throw Error(
+        `DAO id should never be missing on a queried Member within Members search`
+      );
+    }
+
     // TODO: support creating Components with just an Entity, it makes no sense to recreate the Member entity here...
     return (
       <Component
         address={entity.staticState!.address}
-        dao={new InferEntity(entity.staticState!.dao, entity.context)}
+        dao={new InferEntity(entity.staticState.dao, entity.context)}
       >
         {children}
       </Component>
