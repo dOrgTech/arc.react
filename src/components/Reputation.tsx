@@ -36,7 +36,7 @@ class ArcReputation extends Component<Props, Entity, Data> {
       );
     }
 
-    return new Entity(address, arcConfig.connection);
+    return new Entity(arcConfig.connection, address);
   }
 
   public static get Entity() {

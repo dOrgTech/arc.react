@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Component, ComponentLogs } from "../runtime";
 import { CreateContextFeed } from "../runtime/ContextFeed";
-import { Arc, ArcConfig } from "../protocol";
+import { Arc, ArcConfig, DevArcConfig } from "../protocol";
 import { DAO as Entity, IDAOState as Data } from "@daostack/client";
 
 interface RequiredProps {
@@ -24,12 +24,12 @@ class ArcDAO extends Component<Props, Entity, Data> {
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
       );
     }
-    return new Entity(address, arcConfig.connection);
+    return new Entity(arcConfig.connection, address);
   }
 
   protected async initialize(entity: Entity | undefined): Promise<void> {
     if (entity) {
-      await entity.fetchStaticState();
+      await entity.fetchState();
     }
 
     return Promise.resolve();

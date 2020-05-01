@@ -26,7 +26,7 @@ class ArcReward extends Component<Props, Entity, Data> {
       );
     }
 
-    return new Entity(id, arcConfig.connection);
+    return new Entity(arcConfig.connection, id);
   }
 
   public static get Entity() {

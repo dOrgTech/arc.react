@@ -132,7 +132,7 @@ export abstract class Component<
 
       // subscribe to this entity's state changes
       this._subscription = entity
-        .state()
+        .state({})
         .subscribe(this.onQueryData, this.onQueryError, this.onQueryComplete);
 
       return entity;

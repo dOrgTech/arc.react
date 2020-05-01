@@ -29,12 +29,12 @@ class DAOMember extends Component<Props, Entity, Data> {
       );
     }
 
-    return new Entity({ address, dao: dao.id }, dao.context);
+    return new Entity(dao.context, address);
   }
 
   protected async initialize(entity: Entity | undefined): Promise<void> {
     if (entity) {
-      await entity.fetchStaticState();
+      await entity.fetchState();
     }
 
     return Promise.resolve();
