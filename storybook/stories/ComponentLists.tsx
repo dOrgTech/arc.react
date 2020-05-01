@@ -56,7 +56,7 @@ export default () =>
         Component={Member}
         RequiredContext={(props) => (
           <Arc config={arcConfig}>
-            <DAO address={props.dao}>{props.children}</DAO>
+            {<DAO address={props.dao}>{props.children}</DAO>}
           </Arc>
         )}
         propEditors={[

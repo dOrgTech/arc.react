@@ -7,6 +7,7 @@ import Spinner from "react-spinkit";
 
 interface Props {
   logs: ComponentLogs | ComponentListLogs | ProtocolLogs;
+  entity?: string;
 }
 
 export default class LoadingView extends React.Component<Props> {
@@ -25,8 +26,12 @@ export default class LoadingView extends React.Component<Props> {
   };
 
   public render() {
-    const { logs } = this.props;
-    R.forEachObjIndexed(this.findErrorKeys, logs);
+    const { logs, entity } = this.props;
+    if (logs) {
+      R.forEachObjIndexed(this.findErrorKeys, logs);
+    } else {
+      this.errors.push(`${entity} Entity not found`);
+    }
     return (
       <Loader.Render>
         {(customLoader: RenderFunc) =>

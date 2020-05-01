@@ -40,21 +40,24 @@ class ArcVote extends Component<Props, Entity, Data> {
   public static get Entity() {
     return CreateContextFeed(
       this._EntityContext.Consumer,
-      this._LogsContext.Consumer
+      this._LogsContext.Consumer,
+      "Vote"
     );
   }
 
   public static get Data() {
     return CreateContextFeed(
       this._DataContext.Consumer,
-      this._LogsContext.Consumer
+      this._LogsContext.Consumer,
+      "Vote"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
       this._LogsContext.Consumer,
-      this._LogsContext.Consumer
+      this._LogsContext.Consumer,
+      "Vote"
     );
   }
 

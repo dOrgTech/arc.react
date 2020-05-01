@@ -112,8 +112,12 @@ class DAOMembers extends ComponentList<DAOProps, Component> {
     );
   }
 
-  protected static _EntitiesContext = React.createContext<{} | undefined>({});
-  protected static _LogsContext = React.createContext<{} | undefined>({});
+  protected static _EntitiesContext = React.createContext<{} | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<{} | undefined>(
+    undefined
+  );
 }
 
 class Members extends React.Component<RequiredProps> {

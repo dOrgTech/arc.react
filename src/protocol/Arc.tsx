@@ -11,14 +11,16 @@ export class Arc extends Protocol<ArcConfig> {
   public static get Config() {
     return CreateContextFeed(
       this._ConfigContext.Consumer,
-      this._LogsContext.Consumer
+      this._LogsContext.Consumer,
+      "Arc"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
       this._LogsContext.Consumer,
-      this._LogsContext.Consumer
+      this._LogsContext.Consumer,
+      "Arc"
     );
   }
 

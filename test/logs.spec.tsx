@@ -41,18 +41,21 @@ describe("Components with logs ", () => {
     expect(arcConnectionError).toBeInTheDocument();
   });
 
-  // it("ComponentList shows error", async () => {
-  //   const { findByTestId, container } = render(
-  //
-  // <Arc config={arcConfig}>
-  //   <Members>
-  //     <Member.Data>{(member: MemberData) => <div>{"Member address: " + member.address}</div>}</Member.Data>
-  //   </Members>
-  // </Arc>;
-  //   );
-  //   const loader = await findByTestId("default-loader");
-  //   fireEvent.mouseEnter(loader);
-  //   const daoAddressError = await findByText(container, /DAO Missing/);
-  //   expect(daoAddressError).toBeInTheDocument();
-  // });
+  it("ComponentList shows error", async () => {
+    const { findByTestId, container } = render(
+      <Arc config={arcConfig}>
+        <Members>
+          <Member.Data>
+            {(member: MemberData) => (
+              <div>{"Member address: " + member.address}</div>
+            )}
+          </Member.Data>
+        </Members>
+      </Arc>
+    );
+    const loader = await findByTestId("default-loader");
+    fireEvent.mouseEnter(loader);
+    const daoAddressError = await findByText(container, /DAO/);
+    expect(daoAddressError).toBeInTheDocument();
+  });
 });

@@ -121,11 +121,13 @@ export abstract class ComponentList<
     return (
       <EntitiesProvider value={entities}>
         <LogsProvider value={logs}>
-          {typeof children === "function"
-            ? children(entities)
-            : entities.length
-            ? entities.map((entity) => this.renderComponent(entity, children))
-            : children}
+          {typeof children === "function" ? (
+            children(entities)
+          ) : entities.length ? (
+            entities.map((entity) => this.renderComponent(entity, children))
+          ) : (
+            <LoadingView logs={logs} />
+          )}
         </LogsProvider>
       </EntitiesProvider>
     );
@@ -165,7 +167,6 @@ export abstract class ComponentList<
 
       return entities;
     } catch (e) {
-      console.log(e);
       logs.entityCreationFailed(e);
       this.setState({
         logs: logs.clone(),
@@ -213,7 +214,6 @@ export abstract class ComponentList<
         });
       }
     } catch (e) {
-      console.log(e);
       logs.dataQueryFailed(e);
       this.setState({
         logs: logs.clone(),

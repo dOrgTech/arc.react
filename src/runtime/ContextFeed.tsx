@@ -7,6 +7,7 @@ type ConsumerComponent = React.ExoticComponent<React.ConsumerProps<any>>;
 export interface Props extends React.PropsWithChildren<{}> {
   _consumers?: ConsumerComponent[];
   _logs?: ConsumerComponent[];
+  _entity?: string;
 }
 
 class ContextFeed extends React.Component<Props> {
@@ -15,7 +16,7 @@ class ContextFeed extends React.Component<Props> {
   }
 
   public render() {
-    const { children, _consumers, _logs } = this.props;
+    const { children, _consumers, _logs, _entity } = this.props;
     if (!_consumers || !_logs) {
       throw Error("Error: ContextFeed missing context consumer(s).");
     }
@@ -54,7 +55,7 @@ class ContextFeed extends React.Component<Props> {
             return (
               <Logs>
                 {(logs: ComponentLogs | ComponentListLogs | ProtocolLogs) => (
-                  <LoadingView logs={logs} />
+                  <LoadingView entity={_entity} logs={logs} />
                 )}
               </Logs>
             );
@@ -94,11 +95,13 @@ class ContextFeed extends React.Component<Props> {
 
 export const CreateContextFeed = (
   consumer: ConsumerComponent,
-  logs: ConsumerComponent
+  logs: ConsumerComponent,
+  entity?: string
 ) => (props: Props) => (
   <ContextFeed
     _consumers={props._consumers ? [...props._consumers, consumer] : [consumer]}
     _logs={props._logs ? [...props._logs, logs] : [logs]}
+    _entity={entity}
   >
     {props.children}
   </ContextFeed>
