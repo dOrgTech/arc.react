@@ -16,7 +16,7 @@ import {
 describe("Reward component ", () => {
   it("Shows reward id", async () => {
     const rewardId =
-      "0xc0c911eafd30e6bb1f1f2b4a8cf401bf355a5e066a3af50e8ef7b09dd68e65db";
+      "0x0cb9948676fa48ea01b8bb0aada44ebd3b298d50e618ec823cfab456e42c71c2";
     const { container } = render(
       <Arc config={arcConfig}>
         <Reward id={rewardId}>
