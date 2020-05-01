@@ -10,6 +10,7 @@ import {
   Member,
   MemberData,
   ArcConfig,
+  DAO,
 } from "../src";
 
 describe("Components with logs ", () => {
@@ -41,9 +42,9 @@ describe("Components with logs ", () => {
     expect(arcConnectionError).toBeInTheDocument();
   });
 
-  it("ComponentList shows error", async () => {
-    const { findByTestId, container } = render(
-      <Arc config={arcConfig}>
+  it("ComponentList shows error without arc", async () => {
+    const MemberList = (
+      <DAO address={""}>
         <Members>
           <Member.Data>
             {(member: MemberData) => (
@@ -51,11 +52,29 @@ describe("Components with logs ", () => {
             )}
           </Member.Data>
         </Members>
-      </Arc>
+      </DAO>
     );
+    const { findByTestId, container, rerender } = render(MemberList);
     const loader = await findByTestId("default-loader");
     fireEvent.mouseEnter(loader);
-    const daoAddressError = await findByText(container, /DAO/);
+    const daoAddressError = await findByText(container, /Arc Entity not found/);
+    expect(daoAddressError).toBeInTheDocument();
+  });
+
+  it("ComponentList shows error without when missing entity", async () => {
+    const MemberList = (
+      <Members>
+        <Member.Data>
+          {(member: MemberData) => (
+            <div>{"Member address: " + member.address}</div>
+          )}
+        </Member.Data>
+      </Members>
+    );
+    const { findByTestId, container, rerender } = render(MemberList);
+    const loader = await findByTestId("default-loader");
+    fireEvent.mouseEnter(loader);
+    const daoAddressError = await findByText(container, /DAO Entity not found/);
     expect(daoAddressError).toBeInTheDocument();
   });
 });
