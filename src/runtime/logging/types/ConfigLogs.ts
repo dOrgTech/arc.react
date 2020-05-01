@@ -20,6 +20,11 @@ export class ConfigLogs {
     this._error = undefined;
   }
 
+  public initializeStarted() {
+    this._connected = false;
+    this._error = new Error("Connecting...");
+  }
+
   public initializeCompleted() {
     this._createTime = Date.now();
     this._connected = true;

@@ -47,10 +47,17 @@ export abstract class Protocol<
 
   public async componentDidMount() {
     const { logs } = this.state;
+    logs.configInitializeStarted();
+    this.setState({
+      logs: logs.clone(),
+    });
     try {
       await this.initialize();
       this.forceUpdate();
       logs.configInitializeCompleted();
+      this.setState({
+        logs: logs.clone(),
+      });
     } catch (e) {
       logs.configInitializeFailed(e);
       this.setState({

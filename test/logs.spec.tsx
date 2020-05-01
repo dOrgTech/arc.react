@@ -35,10 +35,7 @@ describe("Components with logs ", () => {
     );
     const loader = await findByTestId("default-loader");
     fireEvent.mouseEnter(loader);
-    const arcConnectionError = await findByText(
-      container,
-      /Error: Network error: only absolute urls are supported/
-    );
+    const arcConnectionError = await findByText(container, /Connecting/);
     expect(arcConnectionError).toBeInTheDocument();
   });
 
@@ -54,7 +51,7 @@ describe("Components with logs ", () => {
         </Members>
       </DAO>
     );
-    const { findByTestId, container, rerender } = render(MemberList);
+    const { findByTestId, container } = render(MemberList);
     const loader = await findByTestId("default-loader");
     fireEvent.mouseEnter(loader);
     const daoAddressError = await findByText(container, /Arc Entity not found/);
@@ -71,7 +68,7 @@ describe("Components with logs ", () => {
         </Member.Data>
       </Members>
     );
-    const { findByTestId, container, rerender } = render(MemberList);
+    const { findByTestId, container } = render(MemberList);
     const loader = await findByTestId("default-loader");
     fireEvent.mouseEnter(loader);
     const daoAddressError = await findByText(container, /DAO Entity not found/);

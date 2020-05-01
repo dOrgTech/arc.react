@@ -13,6 +13,11 @@ export class ProtocolLogs {
 
   private _config?: ConfigLogs;
 
+  public configInitializeStarted() {
+    if (!LoggingConfig.Current.enabled) return;
+    this.getConfig.initializeStarted();
+  }
+
   public configInitializeCompleted() {
     if (!LoggingConfig.Current.enabled) return;
     this.getConfig.initializeCompleted();
