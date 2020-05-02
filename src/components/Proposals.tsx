@@ -84,14 +84,16 @@ class DAOProposals extends ComponentList<DAOProps, Component> {
   public static get Entities() {
     return CreateContextFeed(
       this._EntitiesContext.Consumer,
-      this._LogsContext.Consumer
+      this._LogsContext.Consumer,
+      "Proposals"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
       this._LogsContext.Consumer,
-      this._LogsContext.Consumer
+      this._LogsContext.Consumer,
+      "Proposals"
     );
   }
 

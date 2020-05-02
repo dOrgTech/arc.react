@@ -41,14 +41,16 @@ class ArcDAOs extends ComponentList<Props, Component> {
   public static get Entities() {
     return CreateContextFeed(
       this._EntitiesContext.Consumer,
-      this._LogsContext.Consumer
+      this._LogsContext.Consumer,
+      "DAOs"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
       this._LogsContext.Consumer,
-      this._LogsContext.Consumer
+      this._LogsContext.Consumer,
+      "DAOs"
     );
   }
 

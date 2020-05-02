@@ -29,7 +29,7 @@ interface DAOInferredProps {
 }
 
 type ArcProps = RequiredProps & ArcInferredProps;
-type DAOProps = RequiredProps & DAOInferredProps & ArcInferredProps;
+type DAOProps = RequiredProps & DAOInferredProps;
 
 class ArcMembers extends ComponentList<ArcProps, Component> {
   createObservableEntities(): Observable<Entity[]> {
@@ -107,14 +107,16 @@ class DAOMembers extends ComponentList<DAOProps, Component> {
   public static get Entities() {
     return CreateContextFeed(
       this._EntitiesContext.Consumer,
-      this._LogsContext.Consumer
+      this._LogsContext.Consumer,
+      "Members"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
       this._LogsContext.Consumer,
-      this._LogsContext.Consumer
+      this._LogsContext.Consumer,
+      "Members"
     );
   }
 
@@ -144,7 +146,7 @@ class Members extends React.Component<RequiredProps> {
         <Protocol.Config>
           <InferComponent.Entity>
             {(arc: ProtocolConfig, dao: InferEntity) => (
-              <DAOMembers dao={dao} sort={sort} arcConfig={arc} filter={filter}>
+              <DAOMembers dao={dao} sort={sort} filter={filter}>
                 {children}
               </DAOMembers>
             )}
