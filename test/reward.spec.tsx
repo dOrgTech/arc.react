@@ -1,17 +1,13 @@
 import React from "react";
-import {
-  Arc,
-  DevArcConfig as arcConfig,
-  RewardData,
-  Reward,
-  Rewards,
-} from "../src";
+import { Arc, ArcConfig, RewardData, Reward, Rewards } from "../src";
 import {
   render,
   screen,
   waitForElementToBeRemoved,
   waitFor,
 } from "@testing-library/react";
+
+const arcConfig = new ArcConfig("private");
 
 describe("Reward component ", () => {
   it("Shows reward id", async () => {

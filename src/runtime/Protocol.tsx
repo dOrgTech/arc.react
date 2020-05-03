@@ -1,9 +1,11 @@
 import * as React from "react";
-import { ProtocolConfig } from "./ProtocolConfig";
-import { ProtocolLogs } from "./logging/ProtocolLogs";
-export { ProtocolConfig };
+import { ProtocolConfig, ProtocolLogs } from "./";
 
-interface Props<Config extends ProtocolConfig> {
+type PCConnection<Protocol> = Protocol extends ProtocolConfig<infer Connection>
+  ? Connection
+  : never;
+
+interface Props<Config extends ProtocolConfig<PCConnection<Config>>> {
   config: Config;
 }
 
@@ -13,12 +15,17 @@ interface State {
 }
 
 export abstract class Protocol<
-  Config extends ProtocolConfig
+  Config extends ProtocolConfig<PCConnection<Config>>
 > extends React.Component<Props<Config>, State> {
   // Complete any asynchronous initialization work needed by the ProtocolConfig
-  protected async initialize() {}
-  protected static _ConfigContext: React.Context<{} | undefined>;
-  protected static _LogsContext: React.Context<{} | undefined>;
+  protected async initialize() {
+    await this.props.config.initialize();
+  }
+
+  protected static _ConfigContext: React.Context<
+    ProtocolConfig<any> | undefined
+  >;
+  protected static _LogsContext: React.Context<ProtocolLogs | undefined>;
 
   constructor(props: Props<Config>) {
     super(props);
@@ -36,8 +43,10 @@ export abstract class Protocol<
   public render() {
     const ConfigProvider = this.constructor._ConfigContext.Provider as any;
     const LogsProvider = this.constructor._LogsContext.Provider;
+
     const { logs } = this.state;
     const { config, children } = this.props;
+
     return (
       <ConfigProvider value={config.isInitialized ? config : undefined}>
         <LogsProvider value={logs}>{children}</LogsProvider>
@@ -47,13 +56,16 @@ export abstract class Protocol<
 
   public async componentDidMount() {
     const { logs } = this.state;
+
     logs.configInitializeStarted();
     this.setState({
       logs: logs.clone(),
     });
+
     try {
       await this.initialize();
       this.forceUpdate();
+
       logs.configInitializeCompleted();
       this.setState({
         logs: logs.clone(),

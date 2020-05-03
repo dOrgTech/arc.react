@@ -1,7 +1,7 @@
 import React from "react";
 import {
   Arc,
-  DevArcConfig as arcConfig,
+  ArcConfig,
   ReputationData,
   Reputation,
   Reputations,
@@ -13,6 +13,8 @@ import {
   waitForElementToBeRemoved,
   waitFor,
 } from "@testing-library/react";
+
+const arcConfig = new ArcConfig("private");
 
 describe("Reputation component ", () => {
   it("Shows reputation address", async () => {

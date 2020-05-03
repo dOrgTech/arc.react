@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Arc,
-  DevArcConfig as arcConfig,
-  TokenData,
-  Token,
-  DAO,
-  Tokens,
-} from "../src";
+import { Arc, ArcConfig, TokenData, Token, DAO, Tokens } from "../src";
 import {
   render,
   screen,
@@ -14,7 +7,9 @@ import {
   waitFor,
 } from "@testing-library/react";
 
+const arcConfig = new ArcConfig("private");
 const daoAddress = "0xe7a2c59e134ee81d4035ae6db2254f79308e334f";
+
 describe("Token component ", () => {
   it("Shows token address", async () => {
     const tokenAddress = "0xcdbe8b52a6c60a5f101d4a0f1f049f19a9e1d35f";

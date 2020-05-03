@@ -1,18 +1,13 @@
 import React from "react";
-import {
-  Arc,
-  DevArcConfig as arcConfig,
-  ProposalData,
-  Proposal,
-  Proposals,
-  DAO,
-} from "../src";
+import { Arc, ArcConfig, ProposalData, Proposal, Proposals, DAO } from "../src";
 import {
   render,
   screen,
   waitForElementToBeRemoved,
   waitFor,
 } from "@testing-library/react";
+
+const arcConfig = new ArcConfig("private");
 
 describe("Proposal component ", () => {
   it("Shows proposal id", async () => {

@@ -2,26 +2,23 @@ import React from "react";
 import { render, findByText, fireEvent } from "@testing-library/react";
 import {
   Arc,
-  DevArcConfig as arcConfig,
+  ArcConfig,
   Token,
   TokenData,
   Tokens,
   Members,
   Member,
   MemberData,
-  ArcConfig,
   DAO,
+  networkSettings,
 } from "../src";
 
 describe("Components with logs ", () => {
   it("Protocol shows error", async () => {
-    const badConfig = new ArcConfig(
-      arcConfig.web3HttpUrl,
-      "wrong url",
-      arcConfig.graphqlWsUrl,
-      arcConfig.ipfsProvider,
-      arcConfig.network
-    );
+    const badConfig = new ArcConfig({
+      ...networkSettings.private,
+      graphqlHttpProvider: "wrong url",
+    });
     const { findByTestId, container } = render(
       <Arc config={badConfig}>
         <Tokens>

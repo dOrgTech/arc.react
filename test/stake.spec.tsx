@@ -1,17 +1,13 @@
 import React from "react";
-import {
-  Arc,
-  DevArcConfig as arcConfig,
-  StakeData,
-  Stake,
-  Stakes,
-} from "../src";
+import { Arc, ArcConfig, StakeData, Stake, Stakes } from "../src";
 import {
   render,
   screen,
   waitForElementToBeRemoved,
   waitFor,
 } from "@testing-library/react";
+
+const arcConfig = new ArcConfig("private");
 
 describe("Stake component ", () => {
   it("Shows stake id", async () => {

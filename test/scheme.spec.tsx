@@ -1,17 +1,13 @@
 import React from "react";
-import {
-  Arc,
-  DevArcConfig as arcConfig,
-  SchemeData,
-  Scheme,
-  Schemes,
-} from "../src";
+import { Arc, ArcConfig, SchemeData, Scheme, Schemes } from "../src";
 import {
   render,
   screen,
   waitForElementToBeRemoved,
   waitFor,
 } from "@testing-library/react";
+
+const arcConfig = new ArcConfig("private");
 
 describe("Scheme component ", () => {
   it("Shows scheme name", async () => {

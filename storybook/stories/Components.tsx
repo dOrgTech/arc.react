@@ -3,7 +3,7 @@ import { storiesOf } from "@storybook/react";
 import ComponentView, { PropertyType } from "../helpers/ComponentView";
 import {
   Arc,
-  DevArcConfig as arcConfig,
+  ArcConfig,
   DAO,
   Member,
   Proposal,
@@ -16,6 +16,8 @@ import {
   Loader,
   RenderProps,
 } from "../../src";
+
+const arcConfig = new ArcConfig("private");
 
 export default () =>
   storiesOf("Components", module)

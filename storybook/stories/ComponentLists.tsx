@@ -2,7 +2,7 @@ import * as React from "react";
 import { storiesOf } from "@storybook/react";
 import {
   Arc,
-  DevArcConfig as arcConfig,
+  ArcConfig,
   DAOs,
   DAO,
   DAOData,
@@ -34,6 +34,8 @@ import {
   RenderProps,
 } from "../../src";
 import ComponentListView, { PropertyType } from "../helpers/ComponentListView";
+
+const arcConfig = new ArcConfig("private");
 
 export default () =>
   storiesOf("Component Lists", module)

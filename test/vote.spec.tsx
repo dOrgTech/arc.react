@@ -1,11 +1,13 @@
 import React from "react";
-import { Arc, DevArcConfig as arcConfig, VoteData, Vote, Votes } from "../src";
+import { Arc, ArcConfig, VoteData, Vote, Votes } from "../src";
 import {
   render,
   screen,
   waitForElementToBeRemoved,
   waitFor,
 } from "@testing-library/react";
+
+const arcConfig = new ArcConfig("private");
 
 describe("Vote component ", () => {
   it("Shows vote id", async () => {

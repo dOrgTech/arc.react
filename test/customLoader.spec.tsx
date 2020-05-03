@@ -1,15 +1,10 @@
 import React from "react";
-import {
-  Arc,
-  DevArcConfig as arcConfig,
-  DAO,
-  Loader,
-  RenderProps,
-  DAOData,
-} from "../src";
+import { Arc, ArcConfig, DAO, Loader, RenderProps, DAOData } from "../src";
 import { render, screen } from "@testing-library/react";
 
 describe("Custom loader ", () => {
+  const arcConfig = new ArcConfig("private");
+
   it("Shows custom message", async () => {
     const daoAddress = "0xe7a2c59e134ee81d4035ae6db2254f79308e334f";
     const { container } = render(

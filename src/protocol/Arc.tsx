@@ -1,17 +1,9 @@
 import * as React from "react";
-import { Protocol } from "../runtime";
-import { ArcConfig } from "./ArcConfig";
+import { ArcConfig } from "./";
+import { Protocol, ProtocolLogs } from "../runtime";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
 export class Arc extends Protocol<ArcConfig> {
-  protected async initialize() {
-    try {
-      await this.props.config.initialize();
-    } catch (e) {
-      throw Error(e);
-    }
-  }
-
   public static get Config() {
     return CreateContextFeed(
       this._ConfigContext.Consumer,
@@ -28,10 +20,10 @@ export class Arc extends Protocol<ArcConfig> {
     );
   }
 
-  protected static _ConfigContext = React.createContext<{} | undefined>(
+  protected static _ConfigContext = React.createContext<ArcConfig | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<{} | undefined>(
+  protected static _LogsContext = React.createContext<ProtocolLogs | undefined>(
     undefined
   );
 }
