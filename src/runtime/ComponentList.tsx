@@ -53,7 +53,6 @@ interface State<Entity, Data> {
   sorted: EntityList<Entity, Data>;
 
   // Diagnostics for the component
-  // TODO: logs aren't consumable, expose through a context?
   logs: ComponentListLogs;
 }
 
@@ -70,6 +69,11 @@ export abstract class ComponentList<
     children: any
   ): React.ComponentElement<CProps<Comp>, any>;
 
+  // See here for more information on the React.Context pattern:
+  // https://reactjs.org/docs/context.html
+  protected static _EntitiesContext: React.Context<any[] | undefined>;
+  protected static _LogsContext: React.Context<ComponentListLogs | undefined>;
+
   private observableEntities = memoize(
     // This will only run when the function's arguments have changed :D
     // allowing us to only recreated/refetch the entity data when the props or arc context have changed.
@@ -79,6 +83,12 @@ export abstract class ComponentList<
 
   // Our graphql query's subscriber object
   private _subscription?: Subscription;
+
+  // This trick allows us to access the static objects
+  // defined in the derived class. See this code sample:
+  // https://github.com/Microsoft/TypeScript/issues/5989#issuecomment-163066313
+  // @ts-ignore: This should always be there
+  "constructor": typeof ComponentList;
 
   constructor(props: Props) {
     super(props);
@@ -95,29 +105,35 @@ export abstract class ComponentList<
   }
 
   public render() {
+    const EntitiesProvider = this.constructor._EntitiesContext.Provider as any;
+    const LogsProvider = this.constructor._LogsContext.Provider;
+
     const { children } = this.props;
-    const { entities, sorted, logs } = this.state;
-    this.observableEntities(this.props);
+    const { entities: unsorted, sorted, logs } = this.state;
+    let entities = unsorted;
 
-    logs.reactRendered();
-
-    if (typeof children === "function") {
-      return children(entities);
-    } else {
-      if (entities) {
-        if (sorted.length > 0)
-          return sorted.map((item) =>
-            this.renderComponent(item.entity, children)
-          );
-        else
-          return entities.map((entity) =>
-            this.renderComponent(entity, children)
-          );
-      } else return <LoadingView logs={logs} />;
+    if (sorted.length > 0) {
+      entities = sorted.map((item) => item.entity);
     }
+
+    this.observableEntities(this.props);
+    logs.reactRendered();
+    return (
+      <EntitiesProvider value={entities}>
+        <LogsProvider value={logs}>
+          {typeof children === "function" ? (
+            children(entities)
+          ) : entities.length ? (
+            entities.map((entity) => this.renderComponent(entity, children))
+          ) : (
+            <LoadingView logs={logs} />
+          )}
+        </LogsProvider>
+      </EntitiesProvider>
+    );
   }
 
-  public async componentWillMount() {
+  public async UNSAFE_componentWillMount() {
     // prefetch the entities
     this.observableEntities(this.props);
   }
@@ -150,8 +166,11 @@ export abstract class ComponentList<
       );
 
       return entities;
-    } catch (error) {
-      logs.entityCreationFailed(error);
+    } catch (e) {
+      logs.entityCreationFailed(e);
+      this.setState({
+        logs: logs.clone(),
+      });
       return undefined;
     }
   }
@@ -164,7 +183,7 @@ export abstract class ComponentList<
 
   private fetchData(entity: Entity): Promise<Data> {
     return new Promise((resolve, reject) => {
-      const state = entity.state();
+      const state = entity.state({});
       state.subscribe(
         (data: Data) => resolve(data),
         (error: Error) => reject(error)
@@ -177,20 +196,27 @@ export abstract class ComponentList<
     const { sort } = this.props;
     logs.dataQueryReceivedData();
 
-    if (sort) {
-      const unsorted = entities.map(async (entity) => {
-        const data = await this.fetchData(entity);
-        return { entity, data };
-      });
-      Promise.all(unsorted).then((unsorted) => {
+    try {
+      if (sort) {
+        const unsorted = entities.map(async (entity) => {
+          const data = await this.fetchData(entity);
+          return { entity, data };
+        });
+        Promise.all(unsorted).then((unsorted) => {
+          this.setState({
+            entities: entities,
+            sorted: sort(unsorted),
+          });
+        });
+      } else {
         this.setState({
           entities: entities,
-          sorted: sort(unsorted),
         });
-      });
-    } else {
+      }
+    } catch (e) {
+      logs.dataQueryFailed(e);
       this.setState({
-        entities: entities,
+        logs: logs.clone(),
       });
     }
   }
@@ -198,6 +224,9 @@ export abstract class ComponentList<
   private onQueryError(error: Error) {
     const { logs } = this.state;
     logs.dataQueryFailed(error);
+    this.setState({
+      logs: logs.clone(),
+    });
   }
 
   private onQueryComplete() {

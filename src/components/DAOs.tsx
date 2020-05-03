@@ -1,24 +1,20 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import {
-  CProps,
-  ComponentList,
-  ComponentListProps
-} from "../runtime";
+import { IDAOQueryOptions as FilterOptions } from "@daostack/client";
 import {
   Arc as Protocol,
-  ArcConfig as ProtocolConfig
-} from "../protocol";
-import {
+  ArcConfig as ProtocolConfig,
   ArcDAO as Component,
   DAOEntity as Entity,
-  DAOData as Data
-} from "./";
-import {
-  IDAOQueryOptions as FilterOptions
-} from "@daostack/client";
+  DAOData as Data,
+  CProps,
+  ComponentList,
+  ComponentListLogs,
+  ComponentListProps,
+} from "../";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 
-interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> { }
+type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
 
 interface InferredProps {
   arcConfig: ProtocolConfig | undefined;
@@ -26,47 +22,76 @@ interface InferredProps {
 
 type Props = RequiredProps & InferredProps;
 
-class ArcDAOs extends ComponentList<Props, Component>
-{
+class ArcDAOs extends ComponentList<Props, Component> {
   createObservableEntities(): Observable<Entity[]> {
     const { arcConfig, filter } = this.props;
     if (!arcConfig) {
-      throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
+      throw Error(
+        "Arc Config Missing: Please provide this field as a prop, or use the inference component."
+      );
     }
     return Entity.search(arcConfig.connection, filter);
   }
 
-  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
+  renderComponent(
+    entity: Entity,
+    children: any
+  ): React.ComponentElement<CProps<Component>, any> {
     const { arcConfig } = this.props;
 
     return (
-      <Component address={entity.id} arcConfig={arcConfig}>
-      {children}
+      <Component key={entity.id} address={entity.id} arcConfig={arcConfig}>
+        {children}
       </Component>
     );
   }
+
+  public static get Entities() {
+    return CreateContextFeed(
+      this._EntitiesContext.Consumer,
+      this._LogsContext.Consumer,
+      "DAOs"
+    );
+  }
+
+  public static get Logs() {
+    return CreateContextFeed(
+      this._LogsContext.Consumer,
+      this._LogsContext.Consumer,
+      "DAOs"
+    );
+  }
+
+  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<
+    ComponentListLogs | undefined
+  >(undefined);
 }
 
-class DAOs extends React.Component<RequiredProps>
-{
+class DAOs extends React.Component<RequiredProps> {
   render() {
     const { children, sort, filter } = this.props;
 
     return (
       <Protocol.Config>
-      {(arcConfig: ProtocolConfig) =>
-        <ArcDAOs arcConfig={arcConfig} sort={sort} filter={filter}>
-        {children}
-        </ArcDAOs>
-      }
+        {(arc: ProtocolConfig) => (
+          <ArcDAOs arcConfig={arc} sort={sort} filter={filter}>
+            {children}
+          </ArcDAOs>
+        )}
       </Protocol.Config>
     );
   }
+
+  public static get Entities() {
+    return ArcDAOs.Entities;
+  }
+
+  public static get Logs() {
+    return ArcDAOs.Logs;
+  }
 }
 
-export default DAOs;
-
-export {
-  ArcDAOs,
-  DAOs
-};
+export { ArcDAOs, DAOs };
