@@ -32,7 +32,7 @@ import {
   VoteData,
   Loader,
   RenderProps,
-} from "../../src/";
+} from "../../src";
 import ComponentListView, { PropertyType } from "../helpers/ComponentListView";
 
 export default () =>

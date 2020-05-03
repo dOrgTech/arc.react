@@ -14,7 +14,6 @@ import {
   screen,
   waitFor,
   waitForElementToBeRemoved,
-  queryByText,
 } from "@testing-library/react";
 
 const daoAddress = "0xe7a2c59e134ee81d4035ae6db2254f79308e334f";

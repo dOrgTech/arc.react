@@ -1,13 +1,18 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import { CProps, ComponentList, ComponentListProps } from "../runtime";
-import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
+import { ISchemeQueryOptions as FilterOptions } from "@daostack/client";
 import {
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig,
   ArcScheme as Component,
   SchemeEntity as Entity,
   SchemeData as Data,
-} from "./";
-import { ISchemeQueryOptions as FilterOptions } from "@daostack/client";
+  CProps,
+  ComponentList,
+  ComponentListLogs,
+  ComponentListProps,
+} from "../";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 
 type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
 
@@ -40,6 +45,29 @@ class ArcSchemes extends ComponentList<Props, Component> {
       </Component>
     );
   }
+
+  public static get Entities() {
+    return CreateContextFeed(
+      this._EntitiesContext.Consumer,
+      this._LogsContext.Consumer,
+      "Schemes"
+    );
+  }
+
+  public static get Logs() {
+    return CreateContextFeed(
+      this._LogsContext.Consumer,
+      this._LogsContext.Consumer,
+      "Schemes"
+    );
+  }
+
+  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<
+    ComponentListLogs | undefined
+  >(undefined);
 }
 
 class Schemes extends React.Component<RequiredProps> {
@@ -55,6 +83,14 @@ class Schemes extends React.Component<RequiredProps> {
         )}
       </Protocol.Config>
     );
+  }
+
+  public static get Entities() {
+    return ArcSchemes.Entities;
+  }
+
+  public static get Logs() {
+    return ArcSchemes.Logs;
   }
 }
 

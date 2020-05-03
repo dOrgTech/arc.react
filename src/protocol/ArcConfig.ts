@@ -12,7 +12,7 @@ export class ArcConfig extends ProtocolConfig {
     public graphqlWsUrl: string,
     public ipfsProvider: any,
     public network: "private" | "kovan" | "rinkeby" | "mainnet",
-    public retryLink: RetryLink
+    public retryLink?: RetryLink
   ) {
     super();
     this.isInitialized = false;
@@ -33,7 +33,7 @@ export class ArcConfig extends ProtocolConfig {
 
 const retryLink = new RetryLink({
   attempts: {
-    max: Infinity,
+    max: 20,
     retryIf: (error, _operation) => {
       console.error("Error occurred fetching data, retrying...");
       return !!error;
@@ -41,8 +41,7 @@ const retryLink = new RetryLink({
   },
   delay: {
     initial: 500,
-    max: 10000,
-    jitter: true,
+    max: 2000,
   },
 });
 

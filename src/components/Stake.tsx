@@ -1,8 +1,12 @@
 import * as React from "react";
-import { Component, ComponentLogs } from "../runtime";
-import { CreateContextFeed } from "../runtime/ContextFeed";
-import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
 import { Stake as Entity, IStakeState as Data } from "@daostack/client";
+import {
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig,
+  Component,
+  ComponentLogs,
+} from "../";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 
 interface RequiredProps {
   // Stake ID
@@ -40,27 +44,36 @@ class ArcStake extends Component<Props, Entity, Data> {
   public static get Entity() {
     return CreateContextFeed(
       this._EntityContext.Consumer,
-      this._LogsContext.Consumer
+      this._LogsContext.Consumer,
+      "Stake"
     );
   }
 
   public static get Data() {
     return CreateContextFeed(
       this._DataContext.Consumer,
-      this._LogsContext.Consumer
+      this._LogsContext.Consumer,
+      "Stake"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
       this._LogsContext.Consumer,
-      this._LogsContext.Consumer
+      this._LogsContext.Consumer,
+      "Stake"
     );
   }
 
-  protected static _EntityContext = React.createContext({});
-  protected static _DataContext = React.createContext({});
-  protected static _LogsContext = React.createContext({});
+  protected static _EntityContext = React.createContext<Entity | undefined>(
+    undefined
+  );
+  protected static _DataContext = React.createContext<Data | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<
+    ComponentLogs | undefined
+  >(undefined);
 }
 
 class Stake extends React.Component<RequiredProps> {
@@ -99,5 +112,4 @@ export {
   Props as StakeProps,
   Entity as StakeEntity,
   Data as StakeData,
-  ComponentLogs,
 };
