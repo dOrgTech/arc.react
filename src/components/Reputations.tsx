@@ -1,13 +1,17 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import { CProps, ComponentList, ComponentListProps } from "../runtime";
-import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
+import { IReputationQueryOptions as FilterOptions } from "@daostack/client";
 import {
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig,
   ArcReputation as Component,
   ReputationEntity as Entity,
   ReputationData as Data,
-} from "./";
-import { IReputationQueryOptions as FilterOptions } from "@daostack/client";
+  CProps,
+  ComponentList,
+  ComponentListLogs,
+  ComponentListProps,
+} from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
 type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
@@ -62,10 +66,12 @@ class ArcReputations extends ComponentList<Props, Component> {
     );
   }
 
-  protected static _EntitiesContext = React.createContext<{} | undefined>(
+  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<{} | undefined>({});
+  protected static _LogsContext = React.createContext<
+    ComponentListLogs | undefined
+  >(undefined);
 }
 
 class Reputations extends React.Component<RequiredProps> {

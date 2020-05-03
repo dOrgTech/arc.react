@@ -71,8 +71,8 @@ export abstract class ComponentList<
 
   // See here for more information on the React.Context pattern:
   // https://reactjs.org/docs/context.html
-  protected static _EntitiesContext: React.Context<{} | undefined>;
-  protected static _LogsContext: React.Context<{} | undefined>;
+  protected static _EntitiesContext: React.Context<any[] | undefined>;
+  protected static _LogsContext: React.Context<ComponentListLogs | undefined>;
 
   private observableEntities = memoize(
     // This will only run when the function's arguments have changed :D

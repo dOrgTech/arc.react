@@ -1,3 +1,3 @@
-export * from "./components/index";
-export * from "./protocol/index";
-export * from "./runtime/index";
+export * from "./runtime";
+export * from "./protocol";
+export * from "./components";

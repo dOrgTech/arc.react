@@ -1,8 +1,7 @@
 import * as React from "react";
-import { Component, ComponentLogs } from "../runtime";
-import { CreateContextFeed } from "../runtime/ContextFeed";
-import { DAO, DAOEntity } from "./";
 import { Member as Entity, IMemberState as Data } from "@daostack/client";
+import { DAO, DAOEntity, Component, ComponentLogs } from "../";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 
 interface RequiredProps {
   // Address of the member
@@ -64,15 +63,15 @@ class DAOMember extends Component<Props, Entity, Data> {
     );
   }
 
-  protected static _EntityContext = React.createContext<{} | undefined>(
+  protected static _EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<{} | undefined>(
+  protected static _DataContext = React.createContext<Data | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<{} | undefined>(
-    undefined
-  );
+  protected static _LogsContext = React.createContext<
+    ComponentLogs | undefined
+  >(undefined);
 }
 
 class Member extends React.Component<RequiredProps> {
@@ -111,5 +110,4 @@ export {
   Props as MemberProps,
   Entity as MemberEntity,
   Data as MemberData,
-  ComponentLogs,
 };

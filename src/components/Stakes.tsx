@@ -1,14 +1,18 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import { CProps, ComponentList, ComponentListProps } from "../runtime";
-import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
-import { CreateContextFeed } from "../runtime/ContextFeed";
+import { IStakeQueryOptions as FilterOptions } from "@daostack/client";
 import {
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig,
   ArcStake as Component,
   StakeEntity as Entity,
   StakeData as Data,
-} from "./";
-import { IStakeQueryOptions as FilterOptions } from "@daostack/client";
+  CProps,
+  ComponentList,
+  ComponentListLogs,
+  ComponentListProps,
+} from "../";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 
 type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
 
@@ -62,10 +66,12 @@ class ArcStakes extends ComponentList<Props, Component> {
     );
   }
 
-  protected static _EntitiesContext = React.createContext<{} | undefined>(
+  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<{} | undefined>({});
+  protected static _LogsContext = React.createContext<
+    ComponentListLogs | undefined
+  >(undefined);
 }
 
 class Stakes extends React.Component<RequiredProps> {

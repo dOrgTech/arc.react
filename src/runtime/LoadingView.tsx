@@ -1,6 +1,6 @@
 import * as React from "react";
 import Popup from "reactjs-popup";
-import { ComponentLogs, ComponentListLogs, ProtocolLogs } from "../../src";
+import { ComponentLogs, ComponentListLogs, ProtocolLogs } from "../";
 import { Loader, RenderFunc } from "./Loader";
 import * as R from "ramda";
 import Spinner from "react-spinkit";

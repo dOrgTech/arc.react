@@ -1,9 +1,17 @@
 import * as React from "react";
 import { Observable } from "rxjs";
 import { IDAOQueryOptions as FilterOptions } from "@daostack/client";
-import { CProps, ComponentList, ComponentListProps } from "../runtime";
-import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
-import { ArcDAO as Component, DAOEntity as Entity, DAOData as Data } from "./";
+import {
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig,
+  ArcDAO as Component,
+  DAOEntity as Entity,
+  DAOData as Data,
+  CProps,
+  ComponentList,
+  ComponentListLogs,
+  ComponentListProps,
+} from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
 type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
@@ -54,10 +62,12 @@ class ArcDAOs extends ComponentList<Props, Component> {
     );
   }
 
-  protected static _EntitiesContext = React.createContext<{} | undefined>(
+  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<{} | undefined>({});
+  protected static _LogsContext = React.createContext<
+    ComponentListLogs | undefined
+  >(undefined);
 }
 
 class DAOs extends React.Component<RequiredProps> {

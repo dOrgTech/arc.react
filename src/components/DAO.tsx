@@ -1,8 +1,7 @@
 import * as React from "react";
-import { Component, ComponentLogs } from "../runtime";
-import { CreateContextFeed } from "../runtime/ContextFeed";
-import { Arc, ArcConfig } from "../protocol";
 import { DAO as Entity, IDAOState as Data } from "@daostack/client";
+import { Arc, ArcConfig, Component, ComponentLogs } from "../";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 
 interface RequiredProps {
   // Address of the DAO Avatar
@@ -59,15 +58,15 @@ class ArcDAO extends Component<Props, Entity, Data> {
     );
   }
 
-  protected static _EntityContext = React.createContext<{} | undefined>(
+  protected static _EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<{} | undefined>(
+  protected static _DataContext = React.createContext<Data | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<{} | undefined>(
-    undefined
-  );
+  protected static _LogsContext = React.createContext<
+    ComponentLogs | undefined
+  >(undefined);
 }
 
 class DAO extends React.Component<RequiredProps> {
@@ -100,11 +99,4 @@ class DAO extends React.Component<RequiredProps> {
 
 export default DAO;
 
-export {
-  ArcDAO,
-  DAO,
-  Props as DAOProps,
-  Entity as DAOEntity,
-  Data as DAOData,
-  ComponentLogs,
-};
+export { ArcDAO, DAO, Props as DAOProps, Entity as DAOEntity, Data as DAOData };

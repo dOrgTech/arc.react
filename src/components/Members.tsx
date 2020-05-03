@@ -1,16 +1,20 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import { CProps, ComponentList, ComponentListProps } from "../runtime";
-import { CreateContextFeed } from "../runtime/ContextFeed";
-import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
+import { IMemberQueryOptions as FilterOptions } from "@daostack/client";
 import {
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig,
   DAO as InferComponent,
   DAOEntity as InferEntity,
   DAOMember as Component,
   MemberEntity as Entity,
   MemberData as Data,
-} from "./";
-import { IMemberQueryOptions as FilterOptions } from "@daostack/client";
+  CProps,
+  ComponentList,
+  ComponentListLogs,
+  ComponentListProps,
+} from "../";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 
 // TODO: find better way of handling inference... this gets complicated when there are multiple
 // points of inferrance such as votes (MemberVotes, DAOVotes, ProposalVotes). Maybe have a prop
@@ -120,12 +124,12 @@ class DAOMembers extends ComponentList<DAOProps, Component> {
     );
   }
 
-  protected static _EntitiesContext = React.createContext<{} | undefined>(
+  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<{} | undefined>(
-    undefined
-  );
+  protected static _LogsContext = React.createContext<
+    ComponentListLogs | undefined
+  >(undefined);
 }
 
 class Members extends React.Component<RequiredProps> {

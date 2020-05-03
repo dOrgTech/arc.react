@@ -1,8 +1,12 @@
 import * as React from "react";
-import { Component, ComponentLogs } from "../runtime";
-import { CreateContextFeed } from "../runtime/ContextFeed";
-import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
 import { Proposal as Entity, IProposalState as Data } from "@daostack/client";
+import {
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig,
+  Component,
+  ComponentLogs,
+} from "../";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 
 interface RequiredProps {
   // Proposal ID
@@ -61,13 +65,15 @@ class ArcProposal extends Component<Props, Entity, Data> {
     );
   }
 
-  protected static _EntityContext = React.createContext<{} | undefined>(
+  protected static _EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<{} | undefined>(
+  protected static _DataContext = React.createContext<Data | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<{} | undefined>({});
+  protected static _LogsContext = React.createContext<
+    ComponentLogs | undefined
+  >(undefined);
 }
 
 class Proposal extends React.Component<RequiredProps> {
@@ -106,5 +112,4 @@ export {
   Props as ProposalProps,
   Entity as ProposalEntity,
   Data as ProposalData,
-  ComponentLogs,
 };

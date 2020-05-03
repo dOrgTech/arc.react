@@ -1,15 +1,19 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import { CProps, ComponentList, ComponentListProps } from "../runtime";
-import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
+import { IProposalQueryOptions as FilterOptions } from "@daostack/client";
 import {
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig,
   DAO as InferComponent,
   DAOEntity as InferEntity,
   ArcProposal as Component,
   ProposalEntity as Entity,
   ProposalData as Data,
-} from "./";
-import { IProposalQueryOptions as FilterOptions } from "@daostack/client";
+  CProps,
+  ComponentList,
+  ComponentListLogs,
+  ComponentListProps,
+} from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
 interface RequiredProps
@@ -24,8 +28,6 @@ interface ArcInferredProps {
 interface DAOInferredProps {
   dao: InferEntity;
 }
-
-// TODO: SchemeProposals
 
 type ArcProps = RequiredProps & ArcInferredProps;
 type DAOProps = RequiredProps & ArcInferredProps & DAOInferredProps;
@@ -81,6 +83,7 @@ class DAOProposals extends ComponentList<DAOProps, Component> {
       </Component>
     );
   }
+
   public static get Entities() {
     return CreateContextFeed(
       this._EntitiesContext.Consumer,
@@ -97,10 +100,12 @@ class DAOProposals extends ComponentList<DAOProps, Component> {
     );
   }
 
-  protected static _EntitiesContext = React.createContext<{} | undefined>(
+  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<{} | undefined>({});
+  protected static _LogsContext = React.createContext<
+    ComponentListLogs | undefined
+  >(undefined);
 }
 
 class Proposals extends React.Component<RequiredProps> {

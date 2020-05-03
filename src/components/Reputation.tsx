@@ -1,12 +1,17 @@
 import * as React from "react";
-import { Component, ComponentLogs } from "../runtime";
-import { CreateContextFeed } from "../runtime/ContextFeed";
-import { Arc, ArcConfig } from "../protocol";
 import {
   Reputation as Entity,
   IReputationState as Data,
 } from "@daostack/client";
-import { DAO, DAOData } from "./DAO";
+import {
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig,
+  DAO as InferComponent,
+  DAOData as InferData,
+  Component,
+  ComponentLogs,
+} from "../";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 
 interface RequiredProps {
   // Address of the Reputation Token
@@ -15,7 +20,7 @@ interface RequiredProps {
 
 interface InferredProps {
   // Arc Instance
-  arcConfig: ArcConfig | undefined;
+  arcConfig: ProtocolConfig | undefined;
 }
 
 type Props = RequiredProps & InferredProps;
@@ -63,13 +68,15 @@ class ArcReputation extends Component<Props, Entity, Data> {
     );
   }
 
-  protected static _EntityContext = React.createContext<{} | undefined>(
+  protected static _EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<{} | undefined>(
+  protected static _DataContext = React.createContext<Data | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<{} | undefined>({});
+  protected static _LogsContext = React.createContext<
+    ComponentLogs | undefined
+  >(undefined);
 }
 
 class Reputation extends React.Component<RequiredProps> {
@@ -78,25 +85,25 @@ class Reputation extends React.Component<RequiredProps> {
 
     if (address !== undefined) {
       return (
-        <Arc.Config>
-          {(arc: ArcConfig) => (
+        <Protocol.Config>
+          {(arc: ProtocolConfig) => (
             <ArcReputation address={address} arcConfig={arc}>
               {children}
             </ArcReputation>
           )}
-        </Arc.Config>
+        </Protocol.Config>
       );
     } else {
       return (
-        <Arc.Config>
-          <DAO.Data>
-            {(arc: ArcConfig, dao: DAOData) => (
+        <Protocol.Config>
+          <InferComponent.Data>
+            {(arc: ProtocolConfig, dao: InferData) => (
               <ArcReputation address={dao.reputation.address} arcConfig={arc}>
                 {children}
               </ArcReputation>
             )}
-          </DAO.Data>
-        </Arc.Config>
+          </InferComponent.Data>
+        </Protocol.Config>
       );
     }
   }
@@ -122,5 +129,4 @@ export {
   Props as ReputationProps,
   Entity as ReputationEntity,
   Data as ReputationData,
-  ComponentLogs,
 };

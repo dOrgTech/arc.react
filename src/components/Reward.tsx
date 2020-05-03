@@ -1,8 +1,12 @@
 import * as React from "react";
-import { Component, ComponentLogs } from "../runtime";
-import { CreateContextFeed } from "../runtime/ContextFeed";
-import { Arc, ArcConfig } from "../protocol";
 import { Reward as Entity, IRewardState as Data } from "@daostack/client";
+import {
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig,
+  Component,
+  ComponentLogs,
+} from "../";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 
 interface RequiredProps {
   // Reward ID
@@ -11,7 +15,7 @@ interface RequiredProps {
 
 interface InferredProps {
   // Arc Instance
-  arcConfig: ArcConfig | undefined;
+  arcConfig: ProtocolConfig | undefined;
 }
 
 type Props = RequiredProps & InferredProps;
@@ -53,13 +57,15 @@ class ArcReward extends Component<Props, Entity, Data> {
     );
   }
 
-  protected static _EntityContext = React.createContext<{} | undefined>(
+  protected static _EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<{} | undefined>(
+  protected static _DataContext = React.createContext<Data | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<{} | undefined>({});
+  protected static _LogsContext = React.createContext<
+    ComponentLogs | undefined
+  >(undefined);
 }
 
 class Reward extends React.Component<RequiredProps> {
@@ -67,13 +73,13 @@ class Reward extends React.Component<RequiredProps> {
     const { id, children } = this.props;
 
     return (
-      <Arc.Config>
-        {(arc: ArcConfig) => (
+      <Protocol.Config>
+        {(arc: ProtocolConfig) => (
           <ArcReward id={id} arcConfig={arc}>
             {children}
           </ArcReward>
         )}
-      </Arc.Config>
+      </Protocol.Config>
     );
   }
 
@@ -98,5 +104,4 @@ export {
   Props as RewardProps,
   Entity as RewardEntity,
   Data as RewardData,
-  ComponentLogs,
 };

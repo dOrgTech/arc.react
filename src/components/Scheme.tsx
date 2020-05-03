@@ -1,8 +1,12 @@
 import * as React from "react";
-import { Component, ComponentLogs } from "../runtime";
-import { CreateContextFeed } from "../runtime/ContextFeed";
-import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
 import { Scheme as Entity, ISchemeState as Data } from "@daostack/client";
+import {
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig,
+  Component,
+  ComponentLogs,
+} from "../";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 
 interface RequiredProps {
   // Scheme ID
@@ -61,13 +65,15 @@ class ArcScheme extends Component<Props, Entity, Data> {
     );
   }
 
-  protected static _EntityContext = React.createContext<{} | undefined>(
+  protected static _EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<{} | undefined>(
+  protected static _DataContext = React.createContext<Data | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<{} | undefined>({});
+  protected static _LogsContext = React.createContext<
+    ComponentLogs | undefined
+  >(undefined);
 }
 
 class Scheme extends React.Component<RequiredProps> {
@@ -106,5 +112,4 @@ export {
   Props as SchemeProps,
   Entity as SchemeEntity,
   Data as SchemeData,
-  ComponentLogs,
 };
