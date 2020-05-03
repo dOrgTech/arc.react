@@ -1,15 +1,21 @@
 import * as React from "react";
 import { ProtocolConfig } from "./ProtocolConfig";
 
-interface Props<Config extends ProtocolConfig> {
+type PCConnection<Protocol> = Protocol extends ProtocolConfig<infer Connection>
+  ? Connection
+  : never;
+
+interface Props<Config extends ProtocolConfig<PCConnection<Config>>> {
   config: Config;
 }
 
 export abstract class Protocol<
-  Config extends ProtocolConfig
+  Config extends ProtocolConfig<PCConnection<Config>>
 > extends React.Component<Props<Config>> {
   // Complete any asynchronous initialization work needed by the ProtocolConfig
-  protected async initialize() {}
+  protected async initialize() {
+    await this.props.config.initialize();
+  }
 
   protected static _ConfigContext: React.Context<{}>;
 

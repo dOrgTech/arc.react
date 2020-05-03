@@ -1,6 +1,6 @@
 import * as React from "react";
 import Popup from "reactjs-popup";
-import { ComponentLogs, ComponentListLogs } from "../../src";
+import { ComponentLogs, ComponentListLogs } from "./";
 import { Loader, RenderFunc } from "./Loader";
 
 const R = require("ramda");

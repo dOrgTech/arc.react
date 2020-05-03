@@ -3,7 +3,7 @@ import { storiesOf } from "@storybook/react";
 import ComponentView, { PropertyType } from "../helpers/ComponentView";
 import {
   Arc,
-  getConfig,
+  ArcConfig,
   DAO,
   Member,
   Proposal,
@@ -17,6 +17,8 @@ import {
   RenderProps,
 } from "../../src";
 
+const arcConfig = new ArcConfig("private");
+
 export default () =>
   storiesOf("Components", module)
     .add("DAO", () => (
@@ -24,7 +26,7 @@ export default () =>
         name={"DAO"}
         Component={DAO}
         RequiredContext={(props) => (
-          <Arc config={getConfig("private")}>{props.children}</Arc>
+          <Arc config={arcConfig}>{props.children}</Arc>
         )}
         // TODO: add helper button to "Get DAO Addresses"
         propEditors={[
@@ -51,7 +53,7 @@ export default () =>
               </div>
             )}
           >
-            <Arc config={getConfig("private")}>{props.children}</Arc>
+            <Arc config={arcConfig}>{props.children}</Arc>
           </Loader>
         )}
         // TODO: add helper button to "Get DAO Addresses"
@@ -70,7 +72,7 @@ export default () =>
         name={"Member"}
         Component={Member}
         RequiredContext={(props) => (
-          <Arc config={getConfig("private")}>
+          <Arc config={arcConfig}>
             <DAO address={props.dao}>{props.children}</DAO>
           </Arc>
         )}
@@ -95,7 +97,7 @@ export default () =>
         name={"Proposal"}
         Component={Proposal}
         RequiredContext={(props) => (
-          <Arc config={getConfig("private")}>
+          <Arc config={arcConfig}>
             <DAO address={props.dao}>{props.children}</DAO>
           </Arc>
         )}
@@ -115,7 +117,7 @@ export default () =>
         name={"Reputation"}
         Component={Reputation}
         RequiredContext={(props) => (
-          <Arc config={getConfig("private")}>{props.children}</Arc>
+          <Arc config={arcConfig}>{props.children}</Arc>
         )}
         propEditors={[
           {
@@ -132,7 +134,7 @@ export default () =>
         name={"Reputation"}
         Component={Reputation}
         RequiredContext={(props) => (
-          <Arc config={getConfig("private")}>
+          <Arc config={arcConfig}>
             <DAO address={props.dao}>{props.children}</DAO>
           </Arc>
         )}
@@ -151,7 +153,7 @@ export default () =>
         name={"Reward"}
         Component={Reward}
         RequiredContext={(props) => (
-          <Arc config={getConfig("private")}>{props.children}</Arc>
+          <Arc config={arcConfig}>{props.children}</Arc>
         )}
         propEditors={[
           {
@@ -169,7 +171,7 @@ export default () =>
         name={"Scheme"}
         Component={Scheme}
         RequiredContext={(props) => (
-          <Arc config={getConfig("private")}>{props.children}</Arc>
+          <Arc config={arcConfig}>{props.children}</Arc>
         )}
         propEditors={[
           {
@@ -187,7 +189,7 @@ export default () =>
         name={"Stake"}
         Component={Stake}
         RequiredContext={(props) => (
-          <Arc config={getConfig("private")}>{props.children}</Arc>
+          <Arc config={arcConfig}>{props.children}</Arc>
         )}
         propEditors={[
           {
@@ -205,7 +207,7 @@ export default () =>
         name={"Token"}
         Component={Token}
         RequiredContext={(props) => (
-          <Arc config={getConfig("private")}>{props.children}</Arc>
+          <Arc config={arcConfig}>{props.children}</Arc>
         )}
         propEditors={[
           {
@@ -222,7 +224,7 @@ export default () =>
         name={"Token"}
         Component={Token}
         RequiredContext={(props) => (
-          <Arc config={getConfig("private")}>
+          <Arc config={arcConfig}>
             <DAO address={props.dao}>{props.children}</DAO>
           </Arc>
         )}
@@ -241,7 +243,7 @@ export default () =>
         name={"Vote"}
         Component={Vote}
         RequiredContext={(props) => (
-          <Arc config={getConfig("private")}>{props.children}</Arc>
+          <Arc config={arcConfig}>{props.children}</Arc>
         )}
         propEditors={[
           {

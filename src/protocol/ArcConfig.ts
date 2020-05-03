@@ -1,12 +1,21 @@
-import { ProtocolConfig, Network } from "../runtime/ProtocolConfig";
+import { Arc as Connection } from "@daostack/client";
+import { ProtocolConfig } from "../runtime";
+import { Network, networkSettings, Settings } from "./";
 
-export class ArcConfig extends ProtocolConfig {
+export class ArcConfig extends ProtocolConfig<Connection> {
   public isInitialized: boolean;
+  public connection: Connection;
 
-  constructor(network: Network) {
+  constructor(networkOrSettings: Network | Settings) {
     super();
+
+    if (typeof networkOrSettings === "string") {
+      this.connection = new Connection(networkSettings[networkOrSettings]);
+    } else {
+      this.connection = new Connection(networkOrSettings);
+    }
+
     this.isInitialized = false;
-    this._getConnectionParams(network);
   }
 
   public async initialize(): Promise<boolean> {
@@ -14,7 +23,3 @@ export class ArcConfig extends ProtocolConfig {
     return this.isInitialized;
   }
 }
-
-export const getConfig = (network: Network): ArcConfig => {
-  return new ArcConfig(network);
-};

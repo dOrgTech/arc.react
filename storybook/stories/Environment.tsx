@@ -2,22 +2,24 @@ import * as React from "react";
 import { storiesOf } from "@storybook/react";
 import { setupGraphiQL } from "@storybook/addon-graphql";
 import QuerySnippets from "../helpers/QuerySnippets";
-import { Arc, ArcConfig, getConfig } from "../../src";
+import { Arc, ArcConfig } from "../../src";
 import { Typography, Divider } from "@material-ui/core";
 import ObjectInspector from "../helpers/ObjectInspector";
 import { IContractInfo } from "@daostack/client/src/arc";
 
+const arcConfig = new ArcConfig("private");
+
 // TODO: make configurable
 const defaultAddress = "0x0000000000000000000000000000000000000000";
 const graphiql = setupGraphiQL({
-  url: getConfig("private").connection.graphqlHttpProvider,
+  url: arcConfig.connection.graphqlHttpProvider,
 });
 
 export default () =>
   storiesOf("Environment", module)
     .add("Connections", () => {
       return (
-        <Arc config={getConfig("private")}>
+        <Arc config={arcConfig}>
           <Arc.Config>
             {(arc: ArcConfig) => {
               return (
@@ -38,7 +40,7 @@ export default () =>
       );
     })
     .add("Contracts", () => (
-      <Arc config={getConfig("private")}>
+      <Arc config={arcConfig}>
         <Arc.Config>
           {(arc: ArcConfig) => {
             const connection = arc.connection;

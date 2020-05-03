@@ -1,12 +1,5 @@
-import { Arc as Connection } from "@daostack/client";
-import { settings } from "../protocol/settings";
-
-export type Network = "private" | "kovan" | "rinkeby" | "mainnet";
-
-export abstract class ProtocolConfig {
+export abstract class ProtocolConfig<Connection> {
+  public abstract connection: Connection;
   public abstract isInitialized: boolean;
-  public connection!: Connection;
-  protected _getConnectionParams(network: Network) {
-    this.connection = new Connection(settings[network]);
-  }
+  public abstract async initialize(): Promise<boolean>;
 }
