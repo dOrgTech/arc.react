@@ -1,13 +1,18 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import { CProps, ComponentList, ComponentListProps } from "../runtime";
-import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
+import { IStakeQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 import {
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig,
   ArcStake as Component,
   StakeEntity as Entity,
   StakeData as Data,
-} from "./";
-import { IStakeQueryOptions as FilterOptions } from "@dorgtech/arc.js";
+  CProps,
+  ComponentList,
+  ComponentListLogs,
+  ComponentListProps,
+} from "../";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 
 type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
 
@@ -44,6 +49,29 @@ class ArcStakes extends ComponentList<Props, Component> {
       </Component>
     );
   }
+
+  public static get Entities() {
+    return CreateContextFeed(
+      this._EntitiesContext.Consumer,
+      this._LogsContext.Consumer,
+      "Stakes"
+    );
+  }
+
+  public static get Logs() {
+    return CreateContextFeed(
+      this._LogsContext.Consumer,
+      this._LogsContext.Consumer,
+      "Stakes"
+    );
+  }
+
+  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<
+    ComponentListLogs | undefined
+  >(undefined);
 }
 
 class Stakes extends React.Component<RequiredProps> {
@@ -59,6 +87,14 @@ class Stakes extends React.Component<RequiredProps> {
         )}
       </Protocol.Config>
     );
+  }
+
+  public static get Entities() {
+    return ArcStakes.Entities;
+  }
+
+  public static get Logs() {
+    return ArcStakes.Logs;
   }
 }
 

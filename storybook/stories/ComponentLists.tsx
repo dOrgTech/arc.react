@@ -2,7 +2,7 @@ import * as React from "react";
 import { storiesOf } from "@storybook/react";
 import {
   Arc,
-  DevArcConfig as arcConfig,
+  ArcConfig,
   DAOs,
   DAO,
   DAOData,
@@ -32,8 +32,10 @@ import {
   VoteData,
   Loader,
   RenderProps,
-} from "../../src/";
+} from "../../src";
 import ComponentListView, { PropertyType } from "../helpers/ComponentListView";
+
+const arcConfig = new ArcConfig("private");
 
 export default () =>
   storiesOf("Component Lists", module)
@@ -90,7 +92,7 @@ export default () =>
           {
             friendlyName: "DAO Address",
             name: "dao",
-            defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
+            defaultValue: "0x02981ec0aefe7329442c39dfe5a52fb8781e7659",
             type: PropertyType.string,
           },
           {

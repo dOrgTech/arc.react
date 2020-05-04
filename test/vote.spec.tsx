@@ -1,5 +1,5 @@
 import React from "react";
-import { Arc, DevArcConfig as arcConfig, VoteData, Vote, Votes } from "../src";
+import { Arc, ArcConfig, VoteData, Vote, Votes } from "../src";
 import {
   render,
   screen,
@@ -7,10 +7,12 @@ import {
   waitFor,
 } from "@testing-library/react";
 
+const arcConfig = new ArcConfig("private");
+
 describe("Vote component ", () => {
   it("Shows vote id", async () => {
     const voteId =
-      "0x2f3637f7d77d6b1ca3412e30bb9764f82267458b4f4e320a297a8ac9889e8160";
+      "0x0795aafa7207e2c48241fa432f1f66789e0d2a2e2802208ced7ca3ff216dc74e";
     const { container } = render(
       <Arc config={arcConfig}>
         <Vote id={voteId}>

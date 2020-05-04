@@ -1,7 +1,7 @@
 import React from "react";
 import {
   Arc,
-  DevArcConfig as arcConfig,
+  ArcConfig,
   DAO,
   DAOData,
   DAOs,
@@ -14,10 +14,10 @@ import {
   screen,
   waitFor,
   waitForElementToBeRemoved,
-  queryByText,
 } from "@testing-library/react";
 
-const daoAddress = "0xc2a504a020e685154f10d3091f3c9f3b9fd5631c";
+const daoAddress = "0xe7a2c59e134ee81d4035ae6db2254f79308e334f";
+const arcConfig = new ArcConfig("private");
 
 describe("DAO Component ", () => {
   it("Shows DAO ID", async () => {

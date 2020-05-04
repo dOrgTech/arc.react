@@ -1,7 +1,7 @@
 import React from "react";
 import {
   Arc,
-  DevArcConfig as arcConfig,
+  ArcConfig,
   DAO,
   MemberData,
   Member,
@@ -17,7 +17,9 @@ import {
   waitFor,
 } from "@testing-library/react";
 
-const daoAddress = "0xc2a504a020e685154f10d3091f3c9f3b9fd5631c";
+const daoAddress = "0xe7a2c59e134ee81d4035ae6db2254f79308e334f";
+const arcConfig = new ArcConfig("private");
+
 describe("Member component ", () => {
   it("Shows member and dao address with inferred props", async () => {
     const memberAddress = "0xe11ba2b4d45eaed5996cd0823791e0c93114882d";
@@ -59,7 +61,7 @@ describe("Member component ", () => {
   it("Shows member and dao address without inferred props", async () => {
     const daoAddress = "0xe7a2c59e134ee81d4035ae6db2254f79308e334f";
     const memberAddress = "0xe11ba2b4d45eaed5996cd0823791e0c93114882d";
-    const { container } = render(
+    const { container, queryAllByTestId } = render(
       <Arc config={arcConfig}>
         <DAOMember
           address={memberAddress}
@@ -76,7 +78,9 @@ describe("Member component ", () => {
         </DAOMember>
       </Arc>
     );
-
+    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
+      timeout: 8000,
+    });
     const member = await screen.findByText(/Member address:/);
     const dao = await screen.findByText(/DAO address:/);
     expect(member).toBeInTheDocument();

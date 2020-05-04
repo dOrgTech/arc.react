@@ -1,14 +1,13 @@
 import * as React from "react";
 import LoadingView from "./LoadingView";
-import { ComponentLogs, ComponentListLogs } from "./";
-
-// TODO: have the user of the library provide their own loading component
+import { ComponentLogs, ComponentListLogs, ProtocolLogs } from "./";
 
 type ConsumerComponent = React.ExoticComponent<React.ConsumerProps<any>>;
 
 export interface Props extends React.PropsWithChildren<{}> {
   _consumers?: ConsumerComponent[];
-  _logs?: (ConsumerComponent | undefined)[];
+  _logs?: ConsumerComponent[];
+  _entity?: string;
 }
 
 class ContextFeed extends React.Component<Props> {
@@ -17,8 +16,7 @@ class ContextFeed extends React.Component<Props> {
   }
 
   public render() {
-    const { children, _consumers, _logs } = this.props;
-
+    const { children, _consumers, _logs, _entity } = this.props;
     if (!_consumers || !_logs) {
       throw Error("Error: ContextFeed missing context consumer(s).");
     }
@@ -54,16 +52,10 @@ class ContextFeed extends React.Component<Props> {
           if (nullIndex > -1) {
             // Get its logs and pass them to the LoadingView component
             const Logs = _logs[nullIndex];
-
-            // TODO: This is required because Protocol's don't have logs. Need to add this, or just make Protocol's components...
-            if (Logs === undefined) {
-              return <div>Loading...</div>;
-            }
-
             return (
               <Logs>
-                {(logs: ComponentLogs | ComponentListLogs) => (
-                  <LoadingView logs={logs} />
+                {(logs: ComponentLogs | ComponentListLogs | ProtocolLogs) => (
+                  <LoadingView entity={_entity} logs={logs} />
                 )}
               </Logs>
             );
@@ -103,11 +95,13 @@ class ContextFeed extends React.Component<Props> {
 
 export const CreateContextFeed = (
   consumer: ConsumerComponent,
-  logs: ConsumerComponent | undefined
+  logs: ConsumerComponent,
+  entity?: string
 ) => (props: Props) => (
   <ContextFeed
     _consumers={props._consumers ? [...props._consumers, consumer] : [consumer]}
     _logs={props._logs ? [...props._logs, logs] : [logs]}
+    _entity={entity}
   >
     {props.children}
   </ContextFeed>

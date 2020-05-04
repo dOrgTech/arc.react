@@ -1,12 +1,17 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import { CProps, ComponentList, ComponentListProps } from "../runtime";
-import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
 import {
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig,
   ArcReward as Component,
   RewardEntity as Entity,
   RewardData as Data,
-} from "./";
+  CProps,
+  ComponentList,
+  ComponentListLogs,
+  ComponentListProps,
+} from "../";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 import { IRewardQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 
 type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
@@ -40,6 +45,29 @@ class ArcRewards extends ComponentList<Props, Component> {
       </Component>
     );
   }
+
+  public static get Entities() {
+    return CreateContextFeed(
+      this._EntitiesContext.Consumer,
+      this._LogsContext.Consumer,
+      "Rewards"
+    );
+  }
+
+  public static get Logs() {
+    return CreateContextFeed(
+      this._LogsContext.Consumer,
+      this._LogsContext.Consumer,
+      "Rewards"
+    );
+  }
+
+  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<
+    ComponentListLogs | undefined
+  >(undefined);
 }
 
 class Rewards extends React.Component<RequiredProps> {
@@ -55,6 +83,14 @@ class Rewards extends React.Component<RequiredProps> {
         )}
       </Protocol.Config>
     );
+  }
+
+  public static get Entities() {
+    return ArcRewards.Entities;
+  }
+
+  public static get Logs() {
+    return ArcRewards.Logs;
   }
 }
 

@@ -1,15 +1,20 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import { CProps, ComponentList, ComponentListProps } from "../runtime";
-import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
 import {
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig,
   DAO as InferComponent,
   DAOEntity as InferEntity,
   DAOMember as Component,
   MemberEntity as Entity,
   MemberData as Data,
-} from "./";
+  CProps,
+  ComponentList,
+  ComponentListLogs,
+  ComponentListProps,
+} from "../";
 import { IMemberQueryOptions as FilterOptions } from "@dorgtech/arc.js";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 
 // TODO: find better way of handling inference... this gets complicated when there are multiple
 // points of inferrance such as votes (MemberVotes, DAOVotes, ProposalVotes). Maybe have a prop
@@ -46,11 +51,18 @@ class ArcMembers extends ComponentList<ArcProps, Component> {
     entity: Entity,
     children: any
   ): React.ComponentElement<CProps<Component>, any> {
+    if (!entity.coreState?.dao) {
+      throw Error(
+        `DAO id should never be missing on a queried Member within Members search`
+      );
+    }
+
     // TODO: support creating Components with just an Entity, it makes no sense to recreate the Member entity here...
     return (
       <Component
+        key={entity.coreState!.address}
         address={entity.coreState!.address}
-        dao={new InferEntity(entity.context, entity.coreState!.address)}
+        dao={new InferEntity(entity.context, entity.coreState!.dao.id)}
       >
         {children}
       </Component>
@@ -63,9 +75,10 @@ class DAOMembers extends ComponentList<DAOProps, Component> {
   // also rename all instances of "Arc" to protocol?
   createObservableEntities(): Observable<Entity[]> {
     const { dao, filter } = this.props;
+
     if (!dao) {
       throw Error(
-        "DAO Entity Missing: Please provide this field as a prop, or use the inference component."
+        "DAO Missing Entity: Please provide this field as a prop, or use the inference component."
       );
     }
 
@@ -83,6 +96,7 @@ class DAOMembers extends ComponentList<DAOProps, Component> {
     children: any
   ): React.ComponentElement<CProps<Component>, any> {
     const { dao } = this.props;
+
     return (
       <Component
         key={entity.coreState!.address}
@@ -93,12 +107,34 @@ class DAOMembers extends ComponentList<DAOProps, Component> {
       </Component>
     );
   }
+
+  public static get Entities() {
+    return CreateContextFeed(
+      this._EntitiesContext.Consumer,
+      this._LogsContext.Consumer,
+      "Members"
+    );
+  }
+
+  public static get Logs() {
+    return CreateContextFeed(
+      this._LogsContext.Consumer,
+      this._LogsContext.Consumer,
+      "Members"
+    );
+  }
+
+  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<
+    ComponentListLogs | undefined
+  >(undefined);
 }
 
 class Members extends React.Component<RequiredProps> {
   render() {
     const { children, allDAOs, sort, filter } = this.props;
-
     if (allDAOs) {
       return (
         <Protocol.Config>
@@ -111,15 +147,26 @@ class Members extends React.Component<RequiredProps> {
       );
     } else {
       return (
-        <InferComponent.Entity>
-          {(dao: InferEntity) => (
-            <DAOMembers dao={dao} sort={sort} filter={filter}>
-              {children}
-            </DAOMembers>
-          )}
-        </InferComponent.Entity>
+        <Protocol.Config>
+          <InferComponent.Entity>
+            {(arc: ProtocolConfig, dao: InferEntity) => (
+              <DAOMembers dao={dao} sort={sort} filter={filter}>
+                {children}
+              </DAOMembers>
+            )}
+          </InferComponent.Entity>
+        </Protocol.Config>
       );
     }
+  }
+
+  public static get Entities() {
+    // TODO: this is a bug, will be fixed in the infer-prop branch
+    return DAOMembers.Entities;
+  }
+
+  public static get Logs() {
+    return DAOMembers.Logs;
   }
 }
 

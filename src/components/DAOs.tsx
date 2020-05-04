@@ -1,9 +1,18 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import { CProps, ComponentList, ComponentListProps } from "../runtime";
-import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
-import { ArcDAO as Component, DAOEntity as Entity, DAOData as Data } from "./";
 import { IDAOQueryOptions as FilterOptions } from "@dorgtech/arc.js";
+import {
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig,
+  ArcDAO as Component,
+  DAOEntity as Entity,
+  DAOData as Data,
+  CProps,
+  ComponentList,
+  ComponentListLogs,
+  ComponentListProps,
+} from "../";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 
 type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
 
@@ -36,6 +45,29 @@ class ArcDAOs extends ComponentList<Props, Component> {
       </Component>
     );
   }
+
+  public static get Entities() {
+    return CreateContextFeed(
+      this._EntitiesContext.Consumer,
+      this._LogsContext.Consumer,
+      "DAOs"
+    );
+  }
+
+  public static get Logs() {
+    return CreateContextFeed(
+      this._LogsContext.Consumer,
+      this._LogsContext.Consumer,
+      "DAOs"
+    );
+  }
+
+  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<
+    ComponentListLogs | undefined
+  >(undefined);
 }
 
 class DAOs extends React.Component<RequiredProps> {
@@ -44,16 +76,22 @@ class DAOs extends React.Component<RequiredProps> {
 
     return (
       <Protocol.Config>
-        {(arcConfig: ProtocolConfig) => (
-          <ArcDAOs arcConfig={arcConfig} sort={sort} filter={filter}>
+        {(arc: ProtocolConfig) => (
+          <ArcDAOs arcConfig={arc} sort={sort} filter={filter}>
             {children}
           </ArcDAOs>
         )}
       </Protocol.Config>
     );
   }
-}
 
-export default DAOs;
+  public static get Entities() {
+    return ArcDAOs.Entities;
+  }
+
+  public static get Logs() {
+    return ArcDAOs.Logs;
+  }
+}
 
 export { ArcDAOs, DAOs };

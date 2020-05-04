@@ -1,8 +1,12 @@
 import * as React from "react";
-import { Component, ComponentLogs } from "../runtime";
 import { CreateContextFeed } from "../runtime/ContextFeed";
-import { Arc, ArcConfig } from "../protocol";
 import { Reward as Entity, IRewardState as Data } from "@dorgtech/arc.js";
+import {
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig,
+  Component,
+  ComponentLogs,
+} from "../";
 
 interface RequiredProps {
   // Reward ID
@@ -11,7 +15,7 @@ interface RequiredProps {
 
 interface InferredProps {
   // Arc Instance
-  arcConfig: ArcConfig | undefined;
+  arcConfig: ProtocolConfig | undefined;
 }
 
 type Props = RequiredProps & InferredProps;
@@ -32,27 +36,36 @@ class ArcReward extends Component<Props, Entity, Data> {
   public static get Entity() {
     return CreateContextFeed(
       this._EntityContext.Consumer,
-      this._LogsContext.Consumer
+      this._LogsContext.Consumer,
+      "Reward"
     );
   }
 
   public static get Data() {
     return CreateContextFeed(
       this._DataContext.Consumer,
-      this._LogsContext.Consumer
+      this._LogsContext.Consumer,
+      "Reward"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
       this._LogsContext.Consumer,
-      this._LogsContext.Consumer
+      this._LogsContext.Consumer,
+      "Reward"
     );
   }
 
-  protected static _EntityContext = React.createContext({});
-  protected static _DataContext = React.createContext({});
-  protected static _LogsContext = React.createContext({});
+  protected static _EntityContext = React.createContext<Entity | undefined>(
+    undefined
+  );
+  protected static _DataContext = React.createContext<Data | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<
+    ComponentLogs | undefined
+  >(undefined);
 }
 
 class Reward extends React.Component<RequiredProps> {
@@ -60,13 +73,13 @@ class Reward extends React.Component<RequiredProps> {
     const { id, children } = this.props;
 
     return (
-      <Arc.Config>
-        {(arc: ArcConfig) => (
+      <Protocol.Config>
+        {(arc: ProtocolConfig) => (
           <ArcReward id={id} arcConfig={arc}>
             {children}
           </ArcReward>
         )}
-      </Arc.Config>
+      </Protocol.Config>
     );
   }
 
@@ -91,5 +104,4 @@ export {
   Props as RewardProps,
   Entity as RewardEntity,
   Data as RewardData,
-  ComponentLogs,
 };

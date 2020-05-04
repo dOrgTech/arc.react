@@ -1,13 +1,18 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import { CProps, ComponentList, ComponentListProps } from "../runtime";
-import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
 import {
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig,
   ArcToken as Component,
   TokenEntity as Entity,
   TokenData as Data,
-} from "./";
+  CProps,
+  ComponentList,
+  ComponentListLogs,
+  ComponentListProps,
+} from "../";
 import { ITokenQueryOptions as FilterOptions } from "@dorgtech/arc.js";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 
 type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
 
@@ -40,6 +45,29 @@ class ArcTokens extends ComponentList<Props, Component> {
       </Component>
     );
   }
+
+  public static get Entities() {
+    return CreateContextFeed(
+      this._EntitiesContext.Consumer,
+      this._LogsContext.Consumer,
+      "Tokens"
+    );
+  }
+
+  public static get Logs() {
+    return CreateContextFeed(
+      this._LogsContext.Consumer,
+      this._LogsContext.Consumer,
+      "Tokens"
+    );
+  }
+
+  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<
+    ComponentListLogs | undefined
+  >(undefined);
 }
 
 class Tokens extends React.Component<RequiredProps> {
@@ -55,6 +83,14 @@ class Tokens extends React.Component<RequiredProps> {
         )}
       </Protocol.Config>
     );
+  }
+
+  public static get Entities() {
+    return ArcTokens.Entities;
+  }
+
+  public static get Logs() {
+    return ArcTokens.Logs;
   }
 }
 

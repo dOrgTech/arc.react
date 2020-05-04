@@ -7,8 +7,8 @@
     "start": "concurrently \"npm:start:subgraph\" \"npm:start:storybook\"",
     "start:storybook": "start-storybook -p 3000",
     "start:subgraph": "concurrently \"npm:start:graphnode\"",
-    "start:graphnode": "docker-compose -f ./node_modules/@dorgtech/arc.js/docker-compose.yml up graph-node",
-    "stop:graphnode": "docker-compose -f ./node_modules/@dorgtech/arc.js/docker-compose.yml down -v",
+    "start:graphnode": "docker-compose -f ./env/docker-compose.yml up graph-node",
+    "stop:graphnode": "docker-compose -f ./env/docker-compose.yml down -v",
     "test": "jest --forceExit --runInBand",
     "lint": "eslint --quiet src/**/*.tsx test/**/*.tsx",
     "build": "tsc",
@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@dorgtech/arc.js": "^2.0.0-experimental.5",
+    "apollo-link-retry": "^2.2.16",
     "memoize-one": "^5.0.0",
     "ramda": "^0.26.1",
     "react-spinkit": "^3.0.0",

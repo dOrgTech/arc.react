@@ -3,7 +3,7 @@ import { storiesOf } from "@storybook/react";
 import ComponentView, { PropertyType } from "../helpers/ComponentView";
 import {
   Arc,
-  DevArcConfig as arcConfig,
+  ArcConfig,
   DAO,
   Member,
   Proposal,
@@ -16,6 +16,8 @@ import {
   Loader,
   RenderProps,
 } from "../../src";
+
+const arcConfig = new ArcConfig("private");
 
 export default () =>
   storiesOf("Components", module)
@@ -158,7 +160,7 @@ export default () =>
             friendlyName: "Reward ID",
             name: "id",
             defaultValue:
-              "0xc0c911eafd30e6bb1f1f2b4a8cf401bf355a5e066a3af50e8ef7b09dd68e65db",
+              "0x0cb9948676fa48ea01b8bb0aada44ebd3b298d50e618ec823cfab456e42c71c2",
             type: PropertyType.string,
           },
         ]}
@@ -194,7 +196,7 @@ export default () =>
             friendlyName: "Stake ID",
             name: "id",
             defaultValue:
-              "0xb6398a75633d9af9928ae4fe6c0db4105e52514bd0321a77ca6ae7a8d5e60971",
+              "0x3d6b71c0fa97d433642c45b0b2f9642e0c79d0258ad4ff4dce667222dc15f526",
             type: PropertyType.string,
           },
         ]}
@@ -248,7 +250,7 @@ export default () =>
             friendlyName: "Vote ID",
             name: "id",
             defaultValue:
-              "0x2f3637f7d77d6b1ca3412e30bb9764f82267458b4f4e320a297a8ac9889e8160",
+              "0x0795aafa7207e2c48241fa432f1f66789e0d2a2e2802208ced7ca3ff216dc74e",
             type: PropertyType.string,
           },
         ]}

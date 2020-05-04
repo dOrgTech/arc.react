@@ -16,7 +16,7 @@ type InferPlugin<TPlugin> = TPlugin extends IPlugin<infer TPluginEntity>
   ? TPluginEntity
   : undefined;
 
-class Plugin<
+export class Plugin<
   // We are ignoring this because of:
   // https://github.com/microsoft/TypeScript/issues/34933
   //@ts-ignore
@@ -33,10 +33,10 @@ class Plugin<
   }
 }
 
-export class ProposalPlugin extends Plugin<InferPlugin<AnyPlugin>> {
-  constructor(
-    public entity: ProposableEntity<EntityData, ProposalData, ProposalOptions>
-  ) {
-    super(entity);
-  }
-}
+// export class ProposalPlugin extends Plugin<InferPlugin<AnyPlugin>> {
+//   constructor(
+//     public entity: ProposableEntity<EntityData, ProposalData, ProposalOptions>
+//   ) {
+//     super(entity);
+//   }
+// }

@@ -34,27 +34,36 @@ class DAOMember extends Component<Props, Entity, Data> {
   public static get Entity() {
     return CreateContextFeed(
       this._EntityContext.Consumer,
-      this._LogsContext.Consumer
+      this._LogsContext.Consumer,
+      "Member"
     );
   }
 
   public static get Data() {
     return CreateContextFeed(
       this._DataContext.Consumer,
-      this._LogsContext.Consumer
+      this._LogsContext.Consumer,
+      "Member"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
       this._LogsContext.Consumer,
-      this._LogsContext.Consumer
+      this._LogsContext.Consumer,
+      "Member"
     );
   }
 
-  protected static _EntityContext = React.createContext({});
-  protected static _DataContext = React.createContext({});
-  protected static _LogsContext = React.createContext({});
+  protected static _EntityContext = React.createContext<Entity | undefined>(
+    undefined
+  );
+  protected static _DataContext = React.createContext<Data | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<
+    ComponentLogs | undefined
+  >(undefined);
 }
 
 class Member extends React.Component<RequiredProps> {
@@ -93,5 +102,4 @@ export {
   Props as MemberProps,
   Entity as MemberEntity,
   Data as MemberData,
-  ComponentLogs,
 };
