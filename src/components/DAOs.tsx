@@ -97,4 +97,4 @@ class DAOs extends React.Component<RequiredProps> {
   }
 }
 
-export { DAOs };
+export { DAOs, InferredDAOs };

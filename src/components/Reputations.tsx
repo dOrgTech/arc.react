@@ -99,4 +99,4 @@ class Reputations extends React.Component<RequiredProps> {
 
 export default Reputations;
 
-export { Reputations };
+export { Reputations, InferredReputations };

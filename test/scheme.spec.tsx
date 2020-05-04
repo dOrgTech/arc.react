@@ -5,11 +5,14 @@ import {
   screen,
   waitForElementToBeRemoved,
   waitFor,
+  cleanup,
 } from "@testing-library/react";
 
 const arcConfig = new ArcConfig("private");
 
 describe("Scheme component ", () => {
+  afterEach(() => cleanup());
+
   it("Shows scheme name", async () => {
     const schemeId =
       "0xe60210db33d48ffc3ba89a0a220500fa8f1a55ed0b4bf28bf7821b23a022cc28";
@@ -34,6 +37,8 @@ describe("Scheme component ", () => {
 });
 
 describe("Scheme List", () => {
+  afterEach(() => cleanup());
+
   class SchemeList extends React.Component {
     render() {
       return (

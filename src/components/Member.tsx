@@ -13,6 +13,7 @@ import { CreateContextFeed } from "../runtime/ContextFeed";
 interface RequiredProps {
   // Address of the member
   address: string;
+
   // Address of the DAO Avatar
   dao?: string;
 }

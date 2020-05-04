@@ -1,15 +1,24 @@
 import React from "react";
-import { Arc, ArcConfig, DAO, Loader, RenderProps, DAOData } from "../src";
-import { render, screen } from "@testing-library/react";
+import {
+  Arc,
+  ArcConfig,
+  DAO,
+  Loader,
+  LoadingRenderProps,
+  DAOData,
+} from "../src";
+import { render, screen, cleanup } from "@testing-library/react";
 
 describe("Custom loader ", () => {
+  afterEach(() => cleanup());
+
   const arcConfig = new ArcConfig("private");
 
   it("Shows custom message", async () => {
     const daoAddress = "0xe7a2c59e134ee81d4035ae6db2254f79308e334f";
     const { container } = render(
       <Loader
-        render={(props: RenderProps) => (
+        render={(props: LoadingRenderProps) => (
           <div>
             {props.errors.length > 0
               ? props.errors.map((error) => error)
@@ -39,7 +48,7 @@ describe("Custom loader ", () => {
   it("Shows error", async () => {
     const { container } = render(
       <Loader
-        render={(props: RenderProps) => (
+        render={(props: LoadingRenderProps) => (
           <div>
             {props.errors.length > 0
               ? props.errors.map((error) => error)

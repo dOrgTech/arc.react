@@ -4,8 +4,8 @@ import { IMemberQueryOptions as FilterOptions } from "@daostack/client";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
-  DAO as InferComponent,
-  DAOEntity as InferEntity,
+  DAO,
+  DAOEntity,
   InferredMember as Component,
   MemberEntity as Entity,
   MemberData as Data,
@@ -25,7 +25,7 @@ const scopeProps: Record<Scopes, string> = {
 
 interface RequiredProps
   extends ComponentListProps<Entity, Data, FilterOptions> {
-  scope?: Scopes;
+  from?: Scopes;
 }
 
 interface InferredProps extends RequiredProps {
@@ -35,14 +35,14 @@ interface InferredProps extends RequiredProps {
 
 class InferredMembers extends ComponentList<InferredProps, Component> {
   createObservableEntities(): Observable<Entity[]> {
-    const { config, scope, filter } = this.props;
+    const { config, from, filter } = this.props;
     if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
       );
     }
 
-    const f = applyScope(filter, scope, scopeProps, this.props);
+    const f = applyScope(filter, from, scopeProps, this.props);
     return Entity.search(config.connection, f);
   }
 
@@ -92,16 +92,16 @@ class InferredMembers extends ComponentList<InferredProps, Component> {
 
 class Members extends React.Component<RequiredProps> {
   render() {
-    const { children, scope, sort, filter } = this.props;
+    const { children, from, sort, filter } = this.props;
 
     return (
       <Protocol.Config>
         {(config: ProtocolConfig) => {
-          switch (scope) {
+          switch (from) {
             case "DAO":
               return (
-                <InferComponent.Entity>
-                  {(dao: InferEntity) => (
+                <DAO.Entity>
+                  {(dao: DAOEntity) => (
                     <InferredMembers
                       dao={dao.id}
                       config={config}
@@ -111,11 +111,11 @@ class Members extends React.Component<RequiredProps> {
                       {children}
                     </InferredMembers>
                   )}
-                </InferComponent.Entity>
+                </DAO.Entity>
               );
             default:
-              if (scope) {
-                throw Error(`Unsupported scope: ${scope}`);
+              if (from) {
+                throw Error(`Unsupported scope: ${from}`);
               }
 
               return (
@@ -140,4 +140,4 @@ class Members extends React.Component<RequiredProps> {
 
 export default Members;
 
-export { Members };
+export { Members, InferredMembers };

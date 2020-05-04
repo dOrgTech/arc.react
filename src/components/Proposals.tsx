@@ -28,7 +28,7 @@ const scopeProps: Record<Scopes, string> = {
 
 interface RequiredProps
   extends ComponentListProps<Entity, Data, FilterOptions> {
-  scope?: Scopes;
+  from?: Scopes;
 }
 
 interface InferredProps extends RequiredProps {
@@ -39,7 +39,7 @@ interface InferredProps extends RequiredProps {
 
 class InferredProposals extends ComponentList<InferredProps, Component> {
   createObservableEntities(): Observable<Entity[]> {
-    const { config, scope, filter } = this.props;
+    const { config, from, filter } = this.props;
 
     if (!config) {
       throw Error(
@@ -47,7 +47,7 @@ class InferredProposals extends ComponentList<InferredProps, Component> {
       );
     }
 
-    const f = applyScope(filter, scope, scopeProps, this.props);
+    const f = applyScope(filter, from, scopeProps, this.props);
     return Entity.search(config.connection, f);
   }
 
@@ -93,12 +93,12 @@ class InferredProposals extends ComponentList<InferredProps, Component> {
 
 class Proposals extends React.Component<RequiredProps> {
   render() {
-    const { children, scope, sort, filter } = this.props;
+    const { children, from, sort, filter } = this.props;
 
     return (
       <Protocol.Config>
         {(config: ProtocolConfig) => {
-          switch (scope) {
+          switch (from) {
             case "DAO":
               return (
                 <DAO.Entity>
@@ -130,8 +130,8 @@ class Proposals extends React.Component<RequiredProps> {
                 </Member.Entity>
               );
             default:
-              if (scope) {
-                throw Error(`Unsupported scope: ${scope}`);
+              if (from) {
+                throw Error(`Unsupported scope: ${from}`);
               }
 
               return (
@@ -156,4 +156,4 @@ class Proposals extends React.Component<RequiredProps> {
 
 export default Proposals;
 
-export { Proposals };
+export { Proposals, InferredProposals };

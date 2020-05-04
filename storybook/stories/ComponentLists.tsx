@@ -31,7 +31,7 @@ import {
   Vote,
   VoteData,
   Loader,
-  RenderProps,
+  LoadingRenderProps,
 } from "../../src/";
 import ComponentListView, {
   PropertyType,
@@ -230,7 +230,7 @@ export default () =>
         protocolConfig={arcConfig}
         ScopeContext={(props) => (
           <Loader
-            render={(props: RenderProps) => (
+            render={(props: LoadingRenderProps) => (
               <div>
                 {props.errors.length > 0
                   ? props.errors.map((error) => error)

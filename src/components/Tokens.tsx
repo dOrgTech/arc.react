@@ -99,4 +99,4 @@ class Tokens extends React.Component<RequiredProps> {
 
 export default Tokens;
 
-export { Tokens };
+export { Tokens, InferredTokens };

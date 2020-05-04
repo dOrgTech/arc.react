@@ -100,7 +100,7 @@ export default class ComponentListView extends React.Component<Props, State> {
     }
 
     const renderComponentList = (
-      <ComponentListType scope={scope ? scope.name : undefined}>
+      <ComponentListType from={scope ? scope.name : undefined}>
         <ComponentType.Entity>
           <ComponentType.Data>
             <ComponentType.Logs>
