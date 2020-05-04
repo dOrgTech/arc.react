@@ -2,7 +2,7 @@ import * as React from "react";
 import { storiesOf } from "@storybook/react";
 import {
   Arc,
-  DevArcConfig as arcConfig,
+  ArcConfig,
   DAOs,
   DAO,
   DAOData,
@@ -29,37 +29,45 @@ import {
   StakeData,
   Votes,
   Vote,
-  VoteData
+  VoteData,
+  Loader,
+  RenderProps,
 } from "../../src/";
-import ComponentListView, { PropertyType, PropertyData } from "../helpers/ComponentListView";
+import ComponentListView, {
+  PropertyType,
+  PropertyData,
+} from "../helpers/ComponentListView";
 
 const DAOProp: PropertyData = {
   friendlyName: "DAO Address",
   name: "dao",
   defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
-  type: PropertyType.string
+  type: PropertyType.string,
 };
 
 const MemberProp: PropertyData = {
   friendlyName: "Member Address",
   name: "member",
   defaultValue: "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
-  type: PropertyType.string
+  type: PropertyType.string,
 };
 
 const ProposalProp: PropertyData = {
   friendlyName: "Proposal ID",
   name: "proposal",
-  defaultValue: "0x6afee092a28c74f6358093d5376ac75014ac4d9fd42d296a5498ef42eecd7248",
-  type: PropertyType.string
+  defaultValue:
+    "0x6afee092a28c74f6358093d5376ac75014ac4d9fd42d296a5498ef42eecd7248",
+  type: PropertyType.string,
 };
 
 const TokenProp: PropertyData = {
   friendlyName: "Token Address",
   name: "token",
   defaultValue: "0x81920caf1f99bb0f7d72fdfba840cff21d63ccc5",
-  type: PropertyType.string
+  type: PropertyType.string,
 };
+
+const arcConfig = new ArcConfig("private");
 
 export default () =>
   storiesOf("Component Lists", module)
@@ -80,13 +88,9 @@ export default () =>
         ComponentType={Member}
         ProtocolType={Arc}
         protocolConfig={arcConfig}
-        scopes={[
-          { name: "DAO", prop: DAOProp }
-        ]}
+        scopes={[{ name: "DAO", prop: DAOProp }]}
         ScopeContext={(props) => (
-          <DAO address={props.dao}>
-          {props.children}
-          </DAO>
+          <DAO address={props.dao}>{props.children}</DAO>
         )}
         getId={(member: MemberData) => `Member: ${member.address}`}
       />
@@ -100,13 +104,11 @@ export default () =>
         protocolConfig={arcConfig}
         scopes={[
           { name: "DAO", prop: DAOProp },
-          { name: "Member as proposer", prop: MemberProp }
+          { name: "Member as proposer", prop: MemberProp },
         ]}
         ScopeContext={(props) => (
           <DAO address={props.dao}>
-            <Member address={props.member}>
-            {props.children}
-            </Member>
+            <Member address={props.member}>{props.children}</Member>
           </DAO>
         )}
         getId={(proposal: ProposalData) => `Proposal: ${proposal.id}`}
@@ -119,7 +121,9 @@ export default () =>
         ComponentType={Reputation}
         ProtocolType={Arc}
         protocolConfig={arcConfig}
-        getId={(reputation: ReputationData) => `Reputation: ${reputation.address}`}
+        getId={(reputation: ReputationData) =>
+          `Reputation: ${reputation.address}`
+        }
       />
     ))
     .add("Rewards", () => (
@@ -133,15 +137,13 @@ export default () =>
           { name: "DAO", prop: DAOProp },
           { name: "Member as beneficiary", prop: MemberProp },
           { name: "Proposal", prop: ProposalProp },
-          { name: "Token", prop: TokenProp }
+          { name: "Token", prop: TokenProp },
         ]}
         ScopeContext={(props) => (
           <DAO address={props.dao}>
             <Member address={props.member}>
               <Proposal id={props.proposal}>
-                <Token address={props.token}>
-                {props.children}
-                </Token>
+                <Token address={props.token}>{props.children}</Token>
               </Proposal>
             </Member>
           </DAO>
@@ -156,13 +158,9 @@ export default () =>
         ComponentType={Scheme}
         ProtocolType={Arc}
         protocolConfig={arcConfig}
-        scopes={[
-          { name: "DAO", prop: DAOProp }
-        ]}
+        scopes={[{ name: "DAO", prop: DAOProp }]}
         ScopeContext={(props) => (
-          <DAO address={props.dao}>
-          {props.children}
-          </DAO>
+          <DAO address={props.dao}>{props.children}</DAO>
         )}
         getId={(scheme: SchemeData) => `Scheme (${scheme.name}): ${scheme.id}`}
       />
@@ -177,14 +175,12 @@ export default () =>
         scopes={[
           { name: "DAO", prop: DAOProp },
           { name: "Member as staker", prop: MemberProp },
-          { name: "Proposal", prop: ProposalProp }
+          { name: "Proposal", prop: ProposalProp },
         ]}
         ScopeContext={(props) => (
           <DAO address={props.dao}>
             <Member address={props.member}>
-              <Proposal id={props.proposal}>
-              {props.children}
-              </Proposal>
+              <Proposal id={props.proposal}>{props.children}</Proposal>
             </Member>
           </DAO>
         )}
@@ -198,7 +194,9 @@ export default () =>
         ComponentType={Token}
         ProtocolType={Arc}
         protocolConfig={arcConfig}
-        getId={(token: TokenData) => `Token (${token.name} - ${token.symbol}): ${token.address}`}
+        getId={(token: TokenData) =>
+          `Token (${token.name} - ${token.symbol}): ${token.address}`
+        }
       />
     ))
     .add("Votes", () => (
@@ -211,17 +209,38 @@ export default () =>
         scopes={[
           { name: "DAO", prop: DAOProp },
           { name: "Member as voter", prop: MemberProp },
-          { name: "Proposal", prop: ProposalProp }
+          { name: "Proposal", prop: ProposalProp },
         ]}
         ScopeContext={(props) => (
           <DAO address={props.dao}>
             <Member address={props.member}>
-              <Proposal id={props.proposal}>
-              {props.children}
-              </Proposal>
+              <Proposal id={props.proposal}>{props.children}</Proposal>
             </Member>
           </DAO>
         )}
         getId={(vote: VoteData) => `Vote: ${vote.id}`}
+      />
+    ))
+    .add("Schemes with custom loader", () => (
+      <ComponentListView
+        name={"Schemes"}
+        ComponentListType={Schemes}
+        ComponentType={Scheme}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        ScopeContext={(props) => (
+          <Loader
+            render={(props: RenderProps) => (
+              <div>
+                {props.errors.length > 0
+                  ? props.errors.map((error) => error)
+                  : "Loading without errors"}
+              </div>
+            )}
+          >
+            {props.children}
+          </Loader>
+        )}
+        getId={(scheme: SchemeData) => `Scheme (${scheme.name}): ${scheme.id}`}
       />
     ));

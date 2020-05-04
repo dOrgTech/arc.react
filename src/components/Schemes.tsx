@@ -1,113 +1,137 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import {
-  CProps,
-  ComponentList,
-  ComponentListProps
-} from "../runtime";
+import { ISchemeQueryOptions as FilterOptions } from "@daostack/client";
 import {
   Arc as Protocol,
-  ArcConfig as ProtocolConfig
-} from "../protocol";
-import {
-  DAO,
-  DAOEntity,
+  ArcConfig as ProtocolConfig,
   InferredScheme as Component,
   SchemeEntity as Entity,
-  SchemeData as Data
-} from "./";
-import {
-  ISchemeQueryOptions as FilterOptions
-} from "@daostack/client";
+  SchemeData as Data,
+  DAO,
+  DAOEntity,
+  CProps,
+  ComponentList,
+  ComponentListLogs,
+  ComponentListProps,
+  applyScope,
+} from "../";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 
-interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> {
-  scope?: "DAO";
+type Scopes = "DAO";
+
+const scopeProps: Record<Scopes, string> = {
+  DAO: "dao",
+};
+
+interface RequiredProps
+  extends ComponentListProps<Entity, Data, FilterOptions> {
+  scope?: Scopes;
 }
 
 interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
+  dao?: string;
 }
 
-interface DAOScopedProps extends InferredProps {
-  dao: string;
-}
-
-class InferredSchemes extends ComponentList<InferredProps, Component>
-{
+class InferredSchemes extends ComponentList<InferredProps, Component> {
   createObservableEntities(): Observable<Entity[]> {
-    const { config, filter } = this.props;
-    return Entity.search(config.connection, filter);
+    const { config, scope, filter } = this.props;
+    if (!config) {
+      throw Error(
+        "Arc Config Missing: Please provide this field as a prop, or use the inference component."
+      );
+    }
+
+    const f = applyScope(filter, scope, scopeProps, this.props);
+    return Entity.search(config.connection, f);
   }
 
-  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
+  renderComponent(
+    entity: Entity,
+    children: any,
+    index: number
+  ): React.ComponentElement<CProps<Component>, any> {
     const { config } = this.props;
 
     return (
-      <Component id={entity.id} config={config}>
-      {children}
+      <Component key={`${entity.id}_${index}`} id={entity.id} config={config}>
+        {children}
       </Component>
     );
   }
-}
 
-class DAOScopedSchemes extends ComponentList<DAOScopedProps, Component>
-{
-  createObservableEntities(): Observable<Entity[]> {
-    const { dao, config, filter } = this.props;
-
-    const daoFilter: FilterOptions = filter ? filter : { where: { } };
-    if (!daoFilter.where) {
-      daoFilter.where = { };
-    }
-    daoFilter.where.dao = dao;
-
-    return Entity.search(config.connection, daoFilter);
+  public static get Entities() {
+    return CreateContextFeed(
+      this._EntitiesContext.Consumer,
+      this._LogsContext.Consumer,
+      "Schemes"
+    );
   }
 
-  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
-    const { config } = this.props;
-    return (
-      <Component id={entity.id} config={config}>
-      {children}
-      </Component>
-    )
+  public static get Logs() {
+    return CreateContextFeed(
+      this._LogsContext.Consumer,
+      this._LogsContext.Consumer,
+      "Schemes"
+    );
   }
+
+  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<
+    ComponentListLogs | undefined
+  >(undefined);
 }
 
-class Schemes extends React.Component<RequiredProps>
-{
+class Schemes extends React.Component<RequiredProps> {
   render() {
     const { children, scope, sort, filter } = this.props;
 
     return (
       <Protocol.Config>
-      {(config: ProtocolConfig) => {
-        switch (scope) {
-          case "DAO":
-            return (
-              <DAO.Entity>
-              {(dao: DAOEntity) => (
-                <DAOScopedSchemes dao={dao.id} config={config} sort={sort} filter={filter}>
-                {children}
-                </DAOScopedSchemes>
-              )}
-              </DAO.Entity>
-            );
-          default:
-            return (
-              <InferredSchemes config={config} sort={sort} filter={filter}>
-              {children}
-              </InferredSchemes>
-            );
-        }
-      }}
+        {(config: ProtocolConfig) => {
+          switch (scope) {
+            case "DAO":
+              return (
+                <DAO.Entity>
+                  {(dao: DAOEntity) => (
+                    <InferredSchemes
+                      dao={dao.id}
+                      config={config}
+                      sort={sort}
+                      filter={filter}
+                    >
+                      {children}
+                    </InferredSchemes>
+                  )}
+                </DAO.Entity>
+              );
+            default:
+              if (scope) {
+                throw Error(`Unsupported scope: ${scope}`);
+              }
+
+              return (
+                <InferredSchemes config={config} sort={sort} filter={filter}>
+                  {children}
+                </InferredSchemes>
+              );
+          }
+        }}
       </Protocol.Config>
     );
+  }
+
+  public static get Entities() {
+    return InferredSchemes.Entities;
+  }
+
+  public static get Logs() {
+    return InferredSchemes.Logs;
   }
 }
 
 export default Schemes;
 
-export {
-  Schemes
-};
+export { Schemes };

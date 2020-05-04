@@ -1,32 +1,29 @@
 import * as React from "react";
-import LoadingView from './LoadingView';
-import { ComponentLogs, ComponentListLogs } from "./";
+import LoadingView from "./LoadingView";
+import { ComponentLogs, ComponentListLogs, ProtocolLogs } from "./";
 
-// TODO: have the user of the library provide their own loading component
-
-type ConsumerComponent = React.ExoticComponent<React.ConsumerProps<any>>
+type ConsumerComponent = React.ExoticComponent<React.ConsumerProps<any>>;
 
 export interface Props extends React.PropsWithChildren<{}> {
-  _consumers?: ConsumerComponent[]
-  _logs?: (ConsumerComponent | undefined)[]
-  noLoad?: boolean
+  _consumers?: ConsumerComponent[];
+  _logs?: ConsumerComponent[];
+  _entity?: string;
+  noLoad?: boolean;
 }
 
-class ContextFeed extends React.Component<Props>
-{
+class ContextFeed extends React.Component<Props> {
   constructor(props: Props) {
     super(props);
   }
 
   public render() {
-    const { children, _consumers, _logs, noLoad } = this.props;
-
+    const { children, _consumers, _logs, _entity, noLoad } = this.props;
     if (!_consumers || !_logs) {
       throw Error("Error: ContextFeed missing context consumer(s).");
     }
 
     if (!children) {
-       throw Error("Error: A ContextFeed requires a child component.");
+      throw Error("Error: A ContextFeed requires a child component.");
     }
 
     if (typeof children === "function") {
@@ -43,9 +40,7 @@ class ContextFeed extends React.Component<Props>
           // value to this function recursively
           return (
             <Consumer>
-            {(value) => (
-              RelayValues(index + 1, [...values, value])
-            )}
+              {(value) => RelayValues(index + 1, [...values, value])}
             </Consumer>
           );
         } else {
@@ -59,17 +54,13 @@ class ContextFeed extends React.Component<Props>
           if (nullIndex > -1 && !noLoad) {
             // Get its logs and pass them to the LoadingView component
             const Logs = _logs[nullIndex];
-
-            // TODO: This is required because Protocol's don't have logs. Need to add this, or just make Protocol's components...
-            if (Logs === undefined) {
-              return <div>Loading...</div>
-            }
-
             return (
               <Logs>
-              {(logs: ComponentLogs | ComponentListLogs) => <LoadingView logs={logs} />}
+                {(logs: ComponentLogs | ComponentListLogs | ProtocolLogs) => (
+                  <LoadingView entity={_entity} logs={logs} />
+                )}
               </Logs>
-            )
+            );
           } else {
             return children(...values);
           }
@@ -83,42 +74,37 @@ class ContextFeed extends React.Component<Props>
     // so we'll inject them with our _consumers
     if (children["length"]) {
       const childrenArray = children as Array<any>;
-      const newChildren = new Array();
+      const newChildren = [];
 
       for (const child of childrenArray) {
-        newChildren.push(React.cloneElement(child, {
-          _consumers,
-          _logs
-        }));
+        newChildren.push(
+          React.cloneElement(child, {
+            _consumers,
+            _logs,
+          })
+        );
       }
 
-      return (<>{newChildren}</>);
+      return <>{newChildren}</>;
     } else {
       return React.cloneElement(children as React.ReactElement, {
         _consumers,
-        _logs
+        _logs,
       });
     }
   }
 }
 
-export const CreateContextFeed = (consumer: ConsumerComponent, logs: ConsumerComponent | undefined) => (
-  (props: Props) => (
-    <ContextFeed
-      _consumers={
-        props._consumers ?
-        [...props._consumers, consumer] :
-        [consumer]
-      }
-      _logs={
-        props._logs ?
-        [...props._logs, logs] :
-        [logs]
-      }
-      noLoad={
-        props.noLoad
-      }
-      children={props.children}
-    />
-  )
+export const CreateContextFeed = (
+  consumer: ConsumerComponent,
+  logs: ConsumerComponent,
+  entity?: string
+) => (props: Props) => (
+  <ContextFeed
+    _consumers={props._consumers ? [...props._consumers, consumer] : [consumer]}
+    _logs={props._logs ? [...props._logs, logs] : [logs]}
+    _entity={entity}
+  >
+    {props.children}
+  </ContextFeed>
 );

@@ -1,15 +1,12 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import {
-  CProps,
-  ComponentList,
-  ComponentListProps
-} from "../runtime";
+import { IRewardQueryOptions as FilterOptions } from "@daostack/client";
 import {
   Arc as Protocol,
-  ArcConfig as ProtocolConfig
-} from "../protocol";
-import {
+  ArcConfig as ProtocolConfig,
+  InferredReward as Component,
+  RewardEntity as Entity,
+  RewardData as Data,
   DAO,
   DAOEntity,
   Member,
@@ -18,216 +15,181 @@ import {
   ProposalEntity,
   Token,
   TokenEntity,
-  InferredReward as Component,
-  RewardEntity as Entity,
-  RewardData as Data
-} from "./";
-import {
-  IRewardQueryOptions as FilterOptions
-} from "@daostack/client";
+  CProps,
+  ComponentList,
+  ComponentListLogs,
+  ComponentListProps,
+  applyScope,
+} from "../";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 
-interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> {
-  scope?: "DAO" | "Member as beneficiary" | "Proposal" | "Token";
+type Scopes = "DAO" | "Member as beneficiary" | "Proposal" | "Token";
+
+const scopeProps: Record<Scopes, string> = {
+  DAO: "dao",
+  "Member as beneficiary": "beneficiary",
+  Proposal: "proposal",
+  Token: "tokenAddress",
+};
+
+interface RequiredProps
+  extends ComponentListProps<Entity, Data, FilterOptions> {
+  scope?: Scopes;
 }
 
 interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
+  dao?: string;
+  beneficiary?: string;
+  proposal?: string;
+  tokenAddress?: string;
 }
 
-interface DAOScopeProps extends InferredProps {
-  dao: string;
-}
-
-interface BeneficiaryScopeProps extends InferredProps {
-  beneficiary: string;
-}
-
-interface ProposalScopeProps extends InferredProps {
-  proposal: string;
-}
-
-interface TokenScopeProps extends InferredProps {
-  token: string;
-}
-
-class InferredRewards extends ComponentList<InferredProps, Component>
-{
+class InferredRewards extends ComponentList<InferredProps, Component> {
   createObservableEntities(): Observable<Entity[]> {
-    const { config, filter } = this.props;
-    return Entity.search(config.connection, filter);
+    const { config, scope, filter } = this.props;
+
+    if (!config) {
+      throw Error(
+        "Arc Config Missing: Please provide this field as a prop, or use the inference component."
+      );
+    }
+
+    const f = applyScope(filter, scope, scopeProps, this.props);
+    return Entity.search(config.connection, f);
   }
 
-  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
+  renderComponent(
+    entity: Entity,
+    children: any,
+    index: number
+  ): React.ComponentElement<CProps<Component>, any> {
     const { config } = this.props;
 
     return (
-      <Component id={entity.id} config={config}>
-      {children}
+      <Component key={`${entity.id}_${index}`} id={entity.id} config={config}>
+        {children}
       </Component>
     );
   }
+
+  public static get Entities() {
+    return CreateContextFeed(
+      this._EntitiesContext.Consumer,
+      this._LogsContext.Consumer,
+      "Rewards"
+    );
+  }
+
+  public static get Logs() {
+    return CreateContextFeed(
+      this._LogsContext.Consumer,
+      this._LogsContext.Consumer,
+      "Rewards"
+    );
+  }
+
+  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<
+    ComponentListLogs | undefined
+  >(undefined);
 }
 
-class DAOScopeRewards extends ComponentList<DAOScopeProps, Component>
-{
-  createObservableEntities(): Observable<Entity[]> {
-    const { dao, config, filter } = this.props;
-
-    const daoFilter: FilterOptions = filter ? filter : { where: { } };
-    if (!daoFilter.where) {
-      daoFilter.where = { };
-    }
-    daoFilter.where.dao = dao;
-
-    return Entity.search(config.connection, daoFilter);
-  }
-
-  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
-    const { config } = this.props;
-    return (
-      <Component id={entity.id} config={config}>
-      {children}
-      </Component>
-    )
-  }
-}
-
-class BeneficiaryScopeRewards extends ComponentList<BeneficiaryScopeProps, Component>
-{
-  createObservableEntities(): Observable<Entity[]> {
-    const { beneficiary, config, filter } = this.props;
-
-    const beneficiaryFilter: FilterOptions = filter ? filter : { where: { } };
-    if (!beneficiaryFilter.where) {
-      beneficiaryFilter.where = { };
-    }
-    beneficiaryFilter.where.beneficiary = beneficiary;
-
-    return Entity.search(config.connection, beneficiaryFilter);
-  }
-
-  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
-    const { config } = this.props;
-    return (
-      <Component id={entity.id} config={config}>
-      {children}
-      </Component>
-    )
-  }
-}
-
-class ProposalScopeRewards extends ComponentList<ProposalScopeProps, Component>
-{
-  createObservableEntities(): Observable<Entity[]> {
-    const { proposal, config, filter } = this.props;
-
-    const proposalFilter: FilterOptions = filter ? filter : { where: { } };
-    if (!proposalFilter.where) {
-      proposalFilter.where = { };
-    }
-    proposalFilter.where.proposal = proposal;
-
-    return Entity.search(config.connection, proposalFilter);
-  }
-
-  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
-    const { config } = this.props;
-    return (
-      <Component id={entity.id} config={config}>
-      {children}
-      </Component>
-    )
-  }
-}
-
-class TokenScopeRewards extends ComponentList<TokenScopeProps, Component>
-{
-  createObservableEntities(): Observable<Entity[]> {
-    const { token, config, filter } = this.props;
-
-    const tokenFilter: FilterOptions = filter ? filter : { where: { } };
-    if (!tokenFilter.where) {
-      tokenFilter.where = { };
-    }
-    tokenFilter.where.tokenAddress = token;
-
-    return Entity.search(config.connection, tokenFilter);
-  }
-
-  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
-    const { config } = this.props;
-    return (
-      <Component id={entity.id} config={config}>
-      {children}
-      </Component>
-    )
-  }
-}
-
-class Rewards extends React.Component<RequiredProps>
-{
+class Rewards extends React.Component<RequiredProps> {
   render() {
     const { children, scope, sort, filter } = this.props;
 
     return (
       <Protocol.Config>
-      {(config: ProtocolConfig) => {
-        switch (scope) {
-          case "DAO":
-            return (
-              <DAO.Entity>
-              {(dao: DAOEntity) => (
-                <DAOScopeRewards dao={dao.id} config={config} sort={sort} filter={filter}>
-                {children}
-                </DAOScopeRewards>
-              )}
-              </DAO.Entity>
-            );
-          case "Member as beneficiary":
-            return (
-              <Member.Entity>
-              {(beneficiary: MemberEntity) => (
-                <BeneficiaryScopeRewards beneficiary={beneficiary.staticState!.address} config={config} sort={sort} filter={filter}>
-                {children}
-                </BeneficiaryScopeRewards>
-              )}
-              </Member.Entity>
-            );
-          case "Proposal":
-            return (
-              <Proposal.Entity>
-              {(proposal: ProposalEntity) => (
-                <ProposalScopeRewards proposal={proposal.id} config={config} sort={sort} filter={filter}>
-                {children}
-                </ProposalScopeRewards>
-              )}
-              </Proposal.Entity>
-            );
-          case "Token":
-            return (
-              <Token.Entity>
-              {(token: TokenEntity) => (
-                <TokenScopeRewards token={token.id} config={config} sort={sort} filter={filter}>
-                {children}
-                </TokenScopeRewards>
-              )}
-              </Token.Entity>
-            );
-          default:
-            return (
-              <InferredRewards config={config} sort={sort} filter={filter}>
-              {children}
-              </InferredRewards>
-            );
-        }
-      }}
+        {(config: ProtocolConfig) => {
+          switch (scope) {
+            case "DAO":
+              return (
+                <DAO.Entity>
+                  {(dao: DAOEntity) => (
+                    <InferredRewards
+                      dao={dao.id}
+                      config={config}
+                      sort={sort}
+                      filter={filter}
+                    >
+                      {children}
+                    </InferredRewards>
+                  )}
+                </DAO.Entity>
+              );
+            case "Member as beneficiary":
+              return (
+                <Member.Entity>
+                  {(beneficiary: MemberEntity) => (
+                    <InferredRewards
+                      beneficiary={beneficiary.staticState!.address}
+                      config={config}
+                      sort={sort}
+                      filter={filter}
+                    >
+                      {children}
+                    </InferredRewards>
+                  )}
+                </Member.Entity>
+              );
+            case "Proposal":
+              return (
+                <Proposal.Entity>
+                  {(proposal: ProposalEntity) => (
+                    <InferredRewards
+                      proposal={proposal.id}
+                      config={config}
+                      sort={sort}
+                      filter={filter}
+                    >
+                      {children}
+                    </InferredRewards>
+                  )}
+                </Proposal.Entity>
+              );
+            case "Token":
+              return (
+                <Token.Entity>
+                  {(token: TokenEntity) => (
+                    <InferredRewards
+                      tokenAddress={token.id}
+                      config={config}
+                      sort={sort}
+                      filter={filter}
+                    >
+                      {children}
+                    </InferredRewards>
+                  )}
+                </Token.Entity>
+              );
+            default:
+              if (scope) {
+                throw Error(`Unsupported scope: ${scope}`);
+              }
+
+              return (
+                <InferredRewards config={config} sort={sort} filter={filter}>
+                  {children}
+                </InferredRewards>
+              );
+          }
+        }}
       </Protocol.Config>
     );
+  }
+
+  public static get Entities() {
+    return InferredRewards.Entities;
+  }
+
+  public static get Logs() {
+    return InferredRewards.Logs;
   }
 }
 
 export default Rewards;
 
-export {
-  Rewards
-};
+export { Rewards };

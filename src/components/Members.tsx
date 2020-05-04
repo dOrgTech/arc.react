@@ -1,117 +1,143 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import {
-  CProps,
-  ComponentList,
-  ComponentListProps
-} from "../runtime";
+import { IMemberQueryOptions as FilterOptions } from "@daostack/client";
 import {
   Arc as Protocol,
-  ArcConfig as ProtocolConfig
-} from "../protocol";
-import {
-  DAO,
-  DAOEntity,
+  ArcConfig as ProtocolConfig,
+  DAO as InferComponent,
+  DAOEntity as InferEntity,
   InferredMember as Component,
   MemberEntity as Entity,
-  MemberData as Data
-} from "./";
-import {
-  IMemberQueryOptions as FilterOptions
-} from "@daostack/client";
+  MemberData as Data,
+  CProps,
+  ComponentList,
+  ComponentListLogs,
+  ComponentListProps,
+  applyScope,
+} from "../";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 
-interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> {
-  scope?: "DAO";
+type Scopes = "DAO";
+
+const scopeProps: Record<Scopes, string> = {
+  DAO: "dao",
+};
+
+interface RequiredProps
+  extends ComponentListProps<Entity, Data, FilterOptions> {
+  scope?: Scopes;
 }
 
 interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
+  dao?: string;
 }
 
-interface DAOScopeProps extends InferredProps {
-  dao: string;
-}
-
-class InferredMembers extends ComponentList<InferredProps, Component>
-{
+class InferredMembers extends ComponentList<InferredProps, Component> {
   createObservableEntities(): Observable<Entity[]> {
-    const { config, filter } = this.props;
-    return Entity.search(config.connection, filter);
+    const { config, scope, filter } = this.props;
+    if (!config) {
+      throw Error(
+        "Arc Config Missing: Please provide this field as a prop, or use the inference component."
+      );
+    }
+
+    const f = applyScope(filter, scope, scopeProps, this.props);
+    return Entity.search(config.connection, f);
   }
 
-  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
+  renderComponent(
+    entity: Entity,
+    children: any,
+    index: number
+  ): React.ComponentElement<CProps<Component>, any> {
     const { config } = this.props;
+
     // TODO: support creating Components with just an Entity, it makes no sense to recreate the Member entity here...
     return (
-      <Component address={entity.staticState!.address} dao={entity.staticState!.dao} config={config}>
-      {children}
+      <Component
+        key={`${entity.id}_${index}`}
+        address={entity.staticState!.address}
+        dao={entity.staticState!.dao}
+        config={config}
+      >
+        {children}
       </Component>
     );
   }
-}
 
-class DAOScopeMembers extends ComponentList<DAOScopeProps, Component>
-{
-  createObservableEntities(): Observable<Entity[]> {
-    const { dao, config, filter } = this.props;
-
-    if (!config) {
-      throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
-    }
-
-    const daoFilter: FilterOptions = filter ? filter : { where: { } };
-    if (!daoFilter.where) {
-      daoFilter.where = { };
-    }
-    daoFilter.where.dao = dao;
-
-    return Entity.search(config.connection, daoFilter);
-  }
-
-  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
-    const { dao, config } = this.props;
-    return (
-      <Component address={entity.staticState!.address} dao={dao} config={config}>
-      {children}
-      </Component>
+  public static get Entities() {
+    return CreateContextFeed(
+      this._EntitiesContext.Consumer,
+      this._LogsContext.Consumer,
+      "Members"
     );
   }
+
+  public static get Logs() {
+    return CreateContextFeed(
+      this._LogsContext.Consumer,
+      this._LogsContext.Consumer,
+      "Members"
+    );
+  }
+
+  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<
+    ComponentListLogs | undefined
+  >(undefined);
 }
 
-class Members extends React.Component<RequiredProps>
-{
+class Members extends React.Component<RequiredProps> {
   render() {
     const { children, scope, sort, filter } = this.props;
 
     return (
       <Protocol.Config>
-      {(config: ProtocolConfig) => {
-        switch (scope) {
-          case "DAO":
-            return (
-              <DAO.Entity>
-              {(dao: DAOEntity) => (
-                <DAOScopeMembers dao={dao.id} config={config} sort={sort} filter={filter}>
-                {children}
-                </DAOScopeMembers>
-              )}
-              </DAO.Entity>
-            );
-          default:
-            return (
-              <InferredMembers config={config} sort={sort} filter={filter}>
-              {children}
-              </InferredMembers>
-            );
-        }
-      }}
+        {(config: ProtocolConfig) => {
+          switch (scope) {
+            case "DAO":
+              return (
+                <InferComponent.Entity>
+                  {(dao: InferEntity) => (
+                    <InferredMembers
+                      dao={dao.id}
+                      config={config}
+                      sort={sort}
+                      filter={filter}
+                    >
+                      {children}
+                    </InferredMembers>
+                  )}
+                </InferComponent.Entity>
+              );
+            default:
+              if (scope) {
+                throw Error(`Unsupported scope: ${scope}`);
+              }
+
+              return (
+                <InferredMembers config={config} sort={sort} filter={filter}>
+                  {children}
+                </InferredMembers>
+              );
+          }
+        }}
       </Protocol.Config>
     );
+  }
+
+  public static get Entities() {
+    return InferredMembers.Entities;
+  }
+
+  public static get Logs() {
+    return InferredMembers.Logs;
   }
 }
 
 export default Members;
 
-export {
-  Members
-};
+export { Members };

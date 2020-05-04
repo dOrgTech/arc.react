@@ -3,25 +3,47 @@ import memoize from "memoize-one";
 import { Observable, Subscription } from "rxjs";
 import { IStateful } from "@daostack/client/src/types";
 
-import { BaseProps, BaseComponent } from "./BaseComponent";
 import { Component } from "./Component";
 import { ComponentListLogs } from "./logging/ComponentListLogs";
-import LoadingView from './LoadingView';
+import LoadingView from "./LoadingView";
 export { ComponentListLogs };
 
 // Extract the derived component's template parameters
-export type CProps<Comp>   = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Props : undefined;
-export type CEntity<Comp>  = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Entity : undefined;
-export type CData<Comp>    = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Data : undefined;
-export type CCode<Comp>    = Comp extends Component<infer Props, infer Entity, infer Data, infer Code> ? Code : undefined;
+export type CProps<Comp> = Comp extends Component<
+  infer Props,
+  infer Entity,
+  infer Data
+>
+  ? Props
+  : undefined;
+export type CEntity<Comp> = Comp extends Component<
+  infer Props,
+  infer Entity,
+  infer Data
+>
+  ? Entity
+  : undefined;
+export type CData<Comp> = Comp extends Component<
+  infer Props,
+  infer Entity,
+  infer Data
+>
+  ? Data
+  : undefined;
 
 // Helper type for the <entity, data> tuple used by the sort function
-export type EntityList<Entity, Data> = Array<{entity: Entity, data: Data}>;
+export type EntityList<Entity, Data> = Array<{ entity: Entity; data: Data }>;
 
 // Extract the filter options type from the derived component's props
-type PFilterOptions<Props> = Props extends ComponentListProps<infer Entity, infer Data, infer FilterOptions> ? FilterOptions : undefined;
+type PFilterOptions<Props> = Props extends ComponentListProps<
+  infer Entity,
+  infer Data,
+  infer FilterOptions
+>
+  ? FilterOptions
+  : undefined;
 
-export interface ComponentListProps<Entity, Data, FilterOptions> extends BaseProps {
+export interface ComponentListProps<Entity, Data, FilterOptions> {
   filter?: FilterOptions;
   sort?: (entities: EntityList<Entity, Data>) => EntityList<Entity, Data>;
 }
@@ -31,27 +53,27 @@ interface State<Entity, Data> {
   sorted: EntityList<Entity, Data>;
 
   // Diagnostics for the component
-  // TODO: logs aren't consumable, expose through a context?
-  logs: ComponentListLogs
+  logs: ComponentListLogs;
 }
 
 export abstract class ComponentList<
   Props extends ComponentListProps<Entity, Data, PFilterOptions<Props>>,
   // @ts-ignore: This should always work
-  Comp extends Component<
-    CProps<Comp>,
-    CEntity<Comp>,
-    CData<Comp>,
-    CCode<Comp>
-  >,
+  Comp extends Component<CProps<Comp>, CEntity<Comp>, CData<Comp>>,
   Entity extends IStateful<CData<Comp>> = CEntity<Comp>,
   Data = CData<Comp>
-> extends BaseComponent<
-    Props, State<Entity, Data>
-  >
-{
+> extends React.Component<Props, State<Entity, Data>> {
   protected abstract createObservableEntities(): Observable<Entity[]>;
-  protected abstract renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Comp>, any>;
+  protected abstract renderComponent(
+    entity: Entity,
+    children: any,
+    index: number
+  ): React.ComponentElement<CProps<Comp>, any>;
+
+  // See here for more information on the React.Context pattern:
+  // https://reactjs.org/docs/context.html
+  protected static _EntitiesContext: React.Context<any[] | undefined>;
+  protected static _LogsContext: React.Context<ComponentListLogs | undefined>;
 
   private observableEntities = memoize(
     // This will only run when the function's arguments have changed :D
@@ -61,7 +83,13 @@ export abstract class ComponentList<
   );
 
   // Our graphql query's subscriber object
-  private _subscription?: Subscription
+  private _subscription?: Subscription;
+
+  // This trick allows us to access the static objects
+  // defined in the derived class. See this code sample:
+  // https://github.com/Microsoft/TypeScript/issues/5989#issuecomment-163066313
+  // @ts-ignore: This should always be there
+  "constructor": typeof ComponentList;
 
   constructor(props: Props) {
     super(props);
@@ -69,7 +97,7 @@ export abstract class ComponentList<
     this.state = {
       entities: [],
       sorted: [],
-      logs: new ComponentListLogs()
+      logs: new ComponentListLogs(),
     };
 
     this.onQueryEntities = this.onQueryEntities.bind(this);
@@ -78,26 +106,37 @@ export abstract class ComponentList<
   }
 
   public render() {
+    const EntitiesProvider = this.constructor._EntitiesContext.Provider as any;
+    const LogsProvider = this.constructor._LogsContext.Provider;
+
     const { children } = this.props;
-    const { entities, sorted, logs } = this.state;
-    this.observableEntities(this.props);
+    const { entities: unsorted, sorted, logs } = this.state;
+    let entities = unsorted;
 
-    logs.reactRendered();
-
-    if (typeof children === "function") {
-      return children(entities);
-    } else {
-      if(entities) {
-        if(sorted.length > 0)
-          return sorted.map((item) => this.renderComponent(item.entity, children)) 
-        else
-          return entities.map((entity) => this.renderComponent(entity, children))
-      } else
-        return <LoadingView logs={logs}/>
+    if (sorted.length > 0) {
+      entities = sorted.map((item) => item.entity);
     }
+
+    this.observableEntities(this.props);
+    logs.reactRendered();
+    return (
+      <EntitiesProvider value={entities}>
+        <LogsProvider value={logs}>
+          {typeof children === "function" ? (
+            children(entities)
+          ) : entities.length ? (
+            entities.map((entity, index) =>
+              this.renderComponent(entity, children, index)
+            )
+          ) : (
+            <LoadingView logs={logs} />
+          )}
+        </LogsProvider>
+      </EntitiesProvider>
+    );
   }
 
-  public async componentWillMount() {
+  public async UNSAFE_componentWillMount() {
     // prefetch the entities
     this.observableEntities(this.props);
   }
@@ -109,7 +148,9 @@ export abstract class ComponentList<
     }
   }
 
-  private createObservableEntitiesWithProps(props: Props): Observable<Entity[]> | undefined {
+  private createObservableEntitiesWithProps(
+    props: Props
+  ): Observable<Entity[]> | undefined {
     const { logs } = this.state;
 
     logs.entityCreated();
@@ -128,21 +169,24 @@ export abstract class ComponentList<
       );
 
       return entities;
-    } catch (error) {
-      logs.entityCreationFailed(error);
+    } catch (e) {
+      logs.entityCreationFailed(e);
+      this.setState({
+        logs: logs.clone(),
+      });
       return undefined;
     }
   }
 
   private clearPrevState() {
-    this.mergeState({
-      entities: undefined
+    this.setState({
+      entities: [],
     });
   }
 
-  private fetchData(entity: Entity) : Promise<Data> {
+  private fetchData(entity: Entity): Promise<Data> {
     return new Promise((resolve, reject) => {
-      const state = entity.state();
+      const state = entity.state({});
       state.subscribe(
         (data: Data) => resolve(data),
         (error: Error) => reject(error)
@@ -155,20 +199,27 @@ export abstract class ComponentList<
     const { sort } = this.props;
     logs.dataQueryReceivedData();
 
-    if (sort) {
-      const unsorted = entities.map(async (entity) => {
-        const data = await this.fetchData(entity);
-        return { entity, data };
-      });
-      Promise.all(unsorted).then(unsorted => {
-        this.mergeState({
-          entities: entities,
-          sorted: sort(unsorted)
+    try {
+      if (sort) {
+        const unsorted = entities.map(async (entity) => {
+          const data = await this.fetchData(entity);
+          return { entity, data };
         });
-      });
-    } else {
-      this.mergeState({
-        entities: entities,
+        Promise.all(unsorted).then((unsorted) => {
+          this.setState({
+            entities: entities,
+            sorted: sort(unsorted),
+          });
+        });
+      } else {
+        this.setState({
+          entities: entities,
+        });
+      }
+    } catch (e) {
+      logs.dataQueryFailed(e);
+      this.setState({
+        logs: logs.clone(),
       });
     }
   }
@@ -176,10 +227,47 @@ export abstract class ComponentList<
   private onQueryError(error: Error) {
     const { logs } = this.state;
     logs.dataQueryFailed(error);
+    this.setState({
+      logs: logs.clone(),
+    });
   }
 
   private onQueryComplete() {
     const { logs } = this.state;
     logs.dataQueryCompleted();
   }
+}
+
+export function applyScope<Scopes extends keyof any>(
+  filter: any,
+  scope: Scopes | undefined,
+  scopeProps: Record<Scopes, string>,
+  props: any
+): any {
+  if (scope) {
+    if (!props[scopeProps[scope]]) {
+      throw Error(
+        `${
+          props[scopeProps[scope]]
+        } Missing: Please provide this field as a prop, or use the inference component.`
+      );
+    }
+  }
+
+  let f = filter;
+  const keys = Object.keys(scopeProps);
+
+  for (const key of keys) {
+    const propName = scopeProps[key];
+    if (props[propName]) {
+      f = f ? f : { where: {} };
+      if (!f.where) {
+        f.where = {};
+      }
+
+      f.where[propName] = props[propName];
+    }
+  }
+
+  return f;
 }

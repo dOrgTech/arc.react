@@ -1,66 +1,102 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import {
-  CProps,
-  ComponentList,
-  ComponentListProps
-} from "../runtime";
+import { ITokenQueryOptions as FilterOptions } from "@daostack/client";
 import {
   Arc as Protocol,
-  ArcConfig as ProtocolConfig
-} from "../protocol";
-import {
+  ArcConfig as ProtocolConfig,
   InferredToken as Component,
   TokenEntity as Entity,
-  TokenData as Data
-} from "./";
-import {
-  ITokenQueryOptions as FilterOptions
-} from "@daostack/client";
+  TokenData as Data,
+  CProps,
+  ComponentList,
+  ComponentListLogs,
+  ComponentListProps,
+} from "../";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 
-interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> { }
+type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
 
 interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
 }
 
-class InferredTokens extends ComponentList<InferredProps, Component>
-{
+class InferredTokens extends ComponentList<InferredProps, Component> {
   createObservableEntities(): Observable<Entity[]> {
     const { config, filter } = this.props;
+    if (!config) {
+      throw Error(
+        "Arc Config Missing: Please provide this field as a prop, or use the inference component."
+      );
+    }
     return Entity.search(config.connection, filter);
   }
 
-  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
+  renderComponent(
+    entity: Entity,
+    children: any,
+    index: number
+  ): React.ComponentElement<CProps<Component>, any> {
     const { config } = this.props;
 
     return (
-      <Component address={entity.address} config={config}>
-      {children}
+      <Component
+        key={`${entity.id}_${index}`}
+        address={entity.address}
+        config={config}
+      >
+        {children}
       </Component>
     );
   }
+
+  public static get Entities() {
+    return CreateContextFeed(
+      this._EntitiesContext.Consumer,
+      this._LogsContext.Consumer,
+      "Tokens"
+    );
+  }
+
+  public static get Logs() {
+    return CreateContextFeed(
+      this._LogsContext.Consumer,
+      this._LogsContext.Consumer,
+      "Tokens"
+    );
+  }
+
+  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<
+    ComponentListLogs | undefined
+  >(undefined);
 }
 
-class Tokens extends React.Component<RequiredProps>
-{
+class Tokens extends React.Component<RequiredProps> {
   render() {
     const { children, sort, filter } = this.props;
 
     return (
       <Protocol.Config>
-      {(config: ProtocolConfig) => (
-        <InferredTokens config={config} sort={sort} filter={filter}>
-        {children}
-        </InferredTokens>
-      )}
+        {(config: ProtocolConfig) => (
+          <InferredTokens config={config} sort={sort} filter={filter}>
+            {children}
+          </InferredTokens>
+        )}
       </Protocol.Config>
     );
+  }
+
+  public static get Entities() {
+    return InferredTokens.Entities;
+  }
+
+  public static get Logs() {
+    return InferredTokens.Logs;
   }
 }
 
 export default Tokens;
 
-export {
-  Tokens
-};
+export { Tokens };

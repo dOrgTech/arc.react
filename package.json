@@ -3,33 +3,31 @@
   "version": "0.0.8-alpha",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
-  "engines": {
-    "node": "8.10.0"
-  },
   "scripts": {
     "start": "concurrently \"npm:start:subgraph\" \"npm:start:storybook\"",
     "start:storybook": "start-storybook -p 3000",
     "start:subgraph": "concurrently \"npm:start:graphnode\"",
-    "start:graphnode": "docker-compose -f ./node_modules/@daostack/client/docker-compose.yml up graph-node",
-    "stop:graphnode": "docker-compose -f ./node_modules/@daostack/client/docker-compose.yml down -v",
-    "test": "jest",
+    "start:graphnode": "docker-compose -f ./env/docker-compose.yml up graph-node",
+    "stop:graphnode": "docker-compose -f ./env/docker-compose.yml down -v",
+    "test": "jest --forceExit --runInBand",
+    "lint": "eslint --quiet src/**/*.tsx test/**/*.tsx",
     "build": "tsc",
     "build:release": "rm -rf ./dist && tsc && rm -rf ./dist/storybook",
     "build:storybook": "build-storybook",
-    "package:release": "rm -rf ./package && mkdir ./package && cp -r ./dist/ ./package/dist && cp README.md package.json package-lock.json ./package && cp -r ./src ./package/src",
+    "package:release": "rm -rf ./package && mkdir ./package && cp -r ./dist/ ./package/dist && cp README.md package.json yarn.lock ./package && cp -r ./src ./package/src",
     "release": "npm run build:release && npm run package:release && npm publish ./package --access public"
   },
   "dependencies": {
-    "@daostack/client": "0.2.6",
+    "@daostack/client": "0.2.67",
+    "apollo-link-retry": "^2.2.16",
     "memoize-one": "^5.0.0",
     "ramda": "^0.26.1",
-    "react": "16.8.6",
     "react-spinkit": "^3.0.0",
-    "reactjs-popup": "^1.3.2",
+    "reactjs-popup": "^1.5.0",
     "rxjs": "6.4.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.3.3",
+    "@babel/core": "7.9.0",
     "@material-ui/core": "^3.9.2",
     "@storybook/addon-actions": "5.0.11",
     "@storybook/addon-console": "^1.1.0",
@@ -37,6 +35,9 @@
     "@storybook/addon-links": "5.0.11",
     "@storybook/addon-storyshots": "5.0.11",
     "@storybook/react": "5.0.11",
+    "@testing-library/jest-dom": "^5.5.0",
+    "@testing-library/react": "^10.0.2",
+    "@testing-library/user-event": "^10.0.2",
     "@types/bn.js": "^4.11.4",
     "@types/jest": "^20.0.2",
     "@types/memoize-one": "^4.1.1",
@@ -44,39 +45,36 @@
     "@types/react": "16.8.6",
     "@types/react-dom": "16.0.6",
     "@types/react-spinkit": "^3.0.5",
-    "@types/react-test-renderer": "16.0.1",
     "@types/storybook__react": "4.0.1",
+    "@typescript-eslint/eslint-plugin": "^2.29.0",
+    "@typescript-eslint/parser": "^2.29.0",
     "awesome-typescript-loader": "^5.2.1",
-    "babel-loader": "^8.0.5",
+    "babel-loader": "^8.1.0",
     "concurrently": "^4.1.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-react": "^7.19.0",
     "graphql-language-service": "^2.0.0",
     "graphql-syntax-highlighter-react": "^0.3.5",
+    "husky": "^4.2.5",
+    "identity-obj-proxy": "^3.0.0",
     "ignore-loader": "^0.1.2",
-    "jest": "^20.0.4",
-    "react-dom": "16.8.2",
+    "jest": "25.0.0",
+    "prettier": "^2.0.4",
+    "pretty-quick": "^2.0.1",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
     "react-inspector": "^2.3.1",
     "react-object-inspector": "^0.2.1",
-    "react-test-renderer": "^16.8.2",
-    "ts-jest": "^20.0.6",
-    "typescript": "^3.4.5",
-    "wait-on": "^3.2.0"
+    "react-test-renderer": "^16.8.6",
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.4.5"
   },
-  "jest": {
-    "transform": {
-      "\\.(jsx?|tsx?)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
-    },
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/dist/",
-      "/test/declarations.d.ts"
-    ],
-    "testRegex": "(/test/.*|\\.(test|spec))\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json"
-    ]
+  "peerDependencies": {
+    "react": ">= 16.9.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
   }
 }

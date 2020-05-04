@@ -1,57 +1,65 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import {
-  CProps,
-  ComponentList,
-  ComponentListProps
-} from "../runtime";
+import { IVoteQueryOptions as FilterOptions } from "@daostack/client";
 import {
   Arc as Protocol,
-  ArcConfig as ProtocolConfig
-} from "../protocol";
-import {
+  ArcConfig as ProtocolConfig,
+  InferredVote as Component,
+  VoteEntity as Entity,
+  VoteData as Data,
   DAO,
   DAOEntity,
   Member,
   MemberEntity,
   Proposal,
   ProposalEntity,
-  InferredVote as Component,
-  VoteEntity as Entity,
-  VoteData as Data
-} from "./";
-import {
-  IVoteQueryOptions as FilterOptions
-} from "@daostack/client";
+  CProps,
+  ComponentList,
+  ComponentListLogs,
+  ComponentListProps,
+  applyScope,
+} from "../";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 
-interface RequiredProps extends ComponentListProps<Entity, Data, FilterOptions> {
-  scope?: "DAO" | "Member as voter" | "Proposal";
+type Scopes = "DAO" | "Member as voter" | "Proposal";
+
+const scopeProps: Record<Scopes, string> = {
+  DAO: "dao",
+  "Member as voter": "voter",
+  Proposal: "proposal",
+};
+
+interface RequiredProps
+  extends ComponentListProps<Entity, Data, FilterOptions> {
+  scope?: Scopes;
 }
 
 interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
+  dao?: string;
+  voter?: string;
+  proposal?: string;
 }
 
-interface DAOScopeProps extends InferredProps {
-  dao: string;
-}
-
-interface VoterScopeProps extends InferredProps {
-  voter: string;
-}
-
-interface ProposalScopeProps extends InferredProps {
-  proposal: string;
-}
-
-class InferredVotes extends ComponentList<InferredProps, Component>
-{
+class InferredVotes extends ComponentList<InferredProps, Component> {
   createObservableEntities(): Observable<Entity[]> {
-    const { config, filter } = this.props;
-    return Entity.search(config.connection, filter);
+    const { config, scope, filter } = this.props;
+
+    if (!config) {
+      throw Error(
+        "Arc Config Missing: Please provide this field as a prop, or use the inference component."
+      );
+    }
+
+    const f = applyScope(filter, scope, scopeProps, this.props);
+    return Entity.search(config.connection, f);
   }
 
-  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
+  renderComponent(
+    entity: Entity,
+    children: any,
+    index: number
+  ): React.ComponentElement<CProps<Component>, any> {
     const { config } = this.props;
 
     if (!entity.id) {
@@ -59,160 +67,122 @@ class InferredVotes extends ComponentList<InferredProps, Component>
     }
 
     return (
-      <Component id={entity.id} config={config}>
-      {children}
+      <Component key={`${entity.id}_${index}`} id={entity.id} config={config}>
+        {children}
       </Component>
     );
   }
+
+  public static get Entities() {
+    return CreateContextFeed(
+      this._EntitiesContext.Consumer,
+      this._LogsContext.Consumer,
+      "Votes"
+    );
+  }
+
+  public static get Logs() {
+    return CreateContextFeed(
+      this._LogsContext.Consumer,
+      this._LogsContext.Consumer,
+      "Votes"
+    );
+  }
+
+  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<
+    ComponentListLogs | undefined
+  >(undefined);
 }
 
-class DAOScopeVotes extends ComponentList<DAOScopeProps, Component>
-{
-  createObservableEntities(): Observable<Entity[]> {
-    const { dao, config, filter } = this.props;
-
-    const daoFilter: FilterOptions = filter ? filter : { where: { } };
-    if (!daoFilter.where) {
-      daoFilter.where = { };
-    }
-    daoFilter.where.dao = dao;
-
-    return Entity.search(config.connection, daoFilter);
-  }
-
-  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
-    const { config } = this.props;
-
-    if (!entity.id) {
-      throw Error("Vote Entity ID undefined. This should never happen.");
-    }
-
-    return (
-      <Component id={entity.id} config={config}>
-      {children}
-      </Component>
-    )
-  }
-}
-
-class VoterScopeVotes extends ComponentList<VoterScopeProps, Component>
-{
-  createObservableEntities(): Observable<Entity[]> {
-    const { voter, config, filter } = this.props;
-
-    const voterFilter: FilterOptions = filter ? filter : { where: { } };
-    if (!voterFilter.where) {
-      voterFilter.where = { };
-    }
-    voterFilter.where.voter = voter;
-
-    return Entity.search(config.connection, voterFilter);
-  }
-
-  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
-    const { config } = this.props;
-
-    if (!entity.id) {
-      throw Error("Vote Entity ID undefined. This should never happen.");
-    }
-
-    return (
-      <Component id={entity.id} config={config}>
-      {children}
-      </Component>
-    )
-  }
-}
-
-class ProposalScopeVotes extends ComponentList<ProposalScopeProps, Component>
-{
-  createObservableEntities(): Observable<Entity[]> {
-    const { proposal, config, filter } = this.props;
-
-    const proposalFilter: FilterOptions = filter ? filter : { where: { } };
-    if (!proposalFilter.where) {
-      proposalFilter.where = { };
-    }
-    proposalFilter.where.proposal = proposal;
-
-    return Entity.search(config.connection, proposalFilter);
-  }
-
-  renderComponent(entity: Entity, children: any): React.ComponentElement<CProps<Component>, any> {
-    const { config } = this.props;
-
-    if (!entity.id) {
-      throw Error("Vote Entity ID undefined. This should never happen.");
-    }
-
-    return (
-      <Component id={entity.id} config={config}>
-      {children}
-      </Component>
-    )
-  }
-}
-
-class Votes extends React.Component<RequiredProps>
-{
+class Votes extends React.Component<RequiredProps> {
   render() {
     const { children, scope, sort, filter } = this.props;
 
     return (
       <Protocol.Config>
-      {(config: ProtocolConfig) => {
-        switch (scope) {
-          case "DAO":
-            return (
-              <DAO.Entity>
-              {(dao: DAOEntity) =>(
-                <DAOScopeVotes dao={dao.id} config={config} sort={sort} filter={filter}>
-                {children}
-                </DAOScopeVotes>
-              )}
-              </DAO.Entity>
-            );
-          case "Member as voter":
-            return (
-              <Member.Entity>
-              {(voter: MemberEntity) => {
-                console.log("here")
-                if (!voter.id) {
-                  throw Error("Member Entity ID undefined. This should never happen.");
-                }
-                return (
-                  <VoterScopeVotes voter={voter.id} config={config} sort={sort} filter={filter}>
+        {(config: ProtocolConfig) => {
+          switch (scope) {
+            case "DAO":
+              return (
+                <DAO.Entity>
+                  {(dao: DAOEntity) => (
+                    <InferredVotes
+                      dao={dao.id}
+                      config={config}
+                      sort={sort}
+                      filter={filter}
+                    >
+                      {children}
+                    </InferredVotes>
+                  )}
+                </DAO.Entity>
+              );
+            case "Member as voter":
+              return (
+                <Member.Entity>
+                  {(voter: MemberEntity) => {
+                    console.log("here");
+                    if (!voter.id) {
+                      throw Error(
+                        "Member Entity ID undefined. This should never happen."
+                      );
+                    }
+                    return (
+                      <InferredVotes
+                        voter={voter.id}
+                        config={config}
+                        sort={sort}
+                        filter={filter}
+                      >
+                        {children}
+                      </InferredVotes>
+                    );
+                  }}
+                </Member.Entity>
+              );
+            case "Proposal":
+              return (
+                <Proposal.Entity>
+                  {(proposal: ProposalEntity) => (
+                    <InferredVotes
+                      proposal={proposal.id}
+                      config={config}
+                      sort={sort}
+                      filter={filter}
+                    >
+                      {children}
+                    </InferredVotes>
+                  )}
+                </Proposal.Entity>
+              );
+            default:
+              if (scope) {
+                throw Error(`Unsupported scope: ${scope}`);
+              }
+
+              return (
+                <InferredVotes config={config} sort={sort} filter={filter}>
                   {children}
-                  </VoterScopeVotes>
-                );
-              }}
-              </Member.Entity>
-            );
-          case "Proposal":
-            return (
-              <Proposal.Entity>
-              {(proposal: ProposalEntity) =>(
-                <ProposalScopeVotes proposal={proposal.id} config={config} sort={sort} filter={filter}>
-                {children}
-                </ProposalScopeVotes>
-              )}
-              </Proposal.Entity>
-            );
-          default:
-            return (
-              <InferredVotes config={config} sort={sort} filter={filter}>
-              {children}
-              </InferredVotes>
-            );
-        }
-      }}
+                </InferredVotes>
+              );
+          }
+        }}
       </Protocol.Config>
     );
+  }
+
+  public static get Entities() {
+    return InferredVotes.Entities;
+  }
+
+  public static get Logs() {
+    return InferredVotes.Logs;
   }
 }
 
 export default Votes;
 
-export {
-  Votes
-};
+export { Votes };

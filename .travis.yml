@@ -1,0 +1,14 @@
+language: node_js
+node_js: 10
+services:
+  - docker
+before_script:
+  - yarn
+script:
+  - docker-compose -f ./env/docker-compose.yml up -d graph-node
+  - sleep 20 #making sure the graph is up and running
+  - yarn test
+  - yarn lint
+  - yarn build:release && yarn package:release
+after_success:
+  - codecov

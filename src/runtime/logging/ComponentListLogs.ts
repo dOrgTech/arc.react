@@ -1,8 +1,4 @@
-import {
-  ReactLogs,
-  EntityLogs,
-  DataLogs
-} from "./types";
+import { ReactLogs, EntityLogs, DataLogs } from "./types";
 import { LoggingConfig } from "./LoggingConfig";
 
 // The goal of this class is to:
@@ -35,6 +31,14 @@ export class ComponentListLogs {
   public get getData(): DataLogs {
     if (!this._data) this._data = new DataLogs();
     return this._data;
+  }
+
+  public clone(): ComponentListLogs {
+    var clone = new ComponentListLogs();
+    clone._react = this._react;
+    clone._entity = this._entity;
+    clone._data = this._data;
+    return clone;
   }
 
   private _react?: ReactLogs;

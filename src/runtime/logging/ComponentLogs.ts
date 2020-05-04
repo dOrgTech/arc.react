@@ -1,10 +1,4 @@
-import {
-  ReactLogs,
-  EntityLogs,
-  DataLogs,
-  CodeLogs,
-  ProseLogs
-} from "./types";
+import { ReactLogs, EntityLogs, DataLogs } from "./types";
 import { LoggingConfig } from "./LoggingConfig";
 
 // The goal of this class is to:
@@ -12,7 +6,6 @@ import { LoggingConfig } from "./LoggingConfig";
 // 2. ensure high data integrity by guarding
 //    log data at the language level.
 export class ComponentLogs {
-
   public get react(): ReactLogs | undefined {
     return this._react;
   }
@@ -23,14 +16,6 @@ export class ComponentLogs {
 
   public get data(): DataLogs | undefined {
     return this._data;
-  }
-
-  public get code(): CodeLogs | undefined {
-    return this._code;
-  }
-
-  public get prose(): ProseLogs | undefined {
-    return this._prose;
   }
 
   private get getReact(): ReactLogs {
@@ -48,29 +33,15 @@ export class ComponentLogs {
     return this._data;
   }
 
-  private get getCode(): CodeLogs {
-    if (!this._code) this._code = new CodeLogs();
-    return this._code;
-  }
-
-  private get getProse(): ProseLogs {
-    if (!this._prose) this._prose = new ProseLogs();
-    return this._prose;
-  }
-
   private _react?: ReactLogs;
   private _entity?: EntityLogs;
   private _data?: DataLogs;
-  private _code?: CodeLogs;
-  private _prose?: ProseLogs;
 
   public clone(): ComponentLogs {
     var clone = new ComponentLogs();
     clone._react = this._react;
     clone._entity = this._entity;
     clone._data = this._data;
-    clone._code = this._code;
-    clone._prose = this._prose;
     return clone;
   }
 
@@ -107,15 +78,5 @@ export class ComponentLogs {
   public dataQueryFailed(error: Error) {
     if (!LoggingConfig.Current.enabled) return;
     this.getData.queryFailed(error);
-  }
-
-  public codeCreationFailed(error: Error) {
-    if (!LoggingConfig.Current.enabled) return;
-    this.getCode.creationFailed(error);
-  }
-
-  public proseCreationFailed(error: Error) {
-    if (!LoggingConfig.Current.enabled) return;
-    this.getProse.creationFailed(error);
   }
 }

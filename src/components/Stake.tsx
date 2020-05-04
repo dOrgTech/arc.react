@@ -1,25 +1,14 @@
 import * as React from "react";
-import {
-  Component,
-  ComponentLogs,
-  BaseProps
-} from "../runtime";
-import {
-  CreateContextFeed
-} from "../runtime/ContextFeed";
+import { Stake as Entity, IStakeState as Data } from "@daostack/client";
 import {
   Arc as Protocol,
-  ArcConfig as ProtocolConfig
-} from "../protocol";
-import {
-  Stake as Entity,
-  IStakeState as Data
-} from "@daostack/client";
+  ArcConfig as ProtocolConfig,
+  Component,
+  ComponentLogs,
+} from "../";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 
-// TODO
-type Code = { }
-
-interface RequiredProps extends BaseProps {
+interface RequiredProps {
   // Stake ID
   id: string;
 }
@@ -28,10 +17,16 @@ interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
 }
 
-class InferredStake extends Component<InferredProps, Entity, Data, Code>
-{
+class InferredStake extends Component<InferredProps, Entity, Data> {
   protected createEntity(): Entity {
     const { config, id } = this.props;
+
+    if (!config) {
+      throw Error(
+        "Arc Config Missing: Please provide this field as a prop, or use the inference component."
+      );
+    }
+
     return new Entity(id, config.connection);
   }
 
@@ -42,39 +37,51 @@ class InferredStake extends Component<InferredProps, Entity, Data, Code>
   }
 
   public static get Entity() {
-    return CreateContextFeed(this._EntityContext.Consumer, this._LogsContext.Consumer);
+    return CreateContextFeed(
+      this._EntityContext.Consumer,
+      this._LogsContext.Consumer,
+      "Stake"
+    );
   }
 
   public static get Data() {
-    return CreateContextFeed(this._DataContext.Consumer, this._LogsContext.Consumer);
-  }
-
-  public static get Code() {
-    return CreateContextFeed(this._CodeContext.Consumer, this._LogsContext.Consumer);
+    return CreateContextFeed(
+      this._DataContext.Consumer,
+      this._LogsContext.Consumer,
+      "Stake"
+    );
   }
 
   public static get Logs() {
-    return CreateContextFeed(this._LogsContext.Consumer, this._LogsContext.Consumer);
+    return CreateContextFeed(
+      this._LogsContext.Consumer,
+      this._LogsContext.Consumer,
+      "Stake"
+    );
   }
 
-  protected static _EntityContext = React.createContext({ });
-  protected static _DataContext   = React.createContext({ });
-  protected static _CodeContext   = React.createContext({ });
-  protected static _LogsContext   = React.createContext({ });
+  protected static _EntityContext = React.createContext<Entity | undefined>(
+    undefined
+  );
+  protected static _DataContext = React.createContext<Data | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<
+    ComponentLogs | undefined
+  >(undefined);
 }
 
-class Stake extends React.Component<RequiredProps>
-{
+class Stake extends React.Component<RequiredProps> {
   public render() {
     const { id, children } = this.props;
 
     return (
       <Protocol.Config>
-      {(config: ProtocolConfig) => (
-        <InferredStake id={id} config={config}>
-        {children}
-        </InferredStake>
-      )}
+        {(config: ProtocolConfig) => (
+          <InferredStake id={id} config={config}>
+            {children}
+          </InferredStake>
+        )}
       </Protocol.Config>
     );
   }
@@ -87,10 +94,6 @@ class Stake extends React.Component<RequiredProps>
     return InferredStake.Data;
   }
 
-  public static get Code() {
-    return InferredStake.Code;
-  }
-
   public static get Logs() {
     return InferredStake.Logs;
   }
@@ -98,11 +101,4 @@ class Stake extends React.Component<RequiredProps>
 
 export default Stake;
 
-export {
-  Stake,
-  InferredStake,
-  Entity as StakeEntity,
-  Data   as StakeData,
-  Code   as StakeCode,
-  ComponentLogs
-};
+export { Stake, InferredStake, Entity as StakeEntity, Data as StakeData };
