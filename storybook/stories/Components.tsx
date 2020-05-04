@@ -6,11 +6,9 @@ import {
   ArcConfig,
   DAO,
   Member,
-  Proposal,
   Reputation,
   Token,
   Reward,
-  Scheme,
   Stake,
   Vote,
   Loader,
@@ -92,26 +90,26 @@ export default () =>
         ]}
       />
     ))
-    .add("Proposal", () => (
-      <ComponentView
-        name={"Proposal"}
-        Component={Proposal}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-            <DAO address={props.dao}>{props.children}</DAO>
-          </Arc>
-        )}
-        propEditors={[
-          {
-            friendlyName: "Proposal ID",
-            name: "id",
-            defaultValue:
-              "0x6afee092a28c74f6358093d5376ac75014ac4d9fd42d296a5498ef42eecd7248",
-            type: PropertyType.string,
-          },
-        ]}
-      />
-    ))
+    // .add("Proposal", () => (
+    //   <ComponentView
+    //     name={"Proposal"}
+    //     Component={Proposal}
+    //     RequiredContext={(props) => (
+    //       <Arc config={arcConfig}>
+    //         <DAO address={props.dao}>{props.children}</DAO>
+    //       </Arc>
+    //     )}
+    //     propEditors={[
+    //       {
+    //         friendlyName: "Proposal ID",
+    //         name: "id",
+    //         defaultValue:
+    //           "0x6afee092a28c74f6358093d5376ac75014ac4d9fd42d296a5498ef42eecd7248",
+    //         type: PropertyType.string,
+    //       },
+    //     ]}
+    //   />
+    // ))
     .add("Reputation", () => (
       <ComponentView
         name={"Reputation"}
@@ -166,24 +164,24 @@ export default () =>
         ]}
       />
     ))
-    .add("Scheme", () => (
-      <ComponentView
-        name={"Scheme"}
-        Component={Scheme}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>{props.children}</Arc>
-        )}
-        propEditors={[
-          {
-            friendlyName: "Scheme ID",
-            name: "id",
-            defaultValue:
-              "0xe60210db33d48ffc3ba89a0a220500fa8f1a55ed0b4bf28bf7821b23a022cc28",
-            type: PropertyType.string,
-          },
-        ]}
-      />
-    ))
+    // .add("Scheme", () => (
+    //   <ComponentView
+    //     name={"Scheme"}
+    //     Component={Scheme}
+    //     RequiredContext={(props) => (
+    //       <Arc config={arcConfig}>{props.children}</Arc>
+    //     )}
+    //     propEditors={[
+    //       {
+    //         friendlyName: "Scheme ID",
+    //         name: "id",
+    //         defaultValue:
+    //           "0xe60210db33d48ffc3ba89a0a220500fa8f1a55ed0b4bf28bf7821b23a022cc28",
+    //         type: PropertyType.string,
+    //       },
+    //     ]}
+    //   />
+    // ))
     .add("Stake", () => (
       <ComponentView
         name={"Stake"}

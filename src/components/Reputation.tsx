@@ -3,7 +3,6 @@ import {
   Reputation as Entity,
   IReputationState as Data,
 } from "@dorgtech/arc.js";
-import { DAO, DAOData } from "./DAO";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
@@ -17,6 +16,7 @@ import { CreateContextFeed } from "../runtime/ContextFeed";
 interface RequiredProps {
   // Address of the Reputation Token
   address?: string;
+  noSub?: boolean;
 }
 
 interface InferredProps {

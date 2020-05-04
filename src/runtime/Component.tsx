@@ -15,8 +15,11 @@ export interface State<Data extends IArcEntityState> {
   logs: ComponentLogs;
 }
 
+interface CProps {
+  noSub?: boolean;
+}
 export abstract class Component<
-  Props,
+  Props extends CProps,
   Entity extends ArcEntity<Data>,
   Data extends IArcEntityState
 > extends React.Component<Props, State<Data>> {
@@ -143,9 +146,11 @@ export abstract class Component<
       logs.dataQueryStarted();
 
       // subscribe to this entity's state changes
-      // if (props.noSub) {
-      // this._subscription = entity.state({}).subscribe(this.onQueryData, this.onQueryError, this.onQueryComplete);
-      // }
+      if (props.noSub) {
+        this._subscription = entity
+          .state({})
+          .subscribe(this.onQueryData, this.onQueryError, this.onQueryComplete);
+      }
 
       return entity;
     } catch (e) {

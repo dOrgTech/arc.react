@@ -13,6 +13,7 @@ import { CreateContextFeed } from "../runtime/ContextFeed";
 interface RequiredProps {
   // Address of the Token
   address?: string;
+  noSub?: boolean;
 }
 
 interface InferredProps {

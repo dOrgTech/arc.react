@@ -7,6 +7,7 @@ import { Vote as Entity, IVoteState as Data } from "@dorgtech/arc.js";
 interface RequiredProps {
   // Vote ID
   id: string;
+  noSub?: boolean;
 }
 
 interface InferredProps {

@@ -11,6 +11,7 @@ import { CreateContextFeed } from "../runtime/ContextFeed";
 interface RequiredProps {
   // Stake ID
   id: string;
+  noSub?: boolean;
 }
 
 interface InferredProps {

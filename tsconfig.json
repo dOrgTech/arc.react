@@ -20,7 +20,6 @@
     "baseUrl": "src",
     "rootDirs": ["src", "storybook"],
     "forceConsistentCasingInFileNames": true,
-    "noImplicitReturns": true,
     "noImplicitThis": true,
     "noImplicitAny": true,
     "strictNullChecks": true,

@@ -1,6 +1,11 @@
 import * as React from "react";
 import { DAO as Entity, IDAOState as Data } from "@dorgtech/arc.js";
-import { Arc, ArcConfig, Component, ComponentLogs } from "../";
+import {
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig,
+  Component,
+  ComponentLogs,
+} from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
 interface RequiredProps {
@@ -11,7 +16,7 @@ interface RequiredProps {
 
 interface InferredProps {
   // Arc Instance
-  arcConfig: ArcConfig | undefined;
+  arcConfig: ProtocolConfig | undefined;
 }
 
 type Props = RequiredProps & InferredProps;
@@ -67,13 +72,13 @@ class DAO extends React.Component<RequiredProps> {
     const { address, children } = this.props;
 
     return (
-      <Arc.Config>
-        {(arc: ArcConfig) => (
+      <Protocol.Config>
+        {(arc: ProtocolConfig) => (
           <ArcDAO address={address} arcConfig={arc}>
             {children}
           </ArcDAO>
         )}
-      </Arc.Config>
+      </Protocol.Config>
     );
   }
 

@@ -9,9 +9,9 @@ import {
   Members,
   Member,
   MemberData,
-  Proposal,
-  Proposals,
-  ProposalData,
+  // Proposal,
+  // Proposals,
+  // ProposalData,
   Reputations,
   Reputation,
   ReputationData,
@@ -21,9 +21,9 @@ import {
   Rewards,
   Reward,
   RewardData,
-  Schemes,
-  Scheme,
-  SchemeData,
+  // Schemes,
+  // Scheme,
+  // SchemeData,
   Stakes,
   Stake,
   StakeData,
@@ -78,50 +78,50 @@ export default () =>
         getId={(member: MemberData) => `Member: ${member.address}`}
       />
     ))
-    .add("Proposals", () => (
-      <ComponentListView
-        name={"Proposals"}
-        ComponentList={Proposals}
-        Component={Proposal}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>
-            <DAO address={props.dao}>{props.children}</DAO>
-          </Arc>
-        )}
-        propEditors={[
-          {
-            friendlyName: "DAO Address",
-            name: "dao",
-            defaultValue: "0x02981ec0aefe7329442c39dfe5a52fb8781e7659",
-            type: PropertyType.string,
-          },
-          {
-            friendlyName: "All DAOs",
-            name: "allDAOs",
-            defaultValue: false,
-            type: PropertyType.boolean,
-          },
-          // TODO: add filtering and sorting to each component list editor
-          /*,
-          {
-            friendlyName: "Filters",
-            name: "filters",
-            defaultValue: {},
-            type: PropertyType.object
-          },
-          {
-            friendlyName: "Sort",
-            name: "sort",
-            defaultValue: function(unsortedList: any): any {
-              const sortBySubmittedTime = (o:any) => (new BN(o.data.contributionReward!.ethReward).toNumber())
-              return R.sortBy(sortBySubmittedTime)(unsortedList)
-            },
-            type: PropertyType.object
-          }*/
-        ]}
-        getId={(proposal: ProposalData) => `Proposal: ${proposal.id}`}
-      />
-    ))
+    // .add("Proposals", () => (
+    //   <ComponentListView
+    //     name={"Proposals"}
+    //     ComponentList={Proposals}
+    //     Component={Proposal}
+    //     RequiredContext={(props) => (
+    //       <Arc config={arcConfig}>
+    //         <DAO address={props.dao}>{props.children}</DAO>
+    //       </Arc>
+    //     )}
+    //     propEditors={[
+    //       {
+    //         friendlyName: "DAO Address",
+    //         name: "dao",
+    //         defaultValue: "0x02981ec0aefe7329442c39dfe5a52fb8781e7659",
+    //         type: PropertyType.string,
+    //       },
+    //       {
+    //         friendlyName: "All DAOs",
+    //         name: "allDAOs",
+    //         defaultValue: false,
+    //         type: PropertyType.boolean,
+    //       },
+    //       // TODO: add filtering and sorting to each component list editor
+    //       /*,
+    //       {
+    //         friendlyName: "Filters",
+    //         name: "filters",
+    //         defaultValue: {},
+    //         type: PropertyType.object
+    //       },
+    //       {
+    //         friendlyName: "Sort",
+    //         name: "sort",
+    //         defaultValue: function(unsortedList: any): any {
+    //           const sortBySubmittedTime = (o:any) => (new BN(o.data.contributionReward!.ethReward).toNumber())
+    //           return R.sortBy(sortBySubmittedTime)(unsortedList)
+    //         },
+    //         type: PropertyType.object
+    //       }*/
+    //     ]}
+    //     getId={(proposal: ProposalData) => `Proposal: ${proposal.id}`}
+    //   />
+    // ))
     .add("Reputations", () => (
       <ComponentListView
         name={"Reputations"}
@@ -148,18 +148,18 @@ export default () =>
         getId={(reward: RewardData) => `Reward: ${reward.id}`}
       />
     ))
-    .add("Schemes", () => (
-      <ComponentListView
-        name={"Schemes"}
-        ComponentList={Schemes}
-        Component={Scheme}
-        RequiredContext={(props) => (
-          <Arc config={arcConfig}>{props.children}</Arc>
-        )}
-        propEditors={[]}
-        getId={(scheme: SchemeData) => `Scheme (${scheme.name}): ${scheme.id}`}
-      />
-    ))
+    // .add("Schemes", () => (
+    //   <ComponentListView
+    //     name={"Schemes"}
+    //     ComponentList={Schemes}
+    //     Component={Scheme}
+    //     RequiredContext={(props) => (
+    //       <Arc config={arcConfig}>{props.children}</Arc>
+    //     )}
+    //     propEditors={[]}
+    //     getId={(scheme: SchemeData) => `Scheme (${scheme.name}): ${scheme.id}`}
+    //   />
+    // ))
     .add("Stakes", () => (
       <ComponentListView
         name={"Stakes"}
@@ -197,26 +197,26 @@ export default () =>
         propEditors={[]}
         getId={(vote: VoteData) => `Vote: ${vote.id}`}
       />
-    ))
-    .add("Schemes with custom loader", () => (
-      <ComponentListView
-        name={"Schemes"}
-        ComponentList={Schemes}
-        Component={Scheme}
-        RequiredContext={(props) => (
-          <Loader
-            render={(props: RenderProps) => (
-              <div>
-                {props.errors.length > 0
-                  ? props.errors.map((error) => error)
-                  : "Loading without errors"}
-              </div>
-            )}
-          >
-            <Arc config={arcConfig}>{props.children}</Arc>
-          </Loader>
-        )}
-        propEditors={[]}
-        getId={(scheme: SchemeData) => `Scheme (${scheme.name}): ${scheme.id}`}
-      />
     ));
+// .add("Schemes with custom loader", () => (
+//   <ComponentListView
+//     name={"Schemes"}
+//     ComponentList={Schemes}
+//     Component={Scheme}
+//     RequiredContext={(props) => (
+//       <Loader
+//         render={(props: RenderProps) => (
+//           <div>
+//             {props.errors.length > 0
+//               ? props.errors.map((error) => error)
+//               : "Loading without errors"}
+//           </div>
+//         )}
+//       >
+//         <Arc config={arcConfig}>{props.children}</Arc>
+//       </Loader>
+//     )}
+//     propEditors={[]}
+//     getId={(scheme: SchemeData) => `Scheme (${scheme.name}): ${scheme.id}`}
+//   />
+// ));

@@ -11,6 +11,7 @@ import {
 interface RequiredProps {
   // Reward ID
   id: string;
+  noSub?: boolean;
 }
 
 interface InferredProps {

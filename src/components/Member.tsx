@@ -7,6 +7,7 @@ import { Member as Entity, IMemberState as Data } from "@dorgtech/arc.js";
 interface RequiredProps {
   // Address of the member
   address: string;
+  noSub?: boolean;
 }
 
 interface InferredProps {
