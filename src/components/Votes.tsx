@@ -124,7 +124,6 @@ class Votes extends React.Component<RequiredProps> {
               return (
                 <Member.Entity>
                   {(voter: MemberEntity) => {
-                    console.log("here");
                     if (!voter.id) {
                       throw Error(
                         "Member Entity ID undefined. This should never happen."
