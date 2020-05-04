@@ -7,7 +7,7 @@ import {
   RewardEntity as Entity,
   RewardData as Data,
 } from "./";
-import { IRewardQueryOptions as FilterOptions } from "@daostack/client";
+import { IRewardQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 
 type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
 

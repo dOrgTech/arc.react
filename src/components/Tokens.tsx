@@ -7,7 +7,7 @@ import {
   TokenEntity as Entity,
   TokenData as Data,
 } from "./";
-import { ITokenQueryOptions as FilterOptions } from "@daostack/client";
+import { ITokenQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 
 type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
 

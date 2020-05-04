@@ -1,8 +1,7 @@
 import { ProtocolConfig } from "../runtime/ProtocolConfig";
-import { Arc as Connection} from "@daostack/client";
+import { Arc as Connection } from "@dorgtech/arc.js";
 
-export class ArcConfig extends ProtocolConfig
-{
+export class ArcConfig extends ProtocolConfig {
   public isInitialized: boolean;
   public connection: Connection;
 
@@ -19,13 +18,12 @@ export class ArcConfig extends ProtocolConfig
       graphqlHttpProvider: graphqlHttpUrl,
       graphqlWsProvider: graphqlWsUrl,
       web3Provider: web3HttpUrl,
-      ipfsProvider: ipfsProvider
+      ipfsProvider: ipfsProvider,
     });
   }
 
   public async initialize(): Promise<boolean> {
-    if(await this.connection.fetchContractInfos())
-      this.isInitialized = true;
+    if (await this.connection.fetchContractInfos()) this.isInitialized = true;
     return this.isInitialized;
   }
 }
@@ -43,10 +41,10 @@ export const TestArcConfig = new ArcConfig(
   "https://rinkeby.subgraph.daostack.io/subgraphs/name/v24",
   "wss://ws.rinkeby.subgraph.daostack.io/subgraphs/name/v24",
   {
-    "host": "rinkeby.subgraph.daostack.io",
-    "port": "443",
-    "protocol": "https",
-    "api-path": "/ipfs/api/v0/"
+    host: "rinkeby.subgraph.daostack.io",
+    port: "443",
+    protocol: "https",
+    "api-path": "/ipfs/api/v0/",
   },
   "rinkeby"
 );
@@ -56,10 +54,10 @@ export const ProdArcConfig = new ArcConfig(
   "https://subgraph.daostack.io/subgraphs/name/v24",
   "wss://ws.subgraph.daostack.io/subgraphs/name/v24",
   {
-      "host": "subgraph.daostack.io",
-      "port": "443",
-      "protocol": "https",
-      "api-path": "/ipfs/api/v0/"
+    host: "subgraph.daostack.io",
+    port: "443",
+    protocol: "https",
+    "api-path": "/ipfs/api/v0/",
   },
   "mainnet"
 );

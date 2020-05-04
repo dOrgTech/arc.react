@@ -17,7 +17,7 @@ import {
   queryByText,
 } from "@testing-library/react";
 
-const daoAddress = "0xe7a2c59e134ee81d4035ae6db2254f79308e334f";
+const daoAddress = "0xc2a504a020e685154f10d3091f3c9f3b9fd5631c";
 
 describe("DAO Component ", () => {
   it("Shows DAO ID", async () => {
@@ -57,13 +57,7 @@ describe("DAO List", () => {
   }
 
   it("Show list of DAOS ", async () => {
-    const { findAllByText, queryAllByTestId, findByText } = render(<DAOList />);
-    await waitFor(() => findByText(/DAO address:/), {
-      timeout: 8000,
-    });
-    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
-      timeout: 8000,
-    });
+    const { findAllByText } = render(<DAOList />);
     const daos = await findAllByText(/DAO address:/);
     expect(daos.length).toBeGreaterThan(1);
   });

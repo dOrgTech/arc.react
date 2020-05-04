@@ -2,7 +2,7 @@ import * as React from "react";
 import { Component, ComponentLogs } from "../runtime";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 import { DAO, DAOEntity } from "./";
-import { Member as Entity, IMemberState as Data } from "@daostack/client";
+import { Member as Entity, IMemberState as Data } from "@dorgtech/arc.js";
 
 interface RequiredProps {
   // Address of the member
@@ -28,16 +28,7 @@ class DAOMember extends Component<Props, Entity, Data> {
         "DAO Missing: Please provide this field as a prop, or use the inference component."
       );
     }
-
     return new Entity(dao.context, address);
-  }
-
-  protected async initialize(entity: Entity | undefined): Promise<void> {
-    if (entity) {
-      await entity.fetchState();
-    }
-
-    return Promise.resolve();
   }
 
   public static get Entity() {

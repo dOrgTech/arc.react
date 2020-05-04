@@ -2,7 +2,7 @@ import * as React from "react";
 import { Component, ComponentLogs } from "../runtime";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 import { Arc, ArcConfig } from "../protocol";
-import { Token as Entity, ITokenState as Data } from "@daostack/client";
+import { Token as Entity, ITokenState as Data } from "@dorgtech/arc.js";
 import { DAO, DAOData } from "./DAO";
 
 interface RequiredProps {
@@ -30,7 +30,7 @@ class ArcToken extends Component<Props, Entity, Data> {
         "Address Missing: Please provide this field as a prop, or use the inference component."
       );
     }
-    return new Entity(address, arcConfig.connection);
+    return new Entity(arcConfig.connection, address);
   }
 
   public static get Entity() {
@@ -78,7 +78,7 @@ class Token extends React.Component<RequiredProps> {
         <Arc.Config>
           <DAO.Data>
             {(arc: ArcConfig, dao: DAOData) => (
-              <ArcToken address={dao.token.address} arcConfig={arc}>
+              <ArcToken address={dao.token.id} arcConfig={arc}>
                 {children}
               </ArcToken>
             )}

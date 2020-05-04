@@ -7,7 +7,7 @@ import {
   VoteEntity as Entity,
   VoteData as Data,
 } from "./";
-import { IVoteQueryOptions as FilterOptions } from "@daostack/client";
+import { IVoteQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 
 type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
 

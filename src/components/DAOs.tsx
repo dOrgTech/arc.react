@@ -3,7 +3,7 @@ import { Observable } from "rxjs";
 import { CProps, ComponentList, ComponentListProps } from "../runtime";
 import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
 import { ArcDAO as Component, DAOEntity as Entity, DAOData as Data } from "./";
-import { IDAOQueryOptions as FilterOptions } from "@daostack/client";
+import { IDAOQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 
 type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
 

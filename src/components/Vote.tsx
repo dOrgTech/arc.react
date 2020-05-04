@@ -2,7 +2,7 @@ import * as React from "react";
 import { Component, ComponentLogs } from "../runtime";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
-import { Vote as Entity, IVoteState as Data } from "@daostack/client";
+import { Vote as Entity, IVoteState as Data } from "@dorgtech/arc.js";
 
 interface RequiredProps {
   // Vote ID
@@ -26,12 +26,12 @@ class ArcVote extends Component<Props, Entity, Data> {
       );
     }
 
-    return new Entity(id, arcConfig.connection);
+    return new Entity(arcConfig.connection, id);
   }
 
   protected async initialize(entity: Entity | undefined): Promise<void> {
     if (entity) {
-      await entity.fetchStaticState();
+      await entity.fetchState();
     }
 
     return Promise.resolve();

@@ -2,7 +2,7 @@ import * as React from "react";
 import { Component, ComponentLogs } from "../runtime";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 import { Arc, ArcConfig } from "../protocol";
-import { Reward as Entity, IRewardState as Data } from "@daostack/client";
+import { Reward as Entity, IRewardState as Data } from "@dorgtech/arc.js";
 
 interface RequiredProps {
   // Reward ID

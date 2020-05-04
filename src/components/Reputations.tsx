@@ -7,7 +7,7 @@ import {
   ReputationEntity as Entity,
   ReputationData as Data,
 } from "./";
-import { IReputationQueryOptions as FilterOptions } from "@daostack/client";
+import { IReputationQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 
 type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
 

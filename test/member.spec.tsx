@@ -17,7 +17,7 @@ import {
   waitFor,
 } from "@testing-library/react";
 
-const daoAddress = "0xe7a2c59e134ee81d4035ae6db2254f79308e334f";
+const daoAddress = "0xc2a504a020e685154f10d3091f3c9f3b9fd5631c";
 describe("Member component ", () => {
   it("Shows member and dao address with inferred props", async () => {
     const memberAddress = "0xe11ba2b4d45eaed5996cd0823791e0c93114882d";
@@ -63,7 +63,7 @@ describe("Member component ", () => {
       <Arc config={arcConfig}>
         <DAOMember
           address={memberAddress}
-          dao={new DAOEntity(daoAddress, arcConfig.connection)}
+          dao={new DAOEntity(arcConfig.connection, daoAddress)}
         >
           <Member.Data>
             {(member: MemberData) => (

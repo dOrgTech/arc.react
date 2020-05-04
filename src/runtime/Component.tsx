@@ -1,21 +1,24 @@
 import * as React from "react";
 import memoize from "memoize-one";
 import { Subscription } from "rxjs";
-import { IStateful } from "@daostack/client/src/types";
+// TODO: This should not be opinionated to arc
+import {
+  Entity as ArcEntity,
+  IEntityState as IArcEntityState,
+} from "@dorgtech/arc.js";
 
 import { ComponentLogs } from "./logging/ComponentLogs";
 
-export interface State<Data> {
+export interface State<Data extends IArcEntityState> {
   data?: Data;
-
   // Diagnostics for the component
   logs: ComponentLogs;
 }
 
 export abstract class Component<
   Props,
-  Entity extends IStateful<Data>,
-  Data
+  Entity extends ArcEntity<Data>,
+  Data extends IArcEntityState
 > extends React.Component<Props, State<Data>> {
   // Create the entity this component represents. This entity gives access
   // to the component's data. For example: DAO, Proposal, Member.
@@ -24,7 +27,14 @@ export abstract class Component<
   protected abstract createEntity(): Entity;
 
   // Complete any asynchronous initialization work needed by the Entity
-  protected async initialize(entity: Entity | undefined): Promise<void> {}
+  protected async initialize(entity: Entity): Promise<void> {
+    try {
+      const state = await entity.fetchState();
+      this.onQueryData(state);
+    } catch (e) {
+      this.onQueryError(e);
+    }
+  }
 
   // See here for more information on the React.Context pattern:
   // https://reactjs.org/docs/context.html
@@ -40,7 +50,7 @@ export abstract class Component<
   );
 
   // Our graphql query's subscriber object
-  private _subscription?: Subscription;
+  private _subscription?: Subscription | null;
 
   // If the initialization logic after mount has finished
   private _initialized: boolean;
@@ -95,8 +105,9 @@ export abstract class Component<
     const { logs } = this.state;
 
     try {
-      await this.initialize(this.entity(this.props));
+      await this.entity(this.props);
       this._initialized = true;
+
       this.forceUpdate();
     } catch (error) {
       logs.entityCreationFailed(error);
@@ -116,7 +127,9 @@ export abstract class Component<
     }
   }
 
-  private createEntityWithProps(props: Props): Entity | undefined {
+  private async createEntityWithProps(
+    props: Props
+  ): Promise<Entity | undefined> {
     const { logs } = this.state;
 
     logs.entityCreated();
@@ -127,13 +140,13 @@ export abstract class Component<
 
     try {
       const entity = this.createEntity();
-
+      await this.initialize(entity);
       logs.dataQueryStarted();
 
       // subscribe to this entity's state changes
-      this._subscription = entity
-        .state({})
-        .subscribe(this.onQueryData, this.onQueryError, this.onQueryComplete);
+      // if (props.noSub) {
+      // this._subscription = entity.state({}).subscribe(this.onQueryData, this.onQueryError, this.onQueryComplete);
+      // }
 
       return entity;
     } catch (error) {

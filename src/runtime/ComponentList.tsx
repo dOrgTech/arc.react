@@ -1,7 +1,12 @@
 import * as React from "react";
 import memoize from "memoize-one";
 import { Observable, Subscription } from "rxjs";
-import { IStateful } from "@daostack/client/src/types";
+
+// TODO: This should not be opinionated to arc
+import {
+  Entity as ArcEntity,
+  IEntityState as IArcEntityState,
+} from "@dorgtech/arc.js";
 
 import { Component } from "./Component";
 import { ComponentListLogs } from "./logging/ComponentListLogs";
@@ -61,7 +66,7 @@ export abstract class ComponentList<
   Props extends ComponentListProps<Entity, Data, PFilterOptions<Props>>,
   // @ts-ignore: This should always work
   Comp extends Component<CProps<Comp>, CEntity<Comp>, CData<Comp>>,
-  Entity extends IStateful<CData<Comp>> = CEntity<Comp>,
+  Entity extends ArcEntity<CData<Comp>> = CEntity<Comp>,
   Data = CData<Comp>
 > extends React.Component<Props, State<Entity, Data>> {
   protected abstract createObservableEntities(): Observable<Entity[]>;

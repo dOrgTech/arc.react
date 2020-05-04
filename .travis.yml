@@ -5,7 +5,7 @@ services:
 before_script:
   - yarn
 script:
-  - docker-compose -f ./node_modules/@daostack/client/docker-compose.yml up -d graph-node
+  - docker-compose -f ./node_modules/@dorgtech/arc.js/docker-compose.yml up -d graph-node
   - sleep 20 #making sure the graph is up and running
   - yarn test
   - yarn lint

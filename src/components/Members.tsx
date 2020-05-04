@@ -9,7 +9,7 @@ import {
   MemberEntity as Entity,
   MemberData as Data,
 } from "./";
-import { IMemberQueryOptions as FilterOptions } from "@daostack/client";
+import { IMemberQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 
 // TODO: find better way of handling inference... this gets complicated when there are multiple
 // points of inferrance such as votes (MemberVotes, DAOVotes, ProposalVotes). Maybe have a prop
@@ -49,8 +49,8 @@ class ArcMembers extends ComponentList<ArcProps, Component> {
     // TODO: support creating Components with just an Entity, it makes no sense to recreate the Member entity here...
     return (
       <Component
-        address={entity.staticState!.address}
-        dao={new InferEntity(entity.staticState!.dao, entity.context)}
+        address={entity.coreState!.address}
+        dao={new InferEntity(entity.context, entity.coreState!.address)}
       >
         {children}
       </Component>
@@ -85,8 +85,8 @@ class DAOMembers extends ComponentList<DAOProps, Component> {
     const { dao } = this.props;
     return (
       <Component
-        key={entity.staticState!.address}
-        address={entity.staticState!.address as string}
+        key={entity.coreState!.address}
+        address={entity.coreState!.address as string}
         dao={dao}
       >
         {children}

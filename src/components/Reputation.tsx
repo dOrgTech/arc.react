@@ -5,7 +5,7 @@ import { Arc, ArcConfig } from "../protocol";
 import {
   Reputation as Entity,
   IReputationState as Data,
-} from "@daostack/client";
+} from "@dorgtech/arc.js";
 import { DAO, DAOData } from "./DAO";
 
 interface RequiredProps {
@@ -84,7 +84,7 @@ class Reputation extends React.Component<RequiredProps> {
         <Arc.Config>
           <DAO.Data>
             {(arc: ArcConfig, dao: DAOData) => (
-              <ArcReputation address={dao.reputation.address} arcConfig={arc}>
+              <ArcReputation address={dao.reputation.id} arcConfig={arc}>
                 {children}
               </ArcReputation>
             )}

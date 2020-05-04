@@ -2,11 +2,12 @@ import * as React from "react";
 import { Component, ComponentLogs } from "../runtime";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 import { Arc, ArcConfig, DevArcConfig } from "../protocol";
-import { DAO as Entity, IDAOState as Data } from "@daostack/client";
+import { DAO as Entity, IDAOState as Data } from "@dorgtech/arc.js";
 
 interface RequiredProps {
   // Address of the DAO Avatar
   address: string;
+  noSub?: boolean;
 }
 
 interface InferredProps {
@@ -25,14 +26,6 @@ class ArcDAO extends Component<Props, Entity, Data> {
       );
     }
     return new Entity(arcConfig.connection, address);
-  }
-
-  protected async initialize(entity: Entity | undefined): Promise<void> {
-    if (entity) {
-      await entity.fetchState();
-    }
-
-    return Promise.resolve();
   }
 
   public static get Entity() {

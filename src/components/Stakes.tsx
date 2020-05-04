@@ -7,7 +7,7 @@ import {
   StakeEntity as Entity,
   StakeData as Data,
 } from "./";
-import { IStakeQueryOptions as FilterOptions } from "@daostack/client";
+import { IStakeQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 
 type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
 
