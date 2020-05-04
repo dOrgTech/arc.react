@@ -71,7 +71,8 @@ export abstract class ComponentList<
   protected abstract createObservableEntities(): Observable<Entity[]>;
   protected abstract renderComponent(
     entity: Entity,
-    children: any
+    children: any,
+    index: number
   ): React.ComponentElement<CProps<Comp>, any>;
 
   // See here for more information on the React.Context pattern:
@@ -129,7 +130,9 @@ export abstract class ComponentList<
           {typeof children === "function" ? (
             children(entities)
           ) : entities.length ? (
-            entities.map((entity) => this.renderComponent(entity, children))
+            entities.map((entity, index) =>
+              this.renderComponent(entity, children, index)
+            )
           ) : (
             <LoadingView logs={logs} />
           )}
@@ -238,4 +241,38 @@ export abstract class ComponentList<
     const { logs } = this.state;
     logs.dataQueryCompleted();
   }
+}
+
+export function applyScope<Scopes extends keyof any>(
+  filter: any,
+  scope: Scopes | undefined,
+  scopeProps: Record<Scopes, string>,
+  props: any
+): any {
+  if (scope) {
+    if (!props[scopeProps[scope]]) {
+      throw Error(
+        `${
+          props[scopeProps[scope]]
+        } Missing: Please provide this field as a prop, or use the inference component.`
+      );
+    }
+  }
+
+  let f = filter;
+  const keys = Object.keys(scopeProps);
+
+  for (const key of keys) {
+    const propName = scopeProps[key];
+    if (props[propName]) {
+      f = f ? f : { where: {} };
+      if (!f.where) {
+        f.where = {};
+      }
+
+      f.where[propName] = props[propName];
+    }
+  }
+
+  return f;
 }

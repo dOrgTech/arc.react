@@ -5,9 +5,7 @@ import {
   DAO,
   MemberData,
   Member,
-  DAOMember,
   DAOData,
-  DAOEntity,
   Members,
 } from "../src";
 import {
@@ -15,12 +13,15 @@ import {
   screen,
   waitForElementToBeRemoved,
   waitFor,
+  cleanup,
 } from "@testing-library/react";
 
 const daoAddress = "0xe7a2c59e134ee81d4035ae6db2254f79308e334f";
 const arcConfig = new ArcConfig("private");
 
 describe("Member component ", () => {
+  afterEach(() => cleanup());
+
   it("Shows member and dao address with inferred props", async () => {
     const memberAddress = "0xe11ba2b4d45eaed5996cd0823791e0c93114882d";
     const { container } = render(
@@ -63,10 +64,7 @@ describe("Member component ", () => {
     const memberAddress = "0xe11ba2b4d45eaed5996cd0823791e0c93114882d";
     const { container, findByText } = render(
       <Arc config={arcConfig}>
-        <DAOMember
-          address={memberAddress}
-          dao={new DAOEntity(arcConfig.connection, daoAddress)}
-        >
+        <Member address={memberAddress} dao={daoAddress}>
           <Member.Data>
             {(member: MemberData) => (
               <>
@@ -75,7 +73,7 @@ describe("Member component ", () => {
               </>
             )}
           </Member.Data>
-        </DAOMember>
+        </Member>
       </Arc>
     );
     const member = await findByText(/Member address:/);
@@ -96,6 +94,8 @@ describe("Member component ", () => {
 });
 
 describe("Member List", () => {
+  afterEach(() => cleanup());
+
   class MemberList extends React.Component {
     render() {
       return (

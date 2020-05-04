@@ -5,11 +5,14 @@ import {
   screen,
   waitForElementToBeRemoved,
   waitFor,
+  cleanup,
 } from "@testing-library/react";
 
 const arcConfig = new ArcConfig("private");
 
 describe("Proposal component ", () => {
+  afterEach(() => cleanup());
+
   it("Shows proposal id", async () => {
     const proposalId =
       "0x02fd1079f9a842581eb742ea44507a461466b791c2990783732bfe660aa6a711";
@@ -36,6 +39,8 @@ describe("Proposal component ", () => {
 });
 
 describe("Proposal List", () => {
+  afterEach(() => cleanup());
+
   const daoAddress = "0x02981ec0aefe7329442c39dfe5a52fb8781e7659";
   class ProposalList extends React.Component {
     render() {

@@ -8,6 +8,7 @@ export interface Props extends React.PropsWithChildren<{}> {
   _consumers?: ConsumerComponent[];
   _logs?: ConsumerComponent[];
   _entity?: string;
+  noLoad?: boolean;
 }
 
 class ContextFeed extends React.Component<Props> {
@@ -16,7 +17,7 @@ class ContextFeed extends React.Component<Props> {
   }
 
   public render() {
-    const { children, _consumers, _logs, _entity } = this.props;
+    const { children, _consumers, _logs, _entity, noLoad } = this.props;
     if (!_consumers || !_logs) {
       throw Error("Error: ContextFeed missing context consumer(s).");
     }
@@ -49,7 +50,8 @@ class ContextFeed extends React.Component<Props> {
           const nullIndex = values.indexOf(undefined);
 
           // If we have a value that is still undefined
-          if (nullIndex > -1) {
+          // AND we want to handle loading in this component
+          if (nullIndex > -1 && !noLoad) {
             // Get its logs and pass them to the LoadingView component
             const Logs = _logs[nullIndex];
             return (

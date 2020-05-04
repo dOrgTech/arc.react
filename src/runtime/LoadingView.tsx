@@ -1,7 +1,7 @@
 import * as React from "react";
 import Popup from "reactjs-popup";
 import { ComponentLogs, ComponentListLogs, ProtocolLogs } from "../";
-import { Loader, RenderFunc } from "./Loader";
+import { Loader, LoadingRenderFunc } from "./Loader";
 import * as R from "ramda";
 import Spinner from "react-spinkit";
 
@@ -36,7 +36,7 @@ export default class LoadingView extends React.Component<Props> {
     }
     return (
       <Loader.Render>
-        {(customLoader: RenderFunc) =>
+        {(customLoader: LoadingRenderFunc) =>
           customLoader ? (
             customLoader({ errors: this.errors })
           ) : (

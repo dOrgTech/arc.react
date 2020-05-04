@@ -1,66 +1,74 @@
 // import * as React from "react";
-// import { Component, ComponentLogs } from "../../runtime";
-// import { CreateContextFeed } from "../../runtime/ContextFeed";
-// import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../../protocol";
 // import { Proposal as Entity, IProposalState as Data } from "@dorgtech/arc.js";
+// import {
+//   Arc as Protocol,
+//   ArcConfig as ProtocolConfig,
+//   Component,
+//   ComponentLogs,
+// } fro../..../";
+// import { CreateContextFeed } fro../../runtime/ContextFeedeed";
 
 // interface RequiredProps {
 //   // Proposal ID
 //   id: string;
 // }
 
-// interface InferredProps {
-//   // Arc Instance
-//   arcConfig: ProtocolConfig | undefined;
+// interface InferredProps extends RequiredProps {
+//   config: ProtocolConfig;
 // }
 
-// type Props = RequiredProps & InferredProps;
-
-// class ArcProposal extends Component<Props, Entity, Data> {
+// class InferredProposal extends Component<InferredProps, Entity, Data> {
 //   protected createEntity(): Entity {
-//     const { arcConfig, id } = this.props;
+//     const { config, id } = this.props;
 
-//     if (!arcConfig) {
+//     if (!config) {
 //       throw Error(
 //         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
 //       );
 //     }
 
-//     return new Entity(arcConfig.connection, id);
+//     return new Entity(id, config.connection);
 //   }
 
-//   protected async initialize(entity: Entity | undefined): Promise<void> {
-//     if (entity) {
-//       await entity.fetchState();
-//     }
-
-//     return Promise.resolve();
+//   protected async initialize(entity: Entity): Promise<void> {
+//     // TODO: remove this when this issue is resolved: https://github.com/daostack/client/issues/291
+//     entity.staticState = undefined;
+//     await entity.fetchStaticState();
 //   }
 
 //   public static get Entity() {
 //     return CreateContextFeed(
 //       this._EntityContext.Consumer,
-//       this._LogsContext.Consumer
+//       this._LogsContext.Consumer,
+//       "Proposal"
 //     );
 //   }
 
 //   public static get Data() {
 //     return CreateContextFeed(
 //       this._DataContext.Consumer,
-//       this._LogsContext.Consumer
+//       this._LogsContext.Consumer,
+//       "Proposal"
 //     );
 //   }
 
 //   public static get Logs() {
 //     return CreateContextFeed(
 //       this._LogsContext.Consumer,
-//       this._LogsContext.Consumer
+//       this._LogsContext.Consumer,
+//       "Proposal"
 //     );
 //   }
 
-//   protected static _EntityContext = React.createContext({});
-//   protected static _DataContext = React.createContext({});
-//   protected static _LogsContext = React.createContext({});
+//   protected static _EntityContext = React.createContext<Entity | undefined>(
+//     undefined
+//   );
+//   protected static _DataContext = React.createContext<Data | undefined>(
+//     undefined
+//   );
+//   protected static _LogsContext = React.createContext<
+//     ComponentLogs | undefined
+//   >(undefined);
 // }
 
 // class Proposal extends React.Component<RequiredProps> {
@@ -69,35 +77,33 @@
 
 //     return (
 //       <Protocol.Config>
-//         {(arc: ProtocolConfig) => (
-//           <ArcProposal id={id} arcConfig={arc}>
+//         {(config: ProtocolConfig) => (
+//           <InferredProposal id={id} config={config}>
 //             {children}
-//           </ArcProposal>
+//           </InferredProposal>
 //         )}
 //       </Protocol.Config>
 //     );
 //   }
 
 //   public static get Entity() {
-//     return ArcProposal.Entity;
+//     return InferredProposal.Entity;
 //   }
 
 //   public static get Data() {
-//     return ArcProposal.Data;
+//     return InferredProposal.Data;
 //   }
 
 //   public static get Logs() {
-//     return ArcProposal.Logs;
+//     return InferredProposal.Logs;
 //   }
 // }
 
 // export default Proposal;
 
 // export {
-//   ArcProposal,
+//   InferredProposal,
 //   Proposal,
-//   Props as ProposalProps,
 //   Entity as ProposalEntity,
 //   Data as ProposalData,
-//   ComponentLogs,
 // };

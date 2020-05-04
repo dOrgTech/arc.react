@@ -1,17 +1,21 @@
 import React, { Component } from "react";
 
-export type RenderFunc = ((props: RenderProps) => JSX.Element) | undefined;
+export type LoadingRenderFunc =
+  | ((props: LoadingRenderProps) => JSX.Element)
+  | undefined;
 
-export interface RenderProps {
+export interface LoadingRenderProps {
   errors: React.ReactNode[];
 }
 
 interface Props {
-  render: RenderFunc;
+  render: LoadingRenderFunc;
 }
 
 export class Loader extends Component<Props> {
-  private static _RenderContext = React.createContext<RenderFunc>(undefined);
+  private static _RenderContext = React.createContext<LoadingRenderFunc>(
+    undefined
+  );
 
   public static get Render() {
     return Loader._RenderContext.Consumer;

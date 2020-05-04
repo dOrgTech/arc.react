@@ -14,22 +14,19 @@ interface RequiredProps {
   noSub?: boolean;
 }
 
-interface InferredProps {
-  // Arc Instance
-  arcConfig: ProtocolConfig | undefined;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig;
 }
 
-type Props = RequiredProps & InferredProps;
-
-class ArcDAO extends Component<Props, Entity, Data> {
+class InferredDAO extends Component<InferredProps, Entity, Data> {
   protected createEntity(): Entity {
-    const { arcConfig, address } = this.props;
-    if (!arcConfig) {
+    const { config, address } = this.props;
+    if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
       );
     }
-    return new Entity(arcConfig.connection, address);
+    return new Entity(config.connection, address);
   }
 
   public static get Entity() {
@@ -73,28 +70,28 @@ class DAO extends React.Component<RequiredProps> {
 
     return (
       <Protocol.Config>
-        {(arc: ProtocolConfig) => (
-          <ArcDAO address={address} arcConfig={arc}>
+        {(config: ProtocolConfig) => (
+          <InferredDAO address={address} config={config}>
             {children}
-          </ArcDAO>
+          </InferredDAO>
         )}
       </Protocol.Config>
     );
   }
 
   public static get Entity() {
-    return ArcDAO.Entity;
+    return InferredDAO.Entity;
   }
 
   public static get Data() {
-    return ArcDAO.Data;
+    return InferredDAO.Data;
   }
 
   public static get Logs() {
-    return ArcDAO.Logs;
+    return InferredDAO.Logs;
   }
 }
 
 export default DAO;
 
-export { ArcDAO, DAO, Props as DAOProps, Entity as DAOEntity, Data as DAOData };
+export { DAO, InferredDAO, Entity as DAOEntity, Data as DAOData };

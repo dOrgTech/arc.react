@@ -3,7 +3,7 @@ import { Observable } from "rxjs";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
-  ArcToken as Component,
+  InferredToken as Component,
   TokenEntity as Entity,
   TokenData as Data,
   CProps,
@@ -16,31 +16,34 @@ import { CreateContextFeed } from "../runtime/ContextFeed";
 
 type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
 
-interface InferredProps {
-  arcConfig: ProtocolConfig | undefined;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig;
 }
 
-type Props = RequiredProps & InferredProps;
-
-class ArcTokens extends ComponentList<Props, Component> {
+class InferredTokens extends ComponentList<InferredProps, Component> {
   createObservableEntities(): Observable<Entity[]> {
-    const { arcConfig, filter } = this.props;
-    if (!arcConfig) {
+    const { config, filter } = this.props;
+    if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
       );
     }
-    return Entity.search(arcConfig.connection, filter);
+    return Entity.search(config.connection, filter);
   }
 
   renderComponent(
     entity: Entity,
-    children: any
+    children: any,
+    index: number
   ): React.ComponentElement<CProps<Component>, any> {
-    const { arcConfig } = this.props;
+    const { config } = this.props;
 
     return (
-      <Component key={entity.id} address={entity.address} arcConfig={arcConfig}>
+      <Component
+        key={`${entity.id}_${index}`}
+        address={entity.address}
+        config={config}
+      >
         {children}
       </Component>
     );
@@ -76,24 +79,24 @@ class Tokens extends React.Component<RequiredProps> {
 
     return (
       <Protocol.Config>
-        {(arc: ProtocolConfig) => (
-          <ArcTokens arcConfig={arc} sort={sort} filter={filter}>
+        {(config: ProtocolConfig) => (
+          <InferredTokens config={config} sort={sort} filter={filter}>
             {children}
-          </ArcTokens>
+          </InferredTokens>
         )}
       </Protocol.Config>
     );
   }
 
   public static get Entities() {
-    return ArcTokens.Entities;
+    return InferredTokens.Entities;
   }
 
   public static get Logs() {
-    return ArcTokens.Logs;
+    return InferredTokens.Logs;
   }
 }
 
 export default Tokens;
 
-export { ArcTokens, Tokens };
+export { Tokens, InferredTokens };

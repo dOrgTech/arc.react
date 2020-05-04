@@ -5,11 +5,14 @@ import {
   screen,
   waitForElementToBeRemoved,
   waitFor,
+  cleanup,
 } from "@testing-library/react";
 
 const arcConfig = new ArcConfig("private");
 
 describe("Stake component ", () => {
+  afterEach(() => cleanup());
+
   it("Shows stake id", async () => {
     const stakeId =
       "0x3d6b71c0fa97d433642c45b0b2f9642e0c79d0258ad4ff4dce667222dc15f526";
@@ -34,6 +37,8 @@ describe("Stake component ", () => {
 });
 
 describe("Stake List", () => {
+  afterEach(() => cleanup());
+
   class StakeList extends React.Component {
     render() {
       return (

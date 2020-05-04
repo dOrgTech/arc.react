@@ -14,24 +14,21 @@ interface RequiredProps {
   noSub?: boolean;
 }
 
-interface InferredProps {
-  // Arc Instance
-  arcConfig: ProtocolConfig | undefined;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig;
 }
 
-type Props = RequiredProps & InferredProps;
-
-class ArcStake extends Component<Props, Entity, Data> {
+class InferredStake extends Component<InferredProps, Entity, Data> {
   protected createEntity(): Entity {
-    const { arcConfig, id } = this.props;
+    const { config, id } = this.props;
 
-    if (!arcConfig) {
+    if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
       );
     }
 
-    return new Entity(arcConfig.connection, id);
+    return new Entity(config.connection, id);
   }
 
   protected async initialize(entity: Entity | undefined): Promise<void> {
@@ -83,34 +80,28 @@ class Stake extends React.Component<RequiredProps> {
 
     return (
       <Protocol.Config>
-        {(arc: ProtocolConfig) => (
-          <ArcStake id={id} arcConfig={arc}>
+        {(config: ProtocolConfig) => (
+          <InferredStake id={id} config={config}>
             {children}
-          </ArcStake>
+          </InferredStake>
         )}
       </Protocol.Config>
     );
   }
 
   public static get Entity() {
-    return ArcStake.Entity;
+    return InferredStake.Entity;
   }
 
   public static get Data() {
-    return ArcStake.Data;
+    return InferredStake.Data;
   }
 
   public static get Logs() {
-    return ArcStake.Logs;
+    return InferredStake.Logs;
   }
 }
 
 export default Stake;
 
-export {
-  ArcStake,
-  Stake,
-  Props as StakeProps,
-  Entity as StakeEntity,
-  Data as StakeData,
-};
+export { Stake, InferredStake, Entity as StakeEntity, Data as StakeData };

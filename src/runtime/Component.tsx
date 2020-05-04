@@ -107,8 +107,12 @@ export abstract class Component<
     const { logs } = this.state;
 
     try {
-      await this.entity(this.props);
-      this._initialized = true;
+      const entity = await this.entity(this.props);
+
+      if (entity !== undefined) {
+        await this.initialize(entity);
+        this._initialized = true;
+      }
 
       this.forceUpdate();
     } catch (e) {
@@ -144,6 +148,10 @@ export abstract class Component<
       const entity = this.createEntity();
       await this.initialize(entity);
       logs.dataQueryStarted();
+
+      if (this._subscription) {
+        this._subscription.unsubscribe();
+      }
 
       // subscribe to this entity's state changes
       if (props.noSub) {
@@ -181,7 +189,6 @@ export abstract class Component<
     const { logs } = this.state;
     logs.dataQueryFailed(error);
     this.setState({
-      data: this.state.data,
       logs: logs.clone(),
     });
   }
@@ -190,7 +197,6 @@ export abstract class Component<
     const { logs } = this.state;
     logs.dataQueryCompleted();
     this.setState({
-      data: this.state.data,
       logs: logs.clone(),
     });
   }

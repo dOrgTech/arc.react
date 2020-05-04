@@ -1,35 +1,36 @@
 import * as React from "react";
-import { Component, ComponentLogs } from "../runtime";
+import {
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig,
+  DAO,
+  DAOEntity,
+  Component,
+  ComponentLogs,
+} from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
-import { DAO, DAOEntity } from "./";
 import { Member as Entity, IMemberState as Data } from "@dorgtech/arc.js";
 
 interface RequiredProps {
   // Address of the member
   address: string;
   noSub?: boolean;
+  dao?: string;
 }
 
-interface InferredProps {
-  // The DAO this member is apart of
-  dao: DAOEntity | undefined;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig;
 }
 
-type Props = RequiredProps & InferredProps;
-
-class DAOMember extends Component<Props, Entity, Data> {
+class InferredMember extends Component<InferredProps, Entity, Data> {
   protected createEntity(): Entity {
-    const { dao, address } = this.props;
+    const { address, dao, config } = this.props;
 
-    // TODO: better error handling? maybe have another abstract function
-    // that's a predicate that lets you know if entity can be created w/
-    // provided data & gives user friendly sanitization errors?
     if (!dao) {
       throw Error(
-        "DAO Missing: Please provide this field as a prop, or use the inference component."
+        "DAO Address Missing: Please provide this field as a prop, or use the inference component."
       );
     }
-    return new Entity(dao.context, address);
+    return new Entity(config.connection, address);
   }
 
   public static get Entity() {
@@ -69,38 +70,50 @@ class DAOMember extends Component<Props, Entity, Data> {
 
 class Member extends React.Component<RequiredProps> {
   public render() {
-    const { address, children } = this.props;
+    const { address, dao, children } = this.props;
 
     return (
-      <DAO.Entity>
-        {(entity: DAOEntity) => (
-          <DAOMember address={address} dao={entity}>
-            {children}
-          </DAOMember>
-        )}
-      </DAO.Entity>
+      <Protocol.Config>
+        {(config: ProtocolConfig) => {
+          if (dao) {
+            return (
+              <InferredMember address={address} dao={dao} config={config}>
+                {children}
+              </InferredMember>
+            );
+          } else {
+            return (
+              <DAO.Entity>
+                {(entity: DAOEntity | undefined) => (
+                  <InferredMember
+                    address={address}
+                    dao={entity ? entity.id : undefined}
+                    config={config}
+                  >
+                    {children}
+                  </InferredMember>
+                )}
+              </DAO.Entity>
+            );
+          }
+        }}
+      </Protocol.Config>
     );
   }
 
   public static get Entity() {
-    return DAOMember.Entity;
+    return InferredMember.Entity;
   }
 
   public static get Data() {
-    return DAOMember.Data;
+    return InferredMember.Data;
   }
 
   public static get Logs() {
-    return DAOMember.Logs;
+    return InferredMember.Logs;
   }
 }
 
 export default Member;
 
-export {
-  DAOMember,
-  Member,
-  Props as MemberProps,
-  Entity as MemberEntity,
-  Data as MemberData,
-};
+export { Member, InferredMember, Entity as MemberEntity, Data as MemberData };

@@ -12,11 +12,14 @@ import {
   screen,
   waitForElementToBeRemoved,
   waitFor,
+  cleanup,
 } from "@testing-library/react";
 
 const arcConfig = new ArcConfig("private");
 
 describe("Reputation component ", () => {
+  afterEach(() => cleanup());
+
   it("Shows reputation address", async () => {
     const reputationAddress = "0x93cdbf39fb9e13bd253ca5819247d52fbabf0f2f";
     const { container } = render(
@@ -67,6 +70,8 @@ describe("Reputation component ", () => {
 });
 
 describe("Reputation List", () => {
+  afterEach(() => cleanup());
+
   class ReputationList extends React.Component {
     render() {
       return (

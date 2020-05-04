@@ -5,11 +5,14 @@ import {
   screen,
   waitForElementToBeRemoved,
   waitFor,
+  cleanup,
 } from "@testing-library/react";
 
 const arcConfig = new ArcConfig("private");
 
 describe("Vote component ", () => {
+  afterEach(() => cleanup());
+
   it("Shows vote id", async () => {
     const voteId =
       "0x0795aafa7207e2c48241fa432f1f66789e0d2a2e2802208ced7ca3ff216dc74e";
@@ -34,6 +37,8 @@ describe("Vote component ", () => {
 });
 
 describe("Vote List", () => {
+  afterEach(() => cleanup());
+
   class VoteList extends React.Component {
     render() {
       return (

@@ -3,7 +3,7 @@ import { Observable } from "rxjs";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
-  ArcReputation as Component,
+  InferredReputation as Component,
   ReputationEntity as Entity,
   ReputationData as Data,
   CProps,
@@ -17,34 +17,33 @@ import { CreateContextFeed } from "../runtime/ContextFeed";
 
 type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
 
-interface InferredProps {
-  arcConfig: ProtocolConfig | undefined;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig;
 }
 
-type Props = RequiredProps & InferredProps;
-
-class ArcReputations extends ComponentList<Props, Component> {
+class InferredReputations extends ComponentList<InferredProps, Component> {
   createObservableEntities(): Observable<Entity[]> {
-    const { arcConfig, filter } = this.props;
-    if (!arcConfig) {
+    const { config, filter } = this.props;
+    if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
       );
     }
-    return Entity.search(arcConfig.connection, filter);
+    return Entity.search(config.connection, filter);
   }
 
   renderComponent(
     entity: Entity,
-    children: any
+    children: any,
+    index: number
   ): React.ComponentElement<CProps<Component>, any> {
-    const { arcConfig } = this.props;
+    const { config } = this.props;
 
     return (
       <Component
-        key={entity.address}
+        key={`${entity.id}_${index}`}
         address={entity.address}
-        arcConfig={arcConfig}
+        config={config}
       >
         {children}
       </Component>
@@ -81,24 +80,24 @@ class Reputations extends React.Component<RequiredProps> {
 
     return (
       <Protocol.Config>
-        {(arc: ProtocolConfig) => (
-          <ArcReputations arcConfig={arc} sort={sort} filter={filter}>
+        {(config: ProtocolConfig) => (
+          <InferredReputations config={config} sort={sort} filter={filter}>
             {children}
-          </ArcReputations>
+          </InferredReputations>
         )}
       </Protocol.Config>
     );
   }
 
   public static get Entities() {
-    return ArcReputations.Entities;
+    return InferredReputations.Entities;
   }
 
   public static get Logs() {
-    return ArcReputations.Logs;
+    return InferredReputations.Logs;
   }
 }
 
 export default Reputations;
 
-export { ArcReputations, Reputations };
+export { Reputations, InferredReputations };
