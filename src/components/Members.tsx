@@ -4,104 +4,62 @@ import { IMemberQueryOptions as FilterOptions } from "@daostack/client";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
-  DAO as InferComponent,
-  DAOEntity as InferEntity,
-  DAOMember as Component,
+  DAO,
+  DAOEntity,
+  InferredMember as Component,
   MemberEntity as Entity,
   MemberData as Data,
   CProps,
   ComponentList,
   ComponentListLogs,
   ComponentListProps,
+  applyScope,
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
-// TODO: find better way of handling inference... this gets complicated when there are multiple
-// points of inferrance such as votes (MemberVotes, DAOVotes, ProposalVotes). Maybe have a prop
-// that is <Votes inferFrom={"Member"}
+type Scopes = "DAO";
+
+const scopeProps: Record<Scopes, string> = {
+  DAO: "dao",
+};
+
 interface RequiredProps
   extends ComponentListProps<Entity, Data, FilterOptions> {
-  allDAOs?: boolean;
+  from?: Scopes;
 }
 
-interface ArcInferredProps {
-  arcConfig: ProtocolConfig | undefined;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig;
+  dao?: string;
 }
 
-interface DAOInferredProps {
-  dao: InferEntity | undefined;
-}
-
-type ArcProps = RequiredProps & ArcInferredProps;
-type DAOProps = RequiredProps & DAOInferredProps;
-
-class ArcMembers extends ComponentList<ArcProps, Component> {
+class InferredMembers extends ComponentList<InferredProps, Component> {
   createObservableEntities(): Observable<Entity[]> {
-    const { arcConfig, filter } = this.props;
-    if (!arcConfig) {
+    const { config, from, filter } = this.props;
+    if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
       );
     }
 
-    return Entity.search(arcConfig.connection, filter);
+    const f = applyScope(filter, from, scopeProps, this.props);
+    return Entity.search(config.connection, f);
   }
 
   renderComponent(
     entity: Entity,
-    children: any
+    children: any,
+    index: number
   ): React.ComponentElement<CProps<Component>, any> {
-    if (!entity.staticState?.dao) {
-      throw Error(
-        `DAO id should never be missing on a queried Member within Members search`
-      );
-    }
+    const { config } = this.props;
 
     // TODO: support creating Components with just an Entity, it makes no sense to recreate the Member entity here...
     return (
       <Component
-        key={entity.staticState!.address}
+        key={`${entity.id}_${index}`}
         address={entity.staticState!.address}
-        dao={new InferEntity(entity.staticState.dao, entity.context)}
-      >
-        {children}
-      </Component>
-    );
-  }
-}
-
-class DAOMembers extends ComponentList<DAOProps, Component> {
-  // TODO: remove this when filters are added
-  // also rename all instances of "Arc" to protocol?
-  createObservableEntities(): Observable<Entity[]> {
-    const { dao, filter } = this.props;
-
-    if (!dao) {
-      throw Error(
-        "DAO Missing Entity: Please provide this field as a prop, or use the inference component."
-      );
-    }
-
-    const daoFilter: FilterOptions = filter ? filter : { where: {} };
-    if (!daoFilter.where) {
-      daoFilter.where = {};
-    }
-    daoFilter.where.dao = dao.id;
-
-    return Entity.search(dao.context, daoFilter);
-  }
-
-  renderComponent(
-    entity: Entity,
-    children: any
-  ): React.ComponentElement<CProps<Component>, any> {
-    const { dao } = this.props;
-
-    return (
-      <Component
-        key={entity.staticState!.address}
-        address={entity.staticState!.address as string}
-        dao={dao}
+        dao={entity.staticState!.dao}
+        config={config}
       >
         {children}
       </Component>
@@ -134,42 +92,52 @@ class DAOMembers extends ComponentList<DAOProps, Component> {
 
 class Members extends React.Component<RequiredProps> {
   render() {
-    const { children, allDAOs, sort, filter } = this.props;
-    if (allDAOs) {
-      return (
-        <Protocol.Config>
-          {(arcConfig: ProtocolConfig) => (
-            <ArcMembers arcConfig={arcConfig} sort={sort} filter={filter}>
-              {children}
-            </ArcMembers>
-          )}
-        </Protocol.Config>
-      );
-    } else {
-      return (
-        <Protocol.Config>
-          <InferComponent.Entity>
-            {(arc: ProtocolConfig, dao: InferEntity) => (
-              <DAOMembers dao={dao} sort={sort} filter={filter}>
-                {children}
-              </DAOMembers>
-            )}
-          </InferComponent.Entity>
-        </Protocol.Config>
-      );
-    }
+    const { children, from, sort, filter } = this.props;
+
+    return (
+      <Protocol.Config>
+        {(config: ProtocolConfig) => {
+          switch (from) {
+            case "DAO":
+              return (
+                <DAO.Entity>
+                  {(dao: DAOEntity) => (
+                    <InferredMembers
+                      dao={dao.id}
+                      config={config}
+                      sort={sort}
+                      filter={filter}
+                    >
+                      {children}
+                    </InferredMembers>
+                  )}
+                </DAO.Entity>
+              );
+            default:
+              if (from) {
+                throw Error(`Unsupported scope: ${from}`);
+              }
+
+              return (
+                <InferredMembers config={config} sort={sort} filter={filter}>
+                  {children}
+                </InferredMembers>
+              );
+          }
+        }}
+      </Protocol.Config>
+    );
   }
 
   public static get Entities() {
-    // TODO: this is a bug, will be fixed in the infer-prop branch
-    return DAOMembers.Entities;
+    return InferredMembers.Entities;
   }
 
   public static get Logs() {
-    return DAOMembers.Logs;
+    return InferredMembers.Logs;
   }
 }
 
 export default Members;
 
-export { ArcMembers, DAOMembers, Members };
+export { Members, InferredMembers };

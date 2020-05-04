@@ -4,43 +4,70 @@ import { IRewardQueryOptions as FilterOptions } from "@daostack/client";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
-  ArcReward as Component,
+  InferredReward as Component,
   RewardEntity as Entity,
   RewardData as Data,
+  DAO,
+  DAOEntity,
+  Member,
+  MemberEntity,
+  Proposal,
+  ProposalEntity,
+  Token,
+  TokenEntity,
   CProps,
   ComponentList,
   ComponentListLogs,
   ComponentListProps,
+  applyScope,
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
-type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
+type Scopes = "DAO" | "Member as beneficiary" | "Proposal" | "Token";
 
-interface InferredProps {
-  arcConfig: ProtocolConfig | undefined;
+const scopeProps: Record<Scopes, string> = {
+  DAO: "dao",
+  "Member as beneficiary": "beneficiary",
+  Proposal: "proposal",
+  Token: "tokenAddress",
+};
+
+interface RequiredProps
+  extends ComponentListProps<Entity, Data, FilterOptions> {
+  from?: Scopes;
 }
 
-type Props = RequiredProps & InferredProps;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig;
+  dao?: string;
+  beneficiary?: string;
+  proposal?: string;
+  tokenAddress?: string;
+}
 
-class ArcRewards extends ComponentList<Props, Component> {
+class InferredRewards extends ComponentList<InferredProps, Component> {
   createObservableEntities(): Observable<Entity[]> {
-    const { arcConfig, filter } = this.props;
-    if (!arcConfig) {
+    const { config, from, filter } = this.props;
+
+    if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
       );
     }
-    return Entity.search(arcConfig.connection, filter);
+
+    const f = applyScope(filter, from, scopeProps, this.props);
+    return Entity.search(config.connection, f);
   }
 
   renderComponent(
     entity: Entity,
-    children: any
+    children: any,
+    index: number
   ): React.ComponentElement<CProps<Component>, any> {
-    const { arcConfig } = this.props;
+    const { config } = this.props;
 
     return (
-      <Component key={entity.id} id={entity.id} arcConfig={arcConfig}>
+      <Component key={`${entity.id}_${index}`} id={entity.id} config={config}>
         {children}
       </Component>
     );
@@ -72,28 +99,97 @@ class ArcRewards extends ComponentList<Props, Component> {
 
 class Rewards extends React.Component<RequiredProps> {
   render() {
-    const { children, sort, filter } = this.props;
+    const { children, from, sort, filter } = this.props;
 
     return (
       <Protocol.Config>
-        {(arc: ProtocolConfig) => (
-          <ArcRewards arcConfig={arc} sort={sort} filter={filter}>
-            {children}
-          </ArcRewards>
-        )}
+        {(config: ProtocolConfig) => {
+          switch (from) {
+            case "DAO":
+              return (
+                <DAO.Entity>
+                  {(dao: DAOEntity) => (
+                    <InferredRewards
+                      dao={dao.id}
+                      config={config}
+                      sort={sort}
+                      filter={filter}
+                    >
+                      {children}
+                    </InferredRewards>
+                  )}
+                </DAO.Entity>
+              );
+            case "Member as beneficiary":
+              return (
+                <Member.Entity>
+                  {(beneficiary: MemberEntity) => (
+                    <InferredRewards
+                      beneficiary={beneficiary.staticState!.address}
+                      config={config}
+                      sort={sort}
+                      filter={filter}
+                    >
+                      {children}
+                    </InferredRewards>
+                  )}
+                </Member.Entity>
+              );
+            case "Proposal":
+              return (
+                <Proposal.Entity>
+                  {(proposal: ProposalEntity) => (
+                    <InferredRewards
+                      proposal={proposal.id}
+                      config={config}
+                      sort={sort}
+                      filter={filter}
+                    >
+                      {children}
+                    </InferredRewards>
+                  )}
+                </Proposal.Entity>
+              );
+            case "Token":
+              return (
+                <Token.Entity>
+                  {(token: TokenEntity) => (
+                    <InferredRewards
+                      tokenAddress={token.id}
+                      config={config}
+                      sort={sort}
+                      filter={filter}
+                    >
+                      {children}
+                    </InferredRewards>
+                  )}
+                </Token.Entity>
+              );
+            default:
+              if (from) {
+                throw Error(`Unsupported scope: ${from}`);
+              }
+
+              return (
+                <InferredRewards config={config} sort={sort} filter={filter}>
+                  {children}
+                </InferredRewards>
+              );
+          }
+        }}
       </Protocol.Config>
     );
   }
 
   public static get Entities() {
-    return ArcRewards.Entities;
+    return InferredRewards.Entities;
   }
 
   public static get Logs() {
-    return ArcRewards.Logs;
+    return InferredRewards.Logs;
   }
 }
 
 export default Rewards;
 
-export { ArcRewards, Rewards };
+export { Rewards, InferredRewards };

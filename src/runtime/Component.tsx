@@ -24,7 +24,7 @@ export abstract class Component<
   protected abstract createEntity(): Entity;
 
   // Complete any asynchronous initialization work needed by the Entity
-  protected async initialize(entity: Entity | undefined): Promise<void> {}
+  protected async initialize(entity: Entity): Promise<void> {}
 
   // See here for more information on the React.Context pattern:
   // https://reactjs.org/docs/context.html
@@ -94,8 +94,13 @@ export abstract class Component<
     const { logs } = this.state;
 
     try {
-      await this.initialize(this.entity(this.props));
-      this._initialized = true;
+      const entity = await this.entity(this.props);
+
+      if (entity !== undefined) {
+        await this.initialize(entity);
+        this._initialized = true;
+      }
+
       this.forceUpdate();
     } catch (e) {
       logs.entityCreationFailed(e);
@@ -128,6 +133,10 @@ export abstract class Component<
       const entity = this.createEntity();
 
       logs.dataQueryStarted();
+
+      if (this._subscription) {
+        this._subscription.unsubscribe();
+      }
 
       // subscribe to this entity's state changes
       this._subscription = entity
@@ -163,7 +172,6 @@ export abstract class Component<
     const { logs } = this.state;
     logs.dataQueryFailed(error);
     this.setState({
-      data: this.state.data,
       logs: logs.clone(),
     });
   }
@@ -172,7 +180,6 @@ export abstract class Component<
     const { logs } = this.state;
     logs.dataQueryCompleted();
     this.setState({
-      data: this.state.data,
       logs: logs.clone(),
     });
   }

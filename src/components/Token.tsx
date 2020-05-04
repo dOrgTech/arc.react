@@ -15,17 +15,14 @@ interface RequiredProps {
   address?: string;
 }
 
-interface InferredProps {
-  // Arc Instance
-  arcConfig: ProtocolConfig | undefined;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig;
 }
 
-type Props = RequiredProps & InferredProps;
-
-class ArcToken extends Component<Props, Entity, Data> {
+class InferredToken extends Component<InferredProps, Entity, Data> {
   protected createEntity(): Entity {
-    const { arcConfig, address } = this.props;
-    if (!arcConfig) {
+    const { config, address } = this.props;
+    if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
       );
@@ -35,7 +32,8 @@ class ArcToken extends Component<Props, Entity, Data> {
         "Address Missing: Please provide this field as a prop, or use the inference component."
       );
     }
-    return new Entity(address, arcConfig.connection);
+
+    return new Entity(address, config.connection);
   }
 
   public static get Entity() {
@@ -81,9 +79,9 @@ class Token extends React.Component<RequiredProps> {
       return (
         <Protocol.Config>
           {(arc: ProtocolConfig) => (
-            <ArcToken address={address} arcConfig={arc}>
+            <InferredToken address={address} config={arc}>
               {children}
-            </ArcToken>
+            </InferredToken>
           )}
         </Protocol.Config>
       );
@@ -92,9 +90,9 @@ class Token extends React.Component<RequiredProps> {
         <Protocol.Config>
           <InferComponent.Data>
             {(arc: ProtocolConfig, dao: InferData) => (
-              <ArcToken address={dao.token.address} arcConfig={arc}>
+              <InferredToken address={dao.token.address} config={arc}>
                 {children}
-              </ArcToken>
+              </InferredToken>
             )}
           </InferComponent.Data>
         </Protocol.Config>
@@ -103,24 +101,18 @@ class Token extends React.Component<RequiredProps> {
   }
 
   public static get Entity() {
-    return ArcToken.Entity;
+    return InferredToken.Entity;
   }
 
   public static get Data() {
-    return ArcToken.Data;
+    return InferredToken.Data;
   }
 
   public static get Logs() {
-    return ArcToken.Logs;
+    return InferredToken.Logs;
   }
 }
 
 export default Token;
 
-export {
-  ArcToken,
-  Token,
-  Props as TokenProps,
-  Entity as TokenEntity,
-  Data as TokenData,
-};
+export { Token, InferredToken, Entity as TokenEntity, Data as TokenData };

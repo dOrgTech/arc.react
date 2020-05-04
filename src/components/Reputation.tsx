@@ -18,18 +18,16 @@ interface RequiredProps {
   address?: string;
 }
 
-interface InferredProps {
+interface InferredProps extends RequiredProps {
   // Arc Instance
-  arcConfig: ProtocolConfig | undefined;
+  config: ProtocolConfig | undefined;
 }
 
-type Props = RequiredProps & InferredProps;
-
-class ArcReputation extends Component<Props, Entity, Data> {
+class InferredReputation extends Component<InferredProps, Entity, Data> {
   protected createEntity(): Entity {
-    const { arcConfig, address } = this.props;
+    const { config, address } = this.props;
 
-    if (!arcConfig) {
+    if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
       );
@@ -41,7 +39,7 @@ class ArcReputation extends Component<Props, Entity, Data> {
       );
     }
 
-    return new Entity(address, arcConfig.connection);
+    return new Entity(address, config.connection);
   }
 
   public static get Entity() {
@@ -83,50 +81,52 @@ class Reputation extends React.Component<RequiredProps> {
   public render() {
     const { address, children } = this.props;
 
-    if (address !== undefined) {
-      return (
-        <Protocol.Config>
-          {(arc: ProtocolConfig) => (
-            <ArcReputation address={address} arcConfig={arc}>
-              {children}
-            </ArcReputation>
-          )}
-        </Protocol.Config>
-      );
-    } else {
-      return (
-        <Protocol.Config>
-          <InferComponent.Data>
-            {(arc: ProtocolConfig, dao: InferData) => (
-              <ArcReputation address={dao.reputation.address} arcConfig={arc}>
+    return (
+      <Protocol.Config>
+        {(config: ProtocolConfig) => {
+          if (address) {
+            return (
+              <InferredReputation address={address} config={config}>
                 {children}
-              </ArcReputation>
-            )}
-          </InferComponent.Data>
-        </Protocol.Config>
-      );
-    }
+              </InferredReputation>
+            );
+          } else {
+            return (
+              <InferComponent.Data>
+                {(dao: InferData) => (
+                  <InferredReputation
+                    address={dao ? dao.reputation.address : undefined}
+                    config={config}
+                  >
+                    {children}
+                  </InferredReputation>
+                )}
+              </InferComponent.Data>
+            );
+          }
+        }}
+      </Protocol.Config>
+    );
   }
 
   public static get Entity() {
-    return ArcReputation.Entity;
+    return InferredReputation.Entity;
   }
 
   public static get Data() {
-    return ArcReputation.Data;
+    return InferredReputation.Data;
   }
 
   public static get Logs() {
-    return ArcReputation.Logs;
+    return InferredReputation.Logs;
   }
 }
 
 export default Reputation;
 
 export {
-  ArcReputation,
   Reputation,
-  Props as ReputationProps,
+  InferredReputation,
   Entity as ReputationEntity,
   Data as ReputationData,
 };

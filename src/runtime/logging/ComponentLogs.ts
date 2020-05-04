@@ -1,8 +1,4 @@
-import {
-  ReactLogs,
-  EntityLogs,
-  DataLogs,
-} from "./types";
+import { ReactLogs, EntityLogs, DataLogs } from "./types";
 import { LoggingConfig } from "./LoggingConfig";
 
 // The goal of this class is to:
@@ -10,7 +6,6 @@ import { LoggingConfig } from "./LoggingConfig";
 // 2. ensure high data integrity by guarding
 //    log data at the language level.
 export class ComponentLogs {
-
   public get react(): ReactLogs | undefined {
     return this._react;
   }

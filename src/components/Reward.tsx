@@ -13,24 +13,21 @@ interface RequiredProps {
   id: string;
 }
 
-interface InferredProps {
-  // Arc Instance
-  arcConfig: ProtocolConfig | undefined;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig;
 }
 
-type Props = RequiredProps & InferredProps;
-
-class ArcReward extends Component<Props, Entity, Data> {
+class InferredReward extends Component<InferredProps, Entity, Data> {
   protected createEntity(): Entity {
-    const { id, arcConfig } = this.props;
+    const { id, config } = this.props;
 
-    if (!arcConfig) {
+    if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
       );
     }
 
-    return new Entity(id, arcConfig.connection);
+    return new Entity(id, config.connection);
   }
 
   public static get Entity() {
@@ -74,34 +71,28 @@ class Reward extends React.Component<RequiredProps> {
 
     return (
       <Protocol.Config>
-        {(arc: ProtocolConfig) => (
-          <ArcReward id={id} arcConfig={arc}>
+        {(config: ProtocolConfig) => (
+          <InferredReward id={id} config={config}>
             {children}
-          </ArcReward>
+          </InferredReward>
         )}
       </Protocol.Config>
     );
   }
 
   public static get Entity() {
-    return ArcReward.Entity;
+    return InferredReward.Entity;
   }
 
   public static get Data() {
-    return ArcReward.Data;
+    return InferredReward.Data;
   }
 
   public static get Logs() {
-    return ArcReward.Logs;
+    return InferredReward.Logs;
   }
 }
 
 export default Reward;
 
-export {
-  ArcReward,
-  Reward,
-  Props as RewardProps,
-  Entity as RewardEntity,
-  Data as RewardData,
-};
+export { Reward, InferredReward, Entity as RewardEntity, Data as RewardData };

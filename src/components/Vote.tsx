@@ -13,32 +13,27 @@ interface RequiredProps {
   id: string;
 }
 
-interface InferredProps {
-  // Arc Instance
-  arcConfig: ProtocolConfig | undefined;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig;
 }
 
-type Props = RequiredProps & InferredProps;
-
-class ArcVote extends Component<Props, Entity, Data> {
+class InferredVote extends Component<InferredProps, Entity, Data> {
   protected createEntity(): Entity {
-    const { arcConfig, id } = this.props;
+    const { config, id } = this.props;
 
-    if (!arcConfig) {
+    if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
       );
     }
 
-    return new Entity(id, arcConfig.connection);
+    return new Entity(id, config.connection);
   }
 
-  protected async initialize(entity: Entity | undefined): Promise<void> {
-    if (entity) {
-      await entity.fetchStaticState();
-    }
-
-    return Promise.resolve();
+  protected async initialize(entity: Entity): Promise<void> {
+    // TODO: this is a bug, fix it...
+    entity.staticState = undefined;
+    entity.staticState = await entity.fetchStaticState();
   }
 
   public static get Entity() {
@@ -82,34 +77,28 @@ class Vote extends React.Component<RequiredProps> {
 
     return (
       <Protocol.Config>
-        {(arc: ProtocolConfig) => (
-          <ArcVote id={id} arcConfig={arc}>
+        {(config: ProtocolConfig) => (
+          <InferredVote id={id} config={config}>
             {children}
-          </ArcVote>
+          </InferredVote>
         )}
       </Protocol.Config>
     );
   }
 
   public static get Entity() {
-    return ArcVote.Entity;
+    return InferredVote.Entity;
   }
 
   public static get Data() {
-    return ArcVote.Data;
+    return InferredVote.Data;
   }
 
   public static get Logs() {
-    return ArcVote.Logs;
+    return InferredVote.Logs;
   }
 }
 
 export default Vote;
 
-export {
-  ArcVote,
-  Vote,
-  Props as VoteProps,
-  Entity as VoteEntity,
-  Data as VoteData,
-};
+export { Vote, InferredVote, Entity as VoteEntity, Data as VoteData };

@@ -4,47 +4,70 @@ import { IVoteQueryOptions as FilterOptions } from "@daostack/client";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
-  ArcVote as Component,
+  InferredVote as Component,
   VoteEntity as Entity,
   VoteData as Data,
+  DAO,
+  DAOEntity,
+  Member,
+  MemberEntity,
+  Proposal,
+  ProposalEntity,
   CProps,
   ComponentList,
   ComponentListLogs,
   ComponentListProps,
+  applyScope,
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
-type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
+type Scopes = "DAO" | "Member as voter" | "Proposal";
 
-interface InferredProps {
-  arcConfig: ProtocolConfig | undefined;
+const scopeProps: Record<Scopes, string> = {
+  DAO: "dao",
+  "Member as voter": "voter",
+  Proposal: "proposal",
+};
+
+interface RequiredProps
+  extends ComponentListProps<Entity, Data, FilterOptions> {
+  from?: Scopes;
 }
 
-type Props = RequiredProps & InferredProps;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig;
+  dao?: string;
+  voter?: string;
+  proposal?: string;
+}
 
-class ArcVotes extends ComponentList<Props, Component> {
+class InferredVotes extends ComponentList<InferredProps, Component> {
   createObservableEntities(): Observable<Entity[]> {
-    const { arcConfig, filter } = this.props;
-    if (!arcConfig) {
+    const { config, from, filter } = this.props;
+
+    if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
       );
     }
-    return Entity.search(arcConfig.connection, filter);
+
+    const f = applyScope(filter, from, scopeProps, this.props);
+    return Entity.search(config.connection, f);
   }
 
   renderComponent(
     entity: Entity,
-    children: any
+    children: any,
+    index: number
   ): React.ComponentElement<CProps<Component>, any> {
-    const { arcConfig } = this.props;
+    const { config } = this.props;
 
     if (!entity.id) {
       throw Error("Vote Entity ID undefined. This should never happen.");
     }
 
     return (
-      <Component key={entity.id} id={entity.id} arcConfig={arcConfig}>
+      <Component key={`${entity.id}_${index}`} id={entity.id} config={config}>
         {children}
       </Component>
     );
@@ -76,28 +99,89 @@ class ArcVotes extends ComponentList<Props, Component> {
 
 class Votes extends React.Component<RequiredProps> {
   render() {
-    const { children, sort, filter } = this.props;
+    const { children, from, sort, filter } = this.props;
 
     return (
       <Protocol.Config>
-        {(arc: ProtocolConfig) => (
-          <ArcVotes arcConfig={arc} sort={sort} filter={filter}>
-            {children}
-          </ArcVotes>
-        )}
+        {(config: ProtocolConfig) => {
+          switch (from) {
+            case "DAO":
+              return (
+                <DAO.Entity>
+                  {(dao: DAOEntity) => (
+                    <InferredVotes
+                      dao={dao.id}
+                      config={config}
+                      sort={sort}
+                      filter={filter}
+                    >
+                      {children}
+                    </InferredVotes>
+                  )}
+                </DAO.Entity>
+              );
+            case "Member as voter":
+              return (
+                <Member.Entity>
+                  {(voter: MemberEntity) => {
+                    if (!voter.id) {
+                      throw Error(
+                        "Member Entity ID undefined. This should never happen."
+                      );
+                    }
+                    return (
+                      <InferredVotes
+                        voter={voter.id}
+                        config={config}
+                        sort={sort}
+                        filter={filter}
+                      >
+                        {children}
+                      </InferredVotes>
+                    );
+                  }}
+                </Member.Entity>
+              );
+            case "Proposal":
+              return (
+                <Proposal.Entity>
+                  {(proposal: ProposalEntity) => (
+                    <InferredVotes
+                      proposal={proposal.id}
+                      config={config}
+                      sort={sort}
+                      filter={filter}
+                    >
+                      {children}
+                    </InferredVotes>
+                  )}
+                </Proposal.Entity>
+              );
+            default:
+              if (from) {
+                throw Error(`Unsupported scope: ${from}`);
+              }
+
+              return (
+                <InferredVotes config={config} sort={sort} filter={filter}>
+                  {children}
+                </InferredVotes>
+              );
+          }
+        }}
       </Protocol.Config>
     );
   }
 
   public static get Entities() {
-    return ArcVotes.Entities;
+    return InferredVotes.Entities;
   }
 
   public static get Logs() {
-    return ArcVotes.Logs;
+    return InferredVotes.Logs;
   }
 }
 
 export default Votes;
 
-export { ArcVotes, Votes };
+export { Votes, InferredVotes };

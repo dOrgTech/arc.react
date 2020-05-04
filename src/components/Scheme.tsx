@@ -13,32 +13,27 @@ interface RequiredProps {
   id: string;
 }
 
-interface InferredProps {
-  // Arc Instance
-  arcConfig: ProtocolConfig | undefined;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig;
 }
 
-type Props = RequiredProps & InferredProps;
-
-class ArcScheme extends Component<Props, Entity, Data> {
+class InferredScheme extends Component<InferredProps, Entity, Data> {
   protected createEntity(): Entity {
-    const { arcConfig, id } = this.props;
+    const { config, id } = this.props;
 
-    if (!arcConfig) {
+    if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
       );
     }
 
-    return new Entity(id, arcConfig.connection);
+    return new Entity(id, config.connection);
   }
 
-  protected async initialize(entity: Entity | undefined): Promise<void> {
-    if (entity) {
-      await entity.fetchStaticState();
-    }
-
-    return Promise.resolve();
+  protected async initialize(entity: Entity): Promise<void> {
+    // TODO: remove this when this issue is resolved: https://github.com/daostack/client/issues/291
+    entity.staticState = null;
+    await entity.fetchStaticState();
   }
 
   public static get Entity() {
@@ -82,34 +77,28 @@ class Scheme extends React.Component<RequiredProps> {
 
     return (
       <Protocol.Config>
-        {(arc: ProtocolConfig) => (
-          <ArcScheme id={id} arcConfig={arc}>
+        {(config: ProtocolConfig) => (
+          <InferredScheme id={id} config={config}>
             {children}
-          </ArcScheme>
+          </InferredScheme>
         )}
       </Protocol.Config>
     );
   }
 
   public static get Entity() {
-    return ArcScheme.Entity;
+    return InferredScheme.Entity;
   }
 
   public static get Data() {
-    return ArcScheme.Data;
+    return InferredScheme.Data;
   }
 
   public static get Logs() {
-    return ArcScheme.Logs;
+    return InferredScheme.Logs;
   }
 }
 
 export default Scheme;
 
-export {
-  ArcScheme,
-  Scheme,
-  Props as SchemeProps,
-  Entity as SchemeEntity,
-  Data as SchemeData,
-};
+export { Scheme, InferredScheme, Entity as SchemeEntity, Data as SchemeData };

@@ -5,11 +5,14 @@ import {
   screen,
   waitForElementToBeRemoved,
   waitFor,
+  cleanup,
 } from "@testing-library/react";
 
 const arcConfig = new ArcConfig("private");
 
 describe("Reward component ", () => {
+  afterEach(() => cleanup());
+
   it("Shows reward id", async () => {
     const rewardId =
       "0x0cb9948676fa48ea01b8bb0aada44ebd3b298d50e618ec823cfab456e42c71c2";
@@ -34,6 +37,8 @@ describe("Reward component ", () => {
 });
 
 describe("Reward List", () => {
+  afterEach(() => cleanup());
+
   class RewardList extends React.Component {
     render() {
       return (

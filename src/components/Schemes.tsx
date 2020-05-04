@@ -4,43 +4,57 @@ import { ISchemeQueryOptions as FilterOptions } from "@daostack/client";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
-  ArcScheme as Component,
+  InferredScheme as Component,
   SchemeEntity as Entity,
   SchemeData as Data,
+  DAO,
+  DAOEntity,
   CProps,
   ComponentList,
   ComponentListLogs,
   ComponentListProps,
+  applyScope,
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
-type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
+type Scopes = "DAO";
 
-interface InferredProps {
-  arcConfig: ProtocolConfig | undefined;
+const scopeProps: Record<Scopes, string> = {
+  DAO: "dao",
+};
+
+interface RequiredProps
+  extends ComponentListProps<Entity, Data, FilterOptions> {
+  from?: Scopes;
 }
 
-type Props = RequiredProps & InferredProps;
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig;
+  dao?: string;
+}
 
-class ArcSchemes extends ComponentList<Props, Component> {
+class InferredSchemes extends ComponentList<InferredProps, Component> {
   createObservableEntities(): Observable<Entity[]> {
-    const { arcConfig, filter } = this.props;
-    if (!arcConfig) {
+    const { config, from, filter } = this.props;
+    if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
       );
     }
-    return Entity.search(arcConfig.connection, filter);
+
+    const f = applyScope(filter, from, scopeProps, this.props);
+    return Entity.search(config.connection, f);
   }
 
   renderComponent(
     entity: Entity,
-    children: any
+    children: any,
+    index: number
   ): React.ComponentElement<CProps<Component>, any> {
-    const { arcConfig } = this.props;
+    const { config } = this.props;
 
     return (
-      <Component key={entity.id} id={entity.id} arcConfig={arcConfig}>
+      <Component key={`${entity.id}_${index}`} id={entity.id} config={config}>
         {children}
       </Component>
     );
@@ -72,28 +86,52 @@ class ArcSchemes extends ComponentList<Props, Component> {
 
 class Schemes extends React.Component<RequiredProps> {
   render() {
-    const { children, sort, filter } = this.props;
+    const { children, from, sort, filter } = this.props;
 
     return (
       <Protocol.Config>
-        {(arcConfig: ProtocolConfig) => (
-          <ArcSchemes arcConfig={arcConfig} sort={sort} filter={filter}>
-            {children}
-          </ArcSchemes>
-        )}
+        {(config: ProtocolConfig) => {
+          switch (from) {
+            case "DAO":
+              return (
+                <DAO.Entity>
+                  {(dao: DAOEntity) => (
+                    <InferredSchemes
+                      dao={dao.id}
+                      config={config}
+                      sort={sort}
+                      filter={filter}
+                    >
+                      {children}
+                    </InferredSchemes>
+                  )}
+                </DAO.Entity>
+              );
+            default:
+              if (from) {
+                throw Error(`Unsupported scope: ${from}`);
+              }
+
+              return (
+                <InferredSchemes config={config} sort={sort} filter={filter}>
+                  {children}
+                </InferredSchemes>
+              );
+          }
+        }}
       </Protocol.Config>
     );
   }
 
   public static get Entities() {
-    return ArcSchemes.Entities;
+    return InferredSchemes.Entities;
   }
 
   public static get Logs() {
-    return ArcSchemes.Logs;
+    return InferredSchemes.Logs;
   }
 }
 
 export default Schemes;
 
-export { ArcSchemes, Schemes };
+export { Schemes, InferredSchemes };
