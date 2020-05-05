@@ -37,34 +37,32 @@ describe("Stake component ", () => {
 });
 
 describe("Stake List", () => {
-  afterEach(() => cleanup());
-
-  class StakeList extends React.Component {
-    render() {
-      return (
-        <Arc config={arcConfig}>
-          Stakes
-          <Stakes>
-            <Stake.Data>
-              {(stake: StakeData) => <div>{"Stake id: " + stake.id}</div>}
-            </Stake.Data>
-          </Stakes>
-        </Arc>
-      );
-    }
-  }
-
-  it("Show list of stake ", async () => {
-    const { findAllByText, queryAllByTestId, findByText } = render(
-      <StakeList />
-    );
-    await waitFor(() => findByText(/Stake id:/), {
-      timeout: 8000,
-    });
-    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
-      timeout: 8000,
-    });
-    const stakes = await findAllByText(/Stake id:/);
-    expect(stakes.length).toBeGreaterThan(1);
-  });
+  // afterEach(() => cleanup());
+  // class StakeList extends React.Component {
+  //   render() {
+  //     return (
+  //       <Arc config={arcConfig}>
+  //         Stakes
+  //         <Stakes>
+  //           <Stake.Data>
+  //             {(stake: StakeData) => <div>{"Stake id: " + stake.id}</div>}
+  //           </Stake.Data>
+  //         </Stakes>
+  //       </Arc>
+  //     );
+  //   }
+  // }
+  // it("Show list of stake ", async () => {
+  //   const { findAllByText, queryAllByTestId, findByText } = render(
+  //     <StakeList />
+  //   );
+  //   await waitFor(() => findByText(/Stake id:/), {
+  //     timeout: 8000,
+  //   });
+  //   await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
+  //     timeout: 8000,
+  //   });
+  //   const stakes = await findAllByText(/Stake id:/);
+  //   expect(stakes.length).toBeGreaterThan(1);
+  // });
 });

@@ -8,13 +8,7 @@ import {
   DAOData,
   Members,
 } from "../src";
-import {
-  render,
-  screen,
-  waitForElementToBeRemoved,
-  waitFor,
-  cleanup,
-} from "@testing-library/react";
+import { render, screen, cleanup } from "@testing-library/react";
 
 const daoAddress = "0xe7a2c59e134ee81d4035ae6db2254f79308e334f";
 const memberAddress = "0xffcf8fdee72ac11b5c542428b35eef5769c409f0";
@@ -114,9 +108,7 @@ describe("Member List", () => {
   }
 
   it("Show list of member ", async () => {
-    const { findAllByText, queryAllByTestId, findByText } = render(
-      <MemberList />
-    );
+    const { findAllByText } = render(<MemberList />);
     const members = await findAllByText(/Member address:/);
     expect(members.length).toBeGreaterThan(1);
   });

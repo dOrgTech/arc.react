@@ -33,8 +33,10 @@ export abstract class Component<
   protected async initialize(entity: Entity): Promise<void> {
     try {
       const state = await entity.fetchState();
+      // console.log(state)
       this.onQueryData(state);
     } catch (e) {
+      console.log("error", e);
       this.onQueryError(e);
     }
   }

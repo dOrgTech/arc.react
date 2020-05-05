@@ -66,11 +66,11 @@ describe("Custom loader ", () => {
       </Loader>
     );
 
-    const error = await screen.findByText(/Could not find a DAO with id/);
+    const error = await screen.findByText(/Could not find DAO with id/);
     expect(error).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>
-        Could not find a DAO with id non existent id
+        DAO ItemMap failed. Could not find DAO with id 'non existent id'
       </div>
     `);
   });

@@ -31,14 +31,6 @@ class InferredStake extends Component<InferredProps, Entity, Data> {
     return new Entity(config.connection, id);
   }
 
-  protected async initialize(entity: Entity | undefined): Promise<void> {
-    if (entity) {
-      await entity.fetchState();
-    }
-
-    return Promise.resolve();
-  }
-
   public static get Entity() {
     return CreateContextFeed(
       this._EntityContext.Consumer,
