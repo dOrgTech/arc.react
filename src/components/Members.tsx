@@ -12,7 +12,7 @@ import {
   ComponentList,
   ComponentListLogs,
   ComponentListProps,
-  applyScope,
+  createFilterFromScope,
 } from "../";
 import { IMemberQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../runtime/ContextFeed";
@@ -42,7 +42,7 @@ class InferredMembers extends ComponentList<InferredProps, Component> {
       );
     }
 
-    const f = applyScope(filter, from, scopeProps, this.props);
+    const f = createFilterFromScope(filter, from, scopeProps, this.props);
     return Entity.search(config.connection, f);
   }
 

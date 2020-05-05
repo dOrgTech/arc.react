@@ -1,7 +1,6 @@
 import * as React from "react";
 import {
-  Proposal as BaseEntity,
-  IProposalState as Data,
+  ISchemeRegistrarProposalState as Data,
   SchemeRegistrarProposal as Entity,
 } from "@dorgtech/arc.js";
 import {
@@ -10,24 +9,11 @@ import {
   Component,
   ComponentLogs,
 } from "../../../";
-import { CreateContextFeed } from "../../../runtime/ContextFeed";
+import { Proposal, RequiredProps } from "../Proposal";
+import { CreateContextFeed } from "../../runtime/ContextFeed";
 
-interface RequiredProps {
-  // Proposal ID
-  id: string;
-}
-
-interface InferredProps extends RequiredProps {
-  config: ProtocolConfig;
-  noSub?: boolean;
-}
-
-class InferredPluginManagerProposal extends Component<
-  InferredProps,
-  BaseEntity<Data>,
-  Data
-> {
-  protected async createEntity(): Promise<BaseEntity<Data>> {
+class InferredPluginManagerProposal extends Proposal<Entity, Data> {
+  protected async createEntity(): Promise<Entity> {
     const { config, id } = this.props;
     console.log(config);
     if (!config) {
@@ -43,7 +29,7 @@ class InferredPluginManagerProposal extends Component<
     return CreateContextFeed(
       this._EntityContext.Consumer,
       this._LogsContext.Consumer,
-      "Proposal"
+      "PluginManagerProposal"
     );
   }
 
@@ -51,7 +37,7 @@ class InferredPluginManagerProposal extends Component<
     return CreateContextFeed(
       this._DataContext.Consumer,
       this._LogsContext.Consumer,
-      "Proposal"
+      "PluginManagerProposal"
     );
   }
 
@@ -59,7 +45,7 @@ class InferredPluginManagerProposal extends Component<
     return CreateContextFeed(
       this._LogsContext.Consumer,
       this._LogsContext.Consumer,
-      "Proposal"
+      "PluginManagerProposal"
     );
   }
 

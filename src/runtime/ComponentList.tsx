@@ -243,7 +243,7 @@ export abstract class ComponentList<
   }
 }
 
-export function applyScope<Scopes extends keyof any>(
+export function createFilterFromScope<Scopes extends keyof any>(
   filter: any,
   scope: Scopes | undefined,
   scopeProps: Record<Scopes, string>,

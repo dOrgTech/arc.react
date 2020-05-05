@@ -17,6 +17,7 @@ import {
 interface RequiredProps {
   // Address of the member
   address: string;
+  // TODO: @cesar remove all of these, extend ComponentProps
   noSub?: boolean;
   dao?: string | DAOEntity;
 }
@@ -30,31 +31,20 @@ class InferredMember extends Component<InferredProps, Entity, Data> {
     const { address, dao, config } = this.props;
 
     if (dao) {
-      let daoState: DAOData;
-      /* 
-        Note: We do await dao because the inferred prop of dao comes as 
-        Promise { 
-          DAO {
-            ...
-          }
-        }
-      */
-      let daoEntity: DAOEntity =
-        typeof dao === "string"
-          ? new DAOEntity(config.connection, dao)
-          : await dao;
+      const daoEntity: DAOEntity =
+        typeof dao === "string" ? new DAOEntity(config.connection, dao) : dao;
 
-      daoState = await daoEntity.fetchState();
+      const daoState = await daoEntity.fetchState();
 
-      const identifier: string = Entity.calculateId({
+      const memberId: string = Entity.calculateId({
         contract: daoState.reputation.id,
         address,
       });
-      const member = new Entity(config.connection, identifier);
-      return member;
+
+      return new Entity(config.connection, memberId);
     } else {
       throw Error(
-        "DAO Address Missing: Please provide this field as a prop, or use the inference component."
+        "DAO Missing: Please provide this field as a prop, or use the inference component."
       );
     }
   }

@@ -15,11 +15,12 @@ export interface State<Data extends IArcEntityState> {
   logs: ComponentLogs;
 }
 
-interface CProps {
+export interface ComponentProps {
   noSub?: boolean;
 }
+
 export abstract class Component<
-  Props extends CProps,
+  Props extends ComponentProps,
   Entity extends ArcEntity<Data>,
   Data extends IArcEntityState
 > extends React.Component<Props, State<Data>> {
@@ -33,10 +34,8 @@ export abstract class Component<
   protected async initialize(entity: Entity): Promise<void> {
     try {
       const state = await entity.fetchState();
-      // console.log(state)
       this.onQueryData(state);
     } catch (e) {
-      console.log("error", e);
       this.onQueryError(e);
     }
   }
@@ -120,7 +119,6 @@ export abstract class Component<
     } catch (e) {
       logs.entityCreationFailed(e);
       this.setState({
-        data: this.state.data,
         logs: logs.clone(),
       });
     }
@@ -148,8 +146,9 @@ export abstract class Component<
 
     try {
       const entity = await this.createEntity();
-      await this.initialize(entity);
+
       logs.dataQueryStarted();
+      await this.initialize(entity);
 
       if (this._subscription) {
         this._subscription.unsubscribe();

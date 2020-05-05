@@ -18,7 +18,7 @@ import {
   ComponentList,
   ComponentListLogs,
   ComponentListProps,
-  applyScope,
+  createFilterFromScope,
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 import { IRewardQueryOptions as FilterOptions } from "@dorgtech/arc.js";
@@ -55,7 +55,7 @@ class InferredRewards extends ComponentList<InferredProps, Component> {
       );
     }
 
-    const f = applyScope(filter, from, scopeProps, this.props);
+    const f = createFilterFromScope(filter, from, scopeProps, this.props);
     return Entity.search(config.connection, f);
   }
 
@@ -135,21 +135,21 @@ class Rewards extends React.Component<RequiredProps> {
                   )}
                 </Member.Entity>
               );
-            // case "Proposal":
-            //   return (
-            //     <Proposal.Entity>
-            //       {(proposal: ProposalEntity) => (
-            //         <InferredRewards
-            //           proposal={proposal.id}
-            //           config={config}
-            //           sort={sort}
-            //           filter={filter}
-            //         >
-            //           {children}
-            //         </InferredRewards>
-            //       )}
-            //     </Proposal.Entity>
-            //   );
+            case "Proposal":
+              return (
+                <Proposal.Entity>
+                  {(proposal: ProposalEntity) => (
+                    <InferredRewards
+                      proposal={proposal.id}
+                      config={config}
+                      sort={sort}
+                      filter={filter}
+                    >
+                      {children}
+                    </InferredRewards>
+                  )}
+                </Proposal.Entity>
+              );
             case "Token":
               return (
                 <Token.Entity>

@@ -5,13 +5,13 @@ import {
   ArcConfig as ProtocolConfig,
   Component,
   ComponentLogs,
+  ComponentProps,
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
-interface RequiredProps {
+interface RequiredProps extends ComponentProps {
   // Address of the DAO Avatar
   address: string;
-  noSub?: boolean;
 }
 
 interface InferredProps extends RequiredProps {

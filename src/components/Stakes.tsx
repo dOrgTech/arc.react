@@ -17,7 +17,7 @@ import {
   ComponentList,
   ComponentListLogs,
   ComponentListProps,
-  applyScope,
+  createFilterFromScope,
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
@@ -51,7 +51,7 @@ class InferredStakes extends ComponentList<InferredProps, Component> {
       );
     }
 
-    const f = applyScope(filter, from, scopeProps, this.props);
+    const f = createFilterFromScope(filter, from, scopeProps, this.props);
     return Entity.search(config.connection, f);
   }
 
