@@ -1,28 +1,16 @@
 // import * as React from "react";
-// import {
-//   PluginName,
-//   IPluginState as EntityData,
-//   Plugin as Entity,
-//   AnyPlugin,
-// } from "@dorgtech/arc.js";
+// import { PluginName, IPluginState as EntityData, Plugin as Entity, AnyPlugin, SchemeRegistrar } from "@dorgtech/arc.js";
 // import { Observable } from "rxjs";
 // import { CreateContextFeed } from "../../runtime/ContextFeed";
-// import {
-//   Arc as Protocol,
-//   ArcConfig as ProtocolConfig,
-//   Component,
-//   ComponentLogs,
-// } from "../../";
-// import { SchemeRegistrar } from "@dorgtech/arc.js/src";
+// import { Arc as Protocol, ArcConfig as ProtocolConfig, Component, ComponentLogs } from "../../";
 
+// // I should not define this interface and consume it from the arc.js
 // export interface IPlugin<TPluginEntity extends AnyPlugin> {
 //   state(): Observable<EntityData>;
 //   fetchState(): Promise<EntityData>;
 // }
 
-// type InferPlugin<TPlugin> = TPlugin extends IPlugin<infer TPluginEntity>
-//   ? TPluginEntity
-//   : undefined;
+// type InferPlugin<TPlugin> = TPlugin extends IPlugin<infer TPluginEntity> ? TPluginEntity : undefined;
 
 // export class PluginConnector<
 //   // We are ignoring this because of:
@@ -56,47 +44,27 @@
 //     const { config, id } = this.props;
 
 //     if (!config) {
-//       throw Error(
-//         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
-//       );
+//       throw Error("Arc Config Missing: Please provide this field as a prop, or use the inference component.");
 //     }
 
-//     return new SchemeRegistrar(config, id);
+//     return new SchemeRegistrar(config.connection, id);
 //   }
 
 //   public static get Entity() {
-//     return CreateContextFeed(
-//       this._EntityContext.Consumer,
-//       this._LogsContext.Consumer,
-//       "Plugin"
-//     );
+//     return CreateContextFeed(this._EntityContext.Consumer, this._LogsContext.Consumer, "Plugin");
 //   }
 
 //   public static get Data() {
-//     return CreateContextFeed(
-//       this._DataContext.Consumer,
-//       this._LogsContext.Consumer,
-//       "Plugin"
-//     );
+//     return CreateContextFeed(this._DataContext.Consumer, this._LogsContext.Consumer, "Plugin");
 //   }
 
 //   public static get Logs() {
-//     return CreateContextFeed(
-//       this._LogsContext.Consumer,
-//       this._LogsContext.Consumer,
-//       "Plugin"
-//     );
+//     return CreateContextFeed(this._LogsContext.Consumer, this._LogsContext.Consumer, "Plugin");
 //   }
 
-//   protected static _EntityContext = React.createContext<AnyPlugin | undefined>(
-//     undefined
-//   );
-//   protected static _DataContext = React.createContext<EntityData | undefined>(
-//     undefined
-//   );
-//   protected static _LogsContext = React.createContext<
-//     ComponentLogs | undefined
-//   >(undefined);
+//   protected static _EntityContext = React.createContext<AnyPlugin | undefined>(undefined);
+//   protected static _DataContext = React.createContext<EntityData | undefined>(undefined);
+//   protected static _LogsContext = React.createContext<ComponentLogs | undefined>(undefined);
 // }
 
 // class Plugin extends React.Component<RequiredProps> {

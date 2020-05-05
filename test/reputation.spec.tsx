@@ -51,7 +51,7 @@ describe("Reputation component ", () => {
           <Reputation>
             <Reputation.Data>
               {(reputation: ReputationData) => (
-                <div>{"Reputation DAO address: " + reputation.dao}</div>
+                <div>{"Reputation DAO address: " + reputation.dao.id}</div>
               )}
             </Reputation.Data>
           </Reputation>

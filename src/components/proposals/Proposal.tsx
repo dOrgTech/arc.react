@@ -18,7 +18,7 @@
 // }
 
 // class InferredProposal extends Component<InferredProps, Entity, Data> {
-//   protected createEntity(): Entity {
+//   protected async createEntity(): Promise<Entity> {
 //     const { config, id } = this.props;
 
 //     if (!config) {

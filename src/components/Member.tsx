@@ -8,13 +8,17 @@ import {
   ComponentLogs,
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
-import { Member as Entity, IMemberState as Data } from "@dorgtech/arc.js";
+import {
+  Member as Entity,
+  IMemberState as Data,
+  IDAOState as DAOData,
+} from "@dorgtech/arc.js";
 
 interface RequiredProps {
   // Address of the member
   address: string;
   noSub?: boolean;
-  dao?: string;
+  dao?: string | DAOEntity;
 }
 
 interface InferredProps extends RequiredProps {
@@ -22,15 +26,37 @@ interface InferredProps extends RequiredProps {
 }
 
 class InferredMember extends Component<InferredProps, Entity, Data> {
-  protected createEntity(): Entity {
+  protected async createEntity(): Promise<Entity> {
     const { address, dao, config } = this.props;
 
-    if (!dao) {
+    if (dao) {
+      let daoState: DAOData;
+      /* 
+        Note: We do await dao because the inferred prop of dao comes as 
+        Promise { 
+          DAO {
+            ...
+          }
+        }
+      */
+      let daoEntity: DAOEntity =
+        typeof dao === "string"
+          ? new DAOEntity(config.connection, dao)
+          : await dao;
+
+      daoState = await daoEntity.fetchState();
+
+      const identifier: string = Entity.calculateId({
+        contract: daoState.reputation.id,
+        address,
+      });
+      const member = new Entity(config.connection, identifier);
+      return member;
+    } else {
       throw Error(
         "DAO Address Missing: Please provide this field as a prop, or use the inference component."
       );
     }
-    return new Entity(config.connection, address);
   }
 
   public static get Entity() {
@@ -84,10 +110,10 @@ class Member extends React.Component<RequiredProps> {
           } else {
             return (
               <DAO.Entity>
-                {(entity: DAOEntity | undefined) => (
+                {(entity: DAOEntity) => (
                   <InferredMember
                     address={address}
-                    dao={entity ? entity.id : undefined}
+                    dao={entity}
                     config={config}
                   >
                     {children}

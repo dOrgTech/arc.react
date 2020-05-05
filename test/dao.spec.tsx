@@ -9,13 +9,7 @@ import {
   Member,
   MemberData,
 } from "../src";
-import {
-  render,
-  screen,
-  waitFor,
-  waitForElementToBeRemoved,
-  cleanup,
-} from "@testing-library/react";
+import { render, screen, cleanup } from "@testing-library/react";
 
 const daoAddress = "0xe7a2c59e134ee81d4035ae6db2254f79308e334f";
 const arcConfig = new ArcConfig("private");
@@ -89,15 +83,7 @@ describe("DAO List", () => {
         );
       }
     }
-    const { findAllByText, queryAllByTestId, findByText } = render(
-      <DAOWithMembers />
-    );
-    await waitFor(() => findByText(/Member address:/), {
-      timeout: 8000,
-    });
-    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
-      timeout: 8000,
-    });
+    const { findAllByText } = render(<DAOWithMembers />);
     const members = await findAllByText(/Member address:/);
     expect(members.length).toBeGreaterThan(1);
   });

@@ -17,13 +17,13 @@ import {
 } from "@testing-library/react";
 
 const daoAddress = "0xe7a2c59e134ee81d4035ae6db2254f79308e334f";
+const memberAddress = "0xffcf8fdee72ac11b5c542428b35eef5769c409f0";
 const arcConfig = new ArcConfig("private");
 
 describe("Member component ", () => {
   afterEach(() => cleanup());
 
   it("Shows member and dao address with inferred props", async () => {
-    const memberAddress = "0xe11ba2b4d45eaed5996cd0823791e0c93114882d";
     const { container } = render(
       <Arc config={arcConfig}>
         <DAO address={daoAddress}>
@@ -33,7 +33,7 @@ describe("Member component ", () => {
                 {(dao: DAOData, member: MemberData) => (
                   <>
                     <div>{"Member address: " + member.address}</div>
-                    <div>{"DAO address: " + dao.id}</div>
+                    <div>{"DAO address: " + dao.address}</div>
                   </>
                 )}
               </Member.Data>
@@ -60,8 +60,6 @@ describe("Member component ", () => {
   });
 
   it("Shows member and dao address without inferred props", async () => {
-    const daoAddress = "0xe7a2c59e134ee81d4035ae6db2254f79308e334f";
-    const memberAddress = "0xe11ba2b4d45eaed5996cd0823791e0c93114882d";
     const { container, findByText } = render(
       <Arc config={arcConfig}>
         <Member address={memberAddress} dao={daoAddress}>
@@ -69,7 +67,7 @@ describe("Member component ", () => {
             {(member: MemberData) => (
               <>
                 <div>{"Member address: " + member.address}</div>
-                <div>{"DAO address: " + member.dao}</div>
+                <div>{"DAO address: " + member.dao.id}</div>
               </>
             )}
           </Member.Data>
@@ -119,12 +117,6 @@ describe("Member List", () => {
     const { findAllByText, queryAllByTestId, findByText } = render(
       <MemberList />
     );
-    await waitFor(() => findByText(/Member address:/), {
-      timeout: 8000,
-    });
-    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
-      timeout: 8000,
-    });
     const members = await findAllByText(/Member address:/);
     expect(members.length).toBeGreaterThan(1);
   });

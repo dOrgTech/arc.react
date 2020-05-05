@@ -85,7 +85,7 @@ export default () =>
           {
             friendlyName: "Member Address",
             name: "address",
-            defaultValue: "0xe11ba2b4d45eaed5996cd0823791e0c93114882d",
+            defaultValue: "0xffcf8fdee72ac11b5c542428b35eef5769c409f0",
             type: PropertyType.string,
           },
         ]}

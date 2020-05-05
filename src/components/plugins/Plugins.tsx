@@ -11,7 +11,7 @@
 //   ComponentList,
 //   ComponentListLogs,
 //   ComponentListProps,
-// } from "../";
+// } fro..../";
 // import { CreateContextFeed } from "../runtime/ContextFeed";
 
 // type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;

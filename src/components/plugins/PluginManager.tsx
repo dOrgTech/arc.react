@@ -33,7 +33,7 @@
 // }
 
 // class ArcPluginManager extends Component<Props, EntityType, Data> {
-//   protected createEntity(): EntityType {
+//   protected async createEntity(): Promise<Entity>Type {
 //     const { arcConfig, address } = this.props;
 //     if (!arcConfig) {
 //       throw Error(
