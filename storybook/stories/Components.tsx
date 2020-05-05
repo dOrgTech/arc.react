@@ -13,6 +13,8 @@ import {
   Vote,
   Loader,
   LoadingRenderProps,
+  PluginManager,
+  ContributionRewardProposal,
 } from "../../src";
 
 const arcConfig = new ArcConfig("private");
@@ -91,26 +93,23 @@ export default () =>
         ]}
       />
     ))
-    // .add("Proposal", () => (
-    //   <ComponentView
-    //     name={"Proposal"}
-    //     ComponentType={Proposal}
-    //     ProtocolType={Arc}
-    //     protocolConfig={arcConfig}
-    //     AddedContext={(props) => (
-    //       <DAO address={props.dao}>{props.children}</DAO>
-    //     )}
-    //     propEditors={[
-    //       {
-    //         friendlyName: "Proposal ID",
-    //         name: "id",
-    //         defaultValue:
-    //           "0x6afee092a28c74f6358093d5376ac75014ac4d9fd42d296a5498ef42eecd7248",
-    //         type: PropertyType.string,
-    //       },
-    //     ]}
-    //   />
-    // ))
+    .add("Contribution Reward proposal", () => (
+      <ComponentView
+        name={"Contribution Reward proposal"}
+        ComponentType={ContributionRewardProposal}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        propEditors={[
+          {
+            friendlyName: "Proposal ID",
+            name: "id",
+            defaultValue:
+              "0x02fd1079f9a842581eb742ea44507a461466b791c2990783732bfe660aa6a711",
+            type: PropertyType.string,
+          },
+        ]}
+      />
+    ))
     // TODO: single editor for Reputation & Token
     .add("Reputation", () => (
       <ComponentView
@@ -164,23 +163,23 @@ export default () =>
         ]}
       />
     ))
-    // .add("Plugin", () => (
-    //   <ComponentView
-    //     name={"Plugin"}
-    //     ComponentType={Plugin}
-    //     ProtocolType={Arc}
-    //     protocolConfig={arcConfig}
-    //     propEditors={[
-    //       {
-    //         friendlyName: "Plugin ID",
-    //         name: "id",
-    //         defaultValue:
-    //           "0xe60210db33d48ffc3ba89a0a220500fa8f1a55ed0b4bf28bf7821b23a022cc28",
-    //         type: PropertyType.string,
-    //       },
-    //     ]}
-    //   />
-    // ))
+    .add("Plugin Manager", () => (
+      <ComponentView
+        name={"Plugin Manager"}
+        ComponentType={PluginManager}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        propEditors={[
+          {
+            friendlyName: "Plugin ID",
+            name: "id",
+            defaultValue:
+              "0x940f04d8fd1caca273cf05f1735362936280181684bc426f09cfba0265db47e4",
+            type: PropertyType.string,
+          },
+        ]}
+      />
+    ))
     .add("Stake", () => (
       <ComponentView
         name={"Stake"}

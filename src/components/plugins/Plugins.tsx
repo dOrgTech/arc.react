@@ -1,99 +1,137 @@
-// import * as React from "react";
-// import { Observable } from "rxjs";
-// import { ISchemeQueryOptions as FilterOptions } from "@daostack/client";
-// import {
-//   Arc as Protocol,
-//   ArcConfig as ProtocolConfig,
-//   ArcScheme as Component,
-//   SchemeEntity as Entity,
-//   SchemeData as Data,
-//   CProps,
-//   ComponentList,
-//   ComponentListLogs,
-//   ComponentListProps,
-// } fro..../";
-// import { CreateContextFeed } from "../runtime/ContextFeed";
+import * as React from "react";
+import { Observable } from "rxjs";
+import { IPluginQueryOptions as FilterOptions } from "@daostack/client";
+import {
+  Arc as Protocol,
+  ArcConfig as ProtocolConfig,
+  InferredPlugin as Component,
+  PluginEntity as Entity,
+  PluginData as Data,
+  DAO,
+  DAOEntity,
+  CProps,
+  ComponentList,
+  ComponentListLogs,
+  ComponentListProps,
+  applyScope,
+} from "../../";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 
-// type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
+type Scopes = "DAO";
 
-// interface InferredProps {
-//   arcConfig: ProtocolConfig | undefined;
-// }
+const scopeProps: Record<Scopes, string> = {
+  DAO: "dao",
+};
 
-// type Props = RequiredProps & InferredProps;
+interface RequiredProps
+  extends ComponentListProps<Entity, Data, FilterOptions> {
+  from?: Scopes;
+}
 
-// class ArcSchemes extends ComponentList<Props, Component> {
-//   createObservableEntities(): Observable<Entity[]> {
-//     const { arcConfig, filter } = this.props;
-//     if (!arcConfig) {
-//       throw Error(
-//         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
-//       );
-//     }
-//     return Entity.search(arcConfig.connection, filter);
-//   }
+interface InferredProps extends RequiredProps {
+  config: ProtocolConfig;
+  dao?: string;
+}
 
-//   renderComponent(
-//     entity: Entity,
-//     children: any
-//   ): React.ComponentElement<CProps<Component>, any> {
-//     const { arcConfig } = this.props;
+class InferredPlugins extends ComponentList<InferredProps, Component> {
+  createObservableEntities(): Observable<Entity[]> {
+    const { config, from, filter } = this.props;
+    if (!config) {
+      throw Error(
+        "Arc Config Missing: Please provide this field as a prop, or use the inference component."
+      );
+    }
 
-//     return (
-//       <Component key={entity.id} id={entity.id} arcConfig={arcConfig}>
-//         {children}
-//       </Component>
-//     );
-//   }
+    const f = applyScope(filter, from, scopeProps, this.props);
+    return Entity.search(config.connection, f);
+  }
 
-//   public static get Entities() {
-//     return CreateContextFeed(
-//       this._EntitiesContext.Consumer,
-//       this._LogsContext.Consumer,
-//       "Schemes"
-//     );
-//   }
+  renderComponent(
+    entity: Entity,
+    children: any,
+    index: number
+  ): React.ComponentElement<CProps<Component>, any> {
+    const { config } = this.props;
 
-//   public static get Logs() {
-//     return CreateContextFeed(
-//       this._LogsContext.Consumer,
-//       this._LogsContext.Consumer,
-//       "Schemes"
-//     );
-//   }
+    return (
+      <Component key={`${entity.id}_${index}`} id={entity.id} config={config}>
+        {children}
+      </Component>
+    );
+  }
 
-//   protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
-//     undefined
-//   );
-//   protected static _LogsContext = React.createContext<
-//     ComponentListLogs | undefined
-//   >(undefined);
-// }
+  public static get Entities() {
+    return CreateContextFeed(
+      this._EntitiesContext.Consumer,
+      this._LogsContext.Consumer,
+      "Plugins"
+    );
+  }
 
-// class Schemes extends React.Component<RequiredProps> {
-//   render() {
-//     const { children, sort, filter } = this.props;
+  public static get Logs() {
+    return CreateContextFeed(
+      this._LogsContext.Consumer,
+      this._LogsContext.Consumer,
+      "Plugins"
+    );
+  }
 
-//     return (
-//       <Protocol.Config>
-//         {(arcConfig: ProtocolConfig) => (
-//           <ArcSchemes arcConfig={arcConfig} sort={sort} filter={filter}>
-//             {children}
-//           </ArcSchemes>
-//         )}
-//       </Protocol.Config>
-//     );
-//   }
+  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
+    undefined
+  );
+  protected static _LogsContext = React.createContext<
+    ComponentListLogs | undefined
+  >(undefined);
+}
 
-//   public static get Entities() {
-//     return ArcSchemes.Entities;
-//   }
+class Plugins extends React.Component<RequiredProps> {
+  render() {
+    const { children, from, sort, filter } = this.props;
 
-//   public static get Logs() {
-//     return ArcSchemes.Logs;
-//   }
-// }
+    return (
+      <Protocol.Config>
+        {(config: ProtocolConfig) => {
+          switch (from) {
+            case "DAO":
+              return (
+                <DAO.Entity>
+                  {(dao: DAOEntity) => (
+                    <InferredPlugins
+                      dao={dao.id}
+                      config={config}
+                      sort={sort}
+                      filter={filter}
+                    >
+                      {children}
+                    </InferredPlugins>
+                  )}
+                </DAO.Entity>
+              );
+            default:
+              if (from) {
+                throw Error(`Unsupported scope: ${from}`);
+              }
 
-// export default Schemes;
+              return (
+                <InferredPlugins config={config} sort={sort} filter={filter}>
+                  {children}
+                </InferredPlugins>
+              );
+          }
+        }}
+      </Protocol.Config>
+    );
+  }
 
-// export { ArcSchemes, Schemes };
+  public static get Entities() {
+    return InferredPlugins.Entities;
+  }
+
+  public static get Logs() {
+    return InferredPlugins.Logs;
+  }
+}
+
+export default Plugins;
+
+export { Plugins, InferredPlugins };

@@ -13,4 +13,4 @@ export * from "./Vote";
 export * from "./Votes";
 export * from "./Stake";
 export * from "./Stakes";
-// export * from "./plugins";
+export * from "./plugins";

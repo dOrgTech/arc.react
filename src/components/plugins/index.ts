@@ -1,3 +1,4 @@
 // export * from "./Plugin";
 // export * from "./Plugins"
-// export * from "./PluginManager"
+export * from "./SchemeRegistrar";
+export * from "./ContributionReward";
