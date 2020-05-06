@@ -28,7 +28,7 @@ export abstract class Component<
   // to the component's data. For example: DAO, Proposal, Member.
   // Note: This entity is not within the component's state, but instead a memoized
   // property that will be recreated whenever necessary. See `private entity` below...
-  protected abstract createEntity(props?: Props): MaybeAsync<Entity>;
+  protected abstract createEntity(): MaybeAsync<Entity>;
 
   // Complete any asynchronous initialization work needed by the Entity
   protected async initialize(entity: Entity): Promise<void> {
@@ -59,6 +59,8 @@ export abstract class Component<
   // If the initialization logic after mount has finished
   private _initialized: boolean;
 
+  private _entity: Entity | undefined;
+
   constructor(props: Props) {
     super(props);
 
@@ -86,10 +88,11 @@ export abstract class Component<
     const children = this.props.children;
     const { data, logs } = this.state;
 
-    // create & fetch the entity
-    // TODO: this should throw errors. Upon first error, logging marks "loading started"
-    // then when first success is seen, record that time too for timings
-    const entity = this._initialized ? this.entity(this.props) : undefined;
+    // create & fetch the entity whenever the props change
+    this.entity(this.props);
+
+    // if we're initialized, get the stored entity
+    let entity = this._initialized ? this._entity : undefined;
 
     logs.reactRendered();
 
@@ -108,13 +111,7 @@ export abstract class Component<
     const { logs } = this.state;
 
     try {
-      const entity = await this.entity(this.props);
-
-      if (entity !== undefined) {
-        await this.initialize(entity);
-        this._initialized = true;
-      }
-
+      await this.entity(this.props);
       this.forceUpdate();
     } catch (e) {
       logs.entityCreationFailed(e);
@@ -147,9 +144,11 @@ export abstract class Component<
     try {
       const asyncFunction = this.createEntity.bind(this);
       const entity = await executeMaybeAsyncFunction(asyncFunction);
+      this._entity = entity;
 
       logs.dataQueryStarted();
       await this.initialize(entity);
+      this._initialized = true;
 
       if (this._subscription) {
         this._subscription.unsubscribe();
@@ -162,6 +161,7 @@ export abstract class Component<
           .subscribe(this.onQueryData, this.onQueryError, this.onQueryComplete);
       }
 
+      this.forceUpdate();
       return entity;
     } catch (e) {
       logs.entityCreationFailed(e);
