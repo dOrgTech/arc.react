@@ -44,7 +44,7 @@ class InferredContributionReward extends Component<
     return CreateContextFeed(
       this._EntityContext.Consumer,
       this._LogsContext.Consumer,
-      "Plugin"
+      "ContributioRewardPlugin"
     );
   }
 
@@ -52,7 +52,7 @@ class InferredContributionReward extends Component<
     return CreateContextFeed(
       this._DataContext.Consumer,
       this._LogsContext.Consumer,
-      "Plugin"
+      "ContributioRewardPlugin"
     );
   }
 
@@ -60,7 +60,7 @@ class InferredContributionReward extends Component<
     return CreateContextFeed(
       this._LogsContext.Consumer,
       this._LogsContext.Consumer,
-      "Plugin"
+      "ContributioRewardPlugin"
     );
   }
 
@@ -75,7 +75,7 @@ class InferredContributionReward extends Component<
   >(undefined);
 }
 
-class ContributionReward extends React.Component<RequiredProps> {
+class ContributionRewardPlugin extends React.Component<RequiredProps> {
   public render() {
     const { id, children } = this.props;
 
@@ -106,7 +106,7 @@ class ContributionReward extends React.Component<RequiredProps> {
 export default Plugin;
 
 export {
-  ContributionReward,
+  ContributionRewardPlugin,
   InferredContributionReward,
   EntityData as PluginData,
 };

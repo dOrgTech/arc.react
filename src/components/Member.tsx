@@ -31,7 +31,9 @@ class InferredMember extends Component<InferredProps, Entity, Data> {
 
     if (dao) {
       const daoEntity: DAOEntity =
-        typeof dao === "string" ? new DAOEntity(config.connection, dao) : dao;
+        typeof dao === "string"
+          ? new DAOEntity(config.connection, dao)
+          : await dao;
 
       const daoState = await daoEntity.fetchState();
 

@@ -15,7 +15,7 @@ describe("Plugin component ", () => {
 
   it("Shows plugin name", async () => {
     const pluginId =
-      "0xe60210db33d48ffc3ba89a0a220500fa8f1a55ed0b4bf28bf7821b23a022cc28";
+      "0x940f04d8fd1caca273cf05f1735362936280181684bc426f09cfba0265db47e4";
     const { container } = render(
       <Arc config={arcConfig}>
         <Plugin id={pluginId}>

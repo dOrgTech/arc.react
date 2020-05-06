@@ -1,8 +1,7 @@
 import * as React from "react";
 import {
   IPluginState as EntityData,
-  SchemeRegistrarPlugin as Entity,
-  AnyPlugin,
+  CompetitionPlugin as Entity,
 } from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
@@ -23,12 +22,12 @@ interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
 }
 
-class InferredPluginManager extends Component<
+class InferredGenericPlugin extends Component<
   InferredProps,
-  AnyPlugin,
+  Entity,
   EntityData
 > {
-  protected async createEntity(): Promise<AnyPlugin> {
+  protected async createEntity(): Promise<Entity> {
     const { config, id } = this.props;
 
     if (!config) {
@@ -37,14 +36,7 @@ class InferredPluginManager extends Component<
       );
     }
 
-    const scheme = new Entity(config.connection, id);
-    /* 
-    We should do this to make sure that the user is creating the 
-    desired type of plugin
-    await scheme.fetchState()
-    if (scheme.coreState?.name !== "SchemeRegister") throw Error("bro tas muy loco")
-     */
-    return scheme;
+    return new Entity(config.connection, id);
   }
 
   public static get Entity() {
@@ -82,34 +74,34 @@ class InferredPluginManager extends Component<
   >(undefined);
 }
 
-class PluginManager extends React.Component<RequiredProps> {
+class GenericPlugin extends React.Component<RequiredProps> {
   public render() {
     const { id, children } = this.props;
 
     return (
       <Protocol.Config>
         {(config: ProtocolConfig) => (
-          <InferredPluginManager id={id} config={config}>
+          <InferredGenericPlugin id={id} config={config}>
             {children}
-          </InferredPluginManager>
+          </InferredGenericPlugin>
         )}
       </Protocol.Config>
     );
   }
 
   public static get Entity() {
-    return InferredPluginManager.Entity;
+    return InferredGenericPlugin.Entity;
   }
 
   public static get Data() {
-    return InferredPluginManager.Data;
+    return InferredGenericPlugin.Data;
   }
 
   public static get Logs() {
-    return InferredPluginManager.Logs;
+    return InferredGenericPlugin.Logs;
   }
 }
 
-export default PluginManager;
+export default GenericPlugin;
 
-export { PluginManager, InferredPluginManager, EntityData as PluginData };
+export { GenericPlugin, InferredGenericPlugin, EntityData as PluginData };

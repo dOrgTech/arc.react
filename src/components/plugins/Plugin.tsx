@@ -3,6 +3,7 @@ import { first } from "rxjs/operators";
 import {
   Plugin as BaseEntity,
   IPluginState as BaseData,
+  AnyPlugin,
 } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
@@ -15,7 +16,7 @@ import { CreateContextFeed } from "../../runtime/ContextFeed";
 
 interface RequiredProps extends ComponentProps {
   // Plugin ID
-  id: BaseEntity<BaseData> | string;
+  id: AnyPlugin | string;
 }
 
 interface InferredProps extends RequiredProps {
@@ -75,9 +76,9 @@ class InferredPlugin<
     );
   }
 
-  protected static _EntityContext = React.createContext<
-    BaseEntity<BaseData> | undefined
-  >(undefined);
+  protected static _EntityContext = React.createContext<AnyPlugin | undefined>(
+    undefined
+  );
   protected static _DataContext = React.createContext<BaseData | undefined>(
     undefined
   );

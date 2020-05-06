@@ -1,8 +1,8 @@
 import * as React from "react";
 import {
   IPluginState as EntityData,
-  SchemeRegistrarPlugin as Entity,
-  AnyPlugin,
+  Plugin as BaseEntity,
+  ContributionRewardPlugin as Entity,
 } from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
@@ -23,12 +23,12 @@ interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
 }
 
-class InferredPluginManager extends Component<
+class InferredContributionReward extends Component<
   InferredProps,
-  AnyPlugin,
+  BaseEntity<EntityData>,
   EntityData
 > {
-  protected async createEntity(): Promise<AnyPlugin> {
+  protected async createEntity(): Promise<BaseEntity<EntityData>> {
     const { config, id } = this.props;
 
     if (!config) {
@@ -37,21 +37,14 @@ class InferredPluginManager extends Component<
       );
     }
 
-    const scheme = new Entity(config.connection, id);
-    /* 
-    We should do this to make sure that the user is creating the 
-    desired type of plugin
-    await scheme.fetchState()
-    if (scheme.coreState?.name !== "SchemeRegister") throw Error("bro tas muy loco")
-     */
-    return scheme;
+    return new Entity(config.connection, id);
   }
 
   public static get Entity() {
     return CreateContextFeed(
       this._EntityContext.Consumer,
       this._LogsContext.Consumer,
-      "Plugin"
+      "CompetitionPlugin"
     );
   }
 
@@ -59,7 +52,7 @@ class InferredPluginManager extends Component<
     return CreateContextFeed(
       this._DataContext.Consumer,
       this._LogsContext.Consumer,
-      "Plugin"
+      "CompetitionPlugin"
     );
   }
 
@@ -67,7 +60,7 @@ class InferredPluginManager extends Component<
     return CreateContextFeed(
       this._LogsContext.Consumer,
       this._LogsContext.Consumer,
-      "Plugin"
+      "CompetitionPlugin"
     );
   }
 
@@ -82,34 +75,38 @@ class InferredPluginManager extends Component<
   >(undefined);
 }
 
-class PluginManager extends React.Component<RequiredProps> {
+class ContributionRewardPlugin extends React.Component<RequiredProps> {
   public render() {
     const { id, children } = this.props;
 
     return (
       <Protocol.Config>
         {(config: ProtocolConfig) => (
-          <InferredPluginManager id={id} config={config}>
+          <InferredContributionReward id={id} config={config}>
             {children}
-          </InferredPluginManager>
+          </InferredContributionReward>
         )}
       </Protocol.Config>
     );
   }
 
   public static get Entity() {
-    return InferredPluginManager.Entity;
+    return InferredContributionReward.Entity;
   }
 
   public static get Data() {
-    return InferredPluginManager.Data;
+    return InferredContributionReward.Data;
   }
 
   public static get Logs() {
-    return InferredPluginManager.Logs;
+    return InferredContributionReward.Logs;
   }
 }
 
-export default PluginManager;
+export default Plugin;
 
-export { PluginManager, InferredPluginManager, EntityData as PluginData };
+export {
+  ContributionRewardPlugin,
+  InferredContributionReward,
+  EntityData as PluginData,
+};

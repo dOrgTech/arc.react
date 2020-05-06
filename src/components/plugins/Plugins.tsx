@@ -1,6 +1,9 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import { IPluginQueryOptions as FilterOptions } from "@dorgtech/arc.js";
+import {
+  IPluginQueryOptions as FilterOptions,
+  AnyPlugin,
+} from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
@@ -24,36 +27,44 @@ const scopeProps: Record<Scopes, string> = {
 };
 
 interface RequiredProps
-  extends ComponentListProps<Entity<Data>, Data, FilterOptions> {
+  extends ComponentListProps<AnyPlugin, Data, FilterOptions> {
   from?: Scopes;
 }
 
 interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
-  dao?: string;
+  dao?: string | DAOEntity;
 }
 
 class InferredPlugins extends ComponentList<
   InferredProps,
-  Component<Entity<Data>, Data>
+  Component<AnyPlugin, Data>
 > {
-  createObservableEntities(): Observable<Entity<Data>[]> {
-    const { config, from, filter } = this.props;
+  createObservableEntities(): Observable<AnyPlugin[]> {
+    const { config, from, filter, dao } = this.props;
     if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
       );
     }
 
+    // if (dao) {
+    //   this.props.dao = await dao
+    // }
+    // console.log(filter)
+    // console.log(from)
+    // console.log(scopeProps)
+    // console.log(this.props)
+
     const f = createFilterFromScope(filter, from, scopeProps, this.props);
     return Entity.search(config.connection, f);
   }
 
   renderComponent(
-    entity: Entity<Data>,
+    entity: AnyPlugin,
     children: any,
     index: number
-  ): React.ComponentElement<CProps<Component<Entity<Data>, Data>>, any> {
+  ): React.ComponentElement<CProps<Component<AnyPlugin, Data>>, any> {
     const { config } = this.props;
 
     return (
@@ -80,7 +91,7 @@ class InferredPlugins extends ComponentList<
   }
 
   protected static _EntitiesContext = React.createContext<
-    Entity<Data>[] | undefined
+    AnyPlugin[] | undefined
   >(undefined);
   protected static _LogsContext = React.createContext<
     ComponentListLogs | undefined
@@ -100,7 +111,7 @@ class Plugins extends React.Component<RequiredProps> {
                 <DAO.Entity>
                   {(dao: DAOEntity) => (
                     <InferredPlugins
-                      dao={dao.id}
+                      dao={dao}
                       config={config}
                       sort={sort}
                       filter={filter}
