@@ -105,4 +105,4 @@ class PluginManager extends React.Component<RequiredProps> {
 
 export default PluginManager;
 
-export { PluginManager, InferredPluginManager, EntityData as PluginData };
+export { PluginManager, InferredPluginManager };

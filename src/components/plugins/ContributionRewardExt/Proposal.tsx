@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ContributionRewardProposal as Entity } from "@dorgtech/arc.js";
+import { ContributionRewardExtProposal as Entity } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
@@ -22,7 +22,7 @@ interface InferredProps extends RequiredProps {
   id: string | Entity;
 }
 
-class InferredContributionRewardProposal extends Component<
+class InferredContributionRewardExtProposal extends Component<
   InferredProps,
   ProposalEntity,
   ProposalData
@@ -43,7 +43,7 @@ class InferredContributionRewardProposal extends Component<
     return CreateContextFeed(
       this._EntityContext.Consumer,
       this._LogsContext.Consumer,
-      "ContributionRewardProposal"
+      "ContributionRewardExtProposal"
     );
   }
 
@@ -51,7 +51,7 @@ class InferredContributionRewardProposal extends Component<
     return CreateContextFeed(
       this._DataContext.Consumer,
       this._LogsContext.Consumer,
-      "ContributionRewardProposal"
+      "ContributionRewardExtProposal"
     );
   }
 
@@ -59,7 +59,7 @@ class InferredContributionRewardProposal extends Component<
     return CreateContextFeed(
       this._LogsContext.Consumer,
       this._LogsContext.Consumer,
-      "ContributionRewardProposal"
+      "ContributionRewardExtProposal"
     );
   }
 
@@ -74,16 +74,16 @@ class InferredContributionRewardProposal extends Component<
   >(undefined);
 }
 
-class ContributionRewardProposal extends React.Component<RequiredProps> {
+class ContributionRewardExtProposal extends React.Component<RequiredProps> {
   public render() {
     const { id, children } = this.props;
 
     const renderInferred = (id: string | Entity) => (
       <Protocol.Config>
         {(config: ProtocolConfig) => (
-          <InferredContributionRewardProposal id={id} config={config}>
+          <InferredContributionRewardExtProposal id={id} config={config}>
             {children}
-          </InferredContributionRewardProposal>
+          </InferredContributionRewardExtProposal>
         )}
       </Protocol.Config>
     );
@@ -100,39 +100,39 @@ class ContributionRewardProposal extends React.Component<RequiredProps> {
   }
 
   public static get Entity() {
-    return InferredContributionRewardProposal.Entity;
+    return InferredContributionRewardExtProposal.Entity;
   }
 
   public static get Data() {
-    return InferredContributionRewardProposal.Data;
+    return InferredContributionRewardExtProposal.Data;
   }
 
   public static get Logs() {
-    return InferredContributionRewardProposal.Logs;
+    return InferredContributionRewardExtProposal.Logs;
   }
 }
 
-export default ContributionRewardProposal;
+export default ContributionRewardExtProposal;
 
-export { InferredContributionRewardProposal, ContributionRewardProposal };
+export { InferredContributionRewardExtProposal, ContributionRewardExtProposal };
 
 // TODO @cesar test this functionality + implement it in other proposals & plugins:
 /*
 
 <Plugin id={...}>
-  <ContributionRewardPlugin>
-    <ContributionRewardPlugin.Data>
+  <ContributionRewardExtPlugin>
+    <ContributionRewardExtPlugin.Data>
 
-    </ContributionRewardPlugin.Data>
-  </ContributionRewardPlugin>
+    </ContributionRewardExtPlugin.Data>
+  </ContributionRewardExtPlugin>
 </Plugin>
 
 <Proposal id={...}>
-  <ContributionRewardProposal>
-    <ContributionRewardProposal.Data>
+  <ContributionRewardExtProposal>
+    <ContributionRewardExtProposal.Data>
 
-    </ContributionRewardProposal.Data>
-  </ContributionRewardProposal>
+    </ContributionRewardExtProposal.Data>
+  </ContributionRewardExtProposal>
 </Proposal>
 
 */

@@ -19,8 +19,8 @@ interface InferredProps extends RequiredProps {
 }
 
 class InferredReward extends Component<InferredProps, Entity, Data> {
-  protected createEntity(): Entity {
-    const { id, config } = this.props;
+  protected createEntity(props: InferredProps): Entity {
+    const { id, config } = props;
 
     if (!config) {
       throw Error(

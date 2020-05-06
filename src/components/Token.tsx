@@ -21,8 +21,8 @@ interface InferredProps extends RequiredProps {
 }
 
 class InferredToken extends Component<InferredProps, Entity, Data> {
-  protected createEntity(): Entity {
-    const { config, address } = this.props;
+  protected createEntity(props: InferredProps): Entity {
+    const { config, address } = props;
     if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."

@@ -18,7 +18,7 @@
     "release": "npm run build:release && npm run package:release && npm publish ./package --access public"
   },
   "dependencies": {
-    "@dorgtech/arc.js": "^2.0.0-experimental.6",
+    "@dorgtech/arc.js": "^2.0.0-experimental.8",
     "apollo-link-retry": "^2.2.16",
     "memoize-one": "^5.0.0",
     "ramda": "^0.26.1",

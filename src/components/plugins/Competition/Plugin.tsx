@@ -105,8 +105,4 @@ class ContributionRewardPlugin extends React.Component<RequiredProps> {
 
 export default Plugin;
 
-export {
-  ContributionRewardPlugin,
-  InferredContributionReward,
-  EntityData as PluginData,
-};
+export { ContributionRewardPlugin, InferredContributionReward };

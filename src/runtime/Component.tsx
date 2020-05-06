@@ -28,7 +28,7 @@ export abstract class Component<
   // to the component's data. For example: DAO, Proposal, Member.
   // Note: This entity is not within the component's state, but instead a memoized
   // property that will be recreated whenever necessary. See `private entity` below...
-  protected abstract createEntity(): MaybeAsync<Entity>;
+  protected abstract createEntity(props?: Props): MaybeAsync<Entity>;
 
   // Complete any asynchronous initialization work needed by the Entity
   protected async initialize(entity: Entity): Promise<void> {
@@ -145,7 +145,8 @@ export abstract class Component<
     this.clearPrevState();
 
     try {
-      const entity = await executeMaybeAsyncFunction(this.createEntity);
+      const asyncFunction = this.createEntity.bind(this);
+      const entity = await executeMaybeAsyncFunction(asyncFunction);
 
       logs.dataQueryStarted();
       await this.initialize(entity);

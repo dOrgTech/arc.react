@@ -1,8 +1,5 @@
 import * as React from "react";
-import {
-  IPluginState as EntityData,
-  CompetitionPlugin as Entity,
-} from "@dorgtech/arc.js";
+import { ReputationFromTokenPlugin as Entity } from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
   Arc as Protocol,
@@ -10,24 +7,27 @@ import {
   Component,
   ComponentLogs,
   ComponentProps,
+  PluginEntity,
+  PluginData,
+  Plugin,
 } from "../../../";
 
 interface RequiredProps extends ComponentProps {
   // Plugin ID
-  id: string;
-  type?: string;
+  id?: string | Entity;
 }
 
 interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
+  id: string | Entity;
 }
 
-class InferredGenericPlugin extends Component<
+class InferredReputationFromTokenPlugin extends Component<
   InferredProps,
-  Entity,
-  EntityData
+  PluginEntity,
+  PluginData
 > {
-  protected createEntity(): Entity {
+  protected async createEntity(): Promise<PluginEntity> {
     const { config, id } = this.props;
 
     if (!config) {
@@ -36,7 +36,8 @@ class InferredGenericPlugin extends Component<
       );
     }
 
-    return new Entity(config.connection, id);
+    const pluginId = typeof id === "string" ? id : id.id;
+    return new Entity(config.connection, pluginId);
   }
 
   public static get Entity() {
@@ -66,7 +67,7 @@ class InferredGenericPlugin extends Component<
   protected static _EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<EntityData | undefined>(
+  protected static _DataContext = React.createContext<PluginData | undefined>(
     undefined
   );
   protected static _LogsContext = React.createContext<
@@ -74,34 +75,44 @@ class InferredGenericPlugin extends Component<
   >(undefined);
 }
 
-class GenericPlugin extends React.Component<RequiredProps> {
+class ReputationFromTokenPlugin extends React.Component<RequiredProps> {
   public render() {
     const { id, children } = this.props;
 
-    return (
+    const renderInferred = (id: string | Entity) => (
       <Protocol.Config>
         {(config: ProtocolConfig) => (
-          <InferredGenericPlugin id={id} config={config}>
+          <InferredReputationFromTokenPlugin id={id} config={config}>
             {children}
-          </InferredGenericPlugin>
+          </InferredReputationFromTokenPlugin>
         )}
       </Protocol.Config>
     );
+
+    if (!id) {
+      return (
+        <Plugin.Entity>
+          {(proposal: PluginEntity) => renderInferred(proposal.id)}
+        </Plugin.Entity>
+      );
+    } else {
+      return renderInferred(id);
+    }
   }
 
   public static get Entity() {
-    return InferredGenericPlugin.Entity;
+    return InferredReputationFromTokenPlugin.Entity;
   }
 
   public static get Data() {
-    return InferredGenericPlugin.Data;
+    return InferredReputationFromTokenPlugin.Data;
   }
 
   public static get Logs() {
-    return InferredGenericPlugin.Logs;
+    return InferredReputationFromTokenPlugin.Logs;
   }
 }
 
-export default GenericPlugin;
+export default ReputationFromTokenPlugin;
 
-export { GenericPlugin, InferredGenericPlugin };
+export { ReputationFromTokenPlugin, InferredReputationFromTokenPlugin };

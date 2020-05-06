@@ -19,7 +19,7 @@ interface InferredProps extends RequiredProps {
 }
 
 class InferredDAO extends Component<InferredProps, Entity, Data> {
-  protected createEntity(): Entity {
+  protected createEntity(props: InferredProps): Entity {
     const { config, address } = this.props;
     if (!config) {
       throw Error(

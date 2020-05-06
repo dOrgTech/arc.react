@@ -11,7 +11,7 @@ import {
 } from "../src";
 import { render, screen, cleanup } from "@testing-library/react";
 
-const daoAddress = "0xe7a2c59e134ee81d4035ae6db2254f79308e334f";
+const daoAddress = "0x218f6e4257bc3e932936e476ebaf45bb7c5c6485";
 const arcConfig = new ArcConfig("private");
 
 describe("DAO Component ", () => {

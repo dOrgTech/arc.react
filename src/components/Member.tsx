@@ -26,8 +26,8 @@ interface InferredProps extends RequiredProps {
 }
 
 class InferredMember extends Component<InferredProps, Entity, Data> {
-  protected async createEntity(): Promise<Entity> {
-    const { address, dao, config } = this.props;
+  protected async createEntity(props: InferredProps): Promise<Entity> {
+    const { address, dao, config } = props;
 
     if (dao) {
       const daoEntity: DAOEntity =
