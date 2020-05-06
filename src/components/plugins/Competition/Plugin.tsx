@@ -28,7 +28,7 @@ class InferredContributionReward extends Component<
   BaseEntity<EntityData>,
   EntityData
 > {
-  protected async createEntity(): Promise<BaseEntity<EntityData>> {
+  protected createEntity(): BaseEntity<EntityData> {
     const { config, id } = this.props;
 
     if (!config) {

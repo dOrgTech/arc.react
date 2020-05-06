@@ -3,7 +3,6 @@ import { first } from "rxjs/operators";
 import {
   Plugin as BaseEntity,
   IPluginState as BaseData,
-  AnyPlugin,
 } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
@@ -14,19 +13,19 @@ import {
 } from "../../";
 import { CreateContextFeed } from "../../runtime/ContextFeed";
 
+abstract class Entity extends BaseEntity<BaseData> {}
+type Data = BaseData;
+
 interface RequiredProps extends ComponentProps {
   // Plugin ID
-  id: AnyPlugin | string;
+  id: Entity | string;
 }
 
 interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
 }
 
-class InferredPlugin<
-  Entity extends BaseEntity<Data>,
-  Data extends BaseData
-> extends Component<InferredProps, Entity, Data> {
+class InferredPlugin extends Component<InferredProps, Entity, Data> {
   protected async createEntity(): Promise<Entity> {
     const { config, id } = this.props;
 
@@ -43,12 +42,17 @@ class InferredPlugin<
     }
 
     if (typeof id === "string") {
-      const plugins = BaseEntity.search(config.connection, { where: { id } });
-      if (!plugins) throw Error("Plugin not found");
-      const getPlugin = await plugins.pipe(first()).toPromise();
-      return getPlugin[0] as Entity;
+      const plugin = await Entity.search(config.connection, { where: { id } })
+        .pipe(first())
+        .toPromise();
+
+      if (!plugin || plugin.length === 0) {
+        throw Error("Plugin not found");
+      }
+
+      return plugin[0];
     } else {
-      return id as Entity;
+      return id;
     }
   }
 
@@ -76,10 +80,10 @@ class InferredPlugin<
     );
   }
 
-  protected static _EntityContext = React.createContext<AnyPlugin | undefined>(
+  protected static _EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<BaseData | undefined>(
+  protected static _DataContext = React.createContext<Data | undefined>(
     undefined
   );
   protected static _LogsContext = React.createContext<
@@ -116,9 +120,4 @@ class Plugin extends React.Component<RequiredProps> {
 
 export default Plugin;
 
-export {
-  Plugin,
-  InferredPlugin,
-  BaseEntity as PluginEntity,
-  BaseData as PluginData,
-};
+export { Plugin, InferredPlugin, Entity as PluginEntity, Data as PluginData };

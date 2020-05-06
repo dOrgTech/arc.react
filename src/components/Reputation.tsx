@@ -25,7 +25,7 @@ interface InferredProps extends RequiredProps {
 }
 
 class InferredReputation extends Component<InferredProps, Entity, Data> {
-  protected async createEntity(): Promise<Entity> {
+  protected createEntity(): Entity {
     const { config, address } = this.props;
 
     if (!config) {

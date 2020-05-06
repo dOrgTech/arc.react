@@ -1,9 +1,6 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import {
-  IProposalQueryOptions as FilterOptions,
-  AnyProposal,
-} from "@dorgtech/arc.js";
+import { IProposalQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
@@ -22,6 +19,7 @@ import {
 } from "../../";
 import { CreateContextFeed } from "../../runtime/ContextFeed";
 
+// TODO: @cesar add tag entity + "Tag" scope
 type Scopes = "DAO" | "Member as proposer";
 
 const scopeProps: Record<Scopes, string> = {
@@ -30,7 +28,7 @@ const scopeProps: Record<Scopes, string> = {
 };
 
 interface RequiredProps
-  extends ComponentListProps<AnyProposal, Data, FilterOptions> {
+  extends ComponentListProps<Entity, Data, FilterOptions> {
   from?: Scopes;
 }
 
@@ -40,11 +38,8 @@ interface InferredProps extends RequiredProps {
   proposer?: string;
 }
 
-class InferredProposals extends ComponentList<
-  InferredProps,
-  Component<AnyProposal, Data>
-> {
-  createObservableEntities(): Observable<AnyProposal[]> {
+class InferredProposals extends ComponentList<InferredProps, Component> {
+  createObservableEntities(): Observable<Entity[]> {
     const { config, from, filter } = this.props;
 
     if (!config) {
@@ -58,11 +53,10 @@ class InferredProposals extends ComponentList<
   }
 
   renderComponent(
-    entity: AnyProposal,
+    entity: Entity,
     children: any,
     index: number
-  ): React.ComponentElement<CProps<Component<AnyProposal, Data>>, any> {
-    console.log(entity);
+  ): React.ComponentElement<CProps<Component>, any> {
     return (
       <Component
         key={`${entity.id}_${index}`}
@@ -90,9 +84,9 @@ class InferredProposals extends ComponentList<
     );
   }
 
-  protected static _EntitiesContext = React.createContext<
-    AnyProposal[] | undefined
-  >(undefined);
+  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
+    undefined
+  );
   protected static _LogsContext = React.createContext<
     ComponentListLogs | undefined
   >(undefined);

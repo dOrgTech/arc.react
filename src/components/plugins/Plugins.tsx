@@ -1,9 +1,6 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import {
-  IPluginQueryOptions as FilterOptions,
-  AnyPlugin,
-} from "@dorgtech/arc.js";
+import { IPluginQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
@@ -27,7 +24,7 @@ const scopeProps: Record<Scopes, string> = {
 };
 
 interface RequiredProps
-  extends ComponentListProps<AnyPlugin, Data, FilterOptions> {
+  extends ComponentListProps<Entity, Data, FilterOptions> {
   from?: Scopes;
 }
 
@@ -36,35 +33,24 @@ interface InferredProps extends RequiredProps {
   dao?: string | DAOEntity;
 }
 
-class InferredPlugins extends ComponentList<
-  InferredProps,
-  Component<AnyPlugin, Data>
-> {
-  createObservableEntities(): Observable<AnyPlugin[]> {
-    const { config, from, filter, dao } = this.props;
+class InferredPlugins extends ComponentList<InferredProps, Component> {
+  createObservableEntities(): Observable<Entity[]> {
+    const { config, from, filter } = this.props;
     if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
       );
     }
 
-    // if (dao) {
-    //   this.props.dao = await dao
-    // }
-    // console.log(filter)
-    // console.log(from)
-    // console.log(scopeProps)
-    // console.log(this.props)
-
     const f = createFilterFromScope(filter, from, scopeProps, this.props);
     return Entity.search(config.connection, f);
   }
 
   renderComponent(
-    entity: AnyPlugin,
+    entity: Entity,
     children: any,
     index: number
-  ): React.ComponentElement<CProps<Component<AnyPlugin, Data>>, any> {
+  ): React.ComponentElement<CProps<Component>, any> {
     const { config } = this.props;
 
     return (
@@ -90,9 +76,9 @@ class InferredPlugins extends ComponentList<
     );
   }
 
-  protected static _EntitiesContext = React.createContext<
-    AnyPlugin[] | undefined
-  >(undefined);
+  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
+    undefined
+  );
   protected static _LogsContext = React.createContext<
     ComponentListLogs | undefined
   >(undefined);

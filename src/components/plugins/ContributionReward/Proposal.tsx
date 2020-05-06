@@ -10,16 +10,19 @@ import {
   Component,
   ComponentLogs,
   ComponentProps,
+  Proposal,
+  ProposalEntity,
 } from "../../../";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 
 interface RequiredProps extends ComponentProps {
   // Proposal ID
-  id: string;
+  id?: string | Entity;
 }
 
 interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
+  id: string | Entity;
 }
 
 class InferredContributionRewardProposal extends Component<
@@ -27,7 +30,7 @@ class InferredContributionRewardProposal extends Component<
   BaseEntity<Data>,
   Data
 > {
-  protected async createEntity(): Promise<BaseEntity<Data>> {
+  protected createEntity(): BaseEntity<Data> {
     const { config, id } = this.props;
     if (!config) {
       throw Error(
@@ -35,7 +38,8 @@ class InferredContributionRewardProposal extends Component<
       );
     }
 
-    return new Entity(config.connection, id);
+    const proposalId = typeof id === "string" ? id : id.id;
+    return new Entity(config.connection, proposalId);
   }
 
   public static get Entity() {
@@ -77,7 +81,7 @@ class ContributionRewardProposal extends React.Component<RequiredProps> {
   public render() {
     const { id, children } = this.props;
 
-    return (
+    const renderInferred = (id: string | Entity) => (
       <Protocol.Config>
         {(config: ProtocolConfig) => (
           <InferredContributionRewardProposal id={id} config={config}>
@@ -86,6 +90,16 @@ class ContributionRewardProposal extends React.Component<RequiredProps> {
         )}
       </Protocol.Config>
     );
+
+    if (!id) {
+      return (
+        <Proposal.Entity>
+          {(proposal: ProposalEntity) => renderInferred(proposal.id)}
+        </Proposal.Entity>
+      );
+    } else {
+      return renderInferred(id);
+    }
   }
 
   public static get Entity() {
@@ -108,3 +122,24 @@ export {
   ContributionRewardProposal,
   Entity as ContributionRewardProposalEntity,
 };
+
+// TODO @cesar test this functionality + implement it in other proposals & plugins:
+/*
+
+<Plugin id={...}>
+  <ContributionRewardPlugin>
+    <ContributionRewardPlugin.Data>
+
+    </ContributionRewardPlugin.Data>
+  </ContributionRewardPlugin>
+</Plugin>
+
+<Proposal id={...}>
+  <ContributionRewardProposal>
+    <ContributionRewardProposal.Data>
+
+    </ContributionRewardProposal.Data>
+  </ContributionRewardProposal>
+</Proposal>
+
+*/

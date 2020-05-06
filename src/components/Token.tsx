@@ -21,7 +21,7 @@ interface InferredProps extends RequiredProps {
 }
 
 class InferredToken extends Component<InferredProps, Entity, Data> {
-  protected async createEntity(): Promise<Entity> {
+  protected createEntity(): Entity {
     const { config, address } = this.props;
     if (!config) {
       throw Error(

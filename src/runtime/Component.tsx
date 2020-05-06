@@ -6,7 +6,7 @@ import {
   Entity as ArcEntity,
   IEntityState as IArcEntityState,
 } from "@dorgtech/arc.js";
-
+import { MaybeAsync, executeMaybeAsyncFunction } from "./utils/async";
 import { ComponentLogs } from "./logging/ComponentLogs";
 
 export interface State<Data extends IArcEntityState> {
@@ -28,7 +28,7 @@ export abstract class Component<
   // to the component's data. For example: DAO, Proposal, Member.
   // Note: This entity is not within the component's state, but instead a memoized
   // property that will be recreated whenever necessary. See `private entity` below...
-  protected abstract async createEntity(): Promise<Entity>;
+  protected abstract createEntity(): MaybeAsync<Entity>;
 
   // Complete any asynchronous initialization work needed by the Entity
   protected async initialize(entity: Entity): Promise<void> {
@@ -145,7 +145,7 @@ export abstract class Component<
     this.clearPrevState();
 
     try {
-      const entity = await this.createEntity();
+      const entity = await executeMaybeAsyncFunction(this.createEntity);
 
       logs.dataQueryStarted();
       await this.initialize(entity);

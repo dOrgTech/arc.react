@@ -13,19 +13,19 @@ import {
 } from "../../";
 import { CreateContextFeed } from "../../runtime/ContextFeed";
 
+abstract class Entity extends BaseEntity<BaseData> {}
+type Data = BaseData;
+
 interface RequiredProps extends ComponentProps {
   // Proposal ID
-  id: BaseEntity<BaseData> | string;
+  id: Entity | string;
 }
 
 interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
 }
 
-class InferredProposal<
-  Entity extends BaseEntity<Data>,
-  Data extends BaseData
-> extends Component<InferredProps, Entity, Data> {
+class InferredProposal extends Component<InferredProps, Entity, Data> {
   protected async createEntity(): Promise<Entity> {
     const { config, id } = this.props;
 
@@ -42,12 +42,17 @@ class InferredProposal<
     }
 
     if (typeof id === "string") {
-      const proposals = BaseEntity.search(config.connection, { where: { id } });
-      if (!proposals) throw Error("Proposal not found");
-      const getProposal = await proposals.pipe(first()).toPromise();
-      return getProposal[0] as Entity;
+      const proposal = await Entity.search(config.connection, { where: { id } })
+        .pipe(first())
+        .toPromise();
+
+      if (!proposal || proposal.length === 0) {
+        throw Error("Proposal not found");
+      }
+
+      return proposal[0];
     } else {
-      return id as Entity;
+      return id;
     }
   }
 
@@ -75,10 +80,10 @@ class InferredProposal<
     );
   }
 
-  protected static _EntityContext = React.createContext<
-    BaseEntity<BaseData> | undefined
-  >(undefined);
-  protected static _DataContext = React.createContext<BaseData | undefined>(
+  protected static _EntityContext = React.createContext<Entity | undefined>(
+    undefined
+  );
+  protected static _DataContext = React.createContext<Data | undefined>(
     undefined
   );
   protected static _LogsContext = React.createContext<
@@ -118,6 +123,6 @@ export default Proposal;
 export {
   Proposal,
   InferredProposal,
-  BaseEntity as ProposalEntity,
-  BaseData as ProposalData,
+  Entity as ProposalEntity,
+  Data as ProposalData,
 };

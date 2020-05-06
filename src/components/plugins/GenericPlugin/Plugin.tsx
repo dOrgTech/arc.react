@@ -27,7 +27,7 @@ class InferredGenericPlugin extends Component<
   Entity,
   EntityData
 > {
-  protected async createEntity(): Promise<Entity> {
+  protected createEntity(): Entity {
     const { config, id } = this.props;
 
     if (!config) {

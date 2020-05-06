@@ -27,7 +27,7 @@ class InferredGenericPluginProposal extends Component<
   BaseEntity<Data>,
   Data
 > {
-  protected async createEntity(): Promise<BaseEntity<Data>> {
+  protected createEntity(): BaseEntity<Data> {
     const { config, id } = this.props;
     console.log(config);
     if (!config) {

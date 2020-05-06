@@ -37,14 +37,7 @@ class InferredPluginManager extends Component<
       );
     }
 
-    const scheme = new Entity(config.connection, id);
-    /* 
-    We should do this to make sure that the user is creating the 
-    desired type of plugin
-    await scheme.fetchState()
-    if (scheme.coreState?.name !== "SchemeRegister") throw Error("bro tas muy loco")
-     */
-    return scheme;
+    return new Entity(config.connection, id);
   }
 
   public static get Entity() {
