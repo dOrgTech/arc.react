@@ -26,26 +26,26 @@ interface InferredProps extends RequiredProps {
 }
 
 class InferredMember extends Component<InferredProps, Entity, Data> {
-  protected async createEntity(props: InferredProps): Promise<Entity> {
-    const { address, dao, config } = props;
+  protected async createEntity(): Promise<Entity> {
+    const { address, dao, config } = this.props;
 
-    if (dao) {
-      const daoEntity: DAOEntity =
-        typeof dao === "string" ? new DAOEntity(config.connection, dao) : dao;
-
-      const daoState = await daoEntity.fetchState();
-
-      const memberId: string = Entity.calculateId({
-        contract: daoState.reputation.id,
-        address,
-      });
-
-      return new Entity(config.connection, memberId);
-    } else {
+    if (!dao) {
       throw Error(
         "DAO Missing: Please provide this field as a prop, or use the inference component."
       );
     }
+
+    const daoEntity: DAOEntity =
+      typeof dao === "string" ? new DAOEntity(config.connection, dao) : dao;
+
+    const daoState = await daoEntity.fetchState();
+
+    const memberId: string = Entity.calculateId({
+      contract: daoState.reputation.id,
+      address,
+    });
+
+    return new Entity(config.connection, memberId);
   }
 
   public static get Entity() {
