@@ -6,6 +6,7 @@ import {
   DAOEntity,
   Component,
   ComponentLogs,
+  ComponentProps,
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 import {
@@ -14,11 +15,9 @@ import {
   IDAOState as DAOData,
 } from "@dorgtech/arc.js";
 
-interface RequiredProps {
+interface RequiredProps extends ComponentProps {
   // Address of the member
   address: string;
-  // TODO: @cesar remove all of these, extend ComponentProps
-  noSub?: boolean;
   dao?: string | DAOEntity;
 }
 

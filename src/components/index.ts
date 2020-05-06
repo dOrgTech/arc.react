@@ -2,7 +2,6 @@ export * from "./DAO";
 export * from "./DAOs";
 export * from "./Member";
 export * from "./Members";
-// export * from "./proposals";
 export * from "./Reputation";
 export * from "./Reputations";
 export * from "./Token";

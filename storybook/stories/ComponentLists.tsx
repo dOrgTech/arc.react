@@ -9,9 +9,9 @@ import {
   Members,
   Member,
   MemberData,
-  // Proposal,
-  // Proposals,
-  // ProposalData,
+  Proposal,
+  Proposals,
+  ProposalData,
   Reputations,
   Reputation,
   ReputationData,
@@ -21,9 +21,9 @@ import {
   Rewards,
   Reward,
   RewardData,
-  // Plugin,
-  // Plugin,
-  // PluginData,
+  Plugin,
+  Plugins,
+  PluginData,
   Stakes,
   Stake,
   StakeData,
@@ -95,25 +95,25 @@ export default () =>
         getId={(member: MemberData) => `Member: ${member.address}`}
       />
     ))
-    // .add("Proposals", () => (
-    //   <ComponentListView
-    //     name={"Proposals"}
-    //     ComponentListType={Proposals}
-    //     ComponentType={Proposal}
-    //     ProtocolType={Arc}
-    //     protocolConfig={arcConfig}
-    //     scopes={[
-    //       { name: "DAO", prop: DAOProp },
-    //       { name: "Member as proposer", prop: MemberProp },
-    //     ]}
-    //     ScopeContext={(props) => (
-    //       <DAO address={props.dao}>
-    //         <Member address={props.member}>{props.children}</Member>
-    //       </DAO>
-    //     )}
-    //     getId={(proposal: ProposalData) => `Proposal: ${proposal.id}`}
-    //   />
-    // ))
+    .add("Proposals", () => (
+      <ComponentListView
+        name={"Proposals"}
+        ComponentListType={Proposals}
+        ComponentType={Proposal}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        scopes={[
+          { name: "DAO", prop: DAOProp },
+          { name: "Member as proposer", prop: MemberProp },
+        ]}
+        ScopeContext={(props) => (
+          <DAO address={props.dao}>
+            <Member address={props.member}>{props.children}</Member>
+          </DAO>
+        )}
+        getId={(proposal: ProposalData) => `Proposal: ${proposal.id}`}
+      />
+    ))
     .add("Reputations", () => (
       <ComponentListView
         name={"Reputations"}
@@ -151,20 +151,20 @@ export default () =>
     //     getId={(reward: RewardData) => `Reward: ${reward.id}`}
     //   />
     // ))
-    // .add("Plugin", () => (
-    //   <ComponentListView
-    //     name={"Plugin"}
-    //     ComponentListType={Plugin}
-    //     ComponentType={Plugin}
-    //     ProtocolType={Arc}
-    //     protocolConfig={arcConfig}
-    //     scopes={[{ name: "DAO", prop: DAOProp }]}
-    //     ScopeContext={(props) => (
-    //       <DAO address={props.dao}>{props.children}</DAO>
-    //     )}
-    //     getId={(scheme: PluginData) => `Plugin (${scheme.name}): ${scheme.id}`}
-    //   />
-    // ))
+    .add("Plugin", () => (
+      <ComponentListView
+        name={"Plugin"}
+        ComponentListType={Plugins}
+        ComponentType={Plugin}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        scopes={[{ name: "DAO", prop: DAOProp }]}
+        ScopeContext={(props) => (
+          <DAO address={props.dao}>{props.children}</DAO>
+        )}
+        getId={(scheme: PluginData) => `Plugin (${scheme.name}): ${scheme.id}`}
+      />
+    ))
     // .add("Stakes", () => (
     //   <ComponentListView
     //     name={"Stakes"}

@@ -6,12 +6,12 @@ import {
   ArcConfig as ProtocolConfig,
   Component,
   ComponentLogs,
+  ComponentProps,
 } from "../";
 
-interface RequiredProps {
+interface RequiredProps extends ComponentProps {
   // Reward ID
   id: string;
-  noSub?: boolean;
 }
 
 interface InferredProps extends RequiredProps {

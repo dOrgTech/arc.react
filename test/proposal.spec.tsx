@@ -1,5 +1,14 @@
 import React from "react";
-import { Arc, ArcConfig, ProposalData, Proposal, Proposals, DAO } from "../src";
+import {
+  Arc,
+  ArcConfig,
+  ProposalData,
+  ContributionRewardProposal,
+  GenericPluginProposal,
+  Proposal,
+  Proposals,
+  DAO,
+} from "../src";
 import {
   render,
   screen,

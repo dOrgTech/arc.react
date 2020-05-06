@@ -13,8 +13,8 @@ import {
   Vote,
   Loader,
   LoadingRenderProps,
-  PluginManager,
-  ContributionRewardProposal,
+  Proposal,
+  Plugin,
 } from "../../src";
 
 const arcConfig = new ArcConfig("private");
@@ -93,10 +93,10 @@ export default () =>
         ]}
       />
     ))
-    .add("Contribution Reward proposal", () => (
+    .add("Proposal", () => (
       <ComponentView
-        name={"Contribution Reward proposal"}
-        ComponentType={ContributionRewardProposal}
+        name={"Proposal"}
+        ComponentType={Proposal}
         ProtocolType={Arc}
         protocolConfig={arcConfig}
         propEditors={[
@@ -163,10 +163,10 @@ export default () =>
         ]}
       />
     ))
-    .add("Plugin Manager", () => (
+    .add("Plugin", () => (
       <ComponentView
-        name={"Plugin Manager"}
-        ComponentType={PluginManager}
+        name={"Plugin"}
+        ComponentType={Plugin}
         ProtocolType={Arc}
         protocolConfig={arcConfig}
         propEditors={[

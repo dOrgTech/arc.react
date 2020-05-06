@@ -1,8 +1,8 @@
 import * as React from "react";
 import {
+  Proposal as BaseEntity,
   IProposalState as Data,
-  SchemeRegistrarProposal as Entity,
-  AnyProposal,
+  GenericPluginProposal as Entity,
 } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
@@ -22,12 +22,12 @@ interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
 }
 
-class InferredPluginManagerProposal extends Component<
+class InferredGenericPluginProposal extends Component<
   InferredProps,
-  AnyProposal,
+  BaseEntity<Data>,
   Data
 > {
-  protected async createEntity(): Promise<AnyProposal> {
+  protected async createEntity(): Promise<BaseEntity<Data>> {
     const { config, id } = this.props;
     console.log(config);
     if (!config) {
@@ -74,38 +74,39 @@ class InferredPluginManagerProposal extends Component<
   >(undefined);
 }
 
-class PluginManagerProposal extends React.Component<RequiredProps> {
+class GenericPluginProposal extends React.Component<RequiredProps> {
   public render() {
     const { id, children } = this.props;
 
     return (
       <Protocol.Config>
         {(config: ProtocolConfig) => (
-          <InferredPluginManagerProposal id={id} config={config}>
+          <InferredGenericPluginProposal id={id} config={config}>
             {children}
-          </InferredPluginManagerProposal>
+          </InferredGenericPluginProposal>
         )}
       </Protocol.Config>
     );
   }
 
   public static get Entity() {
-    return InferredPluginManagerProposal.Entity;
+    return InferredGenericPluginProposal.Entity;
   }
 
   public static get Data() {
-    return InferredPluginManagerProposal.Data;
+    return InferredGenericPluginProposal.Data;
   }
 
   public static get Logs() {
-    return InferredPluginManagerProposal.Logs;
+    return InferredGenericPluginProposal.Logs;
   }
 }
 
-export default PluginManagerProposal;
+export default GenericPluginProposal;
 
 export {
-  InferredPluginManagerProposal,
-  PluginManagerProposal,
-  Entity as PluginManagerProposalEntity,
+  InferredGenericPluginProposal,
+  GenericPluginProposal,
+  Entity as GenericPluginProposalEntity,
+  Data as ProposalData,
 };

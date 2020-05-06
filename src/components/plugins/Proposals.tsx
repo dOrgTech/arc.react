@@ -1,14 +1,19 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import { IPluginQueryOptions as FilterOptions } from "@dorgtech/arc.js";
+import {
+  IProposalQueryOptions as FilterOptions,
+  AnyProposal,
+} from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
-  InferredPlugin as Component,
-  PluginEntity as Entity,
-  PluginData as Data,
   DAO,
   DAOEntity,
+  Member,
+  MemberEntity,
+  InferredProposal as Component,
+  ProposalEntity as Entity,
+  ProposalData as Data,
   CProps,
   ComponentList,
   ComponentListLogs,
@@ -17,28 +22,31 @@ import {
 } from "../../";
 import { CreateContextFeed } from "../../runtime/ContextFeed";
 
-type Scopes = "DAO";
+type Scopes = "DAO" | "Member as proposer";
 
 const scopeProps: Record<Scopes, string> = {
   DAO: "dao",
+  "Member as proposer": "proposer",
 };
 
 interface RequiredProps
-  extends ComponentListProps<Entity<Data>, Data, FilterOptions> {
+  extends ComponentListProps<AnyProposal, Data, FilterOptions> {
   from?: Scopes;
 }
 
 interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
   dao?: string;
+  proposer?: string;
 }
 
-class InferredPlugins extends ComponentList<
+class InferredProposals extends ComponentList<
   InferredProps,
-  Component<Entity<Data>, Data>
+  Component<AnyProposal, Data>
 > {
-  createObservableEntities(): Observable<Entity<Data>[]> {
+  createObservableEntities(): Observable<AnyProposal[]> {
     const { config, from, filter } = this.props;
+
     if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
@@ -50,14 +58,17 @@ class InferredPlugins extends ComponentList<
   }
 
   renderComponent(
-    entity: Entity<Data>,
+    entity: AnyProposal,
     children: any,
     index: number
-  ): React.ComponentElement<CProps<Component<Entity<Data>, Data>>, any> {
-    const { config } = this.props;
-
+  ): React.ComponentElement<CProps<Component<AnyProposal, Data>>, any> {
+    console.log(entity);
     return (
-      <Component key={`${entity.id}_${index}`} id={entity.id} config={config}>
+      <Component
+        key={`${entity.id}_${index}`}
+        id={entity.id}
+        config={this.props.config}
+      >
         {children}
       </Component>
     );
@@ -67,7 +78,7 @@ class InferredPlugins extends ComponentList<
     return CreateContextFeed(
       this._EntitiesContext.Consumer,
       this._LogsContext.Consumer,
-      "Plugins"
+      "Proposals"
     );
   }
 
@@ -75,19 +86,19 @@ class InferredPlugins extends ComponentList<
     return CreateContextFeed(
       this._LogsContext.Consumer,
       this._LogsContext.Consumer,
-      "Plugins"
+      "Proposals"
     );
   }
 
   protected static _EntitiesContext = React.createContext<
-    Entity<Data>[] | undefined
+    AnyProposal[] | undefined
   >(undefined);
   protected static _LogsContext = React.createContext<
     ComponentListLogs | undefined
   >(undefined);
 }
 
-class Plugins extends React.Component<RequiredProps> {
+class Proposals extends React.Component<RequiredProps> {
   render() {
     const { children, from, sort, filter } = this.props;
 
@@ -99,16 +110,31 @@ class Plugins extends React.Component<RequiredProps> {
               return (
                 <DAO.Entity>
                   {(dao: DAOEntity) => (
-                    <InferredPlugins
+                    <InferredProposals
                       dao={dao.id}
                       config={config}
                       sort={sort}
                       filter={filter}
                     >
                       {children}
-                    </InferredPlugins>
+                    </InferredProposals>
                   )}
                 </DAO.Entity>
+              );
+            case "Member as proposer":
+              return (
+                <Member.Entity>
+                  {(member: MemberEntity) => (
+                    <InferredProposals
+                      proposer={member.coreState!.address}
+                      config={config}
+                      sort={sort}
+                      filter={filter}
+                    >
+                      {children}
+                    </InferredProposals>
+                  )}
+                </Member.Entity>
               );
             default:
               if (from) {
@@ -116,9 +142,9 @@ class Plugins extends React.Component<RequiredProps> {
               }
 
               return (
-                <InferredPlugins config={config} sort={sort} filter={filter}>
+                <InferredProposals config={config} sort={sort} filter={filter}>
                   {children}
-                </InferredPlugins>
+                </InferredProposals>
               );
           }
         }}
@@ -127,14 +153,14 @@ class Plugins extends React.Component<RequiredProps> {
   }
 
   public static get Entities() {
-    return InferredPlugins.Entities;
+    return InferredProposals.Entities;
   }
 
   public static get Logs() {
-    return InferredPlugins.Logs;
+    return InferredProposals.Logs;
   }
 }
 
-export default Plugins;
+export default Proposals;
 
-export { Plugins, InferredPlugins };
+export { Proposals, InferredProposals };

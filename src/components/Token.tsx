@@ -7,13 +7,13 @@ import {
   DAOData as InferData,
   Component,
   ComponentLogs,
+  ComponentProps,
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
-interface RequiredProps {
+interface RequiredProps extends ComponentProps {
   // Address of the Token
   address?: string;
-  noSub?: boolean;
 }
 
 interface InferredProps extends RequiredProps {

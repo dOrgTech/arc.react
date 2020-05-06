@@ -3,10 +3,7 @@ import memoize from "memoize-one";
 import { Observable, Subscription } from "rxjs";
 
 // TODO: This should not be opinionated to arc
-import {
-  Entity as ArcEntity,
-  IEntityState as IArcEntityState,
-} from "@dorgtech/arc.js";
+import { Entity as ArcEntity } from "@dorgtech/arc.js";
 
 import { Component } from "./Component";
 import { ComponentListLogs } from "./logging/ComponentListLogs";

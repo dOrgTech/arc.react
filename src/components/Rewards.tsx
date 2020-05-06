@@ -135,21 +135,21 @@ class Rewards extends React.Component<RequiredProps> {
                   )}
                 </Member.Entity>
               );
-            case "Proposal":
-              return (
-                <Proposal.Entity>
-                  {(proposal: ProposalEntity) => (
-                    <InferredRewards
-                      proposal={proposal.id}
-                      config={config}
-                      sort={sort}
-                      filter={filter}
-                    >
-                      {children}
-                    </InferredRewards>
-                  )}
-                </Proposal.Entity>
-              );
+            // case "Proposal":
+            //   return (
+            //     <Proposal.Entity>
+            //       {(proposal: ProposalEntity) => (
+            //         <InferredRewards
+            //           proposal={proposal.id}
+            //           config={config}
+            //           sort={sort}
+            //           filter={filter}
+            //         >
+            //           {children}
+            //         </InferredRewards>
+            //       )}
+            //     </Proposal.Entity>
+            //   );
             case "Token":
               return (
                 <Token.Entity>

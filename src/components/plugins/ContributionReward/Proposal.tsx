@@ -9,17 +9,17 @@ import {
   ArcConfig as ProtocolConfig,
   Component,
   ComponentLogs,
+  ComponentProps,
 } from "../../../";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 
-interface RequiredProps {
+interface RequiredProps extends ComponentProps {
   // Proposal ID
   id: string;
 }
 
 interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
-  noSub?: boolean;
 }
 
 class InferredContributionRewardProposal extends Component<
@@ -108,5 +108,4 @@ export {
   InferredContributionRewardProposal,
   ContributionRewardProposal,
   Entity as ContributionRewardProposalEntity,
-  Data as ProposalData,
 };

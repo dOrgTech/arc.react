@@ -10,9 +10,10 @@ import {
   ArcConfig as ProtocolConfig,
   Component,
   ComponentLogs,
+  ComponentProps,
 } from "../../../";
 
-interface RequiredProps {
+interface RequiredProps extends ComponentProps {
   // Plugin ID
   id: string;
   type?: string;
@@ -20,7 +21,6 @@ interface RequiredProps {
 
 interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
-  noSub?: boolean;
 }
 
 class InferredPluginManager extends Component<
