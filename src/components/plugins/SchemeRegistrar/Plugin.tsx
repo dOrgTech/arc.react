@@ -1,9 +1,5 @@
 import * as React from "react";
-import {
-  IPluginState as EntityData,
-  SchemeRegistrarPlugin as Entity,
-  AnyPlugin,
-} from "@dorgtech/arc.js";
+import { SchemeRegistrarPlugin as Entity } from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
   Arc as Protocol,
@@ -11,24 +7,27 @@ import {
   Component,
   ComponentLogs,
   ComponentProps,
+  PluginEntity,
+  PluginData,
+  Plugin,
 } from "../../../";
 
 interface RequiredProps extends ComponentProps {
   // Plugin ID
-  id: string;
-  type?: string;
+  id?: string | Entity;
 }
 
 interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
+  id: string | Entity;
 }
 
 class InferredPluginManager extends Component<
   InferredProps,
-  AnyPlugin,
-  EntityData
+  PluginEntity,
+  PluginData
 > {
-  protected async createEntity(): Promise<AnyPlugin> {
+  protected async createEntity(): Promise<PluginEntity> {
     const { config, id } = this.props;
 
     if (!config) {
@@ -37,7 +36,8 @@ class InferredPluginManager extends Component<
       );
     }
 
-    return new Entity(config.connection, id);
+    const pluginId = typeof id === "string" ? id : id.id;
+    return new Entity(config.connection, pluginId);
   }
 
   public static get Entity() {
@@ -67,7 +67,7 @@ class InferredPluginManager extends Component<
   protected static _EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<EntityData | undefined>(
+  protected static _DataContext = React.createContext<PluginData | undefined>(
     undefined
   );
   protected static _LogsContext = React.createContext<
@@ -79,7 +79,7 @@ class PluginManager extends React.Component<RequiredProps> {
   public render() {
     const { id, children } = this.props;
 
-    return (
+    const renderInferred = (id: string | Entity) => (
       <Protocol.Config>
         {(config: ProtocolConfig) => (
           <InferredPluginManager id={id} config={config}>
@@ -88,6 +88,16 @@ class PluginManager extends React.Component<RequiredProps> {
         )}
       </Protocol.Config>
     );
+
+    if (!id) {
+      return (
+        <Plugin.Entity>
+          {(proposal: PluginEntity) => renderInferred(proposal.id)}
+        </Plugin.Entity>
+      );
+    } else {
+      return renderInferred(id);
+    }
   }
 
   public static get Entity() {

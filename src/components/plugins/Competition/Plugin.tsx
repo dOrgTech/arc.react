@@ -1,9 +1,5 @@
 import * as React from "react";
-import {
-  IPluginState as EntityData,
-  Plugin as BaseEntity,
-  ContributionRewardPlugin as Entity,
-} from "@dorgtech/arc.js";
+import { CompetitionPlugin as Entity } from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
   Arc as Protocol,
@@ -11,24 +7,27 @@ import {
   Component,
   ComponentLogs,
   ComponentProps,
+  PluginEntity,
+  PluginData,
+  Plugin,
 } from "../../../";
 
 interface RequiredProps extends ComponentProps {
   // Plugin ID
-  id: string;
-  type?: string;
+  id?: string | Entity;
 }
 
 interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
+  id: string | Entity;
 }
 
-class InferredContributionReward extends Component<
+class InferredCompetition extends Component<
   InferredProps,
-  BaseEntity<EntityData>,
-  EntityData
+  PluginEntity,
+  PluginData
 > {
-  protected createEntity(): BaseEntity<EntityData> {
+  protected createEntity(): PluginEntity {
     const { config, id } = this.props;
 
     if (!config) {
@@ -37,7 +36,8 @@ class InferredContributionReward extends Component<
       );
     }
 
-    return new Entity(config.connection, id);
+    const pluginId = typeof id === "string" ? id : id.id;
+    return new Entity(config.connection, pluginId);
   }
 
   public static get Entity() {
@@ -67,7 +67,7 @@ class InferredContributionReward extends Component<
   protected static _EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<EntityData | undefined>(
+  protected static _DataContext = React.createContext<PluginData | undefined>(
     undefined
   );
   protected static _LogsContext = React.createContext<
@@ -75,34 +75,44 @@ class InferredContributionReward extends Component<
   >(undefined);
 }
 
-class ContributionRewardPlugin extends React.Component<RequiredProps> {
+class CompetitionPlugin extends React.Component<RequiredProps> {
   public render() {
     const { id, children } = this.props;
 
-    return (
+    const renderInferred = (id: string | Entity) => (
       <Protocol.Config>
         {(config: ProtocolConfig) => (
-          <InferredContributionReward id={id} config={config}>
+          <InferredCompetition id={id} config={config}>
             {children}
-          </InferredContributionReward>
+          </InferredCompetition>
         )}
       </Protocol.Config>
     );
+
+    if (!id) {
+      return (
+        <Plugin.Entity>
+          {(proposal: PluginEntity) => renderInferred(proposal.id)}
+        </Plugin.Entity>
+      );
+    } else {
+      return renderInferred(id);
+    }
   }
 
   public static get Entity() {
-    return InferredContributionReward.Entity;
+    return InferredCompetition.Entity;
   }
 
   public static get Data() {
-    return InferredContributionReward.Data;
+    return InferredCompetition.Data;
   }
 
   public static get Logs() {
-    return InferredContributionReward.Logs;
+    return InferredCompetition.Logs;
   }
 }
 
 export default Plugin;
 
-export { ContributionRewardPlugin, InferredContributionReward };
+export { CompetitionPlugin, InferredCompetition };
