@@ -10,8 +10,8 @@ import {
 } from "../src";
 import { render, screen, cleanup } from "@testing-library/react";
 
-const daoAddress = "0x68728fe67fb1fbae9076110f98e9ba3f5a00f936";
-const memberAddress = "0xffcf8fdee72ac11b5c542428b35eef5769c409f0";
+const daoAddress = "0x666a6eb4618d0438511c8206df4d5b142837eb0d";
+const memberAddress = "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1";
 const arcConfig = new ArcConfig("private");
 
 describe("Member component ", () => {

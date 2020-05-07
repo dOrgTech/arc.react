@@ -41,7 +41,7 @@ import ComponentListView, {
 const DAOProp: PropertyData = {
   friendlyName: "DAO Address",
   name: "dao",
-  defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
+  defaultValue: "0x666a6eb4618d0438511c8206df4d5b142837eb0d",
   type: PropertyType.string,
 };
 
@@ -56,14 +56,14 @@ const ProposalProp: PropertyData = {
   friendlyName: "Proposal ID",
   name: "proposal",
   defaultValue:
-    "0x6afee092a28c74f6358093d5376ac75014ac4d9fd42d296a5498ef42eecd7248",
+    "0x58fba3fe8b4d4090ecce931bdf826532700805b151cc22ee5fddd03750a4b444",
   type: PropertyType.string,
 };
 
 const TokenProp: PropertyData = {
   friendlyName: "Token Address",
   name: "token",
-  defaultValue: "0x81920caf1f99bb0f7d72fdfba840cff21d63ccc5",
+  defaultValue: "0x24014c20291afc04145a0bf5b5cdf58dc3f3b809",
   type: PropertyType.string,
 };
 
@@ -126,31 +126,31 @@ export default () =>
         }
       />
     ))
-    // .add("Rewards", () => (
-    //   <ComponentListView
-    //     name={"Rewards"}
-    //     ComponentListType={Rewards}
-    //     ComponentType={Reward}
-    //     ProtocolType={Arc}
-    //     protocolConfig={arcConfig}
-    //     scopes={[
-    //       { name: "DAO", prop: DAOProp },
-    //       { name: "Member as beneficiary", prop: MemberProp },
-    //       { name: "Proposal", prop: ProposalProp },
-    //       { name: "Token", prop: TokenProp },
-    //     ]}
-    //     ScopeContext={(props) => (
-    //       <DAO address={props.dao}>
-    //         <Member address={props.member}>
-    //           <Proposal id={props.proposal}>
-    //             <Token address={props.token}>{props.children}</Token>
-    //           </Proposal>
-    //         </Member>
-    //       </DAO>
-    //     )}
-    //     getId={(reward: RewardData) => `Reward: ${reward.id}`}
-    //   />
-    // ))
+    .add("Rewards", () => (
+      <ComponentListView
+        name={"Rewards"}
+        ComponentListType={Rewards}
+        ComponentType={Reward}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        scopes={[
+          { name: "DAO", prop: DAOProp },
+          { name: "Member as beneficiary", prop: MemberProp },
+          { name: "Proposal", prop: ProposalProp },
+          { name: "Token", prop: TokenProp },
+        ]}
+        ScopeContext={(props) => (
+          <DAO address={props.dao}>
+            <Member address={props.member}>
+              <Proposal id={props.proposal}>
+                <Token address={props.token}>{props.children}</Token>
+              </Proposal>
+            </Member>
+          </DAO>
+        )}
+        getId={(reward: RewardData) => `Reward: ${reward.id}`}
+      />
+    ))
     .add("Plugin", () => (
       <ComponentListView
         name={"Plugin"}
@@ -165,28 +165,28 @@ export default () =>
         getId={(scheme: PluginData) => `Plugin (${scheme.name}): ${scheme.id}`}
       />
     ))
-    // .add("Stakes", () => (
-    //   <ComponentListView
-    //     name={"Stakes"}
-    //     ComponentListType={Stakes}
-    //     ComponentType={Stake}
-    //     ProtocolType={Arc}
-    //     protocolConfig={arcConfig}
-    //     scopes={[
-    //       { name: "DAO", prop: DAOProp },
-    //       { name: "Member as staker", prop: MemberProp },
-    //       { name: "Proposal", prop: ProposalProp },
-    //     ]}
-    //     ScopeContext={(props) => (
-    //       <DAO address={props.dao}>
-    //         <Member address={props.member}>
-    //           <Proposal id={props.proposal}>{props.children}</Proposal>
-    //         </Member>
-    //       </DAO>
-    //     )}
-    //     getId={(stake: StakeData) => `Stake: ${stake.id}`}
-    //   />
-    // ))
+    .add("Stakes", () => (
+      <ComponentListView
+        name={"Stakes"}
+        ComponentListType={Stakes}
+        ComponentType={Stake}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        scopes={[
+          { name: "DAO", prop: DAOProp },
+          { name: "Member as staker", prop: MemberProp },
+          { name: "Proposal", prop: ProposalProp },
+        ]}
+        ScopeContext={(props) => (
+          <DAO address={props.dao}>
+            <Member address={props.member}>
+              <Proposal id={props.proposal}>{props.children}</Proposal>
+            </Member>
+          </DAO>
+        )}
+        getId={(stake: StakeData) => `Stake: ${stake.id}`}
+      />
+    ))
     .add("Tokens", () => (
       <ComponentListView
         name={"Tokens"}
@@ -198,71 +198,49 @@ export default () =>
           `Token (${token.name} - ${token.symbol}): ${token.address}`
         }
       />
+    ))
+    .add("Votes", () => (
+      <ComponentListView
+        name={"Votes"}
+        ComponentListType={Votes}
+        ComponentType={Vote}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        scopes={[
+          { name: "DAO", prop: DAOProp },
+          { name: "Member as voter", prop: MemberProp },
+          { name: "Proposal", prop: ProposalProp },
+        ]}
+        ScopeContext={(props) => (
+          <DAO address={props.dao}>
+            <Member address={props.member}>
+              <Proposal id={props.proposal}>{props.children}</Proposal>
+            </Member>
+          </DAO>
+        )}
+        getId={(vote: VoteData) => `Vote: ${vote.id}`}
+      />
+    ))
+    .add("Plugin with custom loader", () => (
+      <ComponentListView
+        name={"Plugin"}
+        ComponentListType={Plugin}
+        ComponentType={Plugin}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        ScopeContext={(props) => (
+          <Loader
+            render={(props: LoadingRenderProps) => (
+              <div>
+                {props.errors.length > 0
+                  ? props.errors.map((error) => error)
+                  : "Loading without errors"}
+              </div>
+            )}
+          >
+            {props.children}
+          </Loader>
+        )}
+        getId={(scheme: PluginData) => `Plugin (${scheme.name}): ${scheme.id}`}
+      />
     ));
-// .add("Votes", () => (
-//   <ComponentListView
-//     name={"Votes"}
-//     ComponentListType={Votes}
-//     ComponentType={Vote}
-//     ProtocolType={Arc}
-//     protocolConfig={arcConfig}
-//     scopes={[
-//       { name: "DAO", prop: DAOProp },
-//       { name: "Member as voter", prop: MemberProp },
-//       { name: "Proposal", prop: ProposalProp },
-//     ]}
-//     ScopeContext={(props) => (
-//       <DAO address={props.dao}>
-//         <Member address={props.member}>
-//           <Proposal id={props.proposal}>{props.children}</Proposal>
-//         </Member>
-//       </DAO>
-//     )}
-//     getId={(vote: VoteData) => `Vote: ${vote.id}`}
-//   />
-// ))
-// .add("Plugin with custom loader", () => (
-//   <ComponentListView
-//     name={"Plugin"}
-//     ComponentListType={Plugin}
-//     ComponentType={Plugin}
-//     ProtocolType={Arc}
-//     protocolConfig={arcConfig}
-//     ScopeContext={(props) => (
-//       <Loader
-//         render={(props: LoadingRenderProps) => (
-//           <div>
-//             {props.errors.length > 0
-//               ? props.errors.map((error) => error)
-//               : "Loading without errors"}
-//           </div>
-//         )}
-//       >
-//         {props.children}
-//       </Loader>
-//     )}
-//     getId={(scheme: PluginData) => `Plugin (${scheme.name}): ${scheme.id}`}
-//   />
-// ));
-// .add("Plugin with custom loader", () => (
-//   <ComponentListView
-//     name={"Plugin"}
-//     ComponentList={Plugin}
-//     Component={Plugin}
-//     RequiredContext={(props) => (
-//       <Loader
-//         render={(props: RenderProps) => (
-//           <div>
-//             {props.errors.length > 0
-//               ? props.errors.map((error) => error)
-//               : "Loading without errors"}
-//           </div>
-//         )}
-//       >
-//         <Arc config={arcConfig}>{props.children}</Arc>
-//       </Loader>
-//     )}
-//     propEditors={[]}
-//     getId={(scheme: PluginData) => `Plugin (${scheme.name}): ${scheme.id}`}
-//   />
-// ));

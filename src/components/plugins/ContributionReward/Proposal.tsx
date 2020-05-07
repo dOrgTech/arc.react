@@ -115,24 +115,3 @@ class ContributionRewardProposal extends React.Component<RequiredProps> {
 export default ContributionRewardProposal;
 
 export { InferredContributionRewardProposal, ContributionRewardProposal };
-
-// TODO @cesar test this functionality + implement it in other proposals & plugins:
-/*
-
-<Plugin id={...}>
-  <ContributionRewardPlugin>
-    <ContributionRewardPlugin.Data>
-
-    </ContributionRewardPlugin.Data>
-  </ContributionRewardPlugin>
-</Plugin>
-
-<Proposal id={...}>
-  <ContributionRewardProposal>
-    <ContributionRewardProposal.Data>
-
-    </ContributionRewardProposal.Data>
-  </ContributionRewardProposal>
-</Proposal>
-
-*/

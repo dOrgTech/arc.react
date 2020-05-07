@@ -30,7 +30,7 @@ interface RequiredProps
 
 interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
-  dao?: string | DAOEntity;
+  dao?: string;
 }
 
 class InferredPlugins extends ComponentList<InferredProps, Component> {
@@ -97,7 +97,7 @@ class Plugins extends React.Component<RequiredProps> {
                 <DAO.Entity>
                   {(dao: DAOEntity) => (
                     <InferredPlugins
-                      dao={dao}
+                      dao={dao.id}
                       config={config}
                       sort={sort}
                       filter={filter}

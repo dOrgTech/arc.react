@@ -15,7 +15,7 @@ describe("Custom loader ", () => {
   const arcConfig = new ArcConfig("private");
 
   it("Shows custom message", async () => {
-    const daoAddress = "0x02981ec0aefe7329442c39dfe5a52fb8781e7659";
+    const daoAddress = "0x28d0cff49cc653632b91ef61ccb1b2cde7b952a9";
     const { container } = render(
       <Loader
         render={(props: LoadingRenderProps) => (

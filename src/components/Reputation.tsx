@@ -39,7 +39,6 @@ class InferredReputation extends Component<InferredProps, Entity, Data> {
         "Address Missing: Please provide this field as a prop, or use the inference component."
       );
     }
-
     return new Entity(config.connection, address);
   }
 

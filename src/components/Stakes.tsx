@@ -11,8 +11,8 @@ import {
   DAOEntity,
   Member,
   MemberEntity,
-  // Proposal,
-  // ProposalEntity,
+  Proposal,
+  ProposalEntity,
   CProps,
   ComponentList,
   ComponentListLogs,
@@ -139,20 +139,20 @@ class Stakes extends React.Component<RequiredProps> {
                 </Member.Entity>
               );
             case "Proposal":
-            // return (
-            //   <Proposal.Entity>
-            //     {(proposal: ProposalEntity) => (
-            //       <InferredStakes
-            //         proposal={proposal.id}
-            //         config={config}
-            //         sort={sort}
-            //         filter={filter}
-            //       >
-            //         {children}
-            //       </InferredStakes>
-            //     )}
-            //   </Proposal.Entity>
-            // );
+              return (
+                <Proposal.Entity>
+                  {(proposal: ProposalEntity) => (
+                    <InferredStakes
+                      proposal={proposal.id}
+                      config={config}
+                      sort={sort}
+                      filter={filter}
+                    >
+                      {children}
+                    </InferredStakes>
+                  )}
+                </Proposal.Entity>
+              );
             default:
               if (from) {
                 throw Error(`Unsupported scope: ${from}`);

@@ -15,7 +15,7 @@ describe("Plugin component ", () => {
 
   it("Shows plugin name", async () => {
     const pluginId =
-      "0x940f04d8fd1caca273cf05f1735362936280181684bc426f09cfba0265db47e4";
+      "0x3687cd051fa5d1da87b25fe33a68bedfbe70f57a781336b48392e4b0fa93f4ce";
     const { container } = render(
       <Arc config={arcConfig}>
         <Plugin id={pluginId}>
@@ -30,7 +30,7 @@ describe("Plugin component ", () => {
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>
-        Plugin name: SchemeRegistrar
+        Plugin name: JoinAndQuit
       </div>
     `);
   });

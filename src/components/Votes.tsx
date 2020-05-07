@@ -10,8 +10,8 @@ import {
   DAOEntity,
   Member,
   MemberEntity,
-  // Proposal,
-  // ProposalEntity,
+  Proposal,
+  ProposalEntity,
   CProps,
   ComponentList,
   ComponentListLogs,
@@ -143,20 +143,20 @@ class Votes extends React.Component<RequiredProps> {
                 </Member.Entity>
               );
             case "Proposal":
-            // return (
-            //   <Proposal.Entity>
-            //     {(proposal: ProposalEntity) => (
-            //       <InferredVotes
-            //         proposal={proposal.id}
-            //         config={config}
-            //         sort={sort}
-            //         filter={filter}
-            //       >
-            //         {children}
-            //       </InferredVotes>
-            //     )}
-            //   </Proposal.Entity>
-            // );
+              return (
+                <Proposal.Entity>
+                  {(proposal: ProposalEntity) => (
+                    <InferredVotes
+                      proposal={proposal.id}
+                      config={config}
+                      sort={sort}
+                      filter={filter}
+                    >
+                      {children}
+                    </InferredVotes>
+                  )}
+                </Proposal.Entity>
+              );
             default:
               if (from) {
                 throw Error(`Unsupported scope: ${from}`);
