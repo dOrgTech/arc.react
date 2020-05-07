@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, screen, cleanup, fireEvent } from "@testing-library/react";
 import {
   Arc,
   ArcConfig,
@@ -9,6 +9,7 @@ import {
   Plugin,
   ContributionRewardPlugin,
   ContributionRewardProposal,
+  ContributionRewardEntity,
 } from "../../src";
 
 const arcConfig = new ArcConfig("private");
@@ -112,5 +113,33 @@ describe("Proposal component ", () => {
         Proposal id: ${proposalId}
       </div>
     `);
+  });
+});
+
+describe("Send tx", () => {
+  it.skip("Creates a new proposal", async () => {
+    const { container, findByTestId } = render(
+      <Arc config={arcConfig}>
+        <ContributionRewardPlugin id={pluginId}>
+          <ContributionRewardPlugin.Entity>
+            {(entity: ContributionRewardEntity) => (
+              <button
+                data-testid="click-me"
+                onClick={async () => {
+                  await entity.createProposalTransaction({
+                    dao: "0x666a6eb4618d0438511c8206df4d5b142837eb0d",
+                    beneficiary: "0x61FfE691821291D02E9Ba5D33098ADcee71a3a17",
+                    tags: ["proposal from dao componenets :-D"],
+                  });
+                }}
+              />
+            )}
+          </ContributionRewardPlugin.Entity>
+        </ContributionRewardPlugin>
+      </Arc>
+    );
+
+    const loader = await findByTestId("click-me");
+    fireEvent.doubleClick(loader);
   });
 });

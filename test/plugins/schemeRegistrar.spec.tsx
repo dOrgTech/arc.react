@@ -5,26 +5,28 @@ import {
   ArcConfig,
   PluginData,
   ProposalData,
-  GenericPlugin,
-  GenericPluginProposal,
+  Proposal,
   Plugin,
+  PluginManager,
+  PluginManagerProposal,
 } from "../../src";
 
 const arcConfig = new ArcConfig("private");
 const pluginId =
-  "0x57990bf491095aebbaea7b13b733ccfc24d301a430de2f51d61aeb8e9a45c17c";
+  "0x63f80cbfc4a795d6dd8c71d86beb55aace9a69fe72e7b89f3d57e6c852a2a39f";
 const proposalId = "";
-describe("Generic plugin component ", () => {
+
+describe("Plugin manaer component ", () => {
   afterEach(() => cleanup());
 
   it("Shows plugin name", async () => {
     const { container } = render(
       <Arc config={arcConfig}>
-        <GenericPlugin id={pluginId}>
-          <GenericPlugin.Data>
+        <PluginManager id={pluginId}>
+          <PluginManager.Data>
             {(plugin: PluginData) => <div>{"Plugin name: " + plugin.name}</div>}
-          </GenericPlugin.Data>
-        </GenericPlugin>
+          </PluginManager.Data>
+        </PluginManager>
       </Arc>
     );
 
@@ -32,7 +34,7 @@ describe("Generic plugin component ", () => {
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>
-        Plugin name: GenericScheme
+        Plugin name: SchemeRegistrar
       </div>
     `);
   });
@@ -41,13 +43,13 @@ describe("Generic plugin component ", () => {
     const { container } = render(
       <Arc config={arcConfig}>
         <Plugin id={pluginId}>
-          <GenericPlugin>
-            <GenericPlugin.Data>
+          <PluginManager>
+            <PluginManager.Data>
               {(plugin: PluginData) => (
                 <div>{"Plugin name: " + plugin.name}</div>
               )}
-            </GenericPlugin.Data>
-          </GenericPlugin>
+            </PluginManager.Data>
+          </PluginManager>
         </Plugin>
       </Arc>
     );
@@ -56,25 +58,46 @@ describe("Generic plugin component ", () => {
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>
-        Plugin name: GenericScheme
+        Plugin name: SchemeRegistrar
       </div>
     `);
   });
 });
 
+// we are skiping because we have not created proposals yet
 /* describe("Proposal component ", () => {
   afterEach(() => cleanup());
 
   it("Shows proposal id", async () => {
     const { container } = render(
       <Arc config={arcConfig}>
-        <GenericPluginProposal id={proposalId}>
-          <GenericPluginProposal.Data>
-            {(proposal: ProposalData) => (
-              <div>{"Proposal id: " + proposal.id}</div>
-            )}
-          </GenericPluginProposal.Data>
-        </GenericPluginProposal>
+        <PluginManagerProposal id={proposalId}>
+          <PluginManagerProposal.Data>
+            {(proposal: ProposalData) => <div>{"Proposal id: " + proposal.id}</div>}
+          </PluginManagerProposal.Data>
+        </PluginManagerProposal>
+      </Arc>
+    );
+
+    const name = await screen.findByText(/Proposal id:/);
+    expect(name).toBeInTheDocument();
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        Proposal id: ${proposalId}
+      </div>
+    `);
+  });
+
+  it("Works with inferred proposal", async () => {
+    const { container } = render(
+      <Arc config={arcConfig}>
+        <Proposal id={proposalId}>
+          <PluginManagerProposal>
+            <PluginManagerProposal.Data>
+              {(proposal: ProposalData) => <div>{"Proposal id: " + proposal.id}</div>}
+            </PluginManagerProposal.Data>
+          </PluginManagerProposal>
+        </Proposal>
       </Arc>
     );
 

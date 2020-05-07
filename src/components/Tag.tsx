@@ -1,50 +1,40 @@
 import * as React from "react";
-import { GenericPlugin as Entity } from "@dorgtech/arc.js";
-import { CreateContextFeed } from "../../../runtime/ContextFeed";
+import { Tag as Entity, ITagState as Data } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
   Component,
   ComponentLogs,
   ComponentProps,
-  PluginEntity,
-  PluginData,
-  Plugin,
-} from "../../../";
+} from "../";
+import { CreateContextFeed } from "../runtime/ContextFeed";
 
 interface RequiredProps extends ComponentProps {
-  // Plugin ID
-  id?: string | Entity;
+  // Address of the Tag Avatar
+  id: string;
 }
 
 interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
-  id: string | Entity;
 }
 
-class InferredGenericPlugin extends Component<
-  InferredProps,
-  PluginEntity,
-  PluginData
-> {
-  protected createEntity(): PluginEntity {
+class InferredTag extends Component<InferredProps, Entity, Data> {
+  protected createEntity(): Entity {
     const { config, id } = this.props;
-
     if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
       );
     }
 
-    const pluginId = typeof id === "string" ? id : id.id;
-    return new Entity(config.connection, pluginId);
+    return new Entity(config.connection, id);
   }
 
   public static get Entity() {
     return CreateContextFeed(
       this._EntityContext.Consumer,
       this._LogsContext.Consumer,
-      "CompetitionPlugin"
+      "Tag"
     );
   }
 
@@ -52,7 +42,7 @@ class InferredGenericPlugin extends Component<
     return CreateContextFeed(
       this._DataContext.Consumer,
       this._LogsContext.Consumer,
-      "CompetitionPlugin"
+      "Tag"
     );
   }
 
@@ -60,14 +50,14 @@ class InferredGenericPlugin extends Component<
     return CreateContextFeed(
       this._LogsContext.Consumer,
       this._LogsContext.Consumer,
-      "CompetitionPlugin"
+      "Tag"
     );
   }
 
   protected static _EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<PluginData | undefined>(
+  protected static _DataContext = React.createContext<Data | undefined>(
     undefined
   );
   protected static _LogsContext = React.createContext<
@@ -75,44 +65,34 @@ class InferredGenericPlugin extends Component<
   >(undefined);
 }
 
-class GenericPlugin extends React.Component<RequiredProps> {
+class Tag extends React.Component<RequiredProps> {
   public render() {
     const { id, children } = this.props;
 
-    const renderInferred = (id: string | Entity) => (
+    return (
       <Protocol.Config>
         {(config: ProtocolConfig) => (
-          <InferredGenericPlugin id={id} config={config}>
+          <InferredTag id={id} config={config}>
             {children}
-          </InferredGenericPlugin>
+          </InferredTag>
         )}
       </Protocol.Config>
     );
-
-    if (!id) {
-      return (
-        <Plugin.Entity>
-          {(proposal: PluginEntity) => renderInferred(proposal.id)}
-        </Plugin.Entity>
-      );
-    } else {
-      return renderInferred(id);
-    }
   }
 
   public static get Entity() {
-    return InferredGenericPlugin.Entity;
+    return InferredTag.Entity;
   }
 
   public static get Data() {
-    return InferredGenericPlugin.Data;
+    return InferredTag.Data;
   }
 
   public static get Logs() {
-    return InferredGenericPlugin.Logs;
+    return InferredTag.Logs;
   }
 }
 
-export default Plugin;
+export default Tag;
 
-export { GenericPlugin, InferredGenericPlugin, Entity as GenericPluginEntity };
+export { Tag, InferredTag, Entity as TagEntity, Data as TagData };

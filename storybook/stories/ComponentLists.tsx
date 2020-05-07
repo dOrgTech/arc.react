@@ -32,6 +32,12 @@ import {
   VoteData,
   Loader,
   LoadingRenderProps,
+  Tags,
+  Tag,
+  TagData,
+  Queues,
+  Queue,
+  QueueData,
 } from "../../src/";
 import ComponentListView, {
   PropertyType,
@@ -151,9 +157,9 @@ export default () =>
         getId={(reward: RewardData) => `Reward: ${reward.id}`}
       />
     ))
-    .add("Plugin", () => (
+    .add("Plugins", () => (
       <ComponentListView
-        name={"Plugin"}
+        name={"Plugins"}
         ComponentListType={Plugins}
         ComponentType={Plugin}
         ProtocolType={Arc}
@@ -242,5 +248,33 @@ export default () =>
           </Loader>
         )}
         getId={(scheme: PluginData) => `Plugin (${scheme.name}): ${scheme.id}`}
+      />
+    ))
+    .add("Tags", () => (
+      <ComponentListView
+        name={"Tags"}
+        ComponentListType={Tags}
+        ComponentType={Tag}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        scopes={[{ name: "Proposal", prop: ProposalProp }]}
+        ScopeContext={(props) => (
+          <Proposal id={props.proposal}>{props.children}</Proposal>
+        )}
+        getId={(tag: TagData) => `Tag: ${tag.id}`}
+      />
+    ))
+    .add("Queues", () => (
+      <ComponentListView
+        name={"Queues"}
+        ComponentListType={Queues}
+        ComponentType={Queue}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        scopes={[{ name: "DAO", prop: DAOProp }]}
+        ScopeContext={(props) => (
+          <DAO address={props.dao}>{props.children}</DAO>
+        )}
+        getId={(queue: QueueData) => `Queue: ${queue.id}`}
       />
     ));

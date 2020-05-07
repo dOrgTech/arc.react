@@ -1,5 +1,10 @@
 import * as React from "react";
-import { ContributionRewardPlugin as Entity } from "@dorgtech/arc.js";
+import {
+  ContributionRewardPlugin as Entity,
+  ProposalPlugin,
+  IProposalCreateOptionsCR,
+  IContributionRewardProposalState,
+} from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
   Arc as Protocol,
@@ -92,7 +97,7 @@ class ContributionRewardPlugin extends React.Component<RequiredProps> {
     if (!id) {
       return (
         <Plugin.Entity>
-          {(proposal: PluginEntity) => renderInferred(proposal.id)}
+          {(plugin: PluginEntity) => renderInferred(plugin.id)}
         </Plugin.Entity>
       );
     } else {
@@ -113,6 +118,10 @@ class ContributionRewardPlugin extends React.Component<RequiredProps> {
   }
 }
 
-export default Plugin;
+export default ContributionRewardPlugin;
 
-export { ContributionRewardPlugin, InferredContributionReward };
+export {
+  ContributionRewardPlugin,
+  InferredContributionReward,
+  Entity as ContributionRewardEntity,
+};

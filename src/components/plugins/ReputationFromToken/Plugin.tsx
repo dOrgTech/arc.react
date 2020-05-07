@@ -27,7 +27,7 @@ class InferredReputationFromTokenPlugin extends Component<
   PluginEntity,
   PluginData
 > {
-  protected async createEntity(): Promise<PluginEntity> {
+  protected createEntity(): PluginEntity {
     const { config, id } = this.props;
 
     if (!config) {
@@ -92,7 +92,7 @@ class ReputationFromTokenPlugin extends React.Component<RequiredProps> {
     if (!id) {
       return (
         <Plugin.Entity>
-          {(proposal: PluginEntity) => renderInferred(proposal.id)}
+          {(plugin: PluginEntity) => renderInferred(plugin.id)}
         </Plugin.Entity>
       );
     } else {
@@ -115,4 +115,8 @@ class ReputationFromTokenPlugin extends React.Component<RequiredProps> {
 
 export default ReputationFromTokenPlugin;
 
-export { ReputationFromTokenPlugin, InferredReputationFromTokenPlugin };
+export {
+  ReputationFromTokenPlugin,
+  InferredReputationFromTokenPlugin,
+  Entity as ReputationFromTokenEntity,
+};

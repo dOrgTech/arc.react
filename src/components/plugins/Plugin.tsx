@@ -3,6 +3,7 @@ import { first } from "rxjs/operators";
 import {
   Plugin as BaseEntity,
   IPluginState as BaseData,
+  ProposalPlugin as ProposalPluginEntity,
 } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
@@ -120,4 +121,10 @@ class Plugin extends React.Component<RequiredProps> {
 
 export default Plugin;
 
-export { Plugin, InferredPlugin, Entity as PluginEntity, Data as PluginData };
+export {
+  Plugin,
+  InferredPlugin,
+  Entity as PluginEntity,
+  Data as PluginData,
+  ProposalPluginEntity,
+};

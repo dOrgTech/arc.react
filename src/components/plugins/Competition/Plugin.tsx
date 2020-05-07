@@ -92,7 +92,7 @@ class CompetitionPlugin extends React.Component<RequiredProps> {
     if (!id) {
       return (
         <Plugin.Entity>
-          {(proposal: PluginEntity) => renderInferred(proposal.id)}
+          {(plugin: PluginEntity) => renderInferred(plugin.id)}
         </Plugin.Entity>
       );
     } else {
@@ -115,4 +115,4 @@ class CompetitionPlugin extends React.Component<RequiredProps> {
 
 export default Plugin;
 
-export { CompetitionPlugin, InferredCompetition };
+export { CompetitionPlugin, InferredCompetition, Entity as CompetitionEntity };

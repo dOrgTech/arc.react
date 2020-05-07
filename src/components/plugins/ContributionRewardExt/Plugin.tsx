@@ -92,7 +92,7 @@ class ContributionRewardExtPlugin extends React.Component<RequiredProps> {
     if (!id) {
       return (
         <Plugin.Entity>
-          {(proposal: PluginEntity) => renderInferred(proposal.id)}
+          {(plugin: PluginEntity) => renderInferred(plugin.id)}
         </Plugin.Entity>
       );
     } else {
@@ -113,6 +113,10 @@ class ContributionRewardExtPlugin extends React.Component<RequiredProps> {
   }
 }
 
-export default Plugin;
+export default ContributionRewardExtPlugin;
 
-export { ContributionRewardExtPlugin, InferredContributionRewardExt };
+export {
+  ContributionRewardExtPlugin,
+  InferredContributionRewardExt,
+  Entity as ContributionRewardExtEntity,
+};

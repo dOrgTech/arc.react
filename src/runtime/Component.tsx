@@ -92,7 +92,7 @@ export abstract class Component<
     this.entity(this.props);
 
     // if we're initialized, get the stored entity
-    let entity = this._initialized ? this._entity : undefined;
+    const entity = this._initialized ? this._entity : undefined;
 
     logs.reactRendered();
 

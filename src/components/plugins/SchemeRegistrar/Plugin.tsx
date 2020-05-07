@@ -27,7 +27,7 @@ class InferredPluginManager extends Component<
   PluginEntity,
   PluginData
 > {
-  protected async createEntity(): Promise<PluginEntity> {
+  protected createEntity(): PluginEntity {
     const { config, id } = this.props;
 
     if (!config) {
@@ -44,7 +44,7 @@ class InferredPluginManager extends Component<
     return CreateContextFeed(
       this._EntityContext.Consumer,
       this._LogsContext.Consumer,
-      "Plugin"
+      "PluginManager"
     );
   }
 
@@ -52,7 +52,7 @@ class InferredPluginManager extends Component<
     return CreateContextFeed(
       this._DataContext.Consumer,
       this._LogsContext.Consumer,
-      "Plugin"
+      "PluginManager"
     );
   }
 
@@ -60,7 +60,7 @@ class InferredPluginManager extends Component<
     return CreateContextFeed(
       this._LogsContext.Consumer,
       this._LogsContext.Consumer,
-      "Plugin"
+      "PluginManager"
     );
   }
 
@@ -92,7 +92,7 @@ class PluginManager extends React.Component<RequiredProps> {
     if (!id) {
       return (
         <Plugin.Entity>
-          {(proposal: PluginEntity) => renderInferred(proposal.id)}
+          {(plugin: PluginEntity) => renderInferred(plugin.id)}
         </Plugin.Entity>
       );
     } else {
@@ -115,4 +115,4 @@ class PluginManager extends React.Component<RequiredProps> {
 
 export default PluginManager;
 
-export { PluginManager, InferredPluginManager };
+export { PluginManager, InferredPluginManager, Entity as PluginManagerEntity };

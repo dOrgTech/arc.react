@@ -11,6 +11,8 @@ import {
   Reward,
   Stake,
   Vote,
+  Tag,
+  Queue,
   Loader,
   LoadingRenderProps,
   Proposal,
@@ -207,7 +209,7 @@ export default () =>
           {
             friendlyName: "Token Address",
             name: "address",
-            defaultValue: "0xcdbe8b52a6c60a5f101d4a0f1f049f19a9e1d35f",
+            defaultValue: "0x24014c20291afc04145a0bf5b5cdf58dc3f3b809",
             type: PropertyType.string,
           },
         ]}
@@ -243,7 +245,50 @@ export default () =>
             friendlyName: "Vote ID",
             name: "id",
             defaultValue:
-              "0x0795aafa7207e2c48241fa432f1f66789e0d2a2e2802208ced7ca3ff216dc74e",
+              "0x33472fe4769ad20fbb6e14d28074d0f21e7e0a34b09edd2b841714575c5e0da6",
+            type: PropertyType.string,
+          },
+        ]}
+      />
+    ))
+    .add("Tag", () => (
+      <ComponentView
+        name={"Tag"}
+        ComponentType={Tag}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        propEditors={[
+          {
+            friendlyName: "Tag ID",
+            name: "id",
+            defaultValue:
+              "0x33472fe4769ad20fbb6e14d28074d0f21e7e0a34b09edd2b841714575c5e0da6",
+            type: PropertyType.string,
+          },
+        ]}
+      />
+    ))
+    .add("Queue", () => (
+      <ComponentView
+        name={"Queue"}
+        ComponentType={Queue}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        AddedContext={(props) => (
+          <DAO address={props.dao}>{props.children}</DAO>
+        )}
+        propEditors={[
+          {
+            friendlyName: "DAO Address",
+            name: "dao",
+            defaultValue: "0x666a6eb4618d0438511c8206df4d5b142837eb0d",
+            type: PropertyType.string,
+          },
+          {
+            friendlyName: "Queue ID",
+            name: "id",
+            defaultValue:
+              "0x01224dc8c109c350accfa915fde36a28017ca894ee2144396bd7f0861b6b0d56",
             type: PropertyType.string,
           },
         ]}

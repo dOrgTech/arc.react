@@ -13,7 +13,7 @@ const arcConfig = new ArcConfig("private");
 const stakeId =
   "0x8da77eedf77582e746a3c92463bb07bff48fdbb6dc965fdbbfc45f3b468a7679";
 
-describe.skip("Stake component ", () => {
+describe("Stake component ", () => {
   afterEach(() => cleanup());
 
   it("Shows stake id", async () => {
@@ -29,8 +29,8 @@ describe.skip("Stake component ", () => {
 
     const loader = await findByTestId("default-loader");
     fireEvent.mouseEnter(loader);
-    // const id = await screen.findByText(/Stake id:/);
-    // expect(id).toBeInTheDocument();
+    const id = await screen.findByText(/Stake id:/);
+    expect(id).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>
         Stake id: ${stakeId}
@@ -39,7 +39,7 @@ describe.skip("Stake component ", () => {
   });
 });
 
-describe.skip("Stake List", () => {
+describe("Stake List", () => {
   afterEach(() => cleanup());
   class StakeList extends React.Component {
     render() {
