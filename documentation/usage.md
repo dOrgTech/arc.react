@@ -35,72 +35,113 @@ You can use every class that is an entity (a.k.a. extends from the Entity class 
 
 ### DAO
 
-You must pass an address as a prop, this way you can access to DAO
+```ts
+Props needed:
+
+address: string // dao address
+```
 
 ```html
-<DAO>
+<DAO address='0x'>
  <DAO.Data>
-  {(dao: DAOData) => <div></div>})
+  {(dao: DAOData) => <div>Name: {dao.name} </div>})
  <DAO.Data>
 </DAO>
 ```
 
 ### Member
 
-```tsx
-<Member>
+```ts
+Props accepted without infer:
+
+address: string; //member address
+dao: string; //dao address
+```
+
+```html
+<Member address="{0x}" dao="{0x}">
+  <Member.Data>
+    {(member: MemberData =>
+    <div>Member: {</div>
+    )}
+  </Member.Data>
+</Member>
+```
+
+```ts
+Props accepted using infer:
+
+address: string; //member address
+```
+
+```html
+<DAO>
+  <Member address="{0x}">
+    <Member.Data>
+      {(member: MemberData =>
+      <div>Member: {</div>
+      )}
+    </Member.Data>
+  </Member>
+</DAO>
 ```
 
 ### Plugin
 
-```tsx
-<Plugin>
+```ts
+Props needed:
+
+id: string;
+```
+
+```html
+<Plugin> </Plugin>
 ```
 
 ### Proposal
 
-```tsx
-<Proposal>
+```html
+<Proposal></Proposal>
 ```
 
 ### Queue
 
-```tsx
-<Queue>
+```html
+<Queue></Queue>
 ```
 
 ### Reputation
 
-```tsx
-<Reputation>
+```html
+<Reputation></Reputation>
 ```
 
 ### Reward
 
-```tsx
-<Reward>
+```html
+<Reward></Reward>
 ```
 
 ### Stake
 
-```tsx
-<Stake>
+```html
+<Stake></Stake>
 ```
 
 ### Tag
 
-```tsx
-<Tag>
+```html
+<Tag></Tag>
 ```
 
 ### Token
 
-```tsx
-<Token>
+```html
+<Token></Token>
 ```
 
 ### Vote
 
-```tsx
-<Vote>
+```html
+<Vote></Vote>
 ```

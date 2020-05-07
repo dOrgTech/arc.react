@@ -9,11 +9,7 @@ import {
   ComponentProps,
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
-import {
-  Member as Entity,
-  IMemberState as Data,
-  IDAOState as DAOData,
-} from "@dorgtech/arc.js";
+import { Member as Entity, IMemberState as Data } from "@dorgtech/arc.js";
 
 interface RequiredProps extends ComponentProps {
   // Address of the member

@@ -21,11 +21,11 @@ In addition to these core contexts, you can also access:
 
 - Logs - The logs associated with this component.
 
-Each part of the component is exposed through a [React Contexts](https://reactjs.org/docs/context.html). This allows you to use different parts of the component throughout your application, while only defining it once farther up the DOM. See "Example 1" in this document.
+Each part of the component is exposed through a [React Contexts](https://reactjs.org/docs/context.html). This allows you to use different parts of the component throughout your application, while only defining it once farther up the DOM. See "Example 1" in [examples]('./examples).
 
 ## Component Lists
 
-For each component type, you can add an `s` after its name and it'll become a list of that entity type. For example: `DAOs`, `Proposals`, `Members`. See "Example 3" in this document.
+For each component type, you can add an `s` after its name and it'll become a list of that entity type. For example: `DAOs`, `Proposals`, `Members`. See "Example 3" in [examples]('./examples).
 
 ## Guiding Principles
 
