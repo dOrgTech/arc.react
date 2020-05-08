@@ -143,26 +143,30 @@ export abstract class Component<
 
     try {
       const asyncFunction = this.createEntity.bind(this);
+
+      // if (!this._entity) {
+      console.log(this._entity);
       const entity = await executeMaybeAsyncFunction(asyncFunction);
       this._entity = entity;
+      // }
 
       logs.dataQueryStarted();
-      await this.initialize(entity);
+      await this.initialize(this._entity);
       this._initialized = true;
 
       if (this._subscription) {
         this._subscription.unsubscribe();
       }
 
-      // subscribe to this entity's state changes
-      if (props.noSub) {
-        this._subscription = entity
+      // by default we subscribe to this entity's state changes
+      if (!props.noSub) {
+        this._subscription = this._entity
           .state({})
           .subscribe(this.onQueryData, this.onQueryError, this.onQueryComplete);
       }
 
       this.forceUpdate();
-      return entity;
+      return this._entity;
     } catch (e) {
       logs.entityCreationFailed(e);
       this.setState({

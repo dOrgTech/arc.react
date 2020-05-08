@@ -19,7 +19,7 @@ const MyComponent = () => (
 );
 ```
 
-\*Supported upported networks **(it must be in lowercase)**:
+\*Supported networks **(it _must_ be in lowercase)**:
 
 - mainnet
 - rinkeby
@@ -31,7 +31,14 @@ const MyComponent = () => (
 
 ## Components
 
-You can use every class that is an entity (a.k.a. extends from the Entity class in [Arc.js library](https://github.com/daostack/arc.js)) as a react component (Please check [architecture section]("./architecture") for more information)
+You can use every class that is an entity (a.k.a. extends from the Entity class in [Arc.js library](https://github.com/daostack/arc.js)) as a react component - Please check [architecture section]("./architecture") before going further
+
+```ts
+//Every component accepts the following props:
+noSub: boolean;
+```
+
+The function of the `noSub` prop is that you can make that a component does not subscribes to changes (of data on the chain)
 
 ### DAO
 
@@ -43,43 +50,43 @@ address: string // dao address
 
 ```html
 <DAO address='0x'>
- <DAO.Data>
-  {(dao: DAOData) => <div>Name: {dao.name} </div>})
- <DAO.Data>
+  <DAO.Data>
+    {(dao: DAOData) => <div> Name: {dao.name} </div>})
+  <DAO.Data>
 </DAO>
 ```
 
 ### Member
 
 ```ts
-Props accepted without infer:
+Props needed without infer:
 
 address: string; //member address
 dao: string; //dao address
 ```
 
 ```html
-<Member address="{0x}" dao="{0x}">
+<Member address="0x" dao="0x">
   <Member.Data>
-    {(member: MemberData =>
-    <div>Member: {</div>
+    {(member: MemberData) =>
+    <div>Member: {member.address}</div>
     )}
   </Member.Data>
 </Member>
 ```
 
 ```ts
-Props accepted using infer:
+Props needed using infer:
 
 address: string; //member address
 ```
 
 ```html
 <DAO>
-  <Member address="{0x}">
+  <Member address="0x">
     <Member.Data>
-      {(member: MemberData =>
-      <div>Member: {</div>
+      {(member: MemberData) =>
+      <div>Member: {member.address}</div>
       )}
     </Member.Data>
   </Member>
@@ -88,20 +95,73 @@ address: string; //member address
 
 ### Plugin
 
+`<Plugin>` is a generic component, but you can also use the specific plugin you would like to use, you can check which one exists [here]('../src/componenents/plugins)
+
 ```ts
 Props needed:
 
-id: string;
+id: string; // plugin id
 ```
 
 ```html
-<Plugin> </Plugin>
+<Plugin id="0x">
+  <Plugin.Data>
+    {(pluginInfo: PluginData) => <div> Scheme name: ${pluginInfo.name} </div> }
+  </Plugin.Data>
+  <Plugin.Entity>
+    {(pluginEntity: PluginEntity) => (
+      <button onClick={ async (e) => await pluginEntity.createProposal(...) }}>
+        New proposal
+      </button>
+    ))}
+  </Plugin.Entity>
+ </Plugin>
+```
+
+Also, inferring the `Plugin` component:
+
+```html
+<Plugin id="0x">
+  <ReputationFromTokenPlugin>
+    <ReputationFromTokenPlugin.Data>
+      {(plugin: PluginData) => (
+      <div>{"Plugin name: " + plugin.name}</div>
+      )}
+    </ReputationFromTokenPlugin.Data>
+  </ReputationFromTokenPlugin>
+</Plugin>
 ```
 
 ### Proposal
 
+`<Proposal>` is like Plugin component, you can see the specifics proposal implemented [here]('../src/componenents/plugins) too, but you must go inside of the plugin folder to make sure the proposal type exists on that plugin
+
+```ts
+Props needed
+
+id: string; // proposal id
+```
+
 ```html
-<Proposal></Proposal>
+<Proposal id="0x">
+  <Proposal.Data>
+    {(proposal: ProposalData) => (
+    <div>{"Proposal id: " + proposal.id}</div>
+    )}
+  </Proposal.Data>
+</Proposal>
+```
+
+```html
+<Proposal id="0x">
+  <ContributionRewardProposal>
+    <ContributionRewardProposal.Data>
+      {(proposal: ProposalData) => (
+      <div>{"Proposal id: " + proposal.id}</div>
+      )}
+    </ContributionRewardProposal.Data>
+  </ContributionRewardProposal>
+</Proposal>
 ```
 
 ### Queue

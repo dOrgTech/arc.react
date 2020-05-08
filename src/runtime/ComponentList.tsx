@@ -87,6 +87,8 @@ export abstract class ComponentList<
   // Our graphql query's subscriber object
   private _subscription?: Subscription;
 
+  private _entities: Observable<Entity[]> | undefined;
+
   // This trick allows us to access the static objects
   // defined in the derived class. See this code sample:
   // https://github.com/Microsoft/TypeScript/issues/5989#issuecomment-163066313
@@ -160,17 +162,19 @@ export abstract class ComponentList<
     this.clearPrevState();
 
     try {
-      const entities = this.createObservableEntities();
+      if (!this._entities) {
+        this._entities = this.createObservableEntities();
 
-      logs.dataQueryStarted();
+        logs.dataQueryStarted();
 
-      this._subscription = entities.subscribe(
-        this.onQueryEntities,
-        this.onQueryError,
-        this.onQueryComplete
-      );
+        this._subscription = this._entities.subscribe(
+          this.onQueryEntities,
+          this.onQueryError,
+          this.onQueryComplete
+        );
+      }
 
-      return entities;
+      return this._entities;
     } catch (e) {
       logs.entityCreationFailed(e);
       this.setState({
