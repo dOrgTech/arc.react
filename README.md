@@ -1,13 +1,71 @@
-# DAOcomponents
+# Arc.react
 
-Componentizing [DAOstack's client library](https://github.com/daostack/client), enabling easier React application integration. The hope is to be able to turn any app into a DAO enabled dApp by adding ~2 components.
+> [Arc.react](https://github.com/daostack/arc.react) componentizes [DAOstack's Arc.js library](https://github.com/daostack/arc.js), enabling easier React application integration.
+
+Turn any React app into a DAO enabled dApp in just 1, 2, 3...
+
+1. `npm i --save @daostack/arc.react`
+2. `<Arc config={new ArcConfig("rinkeby")}>`
+3. `<DAO address="0xMY_DAO">`
+
+Enabling you to build custom interfaces for displaying and interacting with your DAO's members...
+
+```html
+<Members>
+  <Member.Data>
+    {(data: MemberData) => (
+    <div>{data.address}</div>
+    )}
+  </Member.Data>
+</Members>
+```
+
+proposals...
+
+```html
+<Proposals>
+  <Proposal.Data>
+  <Proposal.Entity>
+  {(data: ProposalData, entity: ProposalEntity) => (
+    <div>
+      <h1>{data.title}</h1>
+      <button onClick={() => entity.vote({...})}>
+        Up Vote
+      </button>
+      <button onClick={() => entity.vote({...})}>
+        Down Vote
+      </button>
+    </div>
+  )}
+  </Proposal.Entity>
+  </Proposal.Data>
+</Proposals>
+```
+
+and any other entity [within DAOstack protocol](./src/components).
+
+## Read The Docs
+
+- [usage](./documentation/usage.md)
+- [examples](./documentation/examples.md)
+- [architecture](./documentation/architecture.md)
+
+# Build & Contribute
 
 ## Prerequisites
 
-1. node (version in the [.nvmrc](./.nvmrc))
-2. docker & docker-compose
+- nvm
+- docker
+- docker-compose
 
-## Running
+## Running Playground
 
-`yarn`  
-`yarn start`
+> `nvm install`  
+> `nvm use`  
+> `yarn`  
+> `yarn start`
+
+## Testing
+
+> `yarn start:subgraph`  
+> `yarn test`

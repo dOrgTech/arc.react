@@ -19,7 +19,7 @@ const MyComponent = () => (
 );
 ```
 
-\*Supported upported networks **(it must be in lowercase)**:
+Supported networks:
 
 - mainnet
 - rinkeby
