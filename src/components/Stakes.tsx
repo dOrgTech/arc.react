@@ -29,8 +29,7 @@ const scopeProps: Record<Scopes, string> = {
   Proposal: "proposal",
 };
 
-interface RequiredProps
-  extends ComponentListProps<Entity, Data, FilterOptions> {
+interface RequiredProps extends ComponentListProps<Entity, FilterOptions> {
   from?: Scopes;
 }
 

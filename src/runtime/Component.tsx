@@ -3,13 +3,13 @@ import memoize from "memoize-one";
 import { Subscription } from "rxjs";
 // TODO: This should not be opinionated to arc
 import {
-  Entity as ArcEntity,
-  IEntityState as IArcEntityState,
+  Entity as StatefulEntity,
+  IEntityState as IStatefulEntityData,
 } from "@dorgtech/arc.js";
 import { MaybeAsync, executeMaybeAsyncFunction } from "./utils/async";
 import { ComponentLogs } from "./logging/ComponentLogs";
 
-export interface State<Data extends IArcEntityState> {
+export interface State<Data extends IStatefulEntityData> {
   data?: Data;
   // Diagnostics for the component
   logs: ComponentLogs;
@@ -21,8 +21,8 @@ export interface ComponentProps {
 
 export abstract class Component<
   Props extends ComponentProps,
-  Entity extends ArcEntity<Data>,
-  Data extends IArcEntityState
+  Entity extends StatefulEntity<Data>,
+  Data extends IStatefulEntityData
 > extends React.Component<Props, State<Data>> {
   // Create the entity this component represents. This entity gives access
   // to the component's data. For example: DAO, Proposal, Member.
@@ -54,12 +54,12 @@ export abstract class Component<
   );
 
   // Our graphql query's subscriber object
-  private _subscription?: Subscription | null;
+  private _subscription?: Subscription;
 
   // If the initialization logic after mount has finished
   private _initialized: boolean;
 
-  private _entity: Entity | undefined;
+  private _entity?: Entity;
 
   constructor(props: Props) {
     super(props);
@@ -143,12 +143,7 @@ export abstract class Component<
 
     try {
       const asyncFunction = this.createEntity.bind(this);
-
-      // if (!this._entity) {
-      console.log(this._entity);
-      const entity = await executeMaybeAsyncFunction(asyncFunction);
-      this._entity = entity;
-      // }
+      this._entity = await executeMaybeAsyncFunction(asyncFunction);
 
       logs.dataQueryStarted();
       await this.initialize(this._entity);

@@ -15,7 +15,7 @@ import {
 import { IReputationQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
-type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
+type RequiredProps = ComponentListProps<Entity, FilterOptions>;
 
 interface InferredProps extends RequiredProps {
   config: ProtocolConfig;

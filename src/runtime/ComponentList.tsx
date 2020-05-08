@@ -3,10 +3,11 @@ import memoize from "memoize-one";
 import { Observable, Subscription } from "rxjs";
 
 // TODO: This should not be opinionated to arc
-import { Entity as ArcEntity } from "@dorgtech/arc.js";
+import { Entity as StatefulEntity } from "@dorgtech/arc.js";
 
 import { Component } from "./Component";
 import { ComponentListLogs } from "./logging/ComponentListLogs";
+import { MaybeAsync, executeMaybeAsyncFunction } from "./utils/async";
 import LoadingView from "./LoadingView";
 export { ComponentListLogs };
 
@@ -33,38 +34,33 @@ export type CData<Comp> = Comp extends Component<
   ? Data
   : undefined;
 
-// Helper type for the <entity, data> tuple used by the sort function
-export type EntityList<Entity, Data> = Array<{ entity: Entity; data: Data }>;
-
 // Extract the filter options type from the derived component's props
 type PFilterOptions<Props> = Props extends ComponentListProps<
   infer Entity,
-  infer Data,
   infer FilterOptions
 >
   ? FilterOptions
   : undefined;
 
-export interface ComponentListProps<Entity, Data, FilterOptions> {
+export interface ComponentListProps<Entity, FilterOptions> {
   filter?: FilterOptions;
-  sort?: (entities: EntityList<Entity, Data>) => EntityList<Entity, Data>;
+  sort?: (entities: Entity[]) => MaybeAsync<Entity[]>;
 }
 
-interface State<Entity, Data> {
+interface State<Entity> {
   entities: Entity[];
-  sorted: EntityList<Entity, Data>;
+  sorted: Entity[];
 
   // Diagnostics for the component
   logs: ComponentListLogs;
 }
 
 export abstract class ComponentList<
-  Props extends ComponentListProps<Entity, Data, PFilterOptions<Props>>,
+  Props extends ComponentListProps<Entity, PFilterOptions<Props>>,
   // @ts-ignore: This should always work
   Comp extends Component<CProps<Comp>, CEntity<Comp>, CData<Comp>>,
-  Entity extends ArcEntity<CData<Comp>> = CEntity<Comp>,
-  Data = CData<Comp>
-> extends React.Component<Props, State<Entity, Data>> {
+  Entity extends StatefulEntity<CData<Comp>> = CEntity<Comp>
+> extends React.Component<Props, State<Entity>> {
   protected abstract createObservableEntities(): Observable<Entity[]>;
   protected abstract renderComponent(
     entity: Entity,
@@ -86,8 +82,6 @@ export abstract class ComponentList<
 
   // Our graphql query's subscriber object
   private _subscription?: Subscription;
-
-  private _entities: Observable<Entity[]> | undefined;
 
   // This trick allows us to access the static objects
   // defined in the derived class. See this code sample:
@@ -118,7 +112,7 @@ export abstract class ComponentList<
     let entities = unsorted;
 
     if (sorted.length > 0) {
-      entities = sorted.map((item) => item.entity);
+      entities = sorted;
     }
 
     this.observableEntities(this.props);
@@ -162,19 +156,21 @@ export abstract class ComponentList<
     this.clearPrevState();
 
     try {
-      if (!this._entities) {
-        this._entities = this.createObservableEntities();
-
-        logs.dataQueryStarted();
-
-        this._subscription = this._entities.subscribe(
-          this.onQueryEntities,
-          this.onQueryError,
-          this.onQueryComplete
-        );
+      if (this._subscription) {
+        this._subscription.unsubscribe();
       }
 
-      return this._entities;
+      const entities = this.createObservableEntities();
+
+      logs.dataQueryStarted();
+
+      this._subscription = entities.subscribe(
+        this.onQueryEntities,
+        this.onQueryError,
+        this.onQueryComplete
+      );
+
+      return entities;
     } catch (e) {
       logs.entityCreationFailed(e);
       this.setState({
@@ -190,16 +186,6 @@ export abstract class ComponentList<
     });
   }
 
-  private fetchData(entity: Entity): Promise<Data> {
-    return new Promise((resolve, reject) => {
-      const state = entity.state({});
-      state.subscribe(
-        (data: Data) => resolve(data),
-        (error: Error) => reject(error)
-      );
-    });
-  }
-
   private async onQueryEntities(entities: Entity[]) {
     const { logs } = this.state;
     const { sort } = this.props;
@@ -207,14 +193,18 @@ export abstract class ComponentList<
 
     try {
       if (sort) {
-        const unsorted = entities.map(async (entity) => {
-          const data = await this.fetchData(entity);
-          return { entity, data };
-        });
-        Promise.all(unsorted).then((unsorted) => {
+        const unsorted = entities.map(async (entity) =>
+          entity.fetchState().then(() => entity)
+        );
+        await Promise.all(unsorted).then(async (unsorted) => {
+          const sorted = await executeMaybeAsyncFunction(
+            // TODO: unsure why typescript doesn't like `sort`...
+            sort as (entities: Entity[]) => MaybeAsync<Entity[]>,
+            unsorted
+          );
           this.setState({
             entities: entities,
-            sorted: sort(unsorted),
+            sorted,
           });
         });
       } else {

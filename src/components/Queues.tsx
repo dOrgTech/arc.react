@@ -23,8 +23,7 @@ const scopeProps: Record<Scopes, string> = {
   DAO: "dao",
 };
 
-interface RequiredProps
-  extends ComponentListProps<Entity, Data, FilterOptions> {
+interface RequiredProps extends ComponentListProps<Entity, FilterOptions> {
   from?: Scopes;
   dao?: DAOEntity | string;
 }

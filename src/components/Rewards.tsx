@@ -32,8 +32,7 @@ const scopeProps: Record<Scopes, string> = {
   Token: "tokenAddress",
 };
 
-interface RequiredProps
-  extends ComponentListProps<Entity, Data, FilterOptions> {
+interface RequiredProps extends ComponentListProps<Entity, FilterOptions> {
   from?: Scopes;
 }
 
