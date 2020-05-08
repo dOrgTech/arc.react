@@ -44,7 +44,7 @@ class InferredGenericPlugin extends Component<
     return CreateContextFeed(
       this._EntityContext.Consumer,
       this._LogsContext.Consumer,
-      "CompetitionPlugin"
+      "GenericPlugin"
     );
   }
 
@@ -52,7 +52,7 @@ class InferredGenericPlugin extends Component<
     return CreateContextFeed(
       this._DataContext.Consumer,
       this._LogsContext.Consumer,
-      "CompetitionPlugin"
+      "GenericPlugin"
     );
   }
 
@@ -60,7 +60,7 @@ class InferredGenericPlugin extends Component<
     return CreateContextFeed(
       this._LogsContext.Consumer,
       this._LogsContext.Consumer,
-      "CompetitionPlugin"
+      "GenericPlugin"
     );
   }
 

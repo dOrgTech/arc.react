@@ -44,7 +44,7 @@ class InferredReputationFromTokenPlugin extends Component<
     return CreateContextFeed(
       this._EntityContext.Consumer,
       this._LogsContext.Consumer,
-      "Plugin"
+      "ReputationFromTokenPlugin"
     );
   }
 
@@ -52,7 +52,7 @@ class InferredReputationFromTokenPlugin extends Component<
     return CreateContextFeed(
       this._DataContext.Consumer,
       this._LogsContext.Consumer,
-      "Plugin"
+      "ReputationFromTokenPlugin"
     );
   }
 
@@ -60,7 +60,7 @@ class InferredReputationFromTokenPlugin extends Component<
     return CreateContextFeed(
       this._LogsContext.Consumer,
       this._LogsContext.Consumer,
-      "Plugin"
+      "ReputationFromTokenPlugin"
     );
   }
 

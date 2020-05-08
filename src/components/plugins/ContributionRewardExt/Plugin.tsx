@@ -22,7 +22,7 @@ interface InferredProps extends RequiredProps {
   id: string | Entity;
 }
 
-class InferredContributionRewardExt extends Component<
+class InferredContributionRewardExtPlugin extends Component<
   InferredProps,
   PluginEntity,
   PluginData
@@ -82,9 +82,9 @@ class ContributionRewardExtPlugin extends React.Component<RequiredProps> {
     const renderInferred = (id: string | Entity) => (
       <Protocol.Config>
         {(config: ProtocolConfig) => (
-          <InferredContributionRewardExt id={id} config={config}>
+          <InferredContributionRewardExtPlugin id={id} config={config}>
             {children}
-          </InferredContributionRewardExt>
+          </InferredContributionRewardExtPlugin>
         )}
       </Protocol.Config>
     );
@@ -101,15 +101,15 @@ class ContributionRewardExtPlugin extends React.Component<RequiredProps> {
   }
 
   public static get Entity() {
-    return InferredContributionRewardExt.Entity;
+    return InferredContributionRewardExtPlugin.Entity;
   }
 
   public static get Data() {
-    return InferredContributionRewardExt.Data;
+    return InferredContributionRewardExtPlugin.Data;
   }
 
   public static get Logs() {
-    return InferredContributionRewardExt.Logs;
+    return InferredContributionRewardExtPlugin.Logs;
   }
 }
 
@@ -117,6 +117,6 @@ export default ContributionRewardExtPlugin;
 
 export {
   ContributionRewardExtPlugin,
-  InferredContributionRewardExt,
+  InferredContributionRewardExtPlugin,
   Entity as ContributionRewardExtEntity,
 };
