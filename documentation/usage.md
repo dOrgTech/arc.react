@@ -1,21 +1,16 @@
 # Usage
 
-## Protocol set up
+## Protocol Connection
 
-In order to make the components interact with blockchain, you need to import and implement the `Arc` component with an `ArcConfig` passed as config props.
+TODO: update docs to show how to connect to mainnet using metamask or another other web3 providers.
 
-To set up the `ArcConfig`, you just need to tell it to which network\* you want your component to connect, you basically need to do:
+First, you must connect to the Arc protocol using an [`ArcConfig`](../src/protocol/ArcConfig.ts) object like so:
 
 ```tsx
 import { Arc, ArcConfig } from "@daostack/daocomponents";
 
-const privateConnection = new ArcConfig("rinkeby");
-
-const MyComponent = () => (
-  <Arc config={privateConnection}>
-    Here is where you are going to implement all your components from the
-    library
-  </Arc>
+const App = () => (
+  <Arc config={new ArcConfig("rinkeby")}>All other components go here</Arc>
 );
 ```
 
@@ -27,11 +22,14 @@ Supported networks:
 - xdai
 - private
 
+You can also pass in your own configuration like so:
+TODO: example of another network with custom settings
+
 ---
 
 ## Components
 
-You can use every class that is an entity (a.k.a. extends from the Entity class in [Arc.js library](https://github.com/daostack/arc.js)) as a react component - Please check [architecture section]("./architecture") before going further
+You can use every class that is an entity (a.k.a. extends from the Entity class in [Arc.js library](https://github.com/daostack/arc.js)) as a react component - Please check the [architecture section](./architecture) before going further
 
 ```ts
 //Every component accepts the following props:

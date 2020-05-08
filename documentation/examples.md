@@ -56,7 +56,7 @@ You can also interact with the entity context, which enables write operations to
 **VS**
 
 ```html
-<Member address="0xMy_Address" daoAddress="0xMy_DAO"> </Member>
+<Member address="0xMy_Address" dao="0xMy_DAO"> </Member>
 ```
 
 **NOTE:** Both of these examples work, but one is easier to maintain and reuse throughout your app.
