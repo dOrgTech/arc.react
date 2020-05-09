@@ -2,8 +2,6 @@
 
 ## Protocol Connection
 
-TODO: update docs to show how to connect to mainnet using metamask or another other web3 providers.
-
 First, you must connect to the Arc protocol using an [`ArcConfig`](../src/protocol/ArcConfig.ts) object like so:
 
 ```tsx
@@ -22,8 +20,33 @@ Supported networks:
 - xdai
 - private
 
+In order to send transactions, you need to connect your `web3 provider`, you can set it this way:
+
+```ts
+import { networkSettings } from "@daostack/daocomponents";
+let connectionParams = networkSettings["private"];
+const web3Provider =
+  (window as any).ethereum.currentProvider ||
+  (window as any).web3.currentProvider;
+connectionParams = { ...connectionParams, web3Provider };
+const newConnection = new ArcConfig(connectionParams);
+```
+
 You can also pass in your own configuration like so:
-TODO: example of another network with custom settings
+
+```ts
+const arcParams = {
+  graphqlHttpProvider:
+    "https://api.thegraph.com/subgraphs-daostack/name/daostack/v39_3",
+  graphqlWsProvider:
+    "wss://api.thegraph.com/subgraphs-daostack/name/daostack/v39_3",
+  web3Provider: `wss://rinkeby.infura.io/ws/v3/INFURA_API`,
+  ipfsProvider: "https://api.thegraph.com:443/ipfs-daostack/api/v0",
+};
+const newConnection = new Arc(arcParams);
+```
+
+This way, you can set a connection to different services
 
 ---
 

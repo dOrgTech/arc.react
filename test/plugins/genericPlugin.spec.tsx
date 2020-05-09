@@ -52,7 +52,9 @@ describe("Generic plugin component ", () => {
       </Arc>
     );
 
-    const name = await screen.findByText(/Plugin name:/);
+    const name = await screen.findByText(
+      /Plugin name: 0x57990bf491095aebbaea7b13b733ccfc24d301a430de2f51d61aeb8e9a45c17c/
+    );
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>

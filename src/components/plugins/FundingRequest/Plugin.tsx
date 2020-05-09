@@ -1,33 +1,33 @@
 import * as React from "react";
-import { first } from "rxjs/operators";
-import {
-  Plugin as BaseEntity,
-  IPluginState as BaseData,
-  ProposalPlugin,
-} from "@dorgtech/arc.js";
+import { FundingRequest as Entity } from "@dorgtech/arc.js";
+import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
   Component,
-  ComponentProps,
   ComponentLogs,
-} from "../../";
-import { CreateContextFeed } from "../../runtime/ContextFeed";
-
-abstract class Entity extends BaseEntity<BaseData> {}
-type Data = BaseData;
+  ComponentProps,
+  PluginEntity,
+  PluginData,
+  Plugin,
+} from "../../../";
 
 interface RequiredProps extends ComponentProps {
   // Plugin ID
-  id: Entity | string;
+  id?: string | Entity;
 }
 
 interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
+  id: string | Entity;
 }
 
-class InferredPlugin extends Component<InferredProps, Entity, Data> {
-  protected async createEntity(): Promise<Entity> {
+class InferredFundingRequestPlugin extends Component<
+  InferredProps,
+  PluginEntity,
+  PluginData
+> {
+  protected createEntity(): PluginEntity {
     const { config, id } = this.props;
 
     if (!config) {
@@ -36,32 +36,15 @@ class InferredPlugin extends Component<InferredProps, Entity, Data> {
       );
     }
 
-    if (!id) {
-      throw Error(
-        "ID Missing: Please provide this field as a prop, or use the inference component"
-      );
-    }
-
-    if (typeof id === "string") {
-      const plugin = await Entity.search(config.connection, { where: { id } })
-        .pipe(first())
-        .toPromise();
-
-      if (!plugin || plugin.length === 0) {
-        throw Error("Plugin not found");
-      }
-
-      return plugin[0];
-    } else {
-      return id;
-    }
+    const pluginId = typeof id === "string" ? id : id.id;
+    return new Entity(config.connection, pluginId);
   }
 
   public static get Entity() {
     return CreateContextFeed(
       this._EntityContext.Consumer,
       this._LogsContext.Consumer,
-      "Plugin"
+      "FundingRequestPlugin"
     );
   }
 
@@ -69,7 +52,7 @@ class InferredPlugin extends Component<InferredProps, Entity, Data> {
     return CreateContextFeed(
       this._DataContext.Consumer,
       this._LogsContext.Consumer,
-      "Plugin"
+      "FundingRequestPlugin"
     );
   }
 
@@ -77,14 +60,14 @@ class InferredPlugin extends Component<InferredProps, Entity, Data> {
     return CreateContextFeed(
       this._LogsContext.Consumer,
       this._LogsContext.Consumer,
-      "Plugin"
+      "FundingRequestPlugin"
     );
   }
 
   protected static _EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<Data | undefined>(
+  protected static _DataContext = React.createContext<PluginData | undefined>(
     undefined
   );
   protected static _LogsContext = React.createContext<
@@ -92,39 +75,48 @@ class InferredPlugin extends Component<InferredProps, Entity, Data> {
   >(undefined);
 }
 
-class Plugin extends React.Component<RequiredProps> {
+class FundingRequestPlugin extends React.Component<RequiredProps> {
   public render() {
     const { id, children } = this.props;
-    return (
+
+    const renderInferred = (id: string | Entity) => (
       <Protocol.Config>
         {(config: ProtocolConfig) => (
-          <InferredPlugin id={id} config={config}>
+          <InferredFundingRequestPlugin id={id} config={config}>
             {children}
-          </InferredPlugin>
+          </InferredFundingRequestPlugin>
         )}
       </Protocol.Config>
     );
+
+    if (!id) {
+      return (
+        <Plugin.Entity>
+          {(plugin: PluginEntity) => renderInferred(plugin.id)}
+        </Plugin.Entity>
+      );
+    } else {
+      return renderInferred(id);
+    }
   }
 
   public static get Entity() {
-    return InferredPlugin.Entity;
+    return InferredFundingRequestPlugin.Entity;
   }
 
   public static get Data() {
-    return InferredPlugin.Data;
+    return InferredFundingRequestPlugin.Data;
   }
 
   public static get Logs() {
-    return InferredPlugin.Logs;
+    return InferredFundingRequestPlugin.Logs;
   }
 }
 
-export default Plugin;
+export default FundingRequestPlugin;
 
 export {
-  ProposalPlugin,
-  Plugin,
-  InferredPlugin,
-  Entity as PluginEntity,
-  Data as PluginData,
+  FundingRequestPlugin,
+  InferredFundingRequestPlugin,
+  Entity as FundingRequestPluginEntity,
 };

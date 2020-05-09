@@ -13,8 +13,9 @@ import {
 
 const arcConfig = new ArcConfig("private");
 const pluginId =
-  "0x63f80cbfc4a795d6dd8c71d86beb55aace9a69fe72e7b89f3d57e6c852a2a39f";
-const proposalId = "";
+  "0xb262e81d24322258466af958b36d67ad867be64f526ed13dd3af38e13094a829";
+const proposalId =
+  "0x1a691b748985f728ff512ea51498ba2459498312c57acd4536e2c14ae350d9e1";
 
 describe("Plugin manaer component ", () => {
   afterEach(() => cleanup());
@@ -64,8 +65,7 @@ describe("Plugin manaer component ", () => {
   });
 });
 
-// we are skiping because we have not created proposals yet
-/* describe("Proposal component ", () => {
+describe("Proposal component ", () => {
   afterEach(() => cleanup());
 
   it("Shows proposal id", async () => {
@@ -73,7 +73,9 @@ describe("Plugin manaer component ", () => {
       <Arc config={arcConfig}>
         <PluginManagerProposal id={proposalId}>
           <PluginManagerProposal.Data>
-            {(proposal: ProposalData) => <div>{"Proposal id: " + proposal.id}</div>}
+            {(proposal: ProposalData) => (
+              <div>{"Proposal id: " + proposal.id}</div>
+            )}
           </PluginManagerProposal.Data>
         </PluginManagerProposal>
       </Arc>
@@ -94,7 +96,9 @@ describe("Plugin manaer component ", () => {
         <Proposal id={proposalId}>
           <PluginManagerProposal>
             <PluginManagerProposal.Data>
-              {(proposal: ProposalData) => <div>{"Proposal id: " + proposal.id}</div>}
+              {(proposal: ProposalData) => (
+                <div>{"Proposal id: " + proposal.id}</div>
+              )}
             </PluginManagerProposal.Data>
           </PluginManagerProposal>
         </Proposal>
@@ -109,4 +113,4 @@ describe("Plugin manaer component ", () => {
       </div>
     `);
   });
-}); */
+});

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { SchemeRegistrarProposal as Entity } from "@dorgtech/arc.js";
+import { FundingRequestProposal as Entity } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
@@ -22,7 +22,7 @@ interface InferredProps extends RequiredProps {
   id: string | Entity;
 }
 
-class InferredPluginManagerProposal extends Component<
+class InferredFundingRequestProposal extends Component<
   InferredProps,
   ProposalEntity,
   ProposalData
@@ -43,7 +43,7 @@ class InferredPluginManagerProposal extends Component<
     return CreateContextFeed(
       this._EntityContext.Consumer,
       this._LogsContext.Consumer,
-      "SchemeRegistrar"
+      "FundingRequestProposal"
     );
   }
 
@@ -51,7 +51,7 @@ class InferredPluginManagerProposal extends Component<
     return CreateContextFeed(
       this._DataContext.Consumer,
       this._LogsContext.Consumer,
-      "SchemeRegistrar"
+      "FundingRequestProposal"
     );
   }
 
@@ -59,7 +59,7 @@ class InferredPluginManagerProposal extends Component<
     return CreateContextFeed(
       this._LogsContext.Consumer,
       this._LogsContext.Consumer,
-      "SchemeRegistrar"
+      "FundingRequestProposal"
     );
   }
 
@@ -74,16 +74,16 @@ class InferredPluginManagerProposal extends Component<
   >(undefined);
 }
 
-class PluginManagerProposal extends React.Component<RequiredProps> {
+class FundingRequestProposal extends React.Component<RequiredProps> {
   public render() {
     const { id, children } = this.props;
 
     const renderInferred = (id: string | Entity) => (
       <Protocol.Config>
         {(config: ProtocolConfig) => (
-          <InferredPluginManagerProposal id={id} config={config}>
+          <InferredFundingRequestProposal id={id} config={config}>
             {children}
-          </InferredPluginManagerProposal>
+          </InferredFundingRequestProposal>
         )}
       </Protocol.Config>
     );
@@ -100,18 +100,22 @@ class PluginManagerProposal extends React.Component<RequiredProps> {
   }
 
   public static get Entity() {
-    return InferredPluginManagerProposal.Entity;
+    return InferredFundingRequestProposal.Entity;
   }
 
   public static get Data() {
-    return InferredPluginManagerProposal.Data;
+    return InferredFundingRequestProposal.Data;
   }
 
   public static get Logs() {
-    return InferredPluginManagerProposal.Logs;
+    return InferredFundingRequestProposal.Logs;
   }
 }
 
-export default PluginManagerProposal;
+export default FundingRequestProposal;
 
-export { InferredPluginManagerProposal, PluginManagerProposal };
+export {
+  InferredFundingRequestProposal,
+  FundingRequestProposal,
+  Entity as FundingRequestProposalEntity,
+};

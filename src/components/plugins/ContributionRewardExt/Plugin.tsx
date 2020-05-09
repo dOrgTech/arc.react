@@ -44,7 +44,7 @@ class InferredContributionRewardExtPlugin extends Component<
     return CreateContextFeed(
       this._EntityContext.Consumer,
       this._LogsContext.Consumer,
-      "CompetitionPlugin"
+      "ContributionRewardExtPlugin"
     );
   }
 
@@ -52,7 +52,7 @@ class InferredContributionRewardExtPlugin extends Component<
     return CreateContextFeed(
       this._DataContext.Consumer,
       this._LogsContext.Consumer,
-      "CompetitionPlugin"
+      "ContributionRewardExtPlugin"
     );
   }
 
@@ -60,7 +60,7 @@ class InferredContributionRewardExtPlugin extends Component<
     return CreateContextFeed(
       this._LogsContext.Consumer,
       this._LogsContext.Consumer,
-      "CompetitionPlugin"
+      "ContributionRewardExtPlugin"
     );
   }
 

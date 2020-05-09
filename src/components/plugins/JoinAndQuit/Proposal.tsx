@@ -1,5 +1,5 @@
 import * as React from "react";
-import { SchemeRegistrarProposal as Entity } from "@dorgtech/arc.js";
+import { JoinAndQuitProposal as Entity } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
@@ -22,7 +22,7 @@ interface InferredProps extends RequiredProps {
   id: string | Entity;
 }
 
-class InferredPluginManagerProposal extends Component<
+class InferredJoinAndQuitProposal extends Component<
   InferredProps,
   ProposalEntity,
   ProposalData
@@ -43,7 +43,7 @@ class InferredPluginManagerProposal extends Component<
     return CreateContextFeed(
       this._EntityContext.Consumer,
       this._LogsContext.Consumer,
-      "SchemeRegistrar"
+      "JoinAndQuitProposal"
     );
   }
 
@@ -51,7 +51,7 @@ class InferredPluginManagerProposal extends Component<
     return CreateContextFeed(
       this._DataContext.Consumer,
       this._LogsContext.Consumer,
-      "SchemeRegistrar"
+      "JoinAndQuitProposal"
     );
   }
 
@@ -59,7 +59,7 @@ class InferredPluginManagerProposal extends Component<
     return CreateContextFeed(
       this._LogsContext.Consumer,
       this._LogsContext.Consumer,
-      "SchemeRegistrar"
+      "JoinAndQuitProposal"
     );
   }
 
@@ -74,16 +74,16 @@ class InferredPluginManagerProposal extends Component<
   >(undefined);
 }
 
-class PluginManagerProposal extends React.Component<RequiredProps> {
+class JoinAndQuitProposal extends React.Component<RequiredProps> {
   public render() {
     const { id, children } = this.props;
 
     const renderInferred = (id: string | Entity) => (
       <Protocol.Config>
         {(config: ProtocolConfig) => (
-          <InferredPluginManagerProposal id={id} config={config}>
+          <InferredJoinAndQuitProposal id={id} config={config}>
             {children}
-          </InferredPluginManagerProposal>
+          </InferredJoinAndQuitProposal>
         )}
       </Protocol.Config>
     );
@@ -100,18 +100,22 @@ class PluginManagerProposal extends React.Component<RequiredProps> {
   }
 
   public static get Entity() {
-    return InferredPluginManagerProposal.Entity;
+    return InferredJoinAndQuitProposal.Entity;
   }
 
   public static get Data() {
-    return InferredPluginManagerProposal.Data;
+    return InferredJoinAndQuitProposal.Data;
   }
 
   public static get Logs() {
-    return InferredPluginManagerProposal.Logs;
+    return InferredJoinAndQuitProposal.Logs;
   }
 }
 
-export default PluginManagerProposal;
+export default JoinAndQuitProposal;
 
-export { InferredPluginManagerProposal, PluginManagerProposal };
+export {
+  InferredJoinAndQuitProposal,
+  JoinAndQuitProposal,
+  Entity as JoinAndQuitProposalEntity,
+};

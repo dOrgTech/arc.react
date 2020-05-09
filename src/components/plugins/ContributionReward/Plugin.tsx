@@ -1,10 +1,5 @@
 import * as React from "react";
-import {
-  ContributionRewardPlugin as Entity,
-  ProposalPlugin,
-  IProposalCreateOptionsCR,
-  IContributionRewardProposalState,
-} from "@dorgtech/arc.js";
+import { ContributionRewardPlugin as Entity } from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
   Arc as Protocol,
@@ -49,7 +44,7 @@ class InferredContributionReward extends Component<
     return CreateContextFeed(
       this._EntityContext.Consumer,
       this._LogsContext.Consumer,
-      "CompetitionPlugin"
+      "ContributionRewardPlugin"
     );
   }
 
@@ -57,7 +52,7 @@ class InferredContributionReward extends Component<
     return CreateContextFeed(
       this._DataContext.Consumer,
       this._LogsContext.Consumer,
-      "CompetitionPlugin"
+      "ContributionRewardPlugin"
     );
   }
 
@@ -65,7 +60,7 @@ class InferredContributionReward extends Component<
     return CreateContextFeed(
       this._LogsContext.Consumer,
       this._LogsContext.Consumer,
-      "CompetitionPlugin"
+      "ContributionRewardPlugin"
     );
   }
 

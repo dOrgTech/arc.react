@@ -29,7 +29,6 @@ class InferredGenericPluginProposal extends Component<
 > {
   protected createEntity(): ProposalEntity {
     const { config, id } = this.props;
-    console.log(config);
     if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
