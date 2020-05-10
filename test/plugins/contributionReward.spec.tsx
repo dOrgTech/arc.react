@@ -66,7 +66,7 @@ describe("Plugin contribution reward component ", () => {
   });
 });
 
-describe("Proposal component ", () => {
+describe.skip("Proposal component ", () => {
   afterEach(() => cleanup());
 
   it("Shows proposal id", async () => {
