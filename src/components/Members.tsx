@@ -59,6 +59,7 @@ class InferredMembers extends ComponentList<InferredProps, Component> {
         address={entity.coreState!.address}
         dao={entity.coreState!.dao.entity}
         config={config}
+        entity={entity}
       >
         {children}
       </Component>
