@@ -1,12 +1,12 @@
 import { Arc as Connection } from "@dorgtech/arc.js";
 import { ProtocolConfig } from "../runtime";
-import { Network, networkSettings, Settings } from "./";
+import { Network, networkSettings, ArcSettings } from "./";
 
 export class ArcConfig extends ProtocolConfig<Connection> {
   public isInitialized: boolean;
   public connection: Connection;
 
-  constructor(networkOrSettings: Network | Settings) {
+  constructor(networkOrSettings: Network | ArcSettings) {
     super();
 
     if (typeof networkOrSettings === "string") {

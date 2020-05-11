@@ -1,4 +1,8 @@
-# Usage
+# API
+
+## Recommended Readings
+
+We recommend reading the [architecture](./architecture.md) & [examples](./examples.md) before this document.
 
 ## Protocol Connection
 
@@ -20,39 +24,47 @@ Supported networks:
 - xdai
 - private
 
-In order to send transactions, you need to connect your `web3 provider`, you can set it this way:
+In order to send transactions, you need to connect your `web3 provider`. Here's an example assuming Metamask in the browser:
 
 ```ts
-import { networkSettings } from "@daostack/daocomponents";
-let connectionParams = networkSettings["private"];
-const web3Provider =
+import { networkSettings } from "@daostack/arc.react";
+
+// Get the default configuration settings for the
+// active network (mainnet, kovan, private, etc)
+let config = networkSettings["private"];
+
+// Get the Metamask provider from the browser
+const metamask =
   (window as any).ethereum.currentProvider ||
   (window as any).web3.currentProvider;
-connectionParams = { ...connectionParams, web3Provider };
-const newConnection = new ArcConfig(connectionParams);
+
+// Create the Arc config, which opens a connection to the protocol
+const arcConfig = new ArcConfig({
+  ...config,
+  web3Provider: metamask,
+});
 ```
 
-You can also pass in your own configuration like so:
+You can also pass in your own configuration values like so:
 
 ```ts
-const arcParams = {
-  graphqlHttpProvider:
-    "https://api.thegraph.com/subgraphs-daostack/name/daostack/v39_3",
-  graphqlWsProvider:
-    "wss://api.thegraph.com/subgraphs-daostack/name/daostack/v39_3",
-  web3Provider: `wss://rinkeby.infura.io/ws/v3/INFURA_API`,
-  ipfsProvider: "https://api.thegraph.com:443/ipfs-daostack/api/v0",
-};
-const newConnection = new Arc(arcParams);
-```
+import { ArcSettings } from "@daostack/arc.react";
 
-This way, you can set a connection to different services
+const settings: ArcSettings = {
+  graphqlHttpProvider: "...",
+  graphqlWsProvider: "...",
+  web3Provider: "...",
+  ipfsProvider: "...",
+};
+
+const arcConfig = new ArcConfig(settings);
+```
 
 ---
 
 ## Components
 
-You can use every class that is an entity (a.k.a. extends from the Entity class in [Arc.js library](https://github.com/daostack/arc.js)) as a react component - Please check the [architecture section](./architecture) before going further
+You can use every class that is an entity (a.k.a. extends from the Entity class in [Arc.js library](https://github.com/daostack/arc.js)) as a react component.
 
 ```ts
 //Every component accepts the following props:
