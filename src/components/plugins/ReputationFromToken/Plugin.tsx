@@ -1,7 +1,7 @@
 import * as React from "react";
-import { 
+import {
   ReputationFromTokenPlugin as Entity,
-  IPluginState as Data
+  IPluginState as Data,
 } from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
@@ -119,6 +119,6 @@ export default ReputationFromTokenPlugin;
 export {
   ReputationFromTokenPlugin,
   InferredReputationFromTokenPlugin,
-  Entity as ReputationFromTokenDataEntity,
-  Data as ReputationFromTokenPluginData
+  Entity as ReputationFromTokenPluginEntity,
+  Data as ReputationFromTokenPluginData,
 };
