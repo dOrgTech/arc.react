@@ -1,12 +1,11 @@
 import React from "react";
-import { Arc, ArcConfig, RewardData, Reward, Rewards } from "../src";
 import {
   render,
   screen,
   waitForElementToBeRemoved,
-  waitFor,
   cleanup,
 } from "@testing-library/react";
+import { Arc, ArcConfig, RewardData, Reward, Rewards } from "../src";
 
 const arcConfig = new ArcConfig("private");
 const rewardId =
@@ -55,9 +54,7 @@ describe("Reward List", () => {
   }
 
   it("Show list of reward ", async () => {
-    const { findAllByText, queryAllByTestId, findByText } = render(
-      <RewardList />
-    );
+    const { findAllByText, queryAllByTestId } = render(<RewardList />);
     await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
       timeout: 8000,
     });

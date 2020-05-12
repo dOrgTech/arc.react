@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Observable } from "rxjs";
+import { IRewardQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
@@ -21,7 +22,6 @@ import {
   createFilterFromScope,
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
-import { IRewardQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 
 type Scopes = "DAO" | "Member as beneficiary" | "Proposal" | "Token";
 

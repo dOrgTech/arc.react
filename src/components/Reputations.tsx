@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Observable } from "rxjs";
+import { IReputationQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
@@ -11,8 +12,6 @@ import {
   ComponentListLogs,
   ComponentListProps,
 } from "../";
-
-import { IReputationQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
 type RequiredProps = ComponentListProps<Entity, FilterOptions>;

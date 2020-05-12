@@ -1,5 +1,4 @@
 import React from "react";
-import { Arc, ArcConfig, ProposalData, Proposal, Proposals, DAO } from "../src";
 import {
   render,
   screen,
@@ -7,6 +6,7 @@ import {
   waitFor,
   cleanup,
 } from "@testing-library/react";
+import { Arc, ArcConfig, ProposalData, Proposal, Proposals, DAO } from "../src";
 
 const arcConfig = new ArcConfig("private");
 
