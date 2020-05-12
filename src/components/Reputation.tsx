@@ -2,7 +2,7 @@ import * as React from "react";
 import {
   Reputation as Entity,
   IReputationState as Data,
-} from "@daostack/client";
+} from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
@@ -10,10 +10,11 @@ import {
   DAOData as InferData,
   Component,
   ComponentLogs,
+  ComponentProps,
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
-interface RequiredProps {
+interface RequiredProps extends ComponentProps {
   // Address of the Reputation Token
   address?: string;
 }
@@ -38,8 +39,7 @@ class InferredReputation extends Component<InferredProps, Entity, Data> {
         "Address Missing: Please provide this field as a prop, or use the inference component."
       );
     }
-
-    return new Entity(address, config.connection);
+    return new Entity(config.connection, address);
   }
 
   public static get Entity() {
@@ -95,7 +95,7 @@ class Reputation extends React.Component<RequiredProps> {
               <InferComponent.Data>
                 {(dao: InferData) => (
                   <InferredReputation
-                    address={dao ? dao.reputation.address : undefined}
+                    address={dao ? dao.reputation.id : undefined}
                     config={config}
                   >
                     {children}

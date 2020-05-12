@@ -1,30 +1,44 @@
 import * as React from "react";
 import memoize from "memoize-one";
 import { Subscription } from "rxjs";
-import { IStateful } from "@daostack/client/src/types";
-
+// TODO: This should not be opinionated to arc
+import {
+  Entity as StatefulEntity,
+  IEntityState as IStatefulEntityData,
+} from "@dorgtech/arc.js";
+import { MaybeAsync, executeMaybeAsyncFunction } from "./utils/async";
 import { ComponentLogs } from "./logging/ComponentLogs";
 
-export interface State<Data> {
+export interface State<Data extends IStatefulEntityData> {
   data?: Data;
-
   // Diagnostics for the component
   logs: ComponentLogs;
 }
 
+export interface ComponentProps {
+  noSub?: boolean;
+}
+
 export abstract class Component<
-  Props,
-  Entity extends IStateful<Data>,
-  Data
+  Props extends ComponentProps,
+  Entity extends StatefulEntity<Data>,
+  Data extends IStatefulEntityData
 > extends React.Component<Props, State<Data>> {
   // Create the entity this component represents. This entity gives access
   // to the component's data. For example: DAO, Proposal, Member.
   // Note: This entity is not within the component's state, but instead a memoized
   // property that will be recreated whenever necessary. See `private entity` below...
-  protected abstract createEntity(): Entity;
+  protected abstract createEntity(): MaybeAsync<Entity>;
 
   // Complete any asynchronous initialization work needed by the Entity
-  protected async initialize(entity: Entity): Promise<void> {}
+  protected async initialize(entity: Entity): Promise<void> {
+    try {
+      const state = await entity.fetchState();
+      this.onQueryData(state);
+    } catch (e) {
+      this.onQueryError(e);
+    }
+  }
 
   // See here for more information on the React.Context pattern:
   // https://reactjs.org/docs/context.html
@@ -44,6 +58,8 @@ export abstract class Component<
 
   // If the initialization logic after mount has finished
   private _initialized: boolean;
+
+  private _entity?: Entity;
 
   constructor(props: Props) {
     super(props);
@@ -72,10 +88,11 @@ export abstract class Component<
     const children = this.props.children;
     const { data, logs } = this.state;
 
-    // create & fetch the entity
-    // TODO: this should throw errors. Upon first error, logging marks "loading started"
-    // then when first success is seen, record that time too for timings
-    const entity = this._initialized ? this.entity(this.props) : undefined;
+    // create & fetch the entity whenever the props change
+    this.entity(this.props);
+
+    // if we're initialized, get the stored entity
+    const entity = this._initialized ? this._entity : undefined;
 
     logs.reactRendered();
 
@@ -94,18 +111,11 @@ export abstract class Component<
     const { logs } = this.state;
 
     try {
-      const entity = await this.entity(this.props);
-
-      if (entity !== undefined) {
-        await this.initialize(entity);
-        this._initialized = true;
-      }
-
+      await this.entity(this.props);
       this.forceUpdate();
     } catch (e) {
       logs.entityCreationFailed(e);
       this.setState({
-        data: this.state.data,
         logs: logs.clone(),
       });
     }
@@ -120,7 +130,9 @@ export abstract class Component<
     }
   }
 
-  private createEntityWithProps(props: Props): Entity | undefined {
+  private async createEntityWithProps(
+    props: Props
+  ): Promise<Entity | undefined> {
     const { logs } = this.state;
 
     logs.entityCreated();
@@ -130,20 +142,26 @@ export abstract class Component<
     this.clearPrevState();
 
     try {
-      const entity = this.createEntity();
+      const asyncFunction = this.createEntity.bind(this);
+      this._entity = await executeMaybeAsyncFunction(asyncFunction);
 
       logs.dataQueryStarted();
+      await this.initialize(this._entity);
+      this._initialized = true;
 
       if (this._subscription) {
         this._subscription.unsubscribe();
       }
 
-      // subscribe to this entity's state changes
-      this._subscription = entity
-        .state({})
-        .subscribe(this.onQueryData, this.onQueryError, this.onQueryComplete);
+      // by default we subscribe to this entity's state changes
+      if (!props.noSub) {
+        this._subscription = this._entity
+          .state({})
+          .subscribe(this.onQueryData, this.onQueryError, this.onQueryComplete);
+      }
 
-      return entity;
+      this.forceUpdate();
+      return this._entity;
     } catch (e) {
       logs.entityCreationFailed(e);
       this.setState({

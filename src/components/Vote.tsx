@@ -1,14 +1,10 @@
 import * as React from "react";
-import { Vote as Entity, IVoteState as Data } from "@daostack/client";
-import {
-  Arc as Protocol,
-  ArcConfig as ProtocolConfig,
-  Component,
-  ComponentLogs,
-} from "../";
+import { Component, ComponentLogs, ComponentProps } from "../runtime";
 import { CreateContextFeed } from "../runtime/ContextFeed";
+import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
+import { Vote as Entity, IVoteState as Data } from "@dorgtech/arc.js";
 
-interface RequiredProps {
+interface RequiredProps extends ComponentProps {
   // Vote ID
   id: string;
 }
@@ -27,13 +23,7 @@ class InferredVote extends Component<InferredProps, Entity, Data> {
       );
     }
 
-    return new Entity(id, config.connection);
-  }
-
-  protected async initialize(entity: Entity): Promise<void> {
-    // TODO: this is a bug, fix it...
-    entity.staticState = undefined;
-    entity.staticState = await entity.fetchStaticState();
+    return new Entity(config.connection, id);
   }
 
   public static get Entity() {

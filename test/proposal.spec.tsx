@@ -10,12 +10,14 @@ import {
 
 const arcConfig = new ArcConfig("private");
 
+const proposalId =
+  "0x58fba3fe8b4d4090ecce931bdf826532700805b151cc22ee5fddd03750a4b444";
+const daoAddress = "0x28d0cff49cc653632b91ef61ccb1b2cde7b952a9";
+
 describe("Proposal component ", () => {
   afterEach(() => cleanup());
 
   it("Shows proposal id", async () => {
-    const proposalId =
-      "0x02fd1079f9a842581eb742ea44507a461466b791c2990783732bfe660aa6a711";
     const { container } = render(
       <Arc config={arcConfig}>
         <Proposal id={proposalId}>
@@ -40,8 +42,6 @@ describe("Proposal component ", () => {
 
 describe("Proposal List", () => {
   afterEach(() => cleanup());
-
-  const daoAddress = "0x02981ec0aefe7329442c39dfe5a52fb8781e7659";
   class ProposalList extends React.Component {
     render() {
       return (

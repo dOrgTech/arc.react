@@ -15,7 +15,7 @@ describe("Custom loader ", () => {
   const arcConfig = new ArcConfig("private");
 
   it("Shows custom message", async () => {
-    const daoAddress = "0xe7a2c59e134ee81d4035ae6db2254f79308e334f";
+    const daoAddress = "0x28d0cff49cc653632b91ef61ccb1b2cde7b952a9";
     const { container } = render(
       <Loader
         render={(props: LoadingRenderProps) => (
@@ -66,11 +66,11 @@ describe("Custom loader ", () => {
       </Loader>
     );
 
-    const error = await screen.findByText(/Could not find a DAO with id/);
+    const error = await screen.findByText(/Could not find DAO with id/);
     expect(error).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>
-        Could not find a DAO with id non existent id
+        DAO ItemMap failed. Could not find DAO with id 'non existent id'
       </div>
     `);
   });

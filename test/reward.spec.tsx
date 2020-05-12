@@ -9,13 +9,13 @@ import {
 } from "@testing-library/react";
 
 const arcConfig = new ArcConfig("private");
+const rewardId =
+  "0x4c18c882ff760491e9d9fcc22ebf6494bbe57053f707f5a750a47177e7f8fdc4";
 
 describe("Reward component ", () => {
   afterEach(() => cleanup());
 
   it("Shows reward id", async () => {
-    const rewardId =
-      "0x0cb9948676fa48ea01b8bb0aada44ebd3b298d50e618ec823cfab456e42c71c2";
     const { container } = render(
       <Arc config={arcConfig}>
         <Reward id={rewardId}>

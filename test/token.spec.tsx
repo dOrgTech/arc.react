@@ -9,13 +9,13 @@ import {
 } from "@testing-library/react";
 
 const arcConfig = new ArcConfig("private");
-const daoAddress = "0xe7a2c59e134ee81d4035ae6db2254f79308e334f";
+const daoAddress = "0x666a6eb4618d0438511c8206df4d5b142837eb0d";
+const tokenAddress = "0x24014c20291afc04145a0bf5b5cdf58dc3f3b809";
 
 describe("Token component ", () => {
   afterEach(() => cleanup());
 
   it("Shows token address", async () => {
-    const tokenAddress = "0xcdbe8b52a6c60a5f101d4a0f1f049f19a9e1d35f";
     const { container } = render(
       <Arc config={arcConfig}>
         <Token address={tokenAddress}>

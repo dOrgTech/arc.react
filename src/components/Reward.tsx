@@ -1,14 +1,15 @@
 import * as React from "react";
-import { Reward as Entity, IRewardState as Data } from "@daostack/client";
+import { CreateContextFeed } from "../runtime/ContextFeed";
+import { Reward as Entity, IRewardState as Data } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
   Component,
   ComponentLogs,
+  ComponentProps,
 } from "../";
-import { CreateContextFeed } from "../runtime/ContextFeed";
 
-interface RequiredProps {
+interface RequiredProps extends ComponentProps {
   // Reward ID
   id: string;
 }
@@ -27,7 +28,7 @@ class InferredReward extends Component<InferredProps, Entity, Data> {
       );
     }
 
-    return new Entity(id, config.connection);
+    return new Entity(config.connection, id);
   }
 
   public static get Entity() {

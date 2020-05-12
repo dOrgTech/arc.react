@@ -9,15 +9,9 @@ import {
   Member,
   MemberData,
 } from "../src";
-import {
-  render,
-  screen,
-  waitFor,
-  waitForElementToBeRemoved,
-  cleanup,
-} from "@testing-library/react";
+import { render, screen, cleanup } from "@testing-library/react";
 
-const daoAddress = "0xe7a2c59e134ee81d4035ae6db2254f79308e334f";
+const daoAddress = "0x666a6eb4618d0438511c8206df4d5b142837eb0d";
 const arcConfig = new ArcConfig("private");
 
 describe("DAO Component ", () => {
@@ -62,13 +56,7 @@ describe("DAO List", () => {
   }
 
   it("Show list of DAOS ", async () => {
-    const { findAllByText, queryAllByTestId, findByText } = render(<DAOList />);
-    await waitFor(() => findByText(/DAO address:/), {
-      timeout: 8000,
-    });
-    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
-      timeout: 8000,
-    });
+    const { findAllByText } = render(<DAOList />);
     const daos = await findAllByText(/DAO address:/);
     expect(daos.length).toBeGreaterThan(1);
   });
@@ -95,15 +83,7 @@ describe("DAO List", () => {
         );
       }
     }
-    const { findAllByText, queryAllByTestId, findByText } = render(
-      <DAOWithMembers />
-    );
-    await waitFor(() => findByText(/Member address:/), {
-      timeout: 8000,
-    });
-    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
-      timeout: 8000,
-    });
+    const { findAllByText } = render(<DAOWithMembers />);
     const members = await findAllByText(/Member address:/);
     expect(members.length).toBeGreaterThan(1);
   });

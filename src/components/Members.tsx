@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import { IMemberQueryOptions as FilterOptions } from "@daostack/client";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
@@ -13,8 +12,9 @@ import {
   ComponentList,
   ComponentListLogs,
   ComponentListProps,
-  applyScope,
+  createFilterFromScope,
 } from "../";
+import { IMemberQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
 type Scopes = "DAO";
@@ -23,8 +23,7 @@ const scopeProps: Record<Scopes, string> = {
   DAO: "dao",
 };
 
-interface RequiredProps
-  extends ComponentListProps<Entity, Data, FilterOptions> {
+interface RequiredProps extends ComponentListProps<Entity, FilterOptions> {
   from?: Scopes;
 }
 
@@ -42,7 +41,7 @@ class InferredMembers extends ComponentList<InferredProps, Component> {
       );
     }
 
-    const f = applyScope(filter, from, scopeProps, this.props);
+    const f = createFilterFromScope(filter, from, scopeProps, this.props);
     return Entity.search(config.connection, f);
   }
 
@@ -57,8 +56,8 @@ class InferredMembers extends ComponentList<InferredProps, Component> {
     return (
       <Component
         key={`${entity.id}_${index}`}
-        address={entity.staticState!.address}
-        dao={entity.staticState!.dao}
+        address={entity.coreState!.address}
+        dao={entity.coreState!.dao.entity}
         config={config}
       >
         {children}

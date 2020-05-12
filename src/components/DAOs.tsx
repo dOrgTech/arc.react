@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import { IDAOQueryOptions as FilterOptions } from "@daostack/client";
+import { IDAOQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
@@ -14,7 +14,7 @@ import {
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
-type RequiredProps = ComponentListProps<Entity, Data, FilterOptions>;
+type RequiredProps = ComponentListProps<Entity, FilterOptions>;
 
 interface InferredProps extends RequiredProps {
   config: ProtocolConfig;

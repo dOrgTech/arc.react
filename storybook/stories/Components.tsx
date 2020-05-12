@@ -6,15 +6,17 @@ import {
   ArcConfig,
   DAO,
   Member,
-  Proposal,
   Reputation,
   Token,
   Reward,
-  Scheme,
   Stake,
   Vote,
+  Tag,
+  Queue,
   Loader,
   LoadingRenderProps,
+  Proposal,
+  Plugin,
 } from "../../src";
 
 const arcConfig = new ArcConfig("private");
@@ -32,7 +34,7 @@ export default () =>
           {
             friendlyName: "DAO Address",
             name: "address",
-            defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
+            defaultValue: "0x28d0cff49cc653632b91ef61ccb1b2cde7b952a9",
             type: PropertyType.string,
           },
         ]}
@@ -62,7 +64,7 @@ export default () =>
           {
             friendlyName: "DAO Address",
             name: "address",
-            defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
+            defaultValue: "0x28d0cff49cc653632b91ef61ccb1b2cde7b952a9",
             type: PropertyType.string,
           },
         ]}
@@ -81,13 +83,13 @@ export default () =>
           {
             friendlyName: "DAO Address",
             name: "dao",
-            defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
+            defaultValue: "0x28d0cff49cc653632b91ef61ccb1b2cde7b952a9",
             type: PropertyType.string,
           },
           {
             friendlyName: "Member Address",
             name: "address",
-            defaultValue: "0xe11ba2b4d45eaed5996cd0823791e0c93114882d",
+            defaultValue: "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
             type: PropertyType.string,
           },
         ]}
@@ -99,15 +101,12 @@ export default () =>
         ComponentType={Proposal}
         ProtocolType={Arc}
         protocolConfig={arcConfig}
-        AddedContext={(props) => (
-          <DAO address={props.dao}>{props.children}</DAO>
-        )}
         propEditors={[
           {
             friendlyName: "Proposal ID",
             name: "id",
             defaultValue:
-              "0x6afee092a28c74f6358093d5376ac75014ac4d9fd42d296a5498ef42eecd7248",
+              "0x02fd1079f9a842581eb742ea44507a461466b791c2990783732bfe660aa6a711",
             type: PropertyType.string,
           },
         ]}
@@ -143,7 +142,7 @@ export default () =>
           {
             friendlyName: "DAO Address",
             name: "dao",
-            defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
+            defaultValue: "0x28d0cff49cc653632b91ef61ccb1b2cde7b952a9",
             type: PropertyType.string,
           },
         ]}
@@ -166,18 +165,18 @@ export default () =>
         ]}
       />
     ))
-    .add("Scheme", () => (
+    .add("Plugin", () => (
       <ComponentView
-        name={"Scheme"}
-        ComponentType={Scheme}
+        name={"Plugin"}
+        ComponentType={Plugin}
         ProtocolType={Arc}
         protocolConfig={arcConfig}
         propEditors={[
           {
-            friendlyName: "Scheme ID",
+            friendlyName: "Plugin ID",
             name: "id",
             defaultValue:
-              "0xe60210db33d48ffc3ba89a0a220500fa8f1a55ed0b4bf28bf7821b23a022cc28",
+              "0x940f04d8fd1caca273cf05f1735362936280181684bc426f09cfba0265db47e4",
             type: PropertyType.string,
           },
         ]}
@@ -210,7 +209,7 @@ export default () =>
           {
             friendlyName: "Token Address",
             name: "address",
-            defaultValue: "0xcdbe8b52a6c60a5f101d4a0f1f049f19a9e1d35f",
+            defaultValue: "0x24014c20291afc04145a0bf5b5cdf58dc3f3b809",
             type: PropertyType.string,
           },
         ]}
@@ -229,7 +228,7 @@ export default () =>
           {
             friendlyName: "DAO Address",
             name: "dao",
-            defaultValue: "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
+            defaultValue: "0x28d0cff49cc653632b91ef61ccb1b2cde7b952a9",
             type: PropertyType.string,
           },
         ]}
@@ -246,7 +245,50 @@ export default () =>
             friendlyName: "Vote ID",
             name: "id",
             defaultValue:
-              "0x0795aafa7207e2c48241fa432f1f66789e0d2a2e2802208ced7ca3ff216dc74e",
+              "0x33472fe4769ad20fbb6e14d28074d0f21e7e0a34b09edd2b841714575c5e0da6",
+            type: PropertyType.string,
+          },
+        ]}
+      />
+    ))
+    .add("Tag", () => (
+      <ComponentView
+        name={"Tag"}
+        ComponentType={Tag}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        propEditors={[
+          {
+            friendlyName: "Tag ID",
+            name: "id",
+            defaultValue:
+              "0x33472fe4769ad20fbb6e14d28074d0f21e7e0a34b09edd2b841714575c5e0da6",
+            type: PropertyType.string,
+          },
+        ]}
+      />
+    ))
+    .add("Queue", () => (
+      <ComponentView
+        name={"Queue"}
+        ComponentType={Queue}
+        ProtocolType={Arc}
+        protocolConfig={arcConfig}
+        AddedContext={(props) => (
+          <DAO address={props.dao}>{props.children}</DAO>
+        )}
+        propEditors={[
+          {
+            friendlyName: "DAO Address",
+            name: "dao",
+            defaultValue: "0x666a6eb4618d0438511c8206df4d5b142837eb0d",
+            type: PropertyType.string,
+          },
+          {
+            friendlyName: "Queue ID",
+            name: "id",
+            defaultValue:
+              "0x01224dc8c109c350accfa915fde36a28017ca894ee2144396bd7f0861b6b0d56",
             type: PropertyType.string,
           },
         ]}

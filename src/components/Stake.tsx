@@ -1,14 +1,15 @@
 import * as React from "react";
-import { Stake as Entity, IStakeState as Data } from "@daostack/client";
+import { Stake as Entity, IStakeState as Data } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
   Component,
   ComponentLogs,
+  ComponentProps,
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
-interface RequiredProps {
+interface RequiredProps extends ComponentProps {
   // Stake ID
   id: string;
 }
@@ -27,13 +28,7 @@ class InferredStake extends Component<InferredProps, Entity, Data> {
       );
     }
 
-    return new Entity(id, config.connection);
-  }
-
-  protected async initialize(entity: Entity): Promise<void> {
-    // TODO: remove this when this issue is resolved: https://github.com/daostack/client/issues/291
-    entity.staticState = undefined;
-    await entity.fetchStaticState();
+    return new Entity(config.connection, id);
   }
 
   public static get Entity() {

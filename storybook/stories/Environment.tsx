@@ -5,7 +5,7 @@ import QuerySnippets from "../helpers/QuerySnippets";
 import { Arc, ArcConfig } from "../../src";
 import { Typography, Divider } from "@material-ui/core";
 import ObjectInspector from "../helpers/ObjectInspector";
-import { IContractInfo } from "@daostack/client/src/arc";
+import { IContractInfo, LATEST_ARC_VERSION } from "@dorgtech/arc.js";
 
 const arcConfig = new ArcConfig("private");
 
@@ -67,7 +67,7 @@ export default () =>
                   return (
                     <>
                       <Typography variant="subtitle1" component="h6">
-                        {`Name: ${name} Version: ${version} Address: ${address}`}
+                        {`Name: ${name} Version: ${LATEST_ARC_VERSION} Address: ${address}`}
                       </Typography>
                       {ObjectInspector(
                         methods,

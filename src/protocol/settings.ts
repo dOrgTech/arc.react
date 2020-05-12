@@ -1,4 +1,5 @@
 import { RetryLink } from "apollo-link-retry";
+import { IArcOptions } from "@dorgtech/arc.js";
 
 export type Network = "private" | "kovan" | "rinkeby" | "mainnet" | "xdai";
 
@@ -11,18 +12,11 @@ type SubgraphEndpoints = {
   [network in Network]: SubgraphEndpoint;
 };
 
-export interface Settings {
-  graphqlHttpProvider: string;
-  graphqlWsProvider: string;
-  web3Provider: string;
-  ipfsProvider: string;
-  web3ConnectProviderOptions: any;
-  graphqlRetryLink?: RetryLink;
-}
+export type ArcSettings = IArcOptions;
 
 type NetworkSettings = {
   // TODO: get this type from arc.js
-  [network in Network]: Settings;
+  [network in Network]: ArcSettings;
 };
 
 const subgraphEndpoints: SubgraphEndpoints = {
@@ -71,24 +65,21 @@ export const networkSettings: NetworkSettings = {
     graphqlWsProvider: subgraphEndpoints.private.ws,
     web3Provider: "ws://127.0.0.1:8545",
     ipfsProvider: "http://127.0.0.1:5001/api/v0",
-    web3ConnectProviderOptions: {},
-    graphqlRetryLink: retryLink,
+    retryLink,
   },
   rinkeby: {
     graphqlHttpProvider: subgraphEndpoints.rinkeby.http,
     graphqlWsProvider: subgraphEndpoints.rinkeby.ws,
     web3Provider: `wss://rinkeby.infura.io/ws/v3/${process.env.INFURA_ID}`,
     ipfsProvider: "https://api.thegraph.com:443/ipfs-daostack/api/v0",
-    web3ConnectProviderOptions: {},
-    graphqlRetryLink: retryLink,
+    retryLink,
   },
   kovan: {
     graphqlHttpProvider: subgraphEndpoints.kovan.http,
     graphqlWsProvider: subgraphEndpoints.kovan.ws,
     web3Provider: `wss://kovan.infura.io/ws/v3/${process.env.INFURA_ID}`,
     ipfsProvider: "https://api.thegraph.com:443/ipfs-daostack/api/v0",
-    web3ConnectProviderOptions: {},
-    graphqlRetryLink: retryLink,
+    retryLink,
   },
   xdai: {
     graphqlHttpProvider: subgraphEndpoints.xdai.http,
@@ -96,15 +87,13 @@ export const networkSettings: NetworkSettings = {
     web3Provider:
       "https://poa.api.nodesmith.io/v1/dai/jsonrpc?apiKey=128059b9320a462699aef283a7ae2546",
     ipfsProvider: "https://api.thegraph.com:443/ipfs-daostack/api/v0",
-    web3ConnectProviderOptions: {},
-    graphqlRetryLink: retryLink,
+    retryLink,
   },
   mainnet: {
     graphqlHttpProvider: subgraphEndpoints.mainnet.http,
     graphqlWsProvider: subgraphEndpoints.mainnet.ws,
     web3Provider: `wss://mainnet.infura.io/ws/v3/${process.env.INFURA_ID}`,
     ipfsProvider: "https://api.thegraph.com:443/ipfs-daostack/api/v0",
-    web3ConnectProviderOptions: {},
-    graphqlRetryLink: retryLink,
+    retryLink,
   },
 };

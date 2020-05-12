@@ -1,23 +1,33 @@
 import * as React from "react";
-import { Proposal as Entity, IProposalState as Data } from "@daostack/client";
+import  { 
+  SchemeRegistrarPlugin as Entity, 
+  ISchemeRegistrarState as Data 
+} from "@dorgtech/arc.js";
+import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
   Component,
   ComponentLogs,
-} from "../";
-import { CreateContextFeed } from "../runtime/ContextFeed";
+  ComponentProps,
+  Plugin,
+} from "../../../";
 
-interface RequiredProps {
-  // Proposal ID
-  id: string;
+interface RequiredProps extends ComponentProps {
+  // Plugin ID
+  id?: string | Entity;
 }
 
 interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
+  id: string | Entity;
 }
 
-class InferredProposal extends Component<InferredProps, Entity, Data> {
+class InferredSchemeRegistrarPlugin extends Component<
+  InferredProps,
+  Entity,
+  Data
+> {
   protected createEntity(): Entity {
     const { config, id } = this.props;
 
@@ -27,20 +37,15 @@ class InferredProposal extends Component<InferredProps, Entity, Data> {
       );
     }
 
-    return new Entity(id, config.connection);
-  }
-
-  protected async initialize(entity: Entity): Promise<void> {
-    // TODO: remove this when this issue is resolved: https://github.com/daostack/client/issues/291
-    entity.staticState = undefined;
-    await entity.fetchStaticState();
+    const pluginId = typeof id === "string" ? id : id.id;
+    return new Entity(config.connection, pluginId);
   }
 
   public static get Entity() {
     return CreateContextFeed(
       this._EntityContext.Consumer,
       this._LogsContext.Consumer,
-      "Proposal"
+      "SchemeRegistrarPlugin"
     );
   }
 
@@ -48,7 +53,7 @@ class InferredProposal extends Component<InferredProps, Entity, Data> {
     return CreateContextFeed(
       this._DataContext.Consumer,
       this._LogsContext.Consumer,
-      "Proposal"
+      "SchemeRegistrarPlugin"
     );
   }
 
@@ -56,7 +61,7 @@ class InferredProposal extends Component<InferredProps, Entity, Data> {
     return CreateContextFeed(
       this._LogsContext.Consumer,
       this._LogsContext.Consumer,
-      "Proposal"
+      "SchemeRegistrarPlugin"
     );
   }
 
@@ -71,39 +76,49 @@ class InferredProposal extends Component<InferredProps, Entity, Data> {
   >(undefined);
 }
 
-class Proposal extends React.Component<RequiredProps> {
+class SchemeRegistrarPlugin extends React.Component<RequiredProps> {
   public render() {
     const { id, children } = this.props;
 
-    return (
+    const renderInferred = (id: string | Entity) => (
       <Protocol.Config>
         {(config: ProtocolConfig) => (
-          <InferredProposal id={id} config={config}>
+          <InferredSchemeRegistrarPlugin id={id} config={config}>
             {children}
-          </InferredProposal>
+          </InferredSchemeRegistrarPlugin>
         )}
       </Protocol.Config>
     );
+
+    if (!id) {
+      return (
+        <Plugin.Entity>
+          {(plugin: Entity) => renderInferred(plugin.id)}
+        </Plugin.Entity>
+      );
+    } else {
+      return renderInferred(id);
+    }
   }
 
   public static get Entity() {
-    return InferredProposal.Entity;
+    return InferredSchemeRegistrarPlugin.Entity;
   }
 
   public static get Data() {
-    return InferredProposal.Data;
+    return InferredSchemeRegistrarPlugin.Data;
   }
 
   public static get Logs() {
-    return InferredProposal.Logs;
+    return InferredSchemeRegistrarPlugin.Logs;
   }
 }
 
-export default Proposal;
+export default SchemeRegistrarPlugin;
 
-export {
-  InferredProposal,
-  Proposal,
-  Entity as ProposalEntity,
-  Data as ProposalData,
+export { 
+  SchemeRegistrarPlugin, 
+  InferredSchemeRegistrarPlugin, 
+  Entity as SchemeRegistrarPluginEntity, 
+  Data as SchemeRegistrarPluginData
 };

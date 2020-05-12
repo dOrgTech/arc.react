@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import { IVoteQueryOptions as FilterOptions } from "@daostack/client";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
@@ -17,8 +16,9 @@ import {
   ComponentList,
   ComponentListLogs,
   ComponentListProps,
-  applyScope,
+  createFilterFromScope,
 } from "../";
+import { IVoteQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
 type Scopes = "DAO" | "Member as voter" | "Proposal";
@@ -29,8 +29,7 @@ const scopeProps: Record<Scopes, string> = {
   Proposal: "proposal",
 };
 
-interface RequiredProps
-  extends ComponentListProps<Entity, Data, FilterOptions> {
+interface RequiredProps extends ComponentListProps<Entity, FilterOptions> {
   from?: Scopes;
 }
 
@@ -51,7 +50,7 @@ class InferredVotes extends ComponentList<InferredProps, Component> {
       );
     }
 
-    const f = applyScope(filter, from, scopeProps, this.props);
+    const f = createFilterFromScope(filter, from, scopeProps, this.props);
     return Entity.search(config.connection, f);
   }
 

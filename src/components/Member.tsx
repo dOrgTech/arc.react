@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Member as Entity, IMemberState as Data } from "@daostack/client";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
@@ -7,15 +6,15 @@ import {
   DAOEntity,
   Component,
   ComponentLogs,
+  ComponentProps,
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
+import { Member as Entity, IMemberState as Data } from "@dorgtech/arc.js";
 
-interface RequiredProps {
+interface RequiredProps extends ComponentProps {
   // Address of the member
   address: string;
-
-  // Address of the DAO Avatar
-  dao?: string;
+  dao?: string | DAOEntity;
 }
 
 interface InferredProps extends RequiredProps {
@@ -23,20 +22,26 @@ interface InferredProps extends RequiredProps {
 }
 
 class InferredMember extends Component<InferredProps, Entity, Data> {
-  protected createEntity(): Entity {
+  protected async createEntity(): Promise<Entity> {
     const { address, dao, config } = this.props;
 
     if (!dao) {
       throw Error(
-        "DAO Address Missing: Please provide this field as a prop, or use the inference component."
+        "DAO Missing: Please provide this field as a prop, or use the inference component."
       );
     }
 
-    return new Entity({ address, dao }, config.connection);
-  }
+    const daoEntity: DAOEntity =
+      typeof dao === "string" ? new DAOEntity(config.connection, dao) : dao;
 
-  protected async initialize(entity: Entity): Promise<void> {
-    await entity.fetchStaticState();
+    const daoState = await daoEntity.fetchState();
+
+    const memberId: string = Entity.calculateId({
+      contract: daoState.reputation.id,
+      address,
+    });
+
+    return new Entity(config.connection, memberId);
   }
 
   public static get Entity() {
@@ -90,10 +95,10 @@ class Member extends React.Component<RequiredProps> {
           } else {
             return (
               <DAO.Entity>
-                {(entity: DAOEntity | undefined) => (
+                {(entity: DAOEntity) => (
                   <InferredMember
                     address={address}
-                    dao={entity ? entity.id : undefined}
+                    dao={entity}
                     config={config}
                   >
                     {children}

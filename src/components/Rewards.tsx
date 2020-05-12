@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import { IRewardQueryOptions as FilterOptions } from "@daostack/client";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
@@ -19,9 +18,10 @@ import {
   ComponentList,
   ComponentListLogs,
   ComponentListProps,
-  applyScope,
+  createFilterFromScope,
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
+import { IRewardQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 
 type Scopes = "DAO" | "Member as beneficiary" | "Proposal" | "Token";
 
@@ -32,8 +32,7 @@ const scopeProps: Record<Scopes, string> = {
   Token: "tokenAddress",
 };
 
-interface RequiredProps
-  extends ComponentListProps<Entity, Data, FilterOptions> {
+interface RequiredProps extends ComponentListProps<Entity, FilterOptions> {
   from?: Scopes;
 }
 
@@ -55,7 +54,7 @@ class InferredRewards extends ComponentList<InferredProps, Component> {
       );
     }
 
-    const f = applyScope(filter, from, scopeProps, this.props);
+    const f = createFilterFromScope(filter, from, scopeProps, this.props);
     return Entity.search(config.connection, f);
   }
 
@@ -125,7 +124,7 @@ class Rewards extends React.Component<RequiredProps> {
                 <Member.Entity>
                   {(beneficiary: MemberEntity) => (
                     <InferredRewards
-                      beneficiary={beneficiary.staticState!.address}
+                      beneficiary={beneficiary.coreState!.address}
                       config={config}
                       sort={sort}
                       filter={filter}

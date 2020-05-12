@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Token as Entity, ITokenState as Data } from "@daostack/client";
+import { Token as Entity, ITokenState as Data } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
@@ -7,10 +7,11 @@ import {
   DAOData as InferData,
   Component,
   ComponentLogs,
+  ComponentProps,
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
-interface RequiredProps {
+interface RequiredProps extends ComponentProps {
   // Address of the Token
   address?: string;
 }
@@ -32,8 +33,7 @@ class InferredToken extends Component<InferredProps, Entity, Data> {
         "Address Missing: Please provide this field as a prop, or use the inference component."
       );
     }
-
-    return new Entity(address, config.connection);
+    return new Entity(config.connection, address);
   }
 
   public static get Entity() {
@@ -90,7 +90,7 @@ class Token extends React.Component<RequiredProps> {
         <Protocol.Config>
           <InferComponent.Data>
             {(arc: ProtocolConfig, dao: InferData) => (
-              <InferredToken address={dao.token.address} config={arc}>
+              <InferredToken address={dao.token.id} config={arc}>
                 {children}
               </InferredToken>
             )}

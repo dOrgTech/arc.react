@@ -1,15 +1,16 @@
 import * as React from "react";
-import { Scheme as Entity, ISchemeState as Data } from "@daostack/client";
+import { Tag as Entity, ITagState as Data } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
   Component,
   ComponentLogs,
+  ComponentProps,
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
-interface RequiredProps {
-  // Scheme ID
+interface RequiredProps extends ComponentProps {
+  // Address of the Tag Avatar
   id: string;
 }
 
@@ -17,30 +18,23 @@ interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
 }
 
-class InferredScheme extends Component<InferredProps, Entity, Data> {
+class InferredTag extends Component<InferredProps, Entity, Data> {
   protected createEntity(): Entity {
     const { config, id } = this.props;
-
     if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
       );
     }
 
-    return new Entity(id, config.connection);
-  }
-
-  protected async initialize(entity: Entity): Promise<void> {
-    // TODO: remove this when this issue is resolved: https://github.com/daostack/client/issues/291
-    entity.staticState = null;
-    await entity.fetchStaticState();
+    return new Entity(config.connection, id);
   }
 
   public static get Entity() {
     return CreateContextFeed(
       this._EntityContext.Consumer,
       this._LogsContext.Consumer,
-      "Scheme"
+      "Tag"
     );
   }
 
@@ -48,7 +42,7 @@ class InferredScheme extends Component<InferredProps, Entity, Data> {
     return CreateContextFeed(
       this._DataContext.Consumer,
       this._LogsContext.Consumer,
-      "Scheme"
+      "Tag"
     );
   }
 
@@ -56,7 +50,7 @@ class InferredScheme extends Component<InferredProps, Entity, Data> {
     return CreateContextFeed(
       this._LogsContext.Consumer,
       this._LogsContext.Consumer,
-      "Scheme"
+      "Tag"
     );
   }
 
@@ -71,34 +65,34 @@ class InferredScheme extends Component<InferredProps, Entity, Data> {
   >(undefined);
 }
 
-class Scheme extends React.Component<RequiredProps> {
+class Tag extends React.Component<RequiredProps> {
   public render() {
     const { id, children } = this.props;
 
     return (
       <Protocol.Config>
         {(config: ProtocolConfig) => (
-          <InferredScheme id={id} config={config}>
+          <InferredTag id={id} config={config}>
             {children}
-          </InferredScheme>
+          </InferredTag>
         )}
       </Protocol.Config>
     );
   }
 
   public static get Entity() {
-    return InferredScheme.Entity;
+    return InferredTag.Entity;
   }
 
   public static get Data() {
-    return InferredScheme.Data;
+    return InferredTag.Data;
   }
 
   public static get Logs() {
-    return InferredScheme.Logs;
+    return InferredTag.Logs;
   }
 }
 
-export default Scheme;
+export default Tag;
 
-export { Scheme, InferredScheme, Entity as SchemeEntity, Data as SchemeData };
+export { Tag, InferredTag, Entity as TagEntity, Data as TagData };

@@ -1,14 +1,15 @@
 import * as React from "react";
-import { DAO as Entity, IDAOState as Data } from "@daostack/client";
+import { DAO as Entity, IDAOState as Data } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
   Component,
   ComponentLogs,
+  ComponentProps,
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
-interface RequiredProps {
+interface RequiredProps extends ComponentProps {
   // Address of the DAO Avatar
   address: string;
 }
@@ -25,12 +26,8 @@ class InferredDAO extends Component<InferredProps, Entity, Data> {
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
       );
     }
-    return new Entity(address, config.connection);
-  }
 
-  // TODO: move this common functionality into the Component class
-  protected async initialize(entity: Entity): Promise<void> {
-    await entity.fetchStaticState();
+    return new Entity(config.connection, address);
   }
 
   public static get Entity() {

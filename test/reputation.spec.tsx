@@ -16,12 +16,13 @@ import {
 } from "@testing-library/react";
 
 const arcConfig = new ArcConfig("private");
+const reputationAddress = "0xebbe3726558bea9869d397505c9dec2a6fb9a433";
+const daoAddress = "0x218f6e4257bc3e932936e476ebaf45bb7c5c6485";
 
 describe("Reputation component ", () => {
   afterEach(() => cleanup());
 
   it("Shows reputation address", async () => {
-    const reputationAddress = "0x93cdbf39fb9e13bd253ca5819247d52fbabf0f2f";
     const { container } = render(
       <Arc config={arcConfig}>
         <Reputation address={reputationAddress}>
@@ -44,14 +45,13 @@ describe("Reputation component ", () => {
   });
 
   it("Shows DAO reputation address with inferred props", async () => {
-    const daoAddress = "0xe7a2c59e134ee81d4035ae6db2254f79308e334f";
     const { container } = render(
       <Arc config={arcConfig}>
         <DAO address={daoAddress}>
           <Reputation>
             <Reputation.Data>
               {(reputation: ReputationData) => (
-                <div>{"Reputation DAO address: " + reputation.dao}</div>
+                <div>{"Reputation DAO address: " + reputation.dao.id}</div>
               )}
             </Reputation.Data>
           </Reputation>
