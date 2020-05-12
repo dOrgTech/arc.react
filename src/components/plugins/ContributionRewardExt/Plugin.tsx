@@ -1,5 +1,8 @@
 import * as React from "react";
-import { ContributionRewardExtPlugin as Entity } from "@dorgtech/arc.js";
+import { 
+  ContributionRewardExtPlugin as Entity,
+  IContributionRewardExtState as Data
+} from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
   Arc as Protocol,
@@ -7,8 +10,6 @@ import {
   Component,
   ComponentLogs,
   ComponentProps,
-  PluginEntity,
-  PluginData,
   Plugin,
 } from "../../../";
 
@@ -24,10 +25,10 @@ interface InferredProps extends RequiredProps {
 
 class InferredContributionRewardExtPlugin extends Component<
   InferredProps,
-  PluginEntity,
-  PluginData
+  Entity,
+  Data
 > {
-  protected createEntity(): PluginEntity {
+  protected createEntity(): Entity {
     const { config, id } = this.props;
 
     if (!config) {
@@ -67,7 +68,7 @@ class InferredContributionRewardExtPlugin extends Component<
   protected static _EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<PluginData | undefined>(
+  protected static _DataContext = React.createContext<Data | undefined>(
     undefined
   );
   protected static _LogsContext = React.createContext<
@@ -92,7 +93,7 @@ class ContributionRewardExtPlugin extends React.Component<RequiredProps> {
     if (!id) {
       return (
         <Plugin.Entity>
-          {(plugin: PluginEntity) => renderInferred(plugin.id)}
+          {(plugin: Entity) => renderInferred(plugin.id)}
         </Plugin.Entity>
       );
     } else {
@@ -118,5 +119,6 @@ export default ContributionRewardExtPlugin;
 export {
   ContributionRewardExtPlugin,
   InferredContributionRewardExtPlugin,
-  Entity as ContributionRewardExtEntity,
+  Entity as ContributionRewardExtPluginEntity,
+  Data as ContributionRewardExtPluginData
 };

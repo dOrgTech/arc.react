@@ -1,13 +1,14 @@
 import * as React from "react";
-import { ContributionRewardExtProposal as Entity } from "@dorgtech/arc.js";
+import { 
+  ContributionRewardExtProposal as Entity,
+  IContributionRewardProposalState as Data
+} from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
   Component,
   ComponentLogs,
   ComponentProps,
-  ProposalEntity,
-  ProposalData,
   Proposal,
 } from "../../../";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
@@ -24,10 +25,10 @@ interface InferredProps extends RequiredProps {
 
 class InferredContributionRewardExtProposal extends Component<
   InferredProps,
-  ProposalEntity,
-  ProposalData
+  Entity,
+  Data
 > {
-  protected createEntity(): ProposalEntity {
+  protected createEntity(): Entity {
     const { config, id } = this.props;
     if (!config) {
       throw Error(
@@ -66,7 +67,7 @@ class InferredContributionRewardExtProposal extends Component<
   protected static _EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<ProposalData | undefined>(
+  protected static _DataContext = React.createContext<Data | undefined>(
     undefined
   );
   protected static _LogsContext = React.createContext<
@@ -91,7 +92,7 @@ class ContributionRewardExtProposal extends React.Component<RequiredProps> {
     if (!id) {
       return (
         <Proposal.Entity>
-          {(proposal: ProposalEntity) => renderInferred(proposal.id)}
+          {(proposal: Entity) => renderInferred(proposal.id)}
         </Proposal.Entity>
       );
     } else {
@@ -114,4 +115,9 @@ class ContributionRewardExtProposal extends React.Component<RequiredProps> {
 
 export default ContributionRewardExtProposal;
 
-export { InferredContributionRewardExtProposal, ContributionRewardExtProposal };
+export { 
+  InferredContributionRewardExtProposal,
+  ContributionRewardExtProposal,
+  Entity as ContributionRewardExtProposalEntity,
+  Data as ContributionRewardExtProposalData,
+};

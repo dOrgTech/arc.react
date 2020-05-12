@@ -7,6 +7,7 @@ import {
   ProposalData,
   GenericPlugin,
   GenericPluginProposal,
+  GenericPluginEntity,
   Plugin,
 } from "../../src";
 

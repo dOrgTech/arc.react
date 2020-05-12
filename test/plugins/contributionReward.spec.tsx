@@ -9,7 +9,7 @@ import {
   Plugin,
   ContributionRewardPlugin,
   ContributionRewardProposal,
-  ContributionRewardEntity,
+  ContributionRewardPluginEntity,
 } from "../../src";
 
 const arcConfig = new ArcConfig("private");
@@ -124,7 +124,7 @@ describe("Send tx", () => {
           <ContributionRewardPlugin.Data>
             <ContributionRewardPlugin.Entity>
               {(
-                entity: ContributionRewardEntity,
+                entity: ContributionRewardPluginEntity,
                 data: ContributionRewardPlugin
               ) => (
                 <button

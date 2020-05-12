@@ -110,7 +110,7 @@ class CompetitionPlugin extends React.Component<RequiredProps> {
   }
 }
 
-export default Plugin;
+export default CompetitionPlugin;
 
 export {
   CompetitionPlugin,

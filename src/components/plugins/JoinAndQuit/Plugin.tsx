@@ -1,5 +1,5 @@
 import * as React from "react";
-import { JoinAndQuit as Entity } from "@dorgtech/arc.js";
+import { JoinAndQuit as Entity, IJoinAndQuitState as Data } from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
   Arc as Protocol,
@@ -7,8 +7,6 @@ import {
   Component,
   ComponentLogs,
   ComponentProps,
-  PluginEntity,
-  PluginData,
   Plugin,
 } from "../../../";
 
@@ -24,10 +22,10 @@ interface InferredProps extends RequiredProps {
 
 class InferredJoinAndQuitPlugin extends Component<
   InferredProps,
-  PluginEntity,
-  PluginData
+  Entity,
+  Data
 > {
-  protected createEntity(): PluginEntity {
+  protected createEntity(): Entity {
     const { config, id } = this.props;
 
     if (!config) {
@@ -67,7 +65,7 @@ class InferredJoinAndQuitPlugin extends Component<
   protected static _EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<PluginData | undefined>(
+  protected static _DataContext = React.createContext<Data | undefined>(
     undefined
   );
   protected static _LogsContext = React.createContext<
@@ -92,7 +90,7 @@ class JoinAndQuitPlugin extends React.Component<RequiredProps> {
     if (!id) {
       return (
         <Plugin.Entity>
-          {(plugin: PluginEntity) => renderInferred(plugin.id)}
+          {(plugin: Entity) => renderInferred(plugin.id)}
         </Plugin.Entity>
       );
     } else {
@@ -119,4 +117,5 @@ export {
   JoinAndQuitPlugin,
   InferredJoinAndQuitPlugin,
   Entity as JoinAndQuitPluginEntity,
+  Data as JoinAndQuitPluginData
 };

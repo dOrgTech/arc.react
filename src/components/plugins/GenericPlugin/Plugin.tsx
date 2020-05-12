@@ -1,5 +1,8 @@
 import * as React from "react";
-import { GenericPlugin as Entity } from "@dorgtech/arc.js";
+import { 
+  GenericPlugin as Entity,
+  IGenericPluginState as Data
+} from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
   Arc as Protocol,
@@ -7,8 +10,6 @@ import {
   Component,
   ComponentLogs,
   ComponentProps,
-  PluginEntity,
-  PluginData,
   Plugin,
 } from "../../../";
 
@@ -24,10 +25,10 @@ interface InferredProps extends RequiredProps {
 
 class InferredGenericPlugin extends Component<
   InferredProps,
-  PluginEntity,
-  PluginData
+  Entity,
+  Data
 > {
-  protected createEntity(): PluginEntity {
+  protected createEntity(): Entity {
     const { config, id } = this.props;
 
     if (!config) {
@@ -67,7 +68,7 @@ class InferredGenericPlugin extends Component<
   protected static _EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<PluginData | undefined>(
+  protected static _DataContext = React.createContext<Data | undefined>(
     undefined
   );
   protected static _LogsContext = React.createContext<
@@ -92,7 +93,7 @@ class GenericPlugin extends React.Component<RequiredProps> {
     if (!id) {
       return (
         <Plugin.Entity>
-          {(proposal: PluginEntity) => renderInferred(proposal.id)}
+          {(proposal: Entity) => renderInferred(proposal.id)}
         </Plugin.Entity>
       );
     } else {
@@ -115,4 +116,9 @@ class GenericPlugin extends React.Component<RequiredProps> {
 
 export default Plugin;
 
-export { GenericPlugin, InferredGenericPlugin, Entity as GenericPluginEntity };
+export { 
+  GenericPlugin, 
+  InferredGenericPlugin, 
+  Entity as GenericPluginEntity,
+  Data as GenericPluginData
+};

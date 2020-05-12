@@ -1,13 +1,14 @@
 import * as React from "react";
-import { SchemeRegistrarProposal as Entity } from "@dorgtech/arc.js";
+import { 
+  SchemeRegistrarProposal as Entity,
+  ISchemeRegistrarProposalState as Data 
+} from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
   Component,
   ComponentLogs,
   ComponentProps,
-  ProposalEntity,
-  ProposalData,
   Proposal,
 } from "../../../";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
@@ -22,12 +23,12 @@ interface InferredProps extends RequiredProps {
   id: string | Entity;
 }
 
-class InferredPluginManagerProposal extends Component<
+class InferredSchemeRegistrarProposal extends Component<
   InferredProps,
-  ProposalEntity,
-  ProposalData
+  Entity,
+  Data
 > {
-  protected createEntity(): ProposalEntity {
+  protected createEntity(): Entity {
     const { config, id } = this.props;
     if (!config) {
       throw Error(
@@ -43,7 +44,7 @@ class InferredPluginManagerProposal extends Component<
     return CreateContextFeed(
       this._EntityContext.Consumer,
       this._LogsContext.Consumer,
-      "SchemeRegistrar"
+      "SchemeRegistrarProposal"
     );
   }
 
@@ -51,7 +52,7 @@ class InferredPluginManagerProposal extends Component<
     return CreateContextFeed(
       this._DataContext.Consumer,
       this._LogsContext.Consumer,
-      "SchemeRegistrar"
+      "SchemeRegistrarProposal"
     );
   }
 
@@ -59,14 +60,14 @@ class InferredPluginManagerProposal extends Component<
     return CreateContextFeed(
       this._LogsContext.Consumer,
       this._LogsContext.Consumer,
-      "SchemeRegistrar"
+      "SchemeRegistrarProposal"
     );
   }
 
   protected static _EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<ProposalData | undefined>(
+  protected static _DataContext = React.createContext<Data | undefined>(
     undefined
   );
   protected static _LogsContext = React.createContext<
@@ -74,16 +75,16 @@ class InferredPluginManagerProposal extends Component<
   >(undefined);
 }
 
-class PluginManagerProposal extends React.Component<RequiredProps> {
+class SchemeRegistrarProposal extends React.Component<RequiredProps> {
   public render() {
     const { id, children } = this.props;
 
     const renderInferred = (id: string | Entity) => (
       <Protocol.Config>
         {(config: ProtocolConfig) => (
-          <InferredPluginManagerProposal id={id} config={config}>
+          <InferredSchemeRegistrarProposal id={id} config={config}>
             {children}
-          </InferredPluginManagerProposal>
+          </InferredSchemeRegistrarProposal>
         )}
       </Protocol.Config>
     );
@@ -91,7 +92,7 @@ class PluginManagerProposal extends React.Component<RequiredProps> {
     if (!id) {
       return (
         <Proposal.Entity>
-          {(proposal: ProposalEntity) => renderInferred(proposal.id)}
+          {(proposal: Data) => renderInferred(proposal.id)}
         </Proposal.Entity>
       );
     } else {
@@ -100,18 +101,23 @@ class PluginManagerProposal extends React.Component<RequiredProps> {
   }
 
   public static get Entity() {
-    return InferredPluginManagerProposal.Entity;
+    return InferredSchemeRegistrarProposal.Entity;
   }
 
   public static get Data() {
-    return InferredPluginManagerProposal.Data;
+    return InferredSchemeRegistrarProposal.Data;
   }
 
   public static get Logs() {
-    return InferredPluginManagerProposal.Logs;
+    return InferredSchemeRegistrarProposal.Logs;
   }
 }
 
-export default PluginManagerProposal;
+export default SchemeRegistrarProposal;
 
-export { InferredPluginManagerProposal, PluginManagerProposal };
+export { 
+  InferredSchemeRegistrarProposal, 
+  SchemeRegistrarProposal,
+  Entity as SchemeRegistrarProposalEntity,
+  Data as SchemeRegistrarProposalData
+};

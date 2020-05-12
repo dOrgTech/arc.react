@@ -1,13 +1,14 @@
 import * as React from "react";
-import { JoinAndQuitProposal as Entity } from "@dorgtech/arc.js";
+import { 
+  JoinAndQuitProposal as Entity,
+  IJoinAndQuitProposalState as Data
+} from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
   Component,
   ComponentLogs,
   ComponentProps,
-  ProposalEntity,
-  ProposalData,
   Proposal,
 } from "../../../";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
@@ -24,10 +25,10 @@ interface InferredProps extends RequiredProps {
 
 class InferredJoinAndQuitProposal extends Component<
   InferredProps,
-  ProposalEntity,
-  ProposalData
+  Entity,
+  Data
 > {
-  protected createEntity(): ProposalEntity {
+  protected createEntity(): Entity {
     const { config, id } = this.props;
     if (!config) {
       throw Error(
@@ -66,7 +67,7 @@ class InferredJoinAndQuitProposal extends Component<
   protected static _EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<ProposalData | undefined>(
+  protected static _DataContext = React.createContext<Data | undefined>(
     undefined
   );
   protected static _LogsContext = React.createContext<
@@ -91,7 +92,7 @@ class JoinAndQuitProposal extends React.Component<RequiredProps> {
     if (!id) {
       return (
         <Proposal.Entity>
-          {(proposal: ProposalEntity) => renderInferred(proposal.id)}
+          {(proposal: Entity) => renderInferred(proposal.id)}
         </Proposal.Entity>
       );
     } else {
@@ -118,4 +119,5 @@ export {
   InferredJoinAndQuitProposal,
   JoinAndQuitProposal,
   Entity as JoinAndQuitProposalEntity,
+  Data as JoinAndQuitProposalData
 };

@@ -1,5 +1,8 @@
 import * as React from "react";
-import { SchemeRegistrarPlugin as Entity } from "@dorgtech/arc.js";
+import  { 
+  SchemeRegistrarPlugin as Entity, 
+  ISchemeRegistrarState as Data 
+} from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
   Arc as Protocol,
@@ -7,8 +10,6 @@ import {
   Component,
   ComponentLogs,
   ComponentProps,
-  PluginEntity,
-  PluginData,
   Plugin,
 } from "../../../";
 
@@ -22,12 +23,12 @@ interface InferredProps extends RequiredProps {
   id: string | Entity;
 }
 
-class InferredPluginManager extends Component<
+class InferredSchemeRegistrarPlugin extends Component<
   InferredProps,
-  PluginEntity,
-  PluginData
+  Entity,
+  Data
 > {
-  protected createEntity(): PluginEntity {
+  protected createEntity(): Entity {
     const { config, id } = this.props;
 
     if (!config) {
@@ -44,7 +45,7 @@ class InferredPluginManager extends Component<
     return CreateContextFeed(
       this._EntityContext.Consumer,
       this._LogsContext.Consumer,
-      "SchemeRegistrar"
+      "SchemeRegistrarPlugin"
     );
   }
 
@@ -52,7 +53,7 @@ class InferredPluginManager extends Component<
     return CreateContextFeed(
       this._DataContext.Consumer,
       this._LogsContext.Consumer,
-      "SchemeRegistrar"
+      "SchemeRegistrarPlugin"
     );
   }
 
@@ -60,14 +61,14 @@ class InferredPluginManager extends Component<
     return CreateContextFeed(
       this._LogsContext.Consumer,
       this._LogsContext.Consumer,
-      "SchemeRegistrar"
+      "SchemeRegistrarPlugin"
     );
   }
 
   protected static _EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<PluginData | undefined>(
+  protected static _DataContext = React.createContext<Data | undefined>(
     undefined
   );
   protected static _LogsContext = React.createContext<
@@ -75,16 +76,16 @@ class InferredPluginManager extends Component<
   >(undefined);
 }
 
-class PluginManager extends React.Component<RequiredProps> {
+class SchemeRegistrarPlugin extends React.Component<RequiredProps> {
   public render() {
     const { id, children } = this.props;
 
     const renderInferred = (id: string | Entity) => (
       <Protocol.Config>
         {(config: ProtocolConfig) => (
-          <InferredPluginManager id={id} config={config}>
+          <InferredSchemeRegistrarPlugin id={id} config={config}>
             {children}
-          </InferredPluginManager>
+          </InferredSchemeRegistrarPlugin>
         )}
       </Protocol.Config>
     );
@@ -92,7 +93,7 @@ class PluginManager extends React.Component<RequiredProps> {
     if (!id) {
       return (
         <Plugin.Entity>
-          {(plugin: PluginEntity) => renderInferred(plugin.id)}
+          {(plugin: Entity) => renderInferred(plugin.id)}
         </Plugin.Entity>
       );
     } else {
@@ -101,18 +102,23 @@ class PluginManager extends React.Component<RequiredProps> {
   }
 
   public static get Entity() {
-    return InferredPluginManager.Entity;
+    return InferredSchemeRegistrarPlugin.Entity;
   }
 
   public static get Data() {
-    return InferredPluginManager.Data;
+    return InferredSchemeRegistrarPlugin.Data;
   }
 
   public static get Logs() {
-    return InferredPluginManager.Logs;
+    return InferredSchemeRegistrarPlugin.Logs;
   }
 }
 
-export default PluginManager;
+export default SchemeRegistrarPlugin;
 
-export { PluginManager, InferredPluginManager, Entity as PluginManagerEntity };
+export { 
+  SchemeRegistrarPlugin, 
+  InferredSchemeRegistrarPlugin, 
+  Entity as SchemeRegistrarPluginEntity, 
+  Data as SchemeRegistrarPluginData
+};

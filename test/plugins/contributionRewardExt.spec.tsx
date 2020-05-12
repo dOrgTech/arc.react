@@ -9,7 +9,7 @@ import {
   Plugin,
   ContributionRewardExtPlugin,
   ContributionRewardProposal,
-  ContributionRewardEntity,
+  ContributionRewardPluginEntity,
 } from "../../src";
 
 const arcConfig = new ArcConfig("private");
