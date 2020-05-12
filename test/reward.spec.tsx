@@ -58,9 +58,6 @@ describe("Reward List", () => {
     const { findAllByText, queryAllByTestId, findByText } = render(
       <RewardList />
     );
-    await waitFor(() => findByText(/Reward id:/), {
-      timeout: 8000,
-    });
     await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
       timeout: 8000,
     });

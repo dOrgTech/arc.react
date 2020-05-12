@@ -1,5 +1,8 @@
 import * as React from "react";
-import { JoinAndQuit as Entity, IJoinAndQuitState as Data } from "@dorgtech/arc.js";
+import {
+  JoinAndQuit as Entity,
+  IJoinAndQuitState as Data,
+} from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
   Arc as Protocol,
@@ -10,7 +13,7 @@ import {
   Plugin,
 } from "../../../";
 
-interface RequiredProps extends ComponentProps {
+interface RequiredProps extends ComponentProps<Entity, Data> {
   // Plugin ID
   id?: string | Entity;
 }
@@ -20,11 +23,7 @@ interface InferredProps extends RequiredProps {
   id: string | Entity;
 }
 
-class InferredJoinAndQuitPlugin extends Component<
-  InferredProps,
-  Entity,
-  Data
-> {
+class InferredJoinAndQuitPlugin extends Component<InferredProps, Entity, Data> {
   protected createEntity(): Entity {
     const { config, id } = this.props;
 
@@ -117,5 +116,5 @@ export {
   JoinAndQuitPlugin,
   InferredJoinAndQuitPlugin,
   Entity as JoinAndQuitPluginEntity,
-  Data as JoinAndQuitPluginData
+  Data as JoinAndQuitPluginData,
 };

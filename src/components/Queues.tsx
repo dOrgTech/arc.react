@@ -57,6 +57,7 @@ class InferredQueues extends ComponentList<InferredProps, Component> {
         dao={dao}
         id={entity.id}
         config={config}
+        entity={entity}
       >
         {children}
       </Component>

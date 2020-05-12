@@ -66,7 +66,12 @@ class InferredVotes extends ComponentList<InferredProps, Component> {
     }
 
     return (
-      <Component key={`${entity.id}_${index}`} id={entity.id} config={config}>
+      <Component
+        key={`${entity.id}_${index}`}
+        id={entity.id}
+        config={config}
+        entity={entity}
+      >
         {children}
       </Component>
     );
