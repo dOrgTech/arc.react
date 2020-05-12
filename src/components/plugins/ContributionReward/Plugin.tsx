@@ -17,7 +17,7 @@ import {
   Plugin,
 } from "../../../";
 
-interface RequiredProps extends ComponentProps {
+interface RequiredProps extends ComponentProps<Entity, Data> {
   // Plugin ID
   id?: string | Entity;
 }

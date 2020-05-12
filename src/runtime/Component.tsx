@@ -155,7 +155,7 @@ export abstract class Component<
       }
 
       logs.dataQueryStarted();
-      await this.initialize(this._entity);
+      await this.initialize(this._entity!);
       this._initialized = true;
 
       if (this._subscription) {
@@ -164,9 +164,11 @@ export abstract class Component<
 
       // by default we subscribe to this entity's state changes
       if (!props.noSub) {
-        this._subscription = this._entity
-          .state({})
-          .subscribe(this.onQueryData, this.onQueryError, this.onQueryComplete);
+        this._subscription = this._entity!.state({}).subscribe(
+          this.onQueryData,
+          this.onQueryError,
+          this.onQueryComplete
+        );
       }
 
       this.forceUpdate();

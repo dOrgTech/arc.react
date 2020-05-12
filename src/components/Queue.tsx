@@ -11,7 +11,7 @@ import {
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
-interface RequiredProps extends ComponentProps {
+interface RequiredProps extends ComponentProps<Entity, Data> {
   // Address of the Queue Avatar
   id: string;
   dao?: string | DAOEntity;

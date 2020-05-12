@@ -4,7 +4,7 @@ import { CreateContextFeed } from "../runtime/ContextFeed";
 import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
 import { Vote as Entity, IVoteState as Data } from "@dorgtech/arc.js";
 
-interface RequiredProps extends ComponentProps {
+interface RequiredProps extends ComponentProps<Entity, Data> {
   // Vote ID
   id: string;
 }
