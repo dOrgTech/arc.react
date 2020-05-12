@@ -8,3 +8,5 @@ export * from "./Proposal";
 export * from "./Proposals";
 export * from "./Plugin";
 export * from "./Plugins";
+export * from "./JoinAndQuit";
+export * from "./FundingRequest";

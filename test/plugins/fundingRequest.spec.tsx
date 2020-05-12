@@ -7,14 +7,14 @@ import {
   ProposalData,
   Proposal,
   Plugin,
-  ContributionRewardExtPlugin,
-  ContributionRewardProposal,
-  ContributionRewardPluginEntity,
+  FundingRequestPlugin,
+  FundingRequestProposal,
+  FundingRequestPluginEntity,
 } from "../../src";
 
 const arcConfig = new ArcConfig("private");
 const pluginId =
-  "0x5f83d01d4a450819f46c9c8c4e7903a0367ae87d617b38e8946a6b9a13eb141c";
+  "0x1c63bad00c5a22db901379f62c2a09cdddf3f2db1cc59ecd0695670434ba7f73";
 const proposalId = "";
 
 describe("Plugin contribution reward ext component ", () => {
@@ -23,11 +23,11 @@ describe("Plugin contribution reward ext component ", () => {
   it("Shows plugin name", async () => {
     const { container } = render(
       <Arc config={arcConfig}>
-        <ContributionRewardExtPlugin id={pluginId}>
-          <ContributionRewardExtPlugin.Data>
+        <FundingRequestPlugin id={pluginId}>
+          <FundingRequestPlugin.Data>
             {(plugin: PluginData) => <div>{"Plugin name: " + plugin.name}</div>}
-          </ContributionRewardExtPlugin.Data>
-        </ContributionRewardExtPlugin>
+          </FundingRequestPlugin.Data>
+        </FundingRequestPlugin>
       </Arc>
     );
 
@@ -35,7 +35,7 @@ describe("Plugin contribution reward ext component ", () => {
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>
-        Plugin name: ContributionRewardExt
+        Plugin name: FundingRequest
       </div>
     `);
   });
@@ -44,13 +44,13 @@ describe("Plugin contribution reward ext component ", () => {
     const { container } = render(
       <Arc config={arcConfig}>
         <Plugin id={pluginId}>
-          <ContributionRewardExtPlugin>
-            <ContributionRewardExtPlugin.Data>
+          <FundingRequestPlugin>
+            <FundingRequestPlugin.Data>
               {(plugin: PluginData) => (
                 <div>{"Plugin name: " + plugin.name}</div>
               )}
-            </ContributionRewardExtPlugin.Data>
-          </ContributionRewardExtPlugin>
+            </FundingRequestPlugin.Data>
+          </FundingRequestPlugin>
         </Plugin>
       </Arc>
     );
@@ -59,7 +59,7 @@ describe("Plugin contribution reward ext component ", () => {
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>
-        Plugin name: ContributionRewardExt
+        Plugin name: FundingRequest
       </div>
     `);
   });

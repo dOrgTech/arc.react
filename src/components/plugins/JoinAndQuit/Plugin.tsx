@@ -1,20 +1,17 @@
 import * as React from "react";
-import { 
-  SchemeRegistrarProposal as Entity,
-  ISchemeRegistrarProposalState as Data 
-} from "@dorgtech/arc.js";
+import { JoinAndQuit as Entity, IJoinAndQuitState as Data } from "@dorgtech/arc.js";
+import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
   Component,
   ComponentLogs,
   ComponentProps,
-  Proposal,
+  Plugin,
 } from "../../../";
-import { CreateContextFeed } from "../../../runtime/ContextFeed";
 
-interface RequiredProps extends ComponentProps<Entity, Data> {
-  // Proposal ID
+interface RequiredProps extends ComponentProps {
+  // Plugin ID
   id?: string | Entity;
 }
 
@@ -23,28 +20,29 @@ interface InferredProps extends RequiredProps {
   id: string | Entity;
 }
 
-class InferredSchemeRegistrarProposal extends Component<
+class InferredJoinAndQuitPlugin extends Component<
   InferredProps,
   Entity,
   Data
 > {
   protected createEntity(): Entity {
     const { config, id } = this.props;
+
     if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
       );
     }
 
-    const proposalId = typeof id === "string" ? id : id.id;
-    return new Entity(config.connection, proposalId);
+    const pluginId = typeof id === "string" ? id : id.id;
+    return new Entity(config.connection, pluginId);
   }
 
   public static get Entity() {
     return CreateContextFeed(
       this._EntityContext.Consumer,
       this._LogsContext.Consumer,
-      "SchemeRegistrarProposal"
+      "JoinAndQuitPlugin"
     );
   }
 
@@ -52,7 +50,7 @@ class InferredSchemeRegistrarProposal extends Component<
     return CreateContextFeed(
       this._DataContext.Consumer,
       this._LogsContext.Consumer,
-      "SchemeRegistrarProposal"
+      "JoinAndQuitPlugin"
     );
   }
 
@@ -60,7 +58,7 @@ class InferredSchemeRegistrarProposal extends Component<
     return CreateContextFeed(
       this._LogsContext.Consumer,
       this._LogsContext.Consumer,
-      "SchemeRegistrarProposal"
+      "JoinAndQuitPlugin"
     );
   }
 
@@ -75,25 +73,25 @@ class InferredSchemeRegistrarProposal extends Component<
   >(undefined);
 }
 
-class SchemeRegistrarProposal extends React.Component<RequiredProps> {
+class JoinAndQuitPlugin extends React.Component<RequiredProps> {
   public render() {
     const { id, children } = this.props;
 
     const renderInferred = (id: string | Entity) => (
       <Protocol.Config>
         {(config: ProtocolConfig) => (
-          <InferredSchemeRegistrarProposal id={id} config={config}>
+          <InferredJoinAndQuitPlugin id={id} config={config}>
             {children}
-          </InferredSchemeRegistrarProposal>
+          </InferredJoinAndQuitPlugin>
         )}
       </Protocol.Config>
     );
 
     if (!id) {
       return (
-        <Proposal.Entity>
-          {(proposal: Data) => renderInferred(proposal.id)}
-        </Proposal.Entity>
+        <Plugin.Entity>
+          {(plugin: Entity) => renderInferred(plugin.id)}
+        </Plugin.Entity>
       );
     } else {
       return renderInferred(id);
@@ -101,23 +99,23 @@ class SchemeRegistrarProposal extends React.Component<RequiredProps> {
   }
 
   public static get Entity() {
-    return InferredSchemeRegistrarProposal.Entity;
+    return InferredJoinAndQuitPlugin.Entity;
   }
 
   public static get Data() {
-    return InferredSchemeRegistrarProposal.Data;
+    return InferredJoinAndQuitPlugin.Data;
   }
 
   public static get Logs() {
-    return InferredSchemeRegistrarProposal.Logs;
+    return InferredJoinAndQuitPlugin.Logs;
   }
 }
 
-export default SchemeRegistrarProposal;
+export default JoinAndQuitPlugin;
 
-export { 
-  InferredSchemeRegistrarProposal, 
-  SchemeRegistrarProposal,
-  Entity as SchemeRegistrarProposalEntity,
-  Data as SchemeRegistrarProposalData
+export {
+  JoinAndQuitPlugin,
+  InferredJoinAndQuitPlugin,
+  Entity as JoinAndQuitPluginEntity,
+  Data as JoinAndQuitPluginData
 };

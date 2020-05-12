@@ -1,13 +1,14 @@
 import * as React from "react";
-import { GenericPluginProposal as Entity } from "@dorgtech/arc.js";
+import { 
+  GenericPluginProposal as Entity,
+  IGenericPluginProposalState as Data
+} from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
   Component,
   ComponentLogs,
   ComponentProps,
-  ProposalEntity,
-  ProposalData,
   Proposal,
 } from "../../../";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
@@ -24,12 +25,11 @@ interface InferredProps extends RequiredProps {
 
 class InferredGenericPluginProposal extends Component<
   InferredProps,
-  ProposalEntity,
-  ProposalData
+  Entity,
+  Data
 > {
-  protected createEntity(): ProposalEntity {
+  protected createEntity(): Entity {
     const { config, id } = this.props;
-    console.log(config);
     if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
@@ -67,7 +67,7 @@ class InferredGenericPluginProposal extends Component<
   protected static _EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<ProposalData | undefined>(
+  protected static _DataContext = React.createContext<Data | undefined>(
     undefined
   );
   protected static _LogsContext = React.createContext<
@@ -92,7 +92,7 @@ class GenericPluginProposal extends React.Component<RequiredProps> {
     if (!id) {
       return (
         <Proposal.Entity>
-          {(proposal: ProposalEntity) => renderInferred(proposal.id)}
+          {(proposal: Entity) => renderInferred(proposal.id)}
         </Proposal.Entity>
       );
     } else {
@@ -119,4 +119,5 @@ export {
   InferredGenericPluginProposal,
   GenericPluginProposal,
   Entity as GenericPluginProposalEntity,
+  Data as GenericPluginProposalData
 };

@@ -42,13 +42,13 @@ proposals...
 </Proposals>
 ```
 
-and any other entity [within DAOstack protocol](./src/components).
+and any other entity [within the DAOstack protocol](./src/components).
 
 ## Read The Docs
 
-- [usage](./documentation/usage.md)
 - [examples](./documentation/examples.md)
 - [architecture](./documentation/architecture.md)
+- [api](./documentation/api.md)
 
 # Build & Contribute
 

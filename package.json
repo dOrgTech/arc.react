@@ -1,6 +1,6 @@
 {
-  "name": "@dorgtech/daocomponents",
-  "version": "0.0.8-alpha",
+  "name": "@daostack/arc.react",
+  "version": "0.0.1",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
   "scripts": {

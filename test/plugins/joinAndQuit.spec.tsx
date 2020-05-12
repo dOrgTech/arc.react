@@ -7,14 +7,14 @@ import {
   ProposalData,
   Proposal,
   Plugin,
-  ContributionRewardExtPlugin,
-  ContributionRewardProposal,
-  ContributionRewardPluginEntity,
+  JoinAndQuitPlugin,
+  JoinAndQuitProposal,
+  JoinAndQuitPluginEntity,
 } from "../../src";
 
 const arcConfig = new ArcConfig("private");
 const pluginId =
-  "0x5f83d01d4a450819f46c9c8c4e7903a0367ae87d617b38e8946a6b9a13eb141c";
+  "0x500fbca403f233baf935def9e2b06b380837c8a5047b740c179e68de74b5c986";
 const proposalId = "";
 
 describe("Plugin contribution reward ext component ", () => {
@@ -23,11 +23,11 @@ describe("Plugin contribution reward ext component ", () => {
   it("Shows plugin name", async () => {
     const { container } = render(
       <Arc config={arcConfig}>
-        <ContributionRewardExtPlugin id={pluginId}>
-          <ContributionRewardExtPlugin.Data>
+        <JoinAndQuitPlugin id={pluginId}>
+          <JoinAndQuitPlugin.Data>
             {(plugin: PluginData) => <div>{"Plugin name: " + plugin.name}</div>}
-          </ContributionRewardExtPlugin.Data>
-        </ContributionRewardExtPlugin>
+          </JoinAndQuitPlugin.Data>
+        </JoinAndQuitPlugin>
       </Arc>
     );
 
@@ -35,7 +35,7 @@ describe("Plugin contribution reward ext component ", () => {
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>
-        Plugin name: ContributionRewardExt
+        Plugin name: JoinAndQuit
       </div>
     `);
   });
@@ -44,13 +44,13 @@ describe("Plugin contribution reward ext component ", () => {
     const { container } = render(
       <Arc config={arcConfig}>
         <Plugin id={pluginId}>
-          <ContributionRewardExtPlugin>
-            <ContributionRewardExtPlugin.Data>
+          <JoinAndQuitPlugin>
+            <JoinAndQuitPlugin.Data>
               {(plugin: PluginData) => (
                 <div>{"Plugin name: " + plugin.name}</div>
               )}
-            </ContributionRewardExtPlugin.Data>
-          </ContributionRewardExtPlugin>
+            </JoinAndQuitPlugin.Data>
+          </JoinAndQuitPlugin>
         </Plugin>
       </Arc>
     );
@@ -59,7 +59,7 @@ describe("Plugin contribution reward ext component ", () => {
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>
-        Plugin name: ContributionRewardExt
+        Plugin name: JoinAndQuit
       </div>
     `);
   });

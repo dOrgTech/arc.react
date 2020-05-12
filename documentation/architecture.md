@@ -38,3 +38,7 @@ Each part of the component is exposed through a [React Context](https://reactjs.
 ## Component Lists
 
 For each component type, you can add an `s` after its name and it'll become a list of that entity type. For example: `DAOs`, `Proposals`, `Members`. See "Example 3" in [examples]('./examples).
+
+## Examples
+
+Please see the [examples](./examples.md) document.

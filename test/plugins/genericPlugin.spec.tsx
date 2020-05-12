@@ -7,6 +7,7 @@ import {
   ProposalData,
   GenericPlugin,
   GenericPluginProposal,
+  GenericPluginEntity,
   Plugin,
 } from "../../src";
 
@@ -52,7 +53,7 @@ describe("Generic plugin component ", () => {
       </Arc>
     );
 
-    const name = await screen.findByText(/Plugin name:/);
+    const name = await screen.findByText(/Plugin name/);
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>

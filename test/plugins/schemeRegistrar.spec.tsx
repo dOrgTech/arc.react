@@ -7,14 +7,15 @@ import {
   ProposalData,
   Proposal,
   Plugin,
-  PluginManager,
-  PluginManagerProposal,
+  SchemeRegistrarPlugin,
+  SchemeRegistrarProposal,
 } from "../../src";
 
 const arcConfig = new ArcConfig("private");
 const pluginId =
-  "0x63f80cbfc4a795d6dd8c71d86beb55aace9a69fe72e7b89f3d57e6c852a2a39f";
-const proposalId = "";
+  "0xb262e81d24322258466af958b36d67ad867be64f526ed13dd3af38e13094a829";
+const proposalId =
+  "0x1a691b748985f728ff512ea51498ba2459498312c57acd4536e2c14ae350d9e1";
 
 describe("Plugin manaer component ", () => {
   afterEach(() => cleanup());
@@ -22,11 +23,11 @@ describe("Plugin manaer component ", () => {
   it("Shows plugin name", async () => {
     const { container } = render(
       <Arc config={arcConfig}>
-        <PluginManager id={pluginId}>
-          <PluginManager.Data>
+        <SchemeRegistrarPlugin id={pluginId}>
+          <SchemeRegistrarPlugin.Data>
             {(plugin: PluginData) => <div>{"Plugin name: " + plugin.name}</div>}
-          </PluginManager.Data>
-        </PluginManager>
+          </SchemeRegistrarPlugin.Data>
+        </SchemeRegistrarPlugin>
       </Arc>
     );
 
@@ -43,13 +44,13 @@ describe("Plugin manaer component ", () => {
     const { container } = render(
       <Arc config={arcConfig}>
         <Plugin id={pluginId}>
-          <PluginManager>
-            <PluginManager.Data>
+          <SchemeRegistrarPlugin>
+            <SchemeRegistrarPlugin.Data>
               {(plugin: PluginData) => (
                 <div>{"Plugin name: " + plugin.name}</div>
               )}
-            </PluginManager.Data>
-          </PluginManager>
+            </SchemeRegistrarPlugin.Data>
+          </SchemeRegistrarPlugin>
         </Plugin>
       </Arc>
     );
@@ -64,18 +65,19 @@ describe("Plugin manaer component ", () => {
   });
 });
 
-// we are skiping because we have not created proposals yet
-/* describe("Proposal component ", () => {
+describe.skip("Proposal component ", () => {
   afterEach(() => cleanup());
 
   it("Shows proposal id", async () => {
     const { container } = render(
       <Arc config={arcConfig}>
-        <PluginManagerProposal id={proposalId}>
-          <PluginManagerProposal.Data>
-            {(proposal: ProposalData) => <div>{"Proposal id: " + proposal.id}</div>}
-          </PluginManagerProposal.Data>
-        </PluginManagerProposal>
+        <SchemeRegistrarProposal id={proposalId}>
+          <SchemeRegistrarProposal.Data>
+            {(proposal: ProposalData) => (
+              <div>{"Proposal id: " + proposal.id}</div>
+            )}
+          </SchemeRegistrarProposal.Data>
+        </SchemeRegistrarProposal>
       </Arc>
     );
 
@@ -92,11 +94,13 @@ describe("Plugin manaer component ", () => {
     const { container } = render(
       <Arc config={arcConfig}>
         <Proposal id={proposalId}>
-          <PluginManagerProposal>
-            <PluginManagerProposal.Data>
-              {(proposal: ProposalData) => <div>{"Proposal id: " + proposal.id}</div>}
-            </PluginManagerProposal.Data>
-          </PluginManagerProposal>
+          <SchemeRegistrarProposal>
+            <SchemeRegistrarProposal.Data>
+              {(proposal: ProposalData) => (
+                <div>{"Proposal id: " + proposal.id}</div>
+              )}
+            </SchemeRegistrarProposal.Data>
+          </SchemeRegistrarProposal>
         </Proposal>
       </Arc>
     );
@@ -109,4 +113,4 @@ describe("Plugin manaer component ", () => {
       </div>
     `);
   });
-}); */
+});

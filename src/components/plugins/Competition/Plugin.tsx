@@ -1,5 +1,8 @@
 import * as React from "react";
-import { CompetitionPlugin as Entity } from "@dorgtech/arc.js";
+import {
+  CompetitionPlugin as Entity,
+  IContributionRewardExtState as Data,
+} from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
   Arc as Protocol,
@@ -7,8 +10,6 @@ import {
   Component,
   ComponentLogs,
   ComponentProps,
-  PluginEntity,
-  PluginData,
   Plugin,
 } from "../../../";
 
@@ -22,12 +23,8 @@ interface InferredProps extends RequiredProps {
   id: string | Entity;
 }
 
-class InferredCompetition extends Component<
-  InferredProps,
-  PluginEntity,
-  PluginData
-> {
-  protected createEntity(): PluginEntity {
+class InferredCompetitionPlugin extends Component<InferredProps, Entity, Data> {
+  protected createEntity(): Entity {
     const { config, id } = this.props;
 
     if (!config) {
@@ -67,7 +64,7 @@ class InferredCompetition extends Component<
   protected static _EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<PluginData | undefined>(
+  protected static _DataContext = React.createContext<Data | undefined>(
     undefined
   );
   protected static _LogsContext = React.createContext<
@@ -82,9 +79,9 @@ class CompetitionPlugin extends React.Component<RequiredProps> {
     const renderInferred = (id: string | Entity) => (
       <Protocol.Config>
         {(config: ProtocolConfig) => (
-          <InferredCompetition id={id} config={config}>
+          <InferredCompetitionPlugin id={id} config={config}>
             {children}
-          </InferredCompetition>
+          </InferredCompetitionPlugin>
         )}
       </Protocol.Config>
     );
@@ -92,7 +89,7 @@ class CompetitionPlugin extends React.Component<RequiredProps> {
     if (!id) {
       return (
         <Plugin.Entity>
-          {(plugin: PluginEntity) => renderInferred(plugin.id)}
+          {(plugin: Entity) => renderInferred(plugin.id)}
         </Plugin.Entity>
       );
     } else {
@@ -101,18 +98,23 @@ class CompetitionPlugin extends React.Component<RequiredProps> {
   }
 
   public static get Entity() {
-    return InferredCompetition.Entity;
+    return InferredCompetitionPlugin.Entity;
   }
 
   public static get Data() {
-    return InferredCompetition.Data;
+    return InferredCompetitionPlugin.Data;
   }
 
   public static get Logs() {
-    return InferredCompetition.Logs;
+    return InferredCompetitionPlugin.Logs;
   }
 }
 
-export default Plugin;
+export default CompetitionPlugin;
 
-export { CompetitionPlugin, InferredCompetition, Entity as CompetitionEntity };
+export {
+  CompetitionPlugin,
+  InferredCompetitionPlugin,
+  Entity as CompetitionPluginEntity,
+  Data as CompetitionPluginData,
+};
