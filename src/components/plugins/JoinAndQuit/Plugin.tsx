@@ -1,5 +1,8 @@
 import * as React from "react";
-import { JoinAndQuit as Entity, IJoinAndQuitState as Data } from "@dorgtech/arc.js";
+import {
+  JoinAndQuit as Entity,
+  IJoinAndQuitState as Data,
+} from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
   Arc as Protocol,
@@ -20,11 +23,7 @@ interface InferredProps extends RequiredProps {
   id: string | Entity;
 }
 
-class InferredJoinAndQuitPlugin extends Component<
-  InferredProps,
-  Entity,
-  Data
-> {
+class InferredJoinAndQuitPlugin extends Component<InferredProps, Entity, Data> {
   protected createEntity(): Entity {
     const { config, id } = this.props;
 
@@ -40,37 +39,46 @@ class InferredJoinAndQuitPlugin extends Component<
 
   public static get Entity() {
     return CreateContextFeed(
-      this._EntityContext.Consumer,
-      this._LogsContext.Consumer,
+      this.EntityContext.Consumer,
+      this.LogsContext.Consumer,
       "JoinAndQuitPlugin"
     );
   }
 
   public static get Data() {
     return CreateContextFeed(
-      this._DataContext.Consumer,
-      this._LogsContext.Consumer,
+      this.DataContext.Consumer,
+      this.LogsContext.Consumer,
       "JoinAndQuitPlugin"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
-      this._LogsContext.Consumer,
-      this._LogsContext.Consumer,
+      this.LogsContext.Consumer,
+      this.LogsContext.Consumer,
       "JoinAndQuitPlugin"
     );
   }
 
-  protected static _EntityContext = React.createContext<Entity | undefined>(
+  public static EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<Data | undefined>(
+  public static DataContext = React.createContext<Data | undefined>(undefined);
+  public static LogsContext = React.createContext<ComponentLogs | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<
-    ComponentLogs | undefined
-  >(undefined);
+}
+
+function useJoinAndQuitPlugin(): [Data | undefined, Entity | undefined] {
+  const data = React.useContext<Data | undefined>(
+    InferredJoinAndQuitPlugin.DataContext
+  );
+  const entity = React.useContext<Entity | undefined>(
+    InferredJoinAndQuitPlugin.EntityContext
+  );
+
+  return [data, entity];
 }
 
 class JoinAndQuitPlugin extends React.Component<RequiredProps> {
@@ -117,5 +125,6 @@ export {
   JoinAndQuitPlugin,
   InferredJoinAndQuitPlugin,
   Entity as JoinAndQuitPluginEntity,
-  Data as JoinAndQuitPluginData
+  Data as JoinAndQuitPluginData,
+  useJoinAndQuitPlugin,
 };

@@ -1,7 +1,7 @@
 import * as React from "react";
-import { 
+import {
   SchemeRegistrarProposal as Entity,
-  ISchemeRegistrarProposalState as Data 
+  ISchemeRegistrarProposalState as Data,
 } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
@@ -42,37 +42,46 @@ class InferredSchemeRegistrarProposal extends Component<
 
   public static get Entity() {
     return CreateContextFeed(
-      this._EntityContext.Consumer,
-      this._LogsContext.Consumer,
+      this.EntityContext.Consumer,
+      this.LogsContext.Consumer,
       "SchemeRegistrarProposal"
     );
   }
 
   public static get Data() {
     return CreateContextFeed(
-      this._DataContext.Consumer,
-      this._LogsContext.Consumer,
+      this.DataContext.Consumer,
+      this.LogsContext.Consumer,
       "SchemeRegistrarProposal"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
-      this._LogsContext.Consumer,
-      this._LogsContext.Consumer,
+      this.LogsContext.Consumer,
+      this.LogsContext.Consumer,
       "SchemeRegistrarProposal"
     );
   }
 
-  protected static _EntityContext = React.createContext<Entity | undefined>(
+  public static EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<Data | undefined>(
+  public static DataContext = React.createContext<Data | undefined>(undefined);
+  public static LogsContext = React.createContext<ComponentLogs | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<
-    ComponentLogs | undefined
-  >(undefined);
+}
+
+function useSchemeRegistrarProposal(): [Data | undefined, Entity | undefined] {
+  const data = React.useContext<Data | undefined>(
+    InferredSchemeRegistrarProposal.DataContext
+  );
+  const entity = React.useContext<Entity | undefined>(
+    InferredSchemeRegistrarProposal.EntityContext
+  );
+
+  return [data, entity];
 }
 
 class SchemeRegistrarProposal extends React.Component<RequiredProps> {
@@ -115,9 +124,10 @@ class SchemeRegistrarProposal extends React.Component<RequiredProps> {
 
 export default SchemeRegistrarProposal;
 
-export { 
-  InferredSchemeRegistrarProposal, 
+export {
+  InferredSchemeRegistrarProposal,
   SchemeRegistrarProposal,
   Entity as SchemeRegistrarProposalEntity,
-  Data as SchemeRegistrarProposalData
+  Data as SchemeRegistrarProposalData,
+  useSchemeRegistrarProposal,
 };

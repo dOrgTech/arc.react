@@ -42,9 +42,9 @@ export abstract class Component<
 
   // See here for more information on the React.Context pattern:
   // https://reactjs.org/docs/context.html
-  protected static _EntityContext: React.Context<any | undefined>;
-  protected static _DataContext: React.Context<any | undefined>;
-  protected static _LogsContext: React.Context<ComponentLogs | undefined>;
+  public static EntityContext: React.Context<any | undefined>;
+  public static DataContext: React.Context<any | undefined>;
+  public static LogsContext: React.Context<ComponentLogs | undefined>;
 
   private entity = memoize(
     // This will only run when the function's arguments have changed :D
@@ -81,9 +81,9 @@ export abstract class Component<
   "constructor": typeof Component;
 
   public render() {
-    const EntityProvider = this.constructor._EntityContext.Provider as any;
-    const DataProvider = this.constructor._DataContext.Provider as any;
-    const LogsProvider = this.constructor._LogsContext.Provider;
+    const EntityProvider = this.constructor.EntityContext.Provider as any;
+    const DataProvider = this.constructor.DataContext.Provider as any;
+    const LogsProvider = this.constructor.LogsContext.Provider;
 
     const children = this.props.children;
     const { data, logs } = this.state;

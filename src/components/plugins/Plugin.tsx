@@ -58,37 +58,44 @@ class InferredPlugin extends Component<InferredProps, Entity, Data> {
 
   public static get Entity() {
     return CreateContextFeed(
-      this._EntityContext.Consumer,
-      this._LogsContext.Consumer,
+      this.EntityContext.Consumer,
+      this.LogsContext.Consumer,
       "Plugin"
     );
   }
 
   public static get Data() {
     return CreateContextFeed(
-      this._DataContext.Consumer,
-      this._LogsContext.Consumer,
+      this.DataContext.Consumer,
+      this.LogsContext.Consumer,
       "Plugin"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
-      this._LogsContext.Consumer,
-      this._LogsContext.Consumer,
+      this.LogsContext.Consumer,
+      this.LogsContext.Consumer,
       "Plugin"
     );
   }
 
-  protected static _EntityContext = React.createContext<Entity | undefined>(
+  public static EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<Data | undefined>(
+  public static DataContext = React.createContext<Data | undefined>(undefined);
+  public static LogsContext = React.createContext<ComponentLogs | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<
-    ComponentLogs | undefined
-  >(undefined);
+}
+
+function usePlugin(): [Data | undefined, Entity | undefined] {
+  const data = React.useContext<Data | undefined>(InferredPlugin.DataContext);
+  const entity = React.useContext<Entity | undefined>(
+    InferredPlugin.EntityContext
+  );
+
+  return [data, entity];
 }
 
 class Plugin extends React.Component<RequiredProps> {
@@ -120,4 +127,10 @@ class Plugin extends React.Component<RequiredProps> {
 
 export default Plugin;
 
-export { Plugin, InferredPlugin, Entity as PluginEntity, Data as PluginData };
+export {
+  Plugin,
+  InferredPlugin,
+  Entity as PluginEntity,
+  Data as PluginData,
+  usePlugin,
+};

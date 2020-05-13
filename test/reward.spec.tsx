@@ -1,5 +1,5 @@
 import React from "react";
-import { Arc, ArcConfig, RewardData, Reward, Rewards } from "../src";
+import { Arc, ArcConfig, RewardData, Reward, Rewards, useReward } from "../src";
 import {
   render,
   screen,
@@ -26,8 +26,34 @@ describe("Reward component ", () => {
       </Arc>
     );
 
-    const id = await screen.findByText(/Reward id:/);
+    const id = await screen.findByText(
+      /Reward id: 0x4c18c882ff760491e9d9fcc22ebf6494bbe57053f707f5a750a47177e7f8fdc4/
+    );
     expect(id).toBeInTheDocument();
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        Reward id: ${rewardId}
+      </div>
+    `);
+  });
+
+  it("Shows id using useReward", async () => {
+    const RewardWithHooks = () => {
+      const [rewardData] = useReward();
+      return <div>{"Reward id: " + rewardData?.id}</div>;
+    };
+    const { container, findByText } = render(
+      <Arc config={arcConfig}>
+        <Reward id={rewardId}>
+          <RewardWithHooks />
+        </Reward>
+      </Arc>
+    );
+
+    const name = await findByText(
+      /Reward id: 0x4c18c882ff760491e9d9fcc22ebf6494bbe57053f707f5a750a47177e7f8fdc4/
+    );
+    expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>
         Reward id: ${rewardId}

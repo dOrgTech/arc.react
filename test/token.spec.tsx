@@ -1,5 +1,13 @@
 import React from "react";
-import { Arc, ArcConfig, TokenData, Token, DAO, Tokens } from "../src";
+import {
+  Arc,
+  ArcConfig,
+  TokenData,
+  Token,
+  DAO,
+  Tokens,
+  useToken,
+} from "../src";
 import {
   render,
   screen,
@@ -57,6 +65,30 @@ describe("Token component ", () => {
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>
         Token DAO owner: ${daoAddress}
+      </div>
+    `);
+  });
+
+  it("Shows address using useToken", async () => {
+    const TokenWithHooks = () => {
+      const [tokenData] = useToken();
+      return <div>{"Token address: " + tokenData?.address}</div>;
+    };
+    const { container, findByText } = render(
+      <Arc config={arcConfig}>
+        <Token address={tokenAddress}>
+          <TokenWithHooks />
+        </Token>
+      </Arc>
+    );
+
+    const name = await findByText(
+      /Token address: 0x24014c20291afc04145a0bf5b5cdf58dc3f3b809/
+    );
+    expect(name).toBeInTheDocument();
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        Token address: ${tokenAddress}
       </div>
     `);
   });

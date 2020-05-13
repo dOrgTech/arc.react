@@ -1,8 +1,15 @@
 import React from "react";
-import { Arc, ArcConfig, ProposalData, Proposal, Proposals, DAO } from "../src";
+import {
+  Arc,
+  ArcConfig,
+  ProposalData,
+  Proposal,
+  Proposals,
+  DAO,
+  useProposal,
+} from "../src";
 import {
   render,
-  screen,
   waitForElementToBeRemoved,
   waitFor,
   cleanup,
@@ -18,7 +25,7 @@ describe("Proposal component ", () => {
   afterEach(() => cleanup());
 
   it("Shows proposal id", async () => {
-    const { container } = render(
+    const { container, findByText } = render(
       <Arc config={arcConfig}>
         <Proposal id={proposalId}>
           <Proposal.Data>
@@ -30,7 +37,31 @@ describe("Proposal component ", () => {
       </Arc>
     );
 
-    const name = await screen.findByText(/Proposal id:/);
+    const name = await findByText(/Proposal id:/);
+    expect(name).toBeInTheDocument();
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        Proposal id: ${proposalId}
+      </div>
+    `);
+  });
+
+  it("Shows id using useProposal", async () => {
+    const ProposalWithHooks = () => {
+      const [proposalData] = useProposal();
+      return <div>{"Proposal id: " + proposalData?.id}</div>;
+    };
+    const { container, findByText } = render(
+      <Arc config={arcConfig}>
+        <Proposal id={proposalId}>
+          <ProposalWithHooks />
+        </Proposal>
+      </Arc>
+    );
+
+    const name = await findByText(
+      /Proposal id: 0x58fba3fe8b4d4090ecce931bdf826532700805b151cc22ee5fddd03750a4b444/
+    );
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>

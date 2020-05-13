@@ -1,7 +1,7 @@
 import * as React from "react";
-import  { 
-  SchemeRegistrarPlugin as Entity, 
-  ISchemeRegistrarState as Data 
+import {
+  SchemeRegistrarPlugin as Entity,
+  ISchemeRegistrarState as Data,
 } from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
@@ -43,37 +43,46 @@ class InferredSchemeRegistrarPlugin extends Component<
 
   public static get Entity() {
     return CreateContextFeed(
-      this._EntityContext.Consumer,
-      this._LogsContext.Consumer,
+      this.EntityContext.Consumer,
+      this.LogsContext.Consumer,
       "SchemeRegistrarPlugin"
     );
   }
 
   public static get Data() {
     return CreateContextFeed(
-      this._DataContext.Consumer,
-      this._LogsContext.Consumer,
+      this.DataContext.Consumer,
+      this.LogsContext.Consumer,
       "SchemeRegistrarPlugin"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
-      this._LogsContext.Consumer,
-      this._LogsContext.Consumer,
+      this.LogsContext.Consumer,
+      this.LogsContext.Consumer,
       "SchemeRegistrarPlugin"
     );
   }
 
-  protected static _EntityContext = React.createContext<Entity | undefined>(
+  public static EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<Data | undefined>(
+  public static DataContext = React.createContext<Data | undefined>(undefined);
+  public static LogsContext = React.createContext<ComponentLogs | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<
-    ComponentLogs | undefined
-  >(undefined);
+}
+
+function useSchemeRegistrarPlugin(): [Data | undefined, Entity | undefined] {
+  const data = React.useContext<Data | undefined>(
+    InferredSchemeRegistrarPlugin.DataContext
+  );
+  const entity = React.useContext<Entity | undefined>(
+    InferredSchemeRegistrarPlugin.EntityContext
+  );
+
+  return [data, entity];
 }
 
 class SchemeRegistrarPlugin extends React.Component<RequiredProps> {
@@ -116,9 +125,10 @@ class SchemeRegistrarPlugin extends React.Component<RequiredProps> {
 
 export default SchemeRegistrarPlugin;
 
-export { 
-  SchemeRegistrarPlugin, 
-  InferredSchemeRegistrarPlugin, 
-  Entity as SchemeRegistrarPluginEntity, 
-  Data as SchemeRegistrarPluginData
+export {
+  SchemeRegistrarPlugin,
+  InferredSchemeRegistrarPlugin,
+  Entity as SchemeRegistrarPluginEntity,
+  Data as SchemeRegistrarPluginData,
+  useSchemeRegistrarPlugin,
 };

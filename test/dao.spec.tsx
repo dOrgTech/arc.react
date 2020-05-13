@@ -8,6 +8,7 @@ import {
   Members,
   Member,
   MemberData,
+  useDAO,
 } from "../src";
 import { render, screen, cleanup } from "@testing-library/react";
 
@@ -28,6 +29,28 @@ describe("DAO Component ", () => {
       </Arc>
     );
     const name = await screen.findByText(/DAO address:/);
+    expect(name).toBeInTheDocument();
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        DAO address: ${daoAddress}
+      </div>
+    `);
+  });
+
+  it("Shows address using useDAO", async () => {
+    const DaoWithHooks = () => {
+      const [daoData] = useDAO();
+      return <div>{"DAO address: " + daoData?.id}</div>;
+    };
+    const { container, findByText } = render(
+      <Arc config={arcConfig}>
+        <DAO address={daoAddress}>
+          <DaoWithHooks />
+        </DAO>
+      </Arc>
+    );
+
+    const name = await findByText(/DAO address:/);
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>

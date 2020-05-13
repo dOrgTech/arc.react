@@ -1,7 +1,7 @@
 import * as React from "react";
-import { 
+import {
   GenericPlugin as Entity,
-  IGenericPluginState as Data
+  IGenericPluginState as Data,
 } from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
@@ -23,11 +23,7 @@ interface InferredProps extends RequiredProps {
   id: string | Entity;
 }
 
-class InferredGenericPlugin extends Component<
-  InferredProps,
-  Entity,
-  Data
-> {
+class InferredGenericPlugin extends Component<InferredProps, Entity, Data> {
   protected createEntity(): Entity {
     const { config, id } = this.props;
 
@@ -43,37 +39,46 @@ class InferredGenericPlugin extends Component<
 
   public static get Entity() {
     return CreateContextFeed(
-      this._EntityContext.Consumer,
-      this._LogsContext.Consumer,
+      this.EntityContext.Consumer,
+      this.LogsContext.Consumer,
       "GenericPlugin"
     );
   }
 
   public static get Data() {
     return CreateContextFeed(
-      this._DataContext.Consumer,
-      this._LogsContext.Consumer,
+      this.DataContext.Consumer,
+      this.LogsContext.Consumer,
       "GenericPlugin"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
-      this._LogsContext.Consumer,
-      this._LogsContext.Consumer,
+      this.LogsContext.Consumer,
+      this.LogsContext.Consumer,
       "GenericPlugin"
     );
   }
 
-  protected static _EntityContext = React.createContext<Entity | undefined>(
+  public static EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<Data | undefined>(
+  public static DataContext = React.createContext<Data | undefined>(undefined);
+  public static LogsContext = React.createContext<ComponentLogs | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<
-    ComponentLogs | undefined
-  >(undefined);
+}
+
+function useGenericPlugin(): [Data | undefined, Entity | undefined] {
+  const data = React.useContext<Data | undefined>(
+    InferredGenericPlugin.DataContext
+  );
+  const entity = React.useContext<Entity | undefined>(
+    InferredGenericPlugin.EntityContext
+  );
+
+  return [data, entity];
 }
 
 class GenericPlugin extends React.Component<RequiredProps> {
@@ -116,9 +121,10 @@ class GenericPlugin extends React.Component<RequiredProps> {
 
 export default Plugin;
 
-export { 
-  GenericPlugin, 
-  InferredGenericPlugin, 
+export {
+  GenericPlugin,
+  InferredGenericPlugin,
   Entity as GenericPluginEntity,
-  Data as GenericPluginData
+  Data as GenericPluginData,
+  useGenericPlugin,
 };

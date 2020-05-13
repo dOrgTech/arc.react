@@ -1,7 +1,7 @@
 import * as React from "react";
-import { 
+import {
   FundingRequestProposal as Entity,
-  IFundingRequestProposalState as Data
+  IFundingRequestProposalState as Data,
 } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
@@ -75,6 +75,17 @@ class InferredFundingRequestProposal extends Component<
   >(undefined);
 }
 
+function useFundingRequestProposal(): [Data | undefined, Entity | undefined] {
+  const data = React.useContext<Data | undefined>(
+    InferredFundingRequestProposal.DataContext
+  );
+  const entity = React.useContext<Entity | undefined>(
+    InferredFundingRequestProposal.EntityContext
+  );
+
+  return [data, entity];
+}
+
 class FundingRequestProposal extends React.Component<RequiredProps> {
   public render() {
     const { id, children } = this.props;
@@ -119,5 +130,6 @@ export {
   InferredFundingRequestProposal,
   FundingRequestProposal,
   Entity as FundingRequestProposalEntity,
-  Data as FundingRequestProposalData
+  Data as FundingRequestProposalData,
+  useFundingRequestProposal,
 };

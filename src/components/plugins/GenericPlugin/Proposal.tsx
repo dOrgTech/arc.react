@@ -1,7 +1,7 @@
 import * as React from "react";
-import { 
+import {
   GenericPluginProposal as Entity,
-  IGenericPluginProposalState as Data
+  IGenericPluginProposalState as Data,
 } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
@@ -42,37 +42,46 @@ class InferredGenericPluginProposal extends Component<
 
   public static get Entity() {
     return CreateContextFeed(
-      this._EntityContext.Consumer,
-      this._LogsContext.Consumer,
+      this.EntityContext.Consumer,
+      this.LogsContext.Consumer,
       "GenericPluginProposal"
     );
   }
 
   public static get Data() {
     return CreateContextFeed(
-      this._DataContext.Consumer,
-      this._LogsContext.Consumer,
+      this.DataContext.Consumer,
+      this.LogsContext.Consumer,
       "GenericPluginProposal"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
-      this._LogsContext.Consumer,
-      this._LogsContext.Consumer,
+      this.LogsContext.Consumer,
+      this.LogsContext.Consumer,
       "GenericPluginProposal"
     );
   }
 
-  protected static _EntityContext = React.createContext<Entity | undefined>(
+  public static EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<Data | undefined>(
+  public static DataContext = React.createContext<Data | undefined>(undefined);
+  public static LogsContext = React.createContext<ComponentLogs | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<
-    ComponentLogs | undefined
-  >(undefined);
+}
+
+function useGenericPluginProposal(): [Data | undefined, Entity | undefined] {
+  const data = React.useContext<Data | undefined>(
+    InferredGenericPluginProposal.DataContext
+  );
+  const entity = React.useContext<Entity | undefined>(
+    InferredGenericPluginProposal.EntityContext
+  );
+
+  return [data, entity];
 }
 
 class GenericPluginProposal extends React.Component<RequiredProps> {
@@ -119,5 +128,6 @@ export {
   InferredGenericPluginProposal,
   GenericPluginProposal,
   Entity as GenericPluginProposalEntity,
-  Data as GenericPluginProposalData
+  Data as GenericPluginProposalData,
+  useGenericPluginProposal,
 };
