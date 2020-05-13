@@ -9,6 +9,7 @@ import {
   GenericPluginProposal,
   GenericPluginEntity,
   Plugin,
+  useGenericPlugin,
 } from "../../src";
 
 const arcConfig = new ArcConfig("private");
@@ -30,6 +31,28 @@ describe("Generic plugin component ", () => {
     );
 
     const name = await screen.findByText(/Plugin name:/);
+    expect(name).toBeInTheDocument();
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        Plugin name: GenericScheme
+      </div>
+    `);
+  });
+
+  it("Shows name using useGenericPlugin", async () => {
+    const GenericPluginWithHooks = () => {
+      const [genericPluginData] = useGenericPlugin();
+      return <div>{"Plugin name: " + genericPluginData?.name}</div>;
+    };
+    const { container, findByText } = render(
+      <Arc config={arcConfig}>
+        <GenericPlugin id={pluginId}>
+          <GenericPluginWithHooks />
+        </GenericPlugin>
+      </Arc>
+    );
+
+    const name = await findByText(/Plugin name: GenericScheme/);
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>

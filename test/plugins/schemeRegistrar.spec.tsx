@@ -9,6 +9,7 @@ import {
   Plugin,
   SchemeRegistrarPlugin,
   SchemeRegistrarProposal,
+  useSchemeRegistrarPlugin,
 } from "../../src";
 
 const arcConfig = new ArcConfig("private");
@@ -32,6 +33,28 @@ describe("Plugin manaer component ", () => {
     );
 
     const name = await screen.findByText(/Plugin name:/);
+    expect(name).toBeInTheDocument();
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        Plugin name: SchemeRegistrar
+      </div>
+    `);
+  });
+
+  it("Shows name using useSchemeRegistrarPlugin", async () => {
+    const SchemeRegistrarPluginWithHooks = () => {
+      const [SchemeRegistrarPluginData] = useSchemeRegistrarPlugin();
+      return <div>{"Plugin name: " + SchemeRegistrarPluginData?.name}</div>;
+    };
+    const { container, findByText } = render(
+      <Arc config={arcConfig}>
+        <SchemeRegistrarPlugin id={pluginId}>
+          <SchemeRegistrarPluginWithHooks />
+        </SchemeRegistrarPlugin>
+      </Arc>
+    );
+
+    const name = await findByText(/Plugin name: SchemeRegistrar/);
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>

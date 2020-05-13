@@ -10,6 +10,7 @@ import {
   FundingRequestPlugin,
   FundingRequestProposal,
   FundingRequestPluginEntity,
+  useFundingRequestPlugin,
 } from "../../src";
 
 const arcConfig = new ArcConfig("private");
@@ -32,6 +33,28 @@ describe("Plugin contribution reward ext component ", () => {
     );
 
     const name = await screen.findByText(/Plugin name:/);
+    expect(name).toBeInTheDocument();
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        Plugin name: FundingRequest
+      </div>
+    `);
+  });
+
+  it("Shows name using useFundingRequestPlugin", async () => {
+    const FundingRequestPluginWithHooks = () => {
+      const [fundingRequestPluginData] = useFundingRequestPlugin();
+      return <div>{"Plugin name: " + fundingRequestPluginData?.name}</div>;
+    };
+    const { container, findByText } = render(
+      <Arc config={arcConfig}>
+        <FundingRequestPlugin id={pluginId}>
+          <FundingRequestPluginWithHooks />
+        </FundingRequestPlugin>
+      </Arc>
+    );
+
+    const name = await findByText(/Plugin name: FundingRequest/);
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>

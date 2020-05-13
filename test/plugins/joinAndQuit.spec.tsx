@@ -10,6 +10,7 @@ import {
   JoinAndQuitPlugin,
   JoinAndQuitProposal,
   JoinAndQuitPluginEntity,
+  useJoinAndQuitPlugin,
 } from "../../src";
 
 const arcConfig = new ArcConfig("private");
@@ -32,6 +33,28 @@ describe("Plugin contribution reward ext component ", () => {
     );
 
     const name = await screen.findByText(/Plugin name:/);
+    expect(name).toBeInTheDocument();
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        Plugin name: JoinAndQuit
+      </div>
+    `);
+  });
+
+  it("Shows name using useJoinAndQuitPlugin", async () => {
+    const JoinAndQuitPluginWithHooks = () => {
+      const [joinAndQuitPluginData] = useJoinAndQuitPlugin();
+      return <div>{"Plugin name: " + joinAndQuitPluginData?.name}</div>;
+    };
+    const { container, findByText } = render(
+      <Arc config={arcConfig}>
+        <JoinAndQuitPlugin id={pluginId}>
+          <JoinAndQuitPluginWithHooks />
+        </JoinAndQuitPlugin>
+      </Arc>
+    );
+
+    const name = await findByText(/Plugin name: JoinAndQuit/);
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>
