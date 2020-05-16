@@ -10,21 +10,24 @@ import {
   MemberEntity,
   InferredProposal as Component,
   ProposalEntity as Entity,
-  ProposalData as Data,
   CProps,
   ComponentList,
   ComponentListLogs,
   ComponentListProps,
   createFilterFromScope,
+  PluginEntity,
+  Plugin,
 } from "../../";
 import { CreateContextFeed } from "../../runtime/ContextFeed";
 
 // TODO: @cesar add tag entity + "Tag" scope
-type Scopes = "DAO" | "Member as proposer";
+type Scopes = "DAO" | "Member as proposer" | "Plugin" /* | "Tag" */;
 
 const scopeProps: Record<Scopes, string> = {
   DAO: "dao",
   "Member as proposer": "proposer",
+  Plugin: "scheme",
+  // Tag: "tags_contains"
 };
 
 interface RequiredProps extends ComponentListProps<Entity, FilterOptions> {
@@ -35,6 +38,7 @@ interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
   dao?: string;
   proposer?: string;
+  plugin?: string;
 }
 
 class InferredProposals extends ComponentList<InferredProps, Component> {
@@ -128,6 +132,21 @@ class Proposals extends React.Component<RequiredProps> {
                     </InferredProposals>
                   )}
                 </Member.Entity>
+              );
+            case "Plugin":
+              return (
+                <Plugin.Entity>
+                  {(plugin: PluginEntity) => (
+                    <InferredProposals
+                      plugin={plugin.id}
+                      config={config}
+                      sort={sort}
+                      filter={filter}
+                    >
+                      {children}
+                    </InferredProposals>
+                  )}
+                </Plugin.Entity>
               );
             default:
               if (from) {

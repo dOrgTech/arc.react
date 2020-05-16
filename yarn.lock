@@ -1154,10 +1154,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@dorgtech/arc.js@^2.0.0-experimental.9":
-  version "2.0.0-experimental.9"
-  resolved "https://registry.yarnpkg.com/@dorgtech/arc.js/-/arc.js-2.0.0-experimental.9.tgz#8002618779a4b0b0ae3935da521d235fbbc1e23e"
-  integrity sha512-AdswnxtCCN87E/D7q/qX3TUO7xQpS3OoMAX05UhvVtymqXiNKHGViuAB4/KBHjGcZDY/lqEnJjdtmS/2zNQ0Mg==
+"@dorgtech/arc.js@2.0.0-experimental.32":
+  version "2.0.0-experimental.32"
+  resolved "https://registry.yarnpkg.com/@dorgtech/arc.js/-/arc.js-2.0.0-experimental.32.tgz#92094a2ed5fb319e6166e780f549d34113c3a944"
+  integrity sha512-5cDxhRyf4TP6iVjL1OGJ744RTqwYQoYh6qD68JCrkI5fK14BxGgpOqzvbvY9HhhIrmUgILG3ZWDJuKQwAw+Xgg==
   dependencies:
     apollo-cache-inmemory "^1.6.5"
     apollo-client "^2.6.8"

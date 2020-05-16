@@ -7,8 +7,8 @@ import {
   ProposalData,
   Proposal,
   Plugin,
-  SchemeRegistrarPlugin,
-  SchemeRegistrarProposal,
+  PluginRegistrarPlugin,
+  PluginRegistrarProposal,
 } from "../../src";
 
 const arcConfig = new ArcConfig("private");
@@ -23,11 +23,11 @@ describe("Plugin manaer component ", () => {
   it("Shows plugin name", async () => {
     const { container } = render(
       <Arc config={arcConfig}>
-        <SchemeRegistrarPlugin id={pluginId}>
-          <SchemeRegistrarPlugin.Data>
+        <PluginRegistrarPlugin id={pluginId}>
+          <PluginRegistrarPlugin.Data>
             {(plugin: PluginData) => <div>{"Plugin name: " + plugin.name}</div>}
-          </SchemeRegistrarPlugin.Data>
-        </SchemeRegistrarPlugin>
+          </PluginRegistrarPlugin.Data>
+        </PluginRegistrarPlugin>
       </Arc>
     );
 
@@ -44,13 +44,13 @@ describe("Plugin manaer component ", () => {
     const { container } = render(
       <Arc config={arcConfig}>
         <Plugin id={pluginId}>
-          <SchemeRegistrarPlugin>
-            <SchemeRegistrarPlugin.Data>
+          <PluginRegistrarPlugin>
+            <PluginRegistrarPlugin.Data>
               {(plugin: PluginData) => (
                 <div>{"Plugin name: " + plugin.name}</div>
               )}
-            </SchemeRegistrarPlugin.Data>
-          </SchemeRegistrarPlugin>
+            </PluginRegistrarPlugin.Data>
+          </PluginRegistrarPlugin>
         </Plugin>
       </Arc>
     );
@@ -71,13 +71,13 @@ describe.skip("Proposal component ", () => {
   it("Shows proposal id", async () => {
     const { container } = render(
       <Arc config={arcConfig}>
-        <SchemeRegistrarProposal id={proposalId}>
-          <SchemeRegistrarProposal.Data>
+        <PluginRegistrarProposal id={proposalId}>
+          <PluginRegistrarProposal.Data>
             {(proposal: ProposalData) => (
               <div>{"Proposal id: " + proposal.id}</div>
             )}
-          </SchemeRegistrarProposal.Data>
-        </SchemeRegistrarProposal>
+          </PluginRegistrarProposal.Data>
+        </PluginRegistrarProposal>
       </Arc>
     );
 
@@ -94,13 +94,13 @@ describe.skip("Proposal component ", () => {
     const { container } = render(
       <Arc config={arcConfig}>
         <Proposal id={proposalId}>
-          <SchemeRegistrarProposal>
-            <SchemeRegistrarProposal.Data>
+          <PluginRegistrarProposal>
+            <PluginRegistrarProposal.Data>
               {(proposal: ProposalData) => (
                 <div>{"Proposal id: " + proposal.id}</div>
               )}
-            </SchemeRegistrarProposal.Data>
-          </SchemeRegistrarProposal>
+            </PluginRegistrarProposal.Data>
+          </PluginRegistrarProposal>
         </Proposal>
       </Arc>
     );
