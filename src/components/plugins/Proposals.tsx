@@ -26,7 +26,7 @@ type Scopes = "DAO" | "Member as proposer" | "Plugin" /* | "Tag" */;
 const scopeProps: Record<Scopes, string> = {
   DAO: "dao",
   "Member as proposer": "proposer",
-  Plugin: "scheme",
+  Plugin: "plugin",
   // Tag: "tags_contains"
 };
 

@@ -48,7 +48,7 @@ describe("Proposal List", () => {
         <Arc config={arcConfig}>
           Proposals
           <DAO address={daoAddress}>
-            <Proposals from="DAO">
+            <Proposals>
               <Proposal.Data>
                 {(proposal: ProposalData) => (
                   <div>{"Proposal id: " + proposal.id}</div>
