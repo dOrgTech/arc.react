@@ -1,5 +1,4 @@
 import React from "react";
-import { Arc, ArcConfig, Queue, QueueData, Queues, DAO } from "../src";
 import {
   render,
   screen,
@@ -7,6 +6,7 @@ import {
   waitFor,
   waitForElementToBeRemoved,
 } from "@testing-library/react";
+import { Arc, ArcConfig, Queue, QueueData, Queues, DAO } from "../src";
 
 const daoAddress = "0x666a6eb4618d0438511c8206df4d5b142837eb0d";
 const queueId =

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Member as Entity, IMemberState as Data } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
@@ -9,9 +10,8 @@ import {
   ComponentProps,
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
-import { Member as Entity, IMemberState as Data } from "@dorgtech/arc.js";
 
-interface RequiredProps extends ComponentProps {
+interface RequiredProps extends ComponentProps<Entity, Data> {
   // Address of the member
   address: string;
   dao?: string | DAOEntity;

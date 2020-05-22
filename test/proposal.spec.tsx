@@ -1,5 +1,4 @@
 import React from "react";
-import { Arc, ArcConfig, ProposalData, Proposal, Proposals, DAO } from "../src";
 import {
   render,
   screen,
@@ -7,6 +6,7 @@ import {
   waitFor,
   cleanup,
 } from "@testing-library/react";
+import { Arc, ArcConfig, ProposalData, Proposal, Proposals, DAO } from "../src";
 
 const arcConfig = new ArcConfig("private");
 
@@ -65,10 +65,10 @@ describe("Proposal List", () => {
     const { findAllByText, queryAllByTestId, findByText } = render(
       <ProposalList />
     );
-    await waitFor(() => findByText(/Proposal id/), {
+    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
       timeout: 8000,
     });
-    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
+    await waitFor(() => findByText(`Proposal id: ${proposalId}`), {
       timeout: 8000,
     });
     const proposals = await findAllByText(/Proposal id:/);

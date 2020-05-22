@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Observable } from "rxjs";
+import { IMemberQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
@@ -14,7 +15,6 @@ import {
   ComponentListProps,
   createFilterFromScope,
 } from "../";
-import { IMemberQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
 type Scopes = "DAO";
@@ -59,6 +59,7 @@ class InferredMembers extends ComponentList<InferredProps, Component> {
         address={entity.coreState!.address}
         dao={entity.coreState!.dao.entity}
         config={config}
+        entity={entity}
       >
         {children}
       </Component>

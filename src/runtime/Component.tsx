@@ -15,12 +15,16 @@ export interface State<Data extends IStatefulEntityData> {
   logs: ComponentLogs;
 }
 
-export interface ComponentProps {
+export interface ComponentProps<
+  Entity extends StatefulEntity<Data>,
+  Data extends IStatefulEntityData
+> {
   noSub?: boolean;
+  entity?: Entity;
 }
 
 export abstract class Component<
-  Props extends ComponentProps,
+  Props extends ComponentProps<Entity, Data>,
   Entity extends StatefulEntity<Data>,
   Data extends IStatefulEntityData
 > extends React.Component<Props, State<Data>> {
@@ -134,6 +138,7 @@ export abstract class Component<
     props: Props
   ): Promise<Entity | undefined> {
     const { logs } = this.state;
+    const { entity } = this.props;
 
     logs.entityCreated();
 
@@ -142,8 +147,16 @@ export abstract class Component<
     this.clearPrevState();
 
     try {
-      const asyncFunction = this.createEntity.bind(this);
-      this._entity = await executeMaybeAsyncFunction(asyncFunction);
+      if (entity !== undefined) {
+        this._entity = entity;
+      } else {
+        const func = this.createEntity.bind(this);
+        this._entity = await executeMaybeAsyncFunction(func);
+      }
+
+      if (!this._entity) {
+        throw Error(`This should never happen, Entity undefined.`);
+      }
 
       logs.dataQueryStarted();
       await this.initialize(this._entity);

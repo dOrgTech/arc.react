@@ -1,5 +1,4 @@
 import React from "react";
-import { Arc, ArcConfig, PluginData, Plugin, Plugins } from "../src";
 import {
   render,
   screen,
@@ -7,15 +6,16 @@ import {
   waitFor,
   cleanup,
 } from "@testing-library/react";
+import { Arc, ArcConfig, PluginData, Plugin, Plugins } from "../src";
 
 const arcConfig = new ArcConfig("private");
+const pluginId =
+  "0x3687cd051fa5d1da87b25fe33a68bedfbe70f57a781336b48392e4b0fa93f4ce";
 
 describe("Plugin component ", () => {
   afterEach(() => cleanup());
 
   it("Shows plugin name", async () => {
-    const pluginId =
-      "0x3687cd051fa5d1da87b25fe33a68bedfbe70f57a781336b48392e4b0fa93f4ce";
     const { container } = render(
       <Arc config={arcConfig}>
         <Plugin id={pluginId}>
@@ -57,10 +57,10 @@ describe("Plugin List", () => {
     const { findAllByText, queryAllByTestId, findByText } = render(
       <PluginList />
     );
-    await waitFor(() => findByText(/Plugin id:/), {
+    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
       timeout: 20000,
     });
-    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
+    await waitFor(() => findByText(`Plugin id: ${pluginId}`), {
       timeout: 20000,
     });
     const plugins = await findAllByText(/Plugin id:/);

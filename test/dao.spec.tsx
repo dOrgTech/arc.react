@@ -1,5 +1,11 @@
 import React from "react";
 import {
+  render,
+  screen,
+  cleanup,
+  waitForElementToBeRemoved,
+} from "@testing-library/react";
+import {
   Arc,
   ArcConfig,
   DAO,
@@ -9,7 +15,6 @@ import {
   Member,
   MemberData,
 } from "../src";
-import { render, screen, cleanup } from "@testing-library/react";
 
 const daoAddress = "0x666a6eb4618d0438511c8206df4d5b142837eb0d";
 const arcConfig = new ArcConfig("private");
@@ -56,7 +61,10 @@ describe("DAO List", () => {
   }
 
   it("Show list of DAOS ", async () => {
-    const { findAllByText } = render(<DAOList />);
+    const { findAllByText, queryAllByTestId } = render(<DAOList />);
+    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
+      timeout: 8000,
+    });
     const daos = await findAllByText(/DAO address:/);
     expect(daos.length).toBeGreaterThan(1);
   });
@@ -83,7 +91,10 @@ describe("DAO List", () => {
         );
       }
     }
-    const { findAllByText } = render(<DAOWithMembers />);
+    const { findAllByText, queryAllByTestId } = render(<DAOWithMembers />);
+    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
+      timeout: 8000,
+    });
     const members = await findAllByText(/Member address:/);
     expect(members.length).toBeGreaterThan(1);
   });

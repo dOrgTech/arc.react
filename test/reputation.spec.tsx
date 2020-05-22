@@ -1,5 +1,12 @@
 import React from "react";
 import {
+  render,
+  screen,
+  waitForElementToBeRemoved,
+  waitFor,
+  cleanup,
+} from "@testing-library/react";
+import {
   Arc,
   ArcConfig,
   ReputationData,
@@ -7,13 +14,6 @@ import {
   Reputations,
   DAO,
 } from "../src";
-import {
-  render,
-  screen,
-  waitForElementToBeRemoved,
-  waitFor,
-  cleanup,
-} from "@testing-library/react";
 
 const arcConfig = new ArcConfig("private");
 const reputationAddress = "0xebbe3726558bea9869d397505c9dec2a6fb9a433";

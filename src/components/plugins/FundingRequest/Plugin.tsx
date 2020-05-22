@@ -1,7 +1,7 @@
 import * as React from "react";
-import { 
+import {
   FundingRequest as Entity,
-  IFundingRequestState as Data
+  IFundingRequestState as Data,
 } from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
@@ -13,7 +13,7 @@ import {
   Plugin,
 } from "../../../";
 
-interface RequiredProps extends ComponentProps {
+interface RequiredProps extends ComponentProps<Entity, Data> {
   // Plugin ID
   id?: string | Entity;
 }
@@ -120,5 +120,5 @@ export {
   FundingRequestPlugin,
   InferredFundingRequestPlugin,
   Entity as FundingRequestPluginEntity,
-  Data as FundingRequestPluginData
+  Data as FundingRequestPluginData,
 };
