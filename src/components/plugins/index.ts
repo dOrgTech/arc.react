@@ -1,4 +1,5 @@
-export * from "./SchemeRegistrar";
+export * from "./PluginManager";
+export * from "./PluginRegistrar";
 export * from "./ContributionReward";
 export * from "./ContributionRewardExt";
 export * from "./ReputationFromToken";

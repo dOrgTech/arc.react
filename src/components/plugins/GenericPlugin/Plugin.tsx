@@ -2,7 +2,7 @@ import * as React from "react";
 import {
   GenericPlugin as Entity,
   IGenericPluginState as Data,
-} from "@dorgtech/arc.js";
+} from "@daostack/arc.js";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
   Arc as Protocol,

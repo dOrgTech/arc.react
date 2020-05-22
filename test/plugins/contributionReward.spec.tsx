@@ -15,9 +15,9 @@ import {
 
 const arcConfig = new ArcConfig("private");
 const pluginId =
-  "0xa0efdf72e1fbbfe3d86ccb704a38faad936e8bb7b5217abe1e33a267525c0b18";
+  "0xe9e42dce678c0cab29937f1ce36de94c74e68a7e1cee9a983bc703acfe2fff40";
 const proposalId =
-  "0x1a9b2915029761cf29c99716dd04d7c7bdeefcd6c35ef5626eb776c4ae9f110b";
+  "0xdda5a5025e1b33ee2758d451b5485d1eaa728af090bc9576c2b71ea22d692f07";
 
 describe("Plugin contribution reward component ", () => {
   afterEach(() => cleanup());

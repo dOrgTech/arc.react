@@ -10,7 +10,7 @@ import {
 
 const arcConfig = new ArcConfig("private");
 const pluginId =
-  "0x3687cd051fa5d1da87b25fe33a68bedfbe70f57a781336b48392e4b0fa93f4ce";
+  "0x05e0ab974aee02d06e157daba6709a01384fb1f25ec691606133ffb15c162768";
 
 describe("Plugin component ", () => {
   afterEach(() => cleanup());
@@ -30,7 +30,7 @@ describe("Plugin component ", () => {
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>
-        Plugin name: JoinAndQuit
+        Plugin name: FundingRequest
       </div>
     `);
   });
@@ -48,9 +48,7 @@ describe("Plugin component ", () => {
       </Arc>
     );
 
-    const name = await findByText(
-      /Plugin id: 0x3687cd051fa5d1da87b25fe33a68bedfbe70f57a781336b48392e4b0fa93f4ce/
-    );
+    const name = await findByText(`Plugin id: ${pluginId}`);
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>

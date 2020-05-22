@@ -1,11 +1,9 @@
 import React from "react";
-import { render, screen, cleanup, fireEvent } from "@testing-library/react";
+import { render, screen, cleanup } from "@testing-library/react";
 import {
   Arc,
   ArcConfig,
   PluginData,
-  ProposalData,
-  Proposal,
   Plugin,
   ReputationFromTokenPlugin,
   useReputationFromTokenPlugin,
@@ -13,7 +11,7 @@ import {
 
 const arcConfig = new ArcConfig("private");
 const pluginId =
-  "0x41ddc9526845c5a6697de569d52885d5f045e4e081745a1790aa97724955dbdd";
+  "0x5deef0cf4b6cddbe1a75aba33da32b945526d20192253f153ae2bb009aaacf14";
 const proposalId = "";
 
 describe("Reputation from token plugin component ", () => {

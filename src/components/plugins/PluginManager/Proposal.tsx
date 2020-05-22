@@ -1,20 +1,20 @@
 import * as React from "react";
 import {
-  ContributionRewardPlugin as Entity,
-  IContributionRewardState as Data,
+  PluginManagerProposal as Entity,
+  IPluginManagerProposalState as Data,
 } from "@daostack/arc.js";
-import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
   Component,
   ComponentLogs,
   ComponentProps,
-  Plugin,
-} from "../../../";
+  Proposal,
+} from "../../..";
+import { CreateContextFeed } from "../../../runtime/ContextFeed";
 
 interface RequiredProps extends ComponentProps<Entity, Data> {
-  // Plugin ID
+  // Proposal ID
   id?: string | Entity;
 }
 
@@ -23,29 +23,28 @@ interface InferredProps extends RequiredProps {
   id: string | Entity;
 }
 
-class InferredContributionRewardPlugin extends Component<
+class InferredPluginManagerProposal extends Component<
   InferredProps,
   Entity,
   Data
 > {
   protected createEntity(): Entity {
     const { config, id } = this.props;
-
     if (!config) {
       throw Error(
         "Arc Config Missing: Please provide this field as a prop, or use the inference component."
       );
     }
 
-    const pluginId = typeof id === "string" ? id : id.id;
-    return new Entity(config.connection, pluginId);
+    const proposalId = typeof id === "string" ? id : id.id;
+    return new Entity(config.connection, proposalId);
   }
 
   public static get Entity() {
     return CreateContextFeed(
       this.EntityContext.Consumer,
       this.LogsContext.Consumer,
-      "ContributionRewardPlugin"
+      "PluginManagerProposal"
     );
   }
 
@@ -53,7 +52,7 @@ class InferredContributionRewardPlugin extends Component<
     return CreateContextFeed(
       this.DataContext.Consumer,
       this.LogsContext.Consumer,
-      "ContributionRewardPlugin"
+      "PluginManagerProposal"
     );
   }
 
@@ -61,7 +60,7 @@ class InferredContributionRewardPlugin extends Component<
     return CreateContextFeed(
       this.LogsContext.Consumer,
       this.LogsContext.Consumer,
-      "ContributionRewardPlugin"
+      "PluginManagerProposal"
     );
   }
 
@@ -74,36 +73,25 @@ class InferredContributionRewardPlugin extends Component<
   );
 }
 
-function useContributionRewardPlugin(): [Data | undefined, Entity | undefined] {
-  const data = React.useContext<Data | undefined>(
-    InferredContributionRewardPlugin.DataContext
-  );
-  const entity = React.useContext<Entity | undefined>(
-    InferredContributionRewardPlugin.EntityContext
-  );
-
-  return [data, entity];
-}
-
-class ContributionRewardPlugin extends React.Component<RequiredProps> {
+class PluginManagerProposal extends React.Component<RequiredProps> {
   public render() {
     const { id, children } = this.props;
 
     const renderInferred = (id: string | Entity) => (
       <Protocol.Config>
         {(config: ProtocolConfig) => (
-          <InferredContributionRewardPlugin id={id} config={config}>
+          <InferredPluginManagerProposal id={id} config={config}>
             {children}
-          </InferredContributionRewardPlugin>
+          </InferredPluginManagerProposal>
         )}
       </Protocol.Config>
     );
 
     if (!id) {
       return (
-        <Plugin.Entity>
-          {(plugin: Entity) => renderInferred(plugin.id)}
-        </Plugin.Entity>
+        <Proposal.Entity>
+          {(proposal: Data) => renderInferred(proposal.id)}
+        </Proposal.Entity>
       );
     } else {
       return renderInferred(id);
@@ -111,24 +99,23 @@ class ContributionRewardPlugin extends React.Component<RequiredProps> {
   }
 
   public static get Entity() {
-    return InferredContributionRewardPlugin.Entity;
+    return InferredPluginManagerProposal.Entity;
   }
 
   public static get Data() {
-    return InferredContributionRewardPlugin.Data;
+    return InferredPluginManagerProposal.Data;
   }
 
   public static get Logs() {
-    return InferredContributionRewardPlugin.Logs;
+    return InferredPluginManagerProposal.Logs;
   }
 }
 
-export default ContributionRewardPlugin;
+export default PluginManagerProposal;
 
 export {
-  ContributionRewardPlugin,
-  InferredContributionRewardPlugin,
-  Entity as ContributionRewardPluginEntity,
-  Data as ContributionRewardPluginData,
-  useContributionRewardPlugin,
+  InferredPluginManagerProposal,
+  PluginManagerProposal,
+  Entity as PluginManagerProposalEntity,
+  Data as PluginManagerProposalData,
 };

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import { ITokenQueryOptions as FilterOptions } from "@dorgtech/arc.js";
+import { ITokenQueryOptions as FilterOptions } from "@daostack/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
@@ -52,24 +52,24 @@ class InferredTokens extends ComponentList<InferredProps, Component> {
 
   public static get Entities() {
     return CreateContextFeed(
-      this._EntitiesContext.Consumer,
-      this._LogsContext.Consumer,
+      this.EntitiesContext.Consumer,
+      this.LogsContext.Consumer,
       "Tokens"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
-      this._LogsContext.Consumer,
-      this._LogsContext.Consumer,
+      this.LogsContext.Consumer,
+      this.LogsContext.Consumer,
       "Tokens"
     );
   }
 
-  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
+  protected static EntitiesContext = React.createContext<Entity[] | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<
+  protected static LogsContext = React.createContext<
     ComponentListLogs | undefined
   >(undefined);
 }

@@ -168,7 +168,7 @@ export default () =>
         ScopeContext={(props) => (
           <DAO address={props.dao}>{props.children}</DAO>
         )}
-        getId={(scheme: PluginData) => `Plugin (${scheme.name}): ${scheme.id}`}
+        getId={(plugin: PluginData) => `Plugin (${plugin.name}): ${plugin.id}`}
       />
     ))
     .add("Stakes", () => (
@@ -247,7 +247,7 @@ export default () =>
             {props.children}
           </Loader>
         )}
-        getId={(scheme: PluginData) => `Plugin (${scheme.name}): ${scheme.id}`}
+        getId={(plugin: PluginData) => `Plugin (${plugin.name}): ${plugin.id}`}
       />
     ))
     .add("Tags", () => (

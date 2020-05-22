@@ -1,5 +1,5 @@
 import * as React from "react";
-import { DAO as Entity, IDAOState as Data } from "@dorgtech/arc.js";
+import { DAO as Entity, IDAOState as Data } from "@daostack/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,

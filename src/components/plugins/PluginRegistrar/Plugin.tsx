@@ -1,7 +1,7 @@
 import * as React from "react";
 import {
-  ContributionRewardPlugin as Entity,
-  IContributionRewardState as Data,
+  PluginRegistrarPlugin as Entity,
+  IPluginRegistrarState as Data,
 } from "@daostack/arc.js";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
@@ -11,7 +11,7 @@ import {
   ComponentLogs,
   ComponentProps,
   Plugin,
-} from "../../../";
+} from "../../..";
 
 interface RequiredProps extends ComponentProps<Entity, Data> {
   // Plugin ID
@@ -23,7 +23,7 @@ interface InferredProps extends RequiredProps {
   id: string | Entity;
 }
 
-class InferredContributionRewardPlugin extends Component<
+class InferredPluginRegistrarPlugin extends Component<
   InferredProps,
   Entity,
   Data
@@ -45,7 +45,7 @@ class InferredContributionRewardPlugin extends Component<
     return CreateContextFeed(
       this.EntityContext.Consumer,
       this.LogsContext.Consumer,
-      "ContributionRewardPlugin"
+      "PluginRegistrarPlugin"
     );
   }
 
@@ -53,7 +53,7 @@ class InferredContributionRewardPlugin extends Component<
     return CreateContextFeed(
       this.DataContext.Consumer,
       this.LogsContext.Consumer,
-      "ContributionRewardPlugin"
+      "PluginRegistrarPlugin"
     );
   }
 
@@ -61,7 +61,7 @@ class InferredContributionRewardPlugin extends Component<
     return CreateContextFeed(
       this.LogsContext.Consumer,
       this.LogsContext.Consumer,
-      "ContributionRewardPlugin"
+      "PluginRegistrarPlugin"
     );
   }
 
@@ -74,27 +74,27 @@ class InferredContributionRewardPlugin extends Component<
   );
 }
 
-function useContributionRewardPlugin(): [Data | undefined, Entity | undefined] {
+function usePluginRegistrarPlugin(): [Data | undefined, Entity | undefined] {
   const data = React.useContext<Data | undefined>(
-    InferredContributionRewardPlugin.DataContext
+    InferredPluginRegistrarPlugin.DataContext
   );
   const entity = React.useContext<Entity | undefined>(
-    InferredContributionRewardPlugin.EntityContext
+    InferredPluginRegistrarPlugin.EntityContext
   );
 
   return [data, entity];
 }
 
-class ContributionRewardPlugin extends React.Component<RequiredProps> {
+class PluginRegistrarPlugin extends React.Component<RequiredProps> {
   public render() {
     const { id, children } = this.props;
 
     const renderInferred = (id: string | Entity) => (
       <Protocol.Config>
         {(config: ProtocolConfig) => (
-          <InferredContributionRewardPlugin id={id} config={config}>
+          <InferredPluginRegistrarPlugin id={id} config={config}>
             {children}
-          </InferredContributionRewardPlugin>
+          </InferredPluginRegistrarPlugin>
         )}
       </Protocol.Config>
     );
@@ -111,24 +111,24 @@ class ContributionRewardPlugin extends React.Component<RequiredProps> {
   }
 
   public static get Entity() {
-    return InferredContributionRewardPlugin.Entity;
+    return InferredPluginRegistrarPlugin.Entity;
   }
 
   public static get Data() {
-    return InferredContributionRewardPlugin.Data;
+    return InferredPluginRegistrarPlugin.Data;
   }
 
   public static get Logs() {
-    return InferredContributionRewardPlugin.Logs;
+    return InferredPluginRegistrarPlugin.Logs;
   }
 }
 
-export default ContributionRewardPlugin;
+export default PluginRegistrarPlugin;
 
 export {
-  ContributionRewardPlugin,
-  InferredContributionRewardPlugin,
-  Entity as ContributionRewardPluginEntity,
-  Data as ContributionRewardPluginData,
-  useContributionRewardPlugin,
+  PluginRegistrarPlugin,
+  InferredPluginRegistrarPlugin,
+  Entity as PluginRegistrarPluginEntity,
+  Data as PluginRegistrarPluginData,
+  usePluginRegistrarPlugin,
 };

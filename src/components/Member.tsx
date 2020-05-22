@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Member as Entity, IMemberState as Data } from "@dorgtech/arc.js";
+import { Member as Entity, IMemberState as Data } from "@daostack/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,

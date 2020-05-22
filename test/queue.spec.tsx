@@ -16,9 +16,9 @@ import {
   waitForElementToBeRemoved,
 } from "@testing-library/react";
 
-const daoAddress = "0x666a6eb4618d0438511c8206df4d5b142837eb0d";
+const daoAddress = "0x77510824b7169c52c4000ef8efb12542afa3ab29";
 const queueId =
-  "0x01224dc8c109c350accfa915fde36a28017ca894ee2144396bd7f0861b6b0d56";
+  "0x0002e893b562debce62e19e50e0acc1b546f80c2989f46796b604330b4f55575";
 const arcConfig = new ArcConfig("private");
 
 describe("Queue Component ", () => {
@@ -90,10 +90,10 @@ describe("Queue List", () => {
     const { findAllByText, findByText, queryAllByTestId } = render(
       <QueueList />
     );
-    await waitFor(() => findByText(/Queue id:/), {
+    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
       timeout: 8000,
     });
-    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
+    await waitFor(() => findByText(`Queue id: ${queueId}`), {
       timeout: 8000,
     });
     const queues = await findAllByText(/Queue id:/);

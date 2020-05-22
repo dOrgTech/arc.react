@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Token as Entity, ITokenState as Data } from "@dorgtech/arc.js";
+import { Token as Entity, ITokenState as Data } from "@daostack/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,

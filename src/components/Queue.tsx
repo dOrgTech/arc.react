@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Queue as Entity, IQueueState as Data } from "@dorgtech/arc.js";
+import { Queue as Entity, IQueueState as Data } from "@daostack/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import { IProposalQueryOptions as FilterOptions } from "@dorgtech/arc.js";
+import { IProposalQueryOptions as FilterOptions } from "@daostack/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
@@ -10,21 +10,24 @@ import {
   MemberEntity,
   InferredProposal as Component,
   ProposalEntity as Entity,
-  ProposalData as Data,
   CProps,
   ComponentList,
   ComponentListLogs,
   ComponentListProps,
   createFilterFromScope,
+  PluginEntity,
+  Plugin,
 } from "../../";
 import { CreateContextFeed } from "../../runtime/ContextFeed";
 
 // TODO: @cesar add tag entity + "Tag" scope
-type Scopes = "DAO" | "Member as proposer";
+type Scopes = "DAO" | "Member as proposer" | "Plugin" /* | "Tag" */;
 
 const scopeProps: Record<Scopes, string> = {
   DAO: "dao",
   "Member as proposer": "proposer",
+  Plugin: "plugin",
+  // Tag: "tags_contains"
 };
 
 interface RequiredProps extends ComponentListProps<Entity, FilterOptions> {
@@ -35,6 +38,7 @@ interface InferredProps extends RequiredProps {
   config: ProtocolConfig;
   dao?: string;
   proposer?: string;
+  plugin?: string;
 }
 
 class InferredProposals extends ComponentList<InferredProps, Component> {
@@ -70,24 +74,24 @@ class InferredProposals extends ComponentList<InferredProps, Component> {
 
   public static get Entities() {
     return CreateContextFeed(
-      this._EntitiesContext.Consumer,
-      this._LogsContext.Consumer,
+      this.EntitiesContext.Consumer,
+      this.LogsContext.Consumer,
       "Proposals"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
-      this._LogsContext.Consumer,
-      this._LogsContext.Consumer,
+      this.LogsContext.Consumer,
+      this.LogsContext.Consumer,
       "Proposals"
     );
   }
 
-  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
+  protected static EntitiesContext = React.createContext<Entity[] | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<
+  protected static LogsContext = React.createContext<
     ComponentListLogs | undefined
   >(undefined);
 }
@@ -129,6 +133,21 @@ class Proposals extends React.Component<RequiredProps> {
                     </InferredProposals>
                   )}
                 </Member.Entity>
+              );
+            case "Plugin":
+              return (
+                <Plugin.Entity>
+                  {(plugin: PluginEntity) => (
+                    <InferredProposals
+                      plugin={plugin.id}
+                      config={config}
+                      sort={sort}
+                      filter={filter}
+                    >
+                      {children}
+                    </InferredProposals>
+                  )}
+                </Plugin.Entity>
               );
             default:
               if (from) {

@@ -22,10 +22,10 @@ export abstract class Protocol<
     await this.props.config.initialize();
   }
 
-  protected static _ConfigContext: React.Context<
+  protected static ConfigContext: React.Context<
     ProtocolConfig<any> | undefined
   >;
-  protected static _LogsContext: React.Context<ProtocolLogs | undefined>;
+  protected static LogsContext: React.Context<ProtocolLogs | undefined>;
 
   constructor(props: Props<Config>) {
     super(props);
@@ -41,8 +41,8 @@ export abstract class Protocol<
   "constructor": typeof Protocol;
 
   public render() {
-    const ConfigProvider = this.constructor._ConfigContext.Provider as any;
-    const LogsProvider = this.constructor._LogsContext.Provider;
+    const ConfigProvider = this.constructor.ConfigContext.Provider as any;
+    const LogsProvider = this.constructor.LogsContext.Provider;
 
     const { logs } = this.state;
     const { config, children } = this.props;

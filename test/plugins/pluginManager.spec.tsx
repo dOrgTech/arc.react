@@ -7,28 +7,26 @@ import {
   ProposalData,
   Proposal,
   Plugin,
-  SchemeRegistrarPlugin,
-  SchemeRegistrarProposal,
-  useSchemeRegistrarPlugin,
+  PluginManagerPlugin,
+  PluginManagerProposal,
 } from "../../src";
 
 const arcConfig = new ArcConfig("private");
 const pluginId =
-  "0xb262e81d24322258466af958b36d67ad867be64f526ed13dd3af38e13094a829";
-const proposalId =
-  "0x1a691b748985f728ff512ea51498ba2459498312c57acd4536e2c14ae350d9e1";
+  "0xa8476a6c747d5f894c657d05d0e5ac1ed61b88f9126f272117f582cb2a1a5c1f";
+const proposalId = "";
 
-describe("Plugin manaer component ", () => {
+describe("Plugin manager component ", () => {
   afterEach(() => cleanup());
 
   it("Shows plugin name", async () => {
     const { container } = render(
       <Arc config={arcConfig}>
-        <SchemeRegistrarPlugin id={pluginId}>
-          <SchemeRegistrarPlugin.Data>
+        <PluginManagerPlugin id={pluginId}>
+          <PluginManagerPlugin.Data>
             {(plugin: PluginData) => <div>{"Plugin name: " + plugin.name}</div>}
-          </SchemeRegistrarPlugin.Data>
-        </SchemeRegistrarPlugin>
+          </PluginManagerPlugin.Data>
+        </PluginManagerPlugin>
       </Arc>
     );
 
@@ -36,29 +34,7 @@ describe("Plugin manaer component ", () => {
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>
-        Plugin name: SchemeRegistrar
-      </div>
-    `);
-  });
-
-  it("Shows name using useSchemeRegistrarPlugin", async () => {
-    const SchemeRegistrarPluginWithHooks = () => {
-      const [SchemeRegistrarPluginData] = useSchemeRegistrarPlugin();
-      return <div>{"Plugin name: " + SchemeRegistrarPluginData?.name}</div>;
-    };
-    const { container, findByText } = render(
-      <Arc config={arcConfig}>
-        <SchemeRegistrarPlugin id={pluginId}>
-          <SchemeRegistrarPluginWithHooks />
-        </SchemeRegistrarPlugin>
-      </Arc>
-    );
-
-    const name = await findByText(/Plugin name: SchemeRegistrar/);
-    expect(name).toBeInTheDocument();
-    expect(container.firstChild).toMatchInlineSnapshot(`
-      <div>
-        Plugin name: SchemeRegistrar
+        Plugin name: SchemeFactory
       </div>
     `);
   });
@@ -67,13 +43,13 @@ describe("Plugin manaer component ", () => {
     const { container } = render(
       <Arc config={arcConfig}>
         <Plugin id={pluginId}>
-          <SchemeRegistrarPlugin>
-            <SchemeRegistrarPlugin.Data>
+          <PluginManagerPlugin>
+            <PluginManagerPlugin.Data>
               {(plugin: PluginData) => (
                 <div>{"Plugin name: " + plugin.name}</div>
               )}
-            </SchemeRegistrarPlugin.Data>
-          </SchemeRegistrarPlugin>
+            </PluginManagerPlugin.Data>
+          </PluginManagerPlugin>
         </Plugin>
       </Arc>
     );
@@ -82,7 +58,7 @@ describe("Plugin manaer component ", () => {
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>
-        Plugin name: SchemeRegistrar
+        Plugin name: SchemeFactory
       </div>
     `);
   });
@@ -94,13 +70,13 @@ describe.skip("Proposal component ", () => {
   it("Shows proposal id", async () => {
     const { container } = render(
       <Arc config={arcConfig}>
-        <SchemeRegistrarProposal id={proposalId}>
-          <SchemeRegistrarProposal.Data>
+        <PluginManagerProposal id={proposalId}>
+          <PluginManagerProposal.Data>
             {(proposal: ProposalData) => (
               <div>{"Proposal id: " + proposal.id}</div>
             )}
-          </SchemeRegistrarProposal.Data>
-        </SchemeRegistrarProposal>
+          </PluginManagerProposal.Data>
+        </PluginManagerProposal>
       </Arc>
     );
 
@@ -117,13 +93,13 @@ describe.skip("Proposal component ", () => {
     const { container } = render(
       <Arc config={arcConfig}>
         <Proposal id={proposalId}>
-          <SchemeRegistrarProposal>
-            <SchemeRegistrarProposal.Data>
+          <PluginManagerProposal>
+            <PluginManagerProposal.Data>
               {(proposal: ProposalData) => (
                 <div>{"Proposal id: " + proposal.id}</div>
               )}
-            </SchemeRegistrarProposal.Data>
-          </SchemeRegistrarProposal>
+            </PluginManagerProposal.Data>
+          </PluginManagerProposal>
         </Proposal>
       </Arc>
     );

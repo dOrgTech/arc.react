@@ -17,7 +17,7 @@ import {
   useDAO,
 } from "../src";
 
-const daoAddress = "0x666a6eb4618d0438511c8206df4d5b142837eb0d";
+const daoAddress = "0x41e5eb4acf9d65e4ac220e9afdccba0213cf60ec";
 const arcConfig = new ArcConfig("private");
 
 describe("DAO Component ", () => {

@@ -16,7 +16,7 @@ import {
   useMember,
 } from "../src";
 
-const daoAddress = "0x666a6eb4618d0438511c8206df4d5b142837eb0d";
+const daoAddress = "0x41e5eb4acf9d65e4ac220e9afdccba0213cf60ec";
 const memberAddress = "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1";
 const arcConfig = new ArcConfig("private");
 

@@ -139,7 +139,7 @@ id: string; // plugin id
 ```html
 <Plugin id="0x">
   <Plugin.Data>
-    {(pluginInfo: PluginData) => <div> Scheme name: ${pluginInfo.name} </div> }
+    {(pluginInfo: PluginData) => <div> Plugin name: ${pluginInfo.name} </div> }
   </Plugin.Data>
   <Plugin.Entity>
     {(pluginEntity: PluginEntity) => (

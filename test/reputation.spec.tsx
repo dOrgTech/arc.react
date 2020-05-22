@@ -17,8 +17,8 @@ import {
 } from "../src";
 
 const arcConfig = new ArcConfig("private");
-const reputationAddress = "0xebbe3726558bea9869d397505c9dec2a6fb9a433";
-const daoAddress = "0x218f6e4257bc3e932936e476ebaf45bb7c5c6485";
+const reputationAddress = "0x146ab4120754cd4f15c1c831e0741064ccc36cae";
+const daoAddress = "0xea3a0a94d174dba202ba843f0460a49c87a64a9c";
 
 describe("Reputation component ", () => {
   afterEach(() => cleanup());
@@ -90,7 +90,8 @@ describe("Reputation component ", () => {
     );
 
     const name = await findByText(
-      /Reputation address: 0xebbe3726558bea9869d397505c9dec2a6fb9a433/
+      `Reputation address: ${reputationAddress}` +
+        `Reputation DAO address: ${daoAddress}`
     );
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`

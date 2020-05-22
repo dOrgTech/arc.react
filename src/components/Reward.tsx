@@ -1,6 +1,6 @@
 import * as React from "react";
 import { CreateContextFeed } from "../runtime/ContextFeed";
-import { Reward as Entity, IRewardState as Data } from "@dorgtech/arc.js";
+import { Reward as Entity, IRewardState as Data } from "@daostack/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
