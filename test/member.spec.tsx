@@ -13,6 +13,7 @@ import {
   Member,
   DAOData,
   Members,
+  useMember,
 } from "../src";
 
 const daoAddress = "0x666a6eb4618d0438511c8206df4d5b142837eb0d";
@@ -77,6 +78,38 @@ describe("Member component ", () => {
     const dao = await findByText(/DAO address:/);
     expect(member).toBeInTheDocument();
     expect(dao).toBeInTheDocument();
+    expect(container).toMatchInlineSnapshot(`
+      <div>
+        <div>
+          Member address: ${memberAddress}
+        </div>
+        <div>
+          DAO address: ${daoAddress}
+        </div>
+      </div>
+    `);
+  });
+
+  it("Shows address using useMember", async () => {
+    const MemberWithHooks = () => {
+      const [memberData] = useMember();
+      return (
+        <>
+          <div>{"Member address: " + memberData?.address}</div>
+          <div>{"DAO address: " + memberData?.dao.id}</div>
+        </>
+      );
+    };
+    const { container, findByText } = render(
+      <Arc config={arcConfig}>
+        <Member address={memberAddress} dao={daoAddress}>
+          <MemberWithHooks />
+        </Member>
+      </Arc>
+    );
+
+    const name = await findByText(/Member address:/);
+    expect(name).toBeInTheDocument();
     expect(container).toMatchInlineSnapshot(`
       <div>
         <div>

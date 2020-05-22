@@ -14,6 +14,7 @@ import {
   Members,
   Member,
   MemberData,
+  useDAO,
 } from "../src";
 
 const daoAddress = "0x666a6eb4618d0438511c8206df4d5b142837eb0d";
@@ -33,6 +34,28 @@ describe("DAO Component ", () => {
       </Arc>
     );
     const name = await screen.findByText(/DAO address:/);
+    expect(name).toBeInTheDocument();
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        DAO address: ${daoAddress}
+      </div>
+    `);
+  });
+
+  it("Shows address using useDAO", async () => {
+    const DaoWithHooks = () => {
+      const [daoData] = useDAO();
+      return <div>{"DAO address: " + daoData?.id}</div>;
+    };
+    const { container, findByText } = render(
+      <Arc config={arcConfig}>
+        <DAO address={daoAddress}>
+          <DaoWithHooks />
+        </DAO>
+      </Arc>
+    );
+
+    const name = await findByText(/DAO address:/);
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>

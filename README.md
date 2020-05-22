@@ -5,23 +5,27 @@
 **Turn any React app into a DAO enabled dApp in just:**
 
 1...
+
 ```bash
 npm i --save @daostack/arc.react`
 ```
 
 2...
+
 ```html
 <Arc config={new ArcConfig("rinkeby")}>
 ```
 
 3...
+
 ```html
-<DAO address="0xMY_DAO">
+<DAO address="0xMY_DAO"></DAO>
 ```
 
 **Enabling you to build custom interfaces for displaying and interacting with your DAO's:**
 
 members...
+
 ```html
 <Members>
   <Member.Data>

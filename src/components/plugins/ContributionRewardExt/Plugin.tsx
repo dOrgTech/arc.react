@@ -1,7 +1,7 @@
 import * as React from "react";
-import { 
+import {
   ContributionRewardExtPlugin as Entity,
-  IContributionRewardExtState as Data
+  IContributionRewardExtState as Data,
 } from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
@@ -43,37 +43,49 @@ class InferredContributionRewardExtPlugin extends Component<
 
   public static get Entity() {
     return CreateContextFeed(
-      this._EntityContext.Consumer,
-      this._LogsContext.Consumer,
+      this.EntityContext.Consumer,
+      this.LogsContext.Consumer,
       "ContributionRewardExtPlugin"
     );
   }
 
   public static get Data() {
     return CreateContextFeed(
-      this._DataContext.Consumer,
-      this._LogsContext.Consumer,
+      this.DataContext.Consumer,
+      this.LogsContext.Consumer,
       "ContributionRewardExtPlugin"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
-      this._LogsContext.Consumer,
-      this._LogsContext.Consumer,
+      this.LogsContext.Consumer,
+      this.LogsContext.Consumer,
       "ContributionRewardExtPlugin"
     );
   }
 
-  protected static _EntityContext = React.createContext<Entity | undefined>(
+  public static EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<Data | undefined>(
+  public static DataContext = React.createContext<Data | undefined>(undefined);
+  public static LogsContext = React.createContext<ComponentLogs | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<
-    ComponentLogs | undefined
-  >(undefined);
+}
+
+function useContributionRewardExtPlugin(): [
+  Data | undefined,
+  Entity | undefined
+] {
+  const data = React.useContext<Data | undefined>(
+    InferredContributionRewardExtPlugin.DataContext
+  );
+  const entity = React.useContext<Entity | undefined>(
+    InferredContributionRewardExtPlugin.EntityContext
+  );
+
+  return [data, entity];
 }
 
 class ContributionRewardExtPlugin extends React.Component<RequiredProps> {
@@ -120,5 +132,6 @@ export {
   ContributionRewardExtPlugin,
   InferredContributionRewardExtPlugin,
   Entity as ContributionRewardExtPluginEntity,
-  Data as ContributionRewardExtPluginData
+  Data as ContributionRewardExtPluginData,
+  useContributionRewardExtPlugin,
 };

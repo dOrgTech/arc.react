@@ -33,37 +33,44 @@ class InferredStake extends Component<InferredProps, Entity, Data> {
 
   public static get Entity() {
     return CreateContextFeed(
-      this._EntityContext.Consumer,
-      this._LogsContext.Consumer,
+      this.EntityContext.Consumer,
+      this.LogsContext.Consumer,
       "Stake"
     );
   }
 
   public static get Data() {
     return CreateContextFeed(
-      this._DataContext.Consumer,
-      this._LogsContext.Consumer,
+      this.DataContext.Consumer,
+      this.LogsContext.Consumer,
       "Stake"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
-      this._LogsContext.Consumer,
-      this._LogsContext.Consumer,
+      this.LogsContext.Consumer,
+      this.LogsContext.Consumer,
       "Stake"
     );
   }
 
-  protected static _EntityContext = React.createContext<Entity | undefined>(
+  public static EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<Data | undefined>(
+  public static DataContext = React.createContext<Data | undefined>(undefined);
+  public static LogsContext = React.createContext<ComponentLogs | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<
-    ComponentLogs | undefined
-  >(undefined);
+}
+
+function useStake(): [Data | undefined, Entity | undefined] {
+  const data = React.useContext<Data | undefined>(InferredStake.DataContext);
+  const entity = React.useContext<Entity | undefined>(
+    InferredStake.EntityContext
+  );
+
+  return [data, entity];
 }
 
 class Stake extends React.Component<RequiredProps> {
@@ -96,4 +103,10 @@ class Stake extends React.Component<RequiredProps> {
 
 export default Stake;
 
-export { Stake, InferredStake, Entity as StakeEntity, Data as StakeData };
+export {
+  Stake,
+  InferredStake,
+  Entity as StakeEntity,
+  Data as StakeData,
+  useStake,
+};

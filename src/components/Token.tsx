@@ -38,37 +38,44 @@ class InferredToken extends Component<InferredProps, Entity, Data> {
 
   public static get Entity() {
     return CreateContextFeed(
-      this._EntityContext.Consumer,
-      this._LogsContext.Consumer,
+      this.EntityContext.Consumer,
+      this.LogsContext.Consumer,
       "Token"
     );
   }
 
   public static get Data() {
     return CreateContextFeed(
-      this._DataContext.Consumer,
-      this._LogsContext.Consumer,
+      this.DataContext.Consumer,
+      this.LogsContext.Consumer,
       "Token"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
-      this._LogsContext.Consumer,
-      this._LogsContext.Consumer,
+      this.LogsContext.Consumer,
+      this.LogsContext.Consumer,
       "Token"
     );
   }
 
-  protected static _EntityContext = React.createContext<Entity | undefined>(
+  public static EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<Data | undefined>(
+  public static DataContext = React.createContext<Data | undefined>(undefined);
+  public static LogsContext = React.createContext<ComponentLogs | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<
-    ComponentLogs | undefined
-  >(undefined);
+}
+
+function useToken(): [Data | undefined, Entity | undefined] {
+  const data = React.useContext<Data | undefined>(InferredToken.DataContext);
+  const entity = React.useContext<Entity | undefined>(
+    InferredToken.EntityContext
+  );
+
+  return [data, entity];
 }
 
 class Token extends React.Component<RequiredProps> {
@@ -115,4 +122,10 @@ class Token extends React.Component<RequiredProps> {
 
 export default Token;
 
-export { Token, InferredToken, Entity as TokenEntity, Data as TokenData };
+export {
+  Token,
+  InferredToken,
+  Entity as TokenEntity,
+  Data as TokenData,
+  useToken,
+};

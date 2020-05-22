@@ -1,12 +1,20 @@
 import React from "react";
 import {
+  Arc,
+  ArcConfig,
+  Queue,
+  QueueData,
+  Queues,
+  DAO,
+  useQueue,
+} from "../src";
+import {
   render,
   screen,
   cleanup,
   waitFor,
   waitForElementToBeRemoved,
 } from "@testing-library/react";
-import { Arc, ArcConfig, Queue, QueueData, Queues, DAO } from "../src";
 
 const daoAddress = "0x666a6eb4618d0438511c8206df4d5b142837eb0d";
 const queueId =
@@ -27,6 +35,28 @@ describe("Queue Component ", () => {
       </Arc>
     );
     const name = await screen.findByText(/Queue id:/);
+    expect(name).toBeInTheDocument();
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        Queue id: ${queueId}
+      </div>
+    `);
+  });
+
+  it("Shows id using useQueue", async () => {
+    const QueueWithHooks = () => {
+      const [queueData] = useQueue();
+      return <div>{"Queue id: " + queueData?.id}</div>;
+    };
+    const { container, findByText } = render(
+      <Arc config={arcConfig}>
+        <Queue dao={daoAddress} id={queueId}>
+          <QueueWithHooks />
+        </Queue>
+      </Arc>
+    );
+
+    const name = await findByText(/Queue id:/);
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>

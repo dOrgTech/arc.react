@@ -43,37 +43,46 @@ class InferredFundingRequestPlugin extends Component<
 
   public static get Entity() {
     return CreateContextFeed(
-      this._EntityContext.Consumer,
-      this._LogsContext.Consumer,
+      this.EntityContext.Consumer,
+      this.LogsContext.Consumer,
       "FundingRequestPlugin"
     );
   }
 
   public static get Data() {
     return CreateContextFeed(
-      this._DataContext.Consumer,
-      this._LogsContext.Consumer,
+      this.DataContext.Consumer,
+      this.LogsContext.Consumer,
       "FundingRequestPlugin"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
-      this._LogsContext.Consumer,
-      this._LogsContext.Consumer,
+      this.LogsContext.Consumer,
+      this.LogsContext.Consumer,
       "FundingRequestPlugin"
     );
   }
 
-  protected static _EntityContext = React.createContext<Entity | undefined>(
+  public static EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<Data | undefined>(
+  public static DataContext = React.createContext<Data | undefined>(undefined);
+  public static LogsContext = React.createContext<ComponentLogs | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<
-    ComponentLogs | undefined
-  >(undefined);
+}
+
+function useFundingRequestPlugin(): [Data | undefined, Entity | undefined] {
+  const data = React.useContext<Data | undefined>(
+    InferredFundingRequestPlugin.DataContext
+  );
+  const entity = React.useContext<Entity | undefined>(
+    InferredFundingRequestPlugin.EntityContext
+  );
+
+  return [data, entity];
 }
 
 class FundingRequestPlugin extends React.Component<RequiredProps> {
@@ -121,4 +130,5 @@ export {
   InferredFundingRequestPlugin,
   Entity as FundingRequestPluginEntity,
   Data as FundingRequestPluginData,
+  useFundingRequestPlugin,
 };

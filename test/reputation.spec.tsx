@@ -13,6 +13,7 @@ import {
   Reputation,
   Reputations,
   DAO,
+  useReputation,
 } from "../src";
 
 const arcConfig = new ArcConfig("private");
@@ -63,6 +64,38 @@ describe("Reputation component ", () => {
     expect(dao).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>
+        Reputation DAO address: ${daoAddress}
+      </div>
+    `);
+  });
+
+  it("Shows address and DAO using useReputation", async () => {
+    const ReputationWithHooks = () => {
+      const [reputationData] = useReputation();
+      return (
+        <div>
+          {"Reputation address: " + reputationData?.address}
+          {"Reputation DAO address: " + reputationData?.dao.id}
+        </div>
+      );
+    };
+    const { container, findByText } = render(
+      <Arc config={arcConfig}>
+        <DAO address={daoAddress}>
+          <Reputation>
+            <ReputationWithHooks />
+          </Reputation>
+        </DAO>
+      </Arc>
+    );
+
+    const name = await findByText(
+      /Reputation address: 0xebbe3726558bea9869d397505c9dec2a6fb9a433/
+    );
+    expect(name).toBeInTheDocument();
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        Reputation address: ${reputationAddress}
         Reputation DAO address: ${daoAddress}
       </div>
     `);

@@ -10,6 +10,7 @@ import {
   ContributionRewardPlugin,
   ContributionRewardProposal,
   ContributionRewardPluginEntity,
+  useContributionRewardPlugin,
 } from "../../src";
 
 const arcConfig = new ArcConfig("private");
@@ -57,6 +58,28 @@ describe("Plugin contribution reward component ", () => {
     );
 
     const name = await screen.findByText(/Plugin name:/);
+    expect(name).toBeInTheDocument();
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        Plugin name: ContributionReward
+      </div>
+    `);
+  });
+
+  it("Shows name using useContributionRewardPlugin", async () => {
+    const ContributionRewardPluginWithHooks = () => {
+      const [contributionRewardPluginData] = useContributionRewardPlugin();
+      return <div>{"Plugin name: " + contributionRewardPluginData?.name}</div>;
+    };
+    const { container, findByText } = render(
+      <Arc config={arcConfig}>
+        <ContributionRewardPlugin id={pluginId}>
+          <ContributionRewardPluginWithHooks />
+        </ContributionRewardPlugin>
+      </Arc>
+    );
+
+    const name = await findByText(/Plugin name: ContributionReward/);
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>

@@ -8,6 +8,7 @@ import {
   Proposal,
   Plugin,
   ReputationFromTokenPlugin,
+  useReputationFromTokenPlugin,
 } from "../../src";
 
 const arcConfig = new ArcConfig("private");
@@ -30,6 +31,28 @@ describe("Reputation from token plugin component ", () => {
     );
 
     const name = await screen.findByText(/Plugin name:/);
+    expect(name).toBeInTheDocument();
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        Plugin name: ReputationFromToken
+      </div>
+    `);
+  });
+
+  it("Shows name using useReputationFromTokenPlugin", async () => {
+    const ReputationFromTokenPluginWithHooks = () => {
+      const [ReputationFromTokenPluginData] = useReputationFromTokenPlugin();
+      return <div>{"Plugin name: " + ReputationFromTokenPluginData?.name}</div>;
+    };
+    const { container, findByText } = render(
+      <Arc config={arcConfig}>
+        <ReputationFromTokenPlugin id={pluginId}>
+          <ReputationFromTokenPluginWithHooks />
+        </ReputationFromTokenPlugin>
+      </Arc>
+    );
+
+    const name = await findByText(/Plugin name: ReputationFromToken/);
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>
