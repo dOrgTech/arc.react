@@ -43,6 +43,7 @@ class InferredDAOs extends ComponentList<InferredProps, Component> {
         key={`${entity.id}_${index}`}
         address={entity.id}
         config={config}
+        entity={entity}
       >
         {children}
       </Component>

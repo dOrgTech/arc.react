@@ -1,10 +1,10 @@
 import * as React from "react";
+import { Vote as Entity, IVoteState as Data } from "@dorgtech/arc.js";
 import { Component, ComponentLogs, ComponentProps } from "../runtime";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 import { Arc as Protocol, ArcConfig as ProtocolConfig } from "../protocol";
-import { Vote as Entity, IVoteState as Data } from "@dorgtech/arc.js";
 
-interface RequiredProps extends ComponentProps {
+interface RequiredProps extends ComponentProps<Entity, Data> {
   // Vote ID
   id: string;
 }

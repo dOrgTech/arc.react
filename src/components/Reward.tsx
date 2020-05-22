@@ -9,7 +9,7 @@ import {
   ComponentProps,
 } from "../";
 
-interface RequiredProps extends ComponentProps {
+interface RequiredProps extends ComponentProps<Entity, Data> {
   // Reward ID
   id: string;
 }

@@ -1,7 +1,7 @@
 import * as React from "react";
 import {
   CompetitionProposal as Entity,
-  ICompetitionProposalState as Data
+  ICompetitionProposalState as Data,
 } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
@@ -13,7 +13,7 @@ import {
 } from "../../../";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 
-interface RequiredProps extends ComponentProps {
+interface RequiredProps extends ComponentProps<Entity, Data> {
   // Proposal ID
   id?: string | Entity;
 }
@@ -119,5 +119,5 @@ export {
   InferredCompetitionProposal,
   CompetitionProposal,
   Entity as CompetitionProposalEntity,
-  Data as CompetitionProposalData
+  Data as CompetitionProposalData,
 };

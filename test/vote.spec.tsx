@@ -82,9 +82,6 @@ describe("Vote List", () => {
     const { findAllByText, queryAllByTestId, findByText } = render(
       <VoteList />
     );
-    await waitFor(() => findByText(/Vote id/), {
-      timeout: 8000,
-    });
     await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
       timeout: 8000,
     });

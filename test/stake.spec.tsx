@@ -83,9 +83,6 @@ describe("Stake List", () => {
     const { findAllByText, queryAllByTestId, findByText } = render(
       <StakeList />
     );
-    await waitFor(() => findByText(/Stake id:/), {
-      timeout: 8000,
-    });
     await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
       timeout: 8000,
     });

@@ -1,4 +1,5 @@
 import React from "react";
+import { render, screen, cleanup } from "@testing-library/react";
 import {
   Arc,
   ArcConfig,
@@ -7,7 +8,6 @@ import {
   LoadingRenderProps,
   DAOData,
 } from "../src";
-import { render, screen, cleanup } from "@testing-library/react";
 
 describe("Custom loader ", () => {
   afterEach(() => cleanup());

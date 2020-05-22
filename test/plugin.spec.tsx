@@ -81,10 +81,10 @@ describe("Plugin List", () => {
     const { findAllByText, queryAllByTestId, findByText } = render(
       <PluginList />
     );
-    await waitFor(() => findByText(/Plugin id:/), {
+    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
       timeout: 20000,
     });
-    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
+    await waitFor(() => findByText(`Plugin id: ${pluginId}`), {
       timeout: 20000,
     });
     const plugins = await findAllByText(/Plugin id:/);

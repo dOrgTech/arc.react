@@ -16,7 +16,7 @@ import { CreateContextFeed } from "../../runtime/ContextFeed";
 abstract class Entity extends BaseEntity<BaseData> {}
 type Data = BaseData;
 
-interface RequiredProps extends ComponentProps {
+interface RequiredProps extends ComponentProps<Entity, Data> {
   // Plugin ID
   id: Entity | string;
 }

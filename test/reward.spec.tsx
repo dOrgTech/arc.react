@@ -4,7 +4,6 @@ import {
   render,
   screen,
   waitForElementToBeRemoved,
-  waitFor,
   cleanup,
 } from "@testing-library/react";
 
@@ -81,12 +80,7 @@ describe("Reward List", () => {
   }
 
   it("Show list of reward ", async () => {
-    const { findAllByText, queryAllByTestId, findByText } = render(
-      <RewardList />
-    );
-    await waitFor(() => findByText(/Reward id:/), {
-      timeout: 8000,
-    });
+    const { findAllByText, queryAllByTestId } = render(<RewardList />);
     await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
       timeout: 8000,
     });
