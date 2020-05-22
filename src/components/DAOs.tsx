@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import { IDAOQueryOptions as FilterOptions } from "@dorgtech/arc.js";
+import { IDAOQueryOptions as FilterOptions } from "@daostack/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,

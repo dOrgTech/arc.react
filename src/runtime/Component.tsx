@@ -5,7 +5,7 @@ import { Subscription } from "rxjs";
 import {
   Entity as StatefulEntity,
   IEntityState as IStatefulEntityData,
-} from "@dorgtech/arc.js";
+} from "@daostack/arc.js";
 import { MaybeAsync, executeMaybeAsyncFunction } from "./utils/async";
 import { ComponentLogs } from "./logging/ComponentLogs";
 

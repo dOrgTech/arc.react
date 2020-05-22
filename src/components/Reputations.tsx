@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import { IReputationQueryOptions as FilterOptions } from "@dorgtech/arc.js";
+import { IReputationQueryOptions as FilterOptions } from "@daostack/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,

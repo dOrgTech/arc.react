@@ -3,7 +3,7 @@ import { first } from "rxjs/operators";
 import {
   Plugin as BaseEntity,
   IPluginState as BaseData,
-} from "@dorgtech/arc.js";
+} from "@daostack/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,

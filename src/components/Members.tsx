@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Observable } from "rxjs";
-import { IMemberQueryOptions as FilterOptions } from "@dorgtech/arc.js";
+import { IMemberQueryOptions as FilterOptions } from "@daostack/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,

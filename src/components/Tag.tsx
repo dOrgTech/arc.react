@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Tag as Entity, ITagState as Data } from "@dorgtech/arc.js";
+import { Tag as Entity, ITagState as Data } from "@daostack/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,

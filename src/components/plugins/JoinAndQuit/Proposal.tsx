@@ -2,7 +2,7 @@ import * as React from "react";
 import {
   JoinAndQuitProposal as Entity,
   IJoinAndQuitProposalState as Data,
-} from "@dorgtech/arc.js";
+} from "@daostack/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,

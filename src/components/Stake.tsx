@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Stake as Entity, IStakeState as Data } from "@dorgtech/arc.js";
+import { Stake as Entity, IStakeState as Data } from "@daostack/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,

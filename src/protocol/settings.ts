@@ -1,5 +1,5 @@
 import { RetryLink } from "apollo-link-retry";
-import { IArcOptions } from "@dorgtech/arc.js";
+import { IArcOptions } from "@daostack/arc.js";
 
 export type Network = "private" | "kovan" | "rinkeby" | "mainnet" | "xdai";
 

@@ -1,4 +1,4 @@
-import { Arc as Connection } from "@dorgtech/arc.js";
+import { Arc as Connection } from "@daostack/arc.js";
 import { ProtocolConfig } from "../runtime";
 import { Network, networkSettings, ArcSettings } from "./";
 

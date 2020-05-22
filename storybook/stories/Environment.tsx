@@ -5,7 +5,7 @@ import QuerySnippets from "../helpers/QuerySnippets";
 import { Arc, ArcConfig } from "../../src";
 import { Typography, Divider } from "@material-ui/core";
 import ObjectInspector from "../helpers/ObjectInspector";
-import { IContractInfo, LATEST_ARC_VERSION } from "@dorgtech/arc.js";
+import { IContractInfo, LATEST_ARC_VERSION } from "@daostack/arc.js";
 
 const arcConfig = new ArcConfig("private");
 

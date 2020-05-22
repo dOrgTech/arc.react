@@ -2,7 +2,7 @@ import * as React from "react";
 import {
   CompetitionPlugin as Entity,
   IContributionRewardExtState as Data,
-} from "@dorgtech/arc.js";
+} from "@daostack/arc.js";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 import {
   Arc as Protocol,

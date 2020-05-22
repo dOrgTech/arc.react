@@ -2,7 +2,7 @@ import * as React from "react";
 import {
   PluginManagerProposal as Entity,
   IPluginManagerProposalState as Data,
-} from "@dorgtech/arc.js";
+} from "@daostack/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
