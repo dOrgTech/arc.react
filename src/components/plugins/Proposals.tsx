@@ -61,6 +61,7 @@ class InferredProposals extends ComponentList<InferredProps, Component> {
         key={`${entity.id}_${index}`}
         id={entity.id}
         config={this.props.config}
+        entity={entity}
       >
         {children}
       </Component>
