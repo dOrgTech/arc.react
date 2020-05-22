@@ -65,10 +65,10 @@ describe("Proposal List", () => {
     const { findAllByText, queryAllByTestId, findByText } = render(
       <ProposalList />
     );
-    await waitFor(() => findByText(/Proposal id/), {
+    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
       timeout: 8000,
     });
-    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
+    await waitFor(() => findByText(`Proposal id: ${proposalId}`), {
       timeout: 8000,
     });
     const proposals = await findAllByText(/Proposal id:/);
