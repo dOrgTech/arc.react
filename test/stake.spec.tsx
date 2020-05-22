@@ -1,5 +1,5 @@
 import React from "react";
-import { Arc, ArcConfig, StakeData, Stake, Stakes } from "../src";
+import { Arc, ArcConfig, StakeData, Stake, Stakes, useStake } from "../src";
 import {
   render,
   screen,
@@ -37,6 +37,30 @@ describe("Stake component ", () => {
       </div>
     `);
   });
+
+  it("Shows id using useStake", async () => {
+    const StakeWithHooks = () => {
+      const [stakeData] = useStake();
+      return <div>{"Stake id: " + stakeData?.id}</div>;
+    };
+    const { container, findByText } = render(
+      <Arc config={arcConfig}>
+        <Stake id={stakeId}>
+          <StakeWithHooks />
+        </Stake>
+      </Arc>
+    );
+
+    const name = await findByText(
+      /Stake id: 0x8da77eedf77582e746a3c92463bb07bff48fdbb6dc965fdbbfc45f3b468a7679/
+    );
+    expect(name).toBeInTheDocument();
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        Stake id: ${stakeId}
+      </div>
+    `);
+  });
 });
 
 describe("Stake List", () => {
@@ -59,9 +83,6 @@ describe("Stake List", () => {
     const { findAllByText, queryAllByTestId, findByText } = render(
       <StakeList />
     );
-    await waitFor(() => findByText(/Stake id:/), {
-      timeout: 8000,
-    });
     await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
       timeout: 8000,
     });

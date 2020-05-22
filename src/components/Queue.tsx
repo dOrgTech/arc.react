@@ -11,7 +11,7 @@ import {
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
-interface RequiredProps extends ComponentProps {
+interface RequiredProps extends ComponentProps<Entity, Data> {
   // Address of the Queue Avatar
   id: string;
   dao?: string | DAOEntity;
@@ -43,37 +43,44 @@ class InferredQueue extends Component<InferredProps, Entity, Data> {
 
   public static get Entity() {
     return CreateContextFeed(
-      this._EntityContext.Consumer,
-      this._LogsContext.Consumer,
+      this.EntityContext.Consumer,
+      this.LogsContext.Consumer,
       "Queue"
     );
   }
 
   public static get Data() {
     return CreateContextFeed(
-      this._DataContext.Consumer,
-      this._LogsContext.Consumer,
+      this.DataContext.Consumer,
+      this.LogsContext.Consumer,
       "Queue"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
-      this._LogsContext.Consumer,
-      this._LogsContext.Consumer,
+      this.LogsContext.Consumer,
+      this.LogsContext.Consumer,
       "Queue"
     );
   }
 
-  protected static _EntityContext = React.createContext<Entity | undefined>(
+  public static EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<Data | undefined>(
+  public static DataContext = React.createContext<Data | undefined>(undefined);
+  public static LogsContext = React.createContext<ComponentLogs | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<
-    ComponentLogs | undefined
-  >(undefined);
+}
+
+function useQueue(): [Data | undefined, Entity | undefined] {
+  const data = React.useContext<Data | undefined>(InferredQueue.DataContext);
+  const entity = React.useContext<Entity | undefined>(
+    InferredQueue.EntityContext
+  );
+
+  return [data, entity];
 }
 
 class Queue extends React.Component<RequiredProps> {
@@ -120,4 +127,10 @@ class Queue extends React.Component<RequiredProps> {
 
 export default Queue;
 
-export { Queue, InferredQueue, Entity as QueueEntity, Data as QueueData };
+export {
+  Queue,
+  InferredQueue,
+  Entity as QueueEntity,
+  Data as QueueData,
+  useQueue,
+};

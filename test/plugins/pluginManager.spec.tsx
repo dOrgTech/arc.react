@@ -13,10 +13,10 @@ import {
 
 const arcConfig = new ArcConfig("private");
 const pluginId =
-  "0xf1bf769af4a9ee1f764de1f09123ed1a35647ce8addd351d45c8f436cbff1411";
+  "0xa8476a6c747d5f894c657d05d0e5ac1ed61b88f9126f272117f582cb2a1a5c1f";
 const proposalId = "";
 
-describe("Plugin manaer component ", () => {
+describe("Plugin manager component ", () => {
   afterEach(() => cleanup());
 
   it("Shows plugin name", async () => {

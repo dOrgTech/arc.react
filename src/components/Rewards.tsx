@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Observable } from "rxjs";
+import { IRewardQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
@@ -21,7 +22,6 @@ import {
   createFilterFromScope,
 } from "../";
 import { CreateContextFeed } from "../runtime/ContextFeed";
-import { IRewardQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 
 type Scopes = "DAO" | "Member as beneficiary" | "Proposal" | "Token";
 
@@ -66,7 +66,12 @@ class InferredRewards extends ComponentList<InferredProps, Component> {
     const { config } = this.props;
 
     return (
-      <Component key={`${entity.id}_${index}`} id={entity.id} config={config}>
+      <Component
+        key={`${entity.id}_${index}`}
+        id={entity.id}
+        config={config}
+        entity={entity}
+      >
         {children}
       </Component>
     );
@@ -74,24 +79,24 @@ class InferredRewards extends ComponentList<InferredProps, Component> {
 
   public static get Entities() {
     return CreateContextFeed(
-      this._EntitiesContext.Consumer,
-      this._LogsContext.Consumer,
+      this.EntitiesContext.Consumer,
+      this.LogsContext.Consumer,
       "Rewards"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
-      this._LogsContext.Consumer,
-      this._LogsContext.Consumer,
+      this.LogsContext.Consumer,
+      this.LogsContext.Consumer,
       "Rewards"
     );
   }
 
-  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
+  protected static EntitiesContext = React.createContext<Entity[] | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<
+  protected static LogsContext = React.createContext<
     ComponentListLogs | undefined
   >(undefined);
 }

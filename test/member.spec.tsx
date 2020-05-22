@@ -1,5 +1,11 @@
 import React from "react";
 import {
+  render,
+  screen,
+  cleanup,
+  waitForElementToBeRemoved,
+} from "@testing-library/react";
+import {
   Arc,
   ArcConfig,
   DAO,
@@ -7,10 +13,10 @@ import {
   Member,
   DAOData,
   Members,
+  useMember,
 } from "../src";
-import { render, screen, cleanup } from "@testing-library/react";
 
-const daoAddress = "0x666a6eb4618d0438511c8206df4d5b142837eb0d";
+const daoAddress = "0x41e5eb4acf9d65e4ac220e9afdccba0213cf60ec";
 const memberAddress = "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1";
 const arcConfig = new ArcConfig("private");
 
@@ -83,6 +89,38 @@ describe("Member component ", () => {
       </div>
     `);
   });
+
+  it("Shows address using useMember", async () => {
+    const MemberWithHooks = () => {
+      const [memberData] = useMember();
+      return (
+        <>
+          <div>{"Member address: " + memberData?.address}</div>
+          <div>{"DAO address: " + memberData?.dao.id}</div>
+        </>
+      );
+    };
+    const { container, findByText } = render(
+      <Arc config={arcConfig}>
+        <Member address={memberAddress} dao={daoAddress}>
+          <MemberWithHooks />
+        </Member>
+      </Arc>
+    );
+
+    const name = await findByText(/Member address:/);
+    expect(name).toBeInTheDocument();
+    expect(container).toMatchInlineSnapshot(`
+      <div>
+        <div>
+          Member address: ${memberAddress}
+        </div>
+        <div>
+          DAO address: ${daoAddress}
+        </div>
+      </div>
+    `);
+  });
 });
 
 describe("Member List", () => {
@@ -108,7 +146,10 @@ describe("Member List", () => {
   }
 
   it("Show list of member ", async () => {
-    const { findAllByText } = render(<MemberList />);
+    const { findAllByText, queryAllByTestId } = render(<MemberList />);
+    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
+      timeout: 8000,
+    });
     const members = await findAllByText(/Member address:/);
     expect(members.length).toBeGreaterThan(1);
   });

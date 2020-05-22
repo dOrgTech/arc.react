@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Observable } from "rxjs";
+import { IReputationQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
   ArcConfig as ProtocolConfig,
@@ -11,8 +12,6 @@ import {
   ComponentListLogs,
   ComponentListProps,
 } from "../";
-
-import { IReputationQueryOptions as FilterOptions } from "@dorgtech/arc.js";
 import { CreateContextFeed } from "../runtime/ContextFeed";
 
 type RequiredProps = ComponentListProps<Entity, FilterOptions>;
@@ -44,6 +43,7 @@ class InferredReputations extends ComponentList<InferredProps, Component> {
         key={`${entity.id}_${index}`}
         address={entity.address}
         config={config}
+        entity={entity}
       >
         {children}
       </Component>
@@ -52,24 +52,24 @@ class InferredReputations extends ComponentList<InferredProps, Component> {
 
   public static get Entities() {
     return CreateContextFeed(
-      this._EntitiesContext.Consumer,
-      this._LogsContext.Consumer,
+      this.EntitiesContext.Consumer,
+      this.LogsContext.Consumer,
       "Reputations"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
-      this._LogsContext.Consumer,
-      this._LogsContext.Consumer,
+      this.LogsContext.Consumer,
+      this.LogsContext.Consumer,
       "Reputations"
     );
   }
 
-  protected static _EntitiesContext = React.createContext<Entity[] | undefined>(
+  protected static EntitiesContext = React.createContext<Entity[] | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<
+  protected static LogsContext = React.createContext<
     ComponentListLogs | undefined
   >(undefined);
 }

@@ -13,7 +13,7 @@ import {
   Plugin,
 } from "../../../";
 
-interface RequiredProps extends ComponentProps {
+interface RequiredProps extends ComponentProps<Entity, Data> {
   // Plugin ID
   id?: string | Entity;
 }
@@ -43,37 +43,46 @@ class InferredContributionRewardPlugin extends Component<
 
   public static get Entity() {
     return CreateContextFeed(
-      this._EntityContext.Consumer,
-      this._LogsContext.Consumer,
+      this.EntityContext.Consumer,
+      this.LogsContext.Consumer,
       "ContributionRewardPlugin"
     );
   }
 
   public static get Data() {
     return CreateContextFeed(
-      this._DataContext.Consumer,
-      this._LogsContext.Consumer,
+      this.DataContext.Consumer,
+      this.LogsContext.Consumer,
       "ContributionRewardPlugin"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
-      this._LogsContext.Consumer,
-      this._LogsContext.Consumer,
+      this.LogsContext.Consumer,
+      this.LogsContext.Consumer,
       "ContributionRewardPlugin"
     );
   }
 
-  protected static _EntityContext = React.createContext<Entity | undefined>(
+  public static EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<Data | undefined>(
+  public static DataContext = React.createContext<Data | undefined>(undefined);
+  public static LogsContext = React.createContext<ComponentLogs | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<
-    ComponentLogs | undefined
-  >(undefined);
+}
+
+function useContributionRewardPlugin(): [Data | undefined, Entity | undefined] {
+  const data = React.useContext<Data | undefined>(
+    InferredContributionRewardPlugin.DataContext
+  );
+  const entity = React.useContext<Entity | undefined>(
+    InferredContributionRewardPlugin.EntityContext
+  );
+
+  return [data, entity];
 }
 
 class ContributionRewardPlugin extends React.Component<RequiredProps> {
@@ -121,4 +130,5 @@ export {
   InferredContributionRewardPlugin,
   Entity as ContributionRewardPluginEntity,
   Data as ContributionRewardPluginData,
+  useContributionRewardPlugin,
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import { Arc, ArcConfig, PluginData, Plugin, Plugins } from "../src";
+import { Arc, ArcConfig, PluginData, Plugin, Plugins, usePlugin } from "../src";
 import {
   render,
   screen,
@@ -9,13 +9,13 @@ import {
 } from "@testing-library/react";
 
 const arcConfig = new ArcConfig("private");
+const pluginId =
+  "0x05e0ab974aee02d06e157daba6709a01384fb1f25ec691606133ffb15c162768";
 
 describe("Plugin component ", () => {
   afterEach(() => cleanup());
 
   it("Shows plugin name", async () => {
-    const pluginId =
-      "0x3687cd051fa5d1da87b25fe33a68bedfbe70f57a781336b48392e4b0fa93f4ce";
     const { container } = render(
       <Arc config={arcConfig}>
         <Plugin id={pluginId}>
@@ -30,7 +30,29 @@ describe("Plugin component ", () => {
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>
-        Plugin name: JoinAndQuit
+        Plugin name: FundingRequest
+      </div>
+    `);
+  });
+
+  it("Shows id using usePlugin", async () => {
+    const PluginWithHooks = () => {
+      const [pluginData] = usePlugin();
+      return <div>{"Plugin id: " + pluginData?.id}</div>;
+    };
+    const { container, findByText } = render(
+      <Arc config={arcConfig}>
+        <Plugin id={pluginId}>
+          <PluginWithHooks />
+        </Plugin>
+      </Arc>
+    );
+
+    const name = await findByText(`Plugin id: ${pluginId}`);
+    expect(name).toBeInTheDocument();
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        Plugin id: ${pluginId}
       </div>
     `);
   });
@@ -57,10 +79,10 @@ describe("Plugin List", () => {
     const { findAllByText, queryAllByTestId, findByText } = render(
       <PluginList />
     );
-    await waitFor(() => findByText(/Plugin id:/), {
+    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
       timeout: 20000,
     });
-    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
+    await waitFor(() => findByText(`Plugin id: ${pluginId}`), {
       timeout: 20000,
     });
     const plugins = await findAllByText(/Plugin id:/);

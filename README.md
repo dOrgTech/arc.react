@@ -2,13 +2,29 @@
 
 > [Arc.react](https://github.com/daostack/arc.react) componentizes [DAOstack's Arc.js library](https://github.com/daostack/arc.js), enabling easier React application integration.
 
-Turn any React app into a DAO enabled dApp in just 1, 2, 3...
+**Turn any React app into a DAO enabled dApp in just:**
 
-1. `npm i --save @daostack/arc.react`
-2. `<Arc config={new ArcConfig("rinkeby")}>`
-3. `<DAO address="0xMY_DAO">`
+1...
 
-Enabling you to build custom interfaces for displaying and interacting with your DAO's members...
+```bash
+npm i --save @daostack/arc.react`
+```
+
+2...
+
+```html
+<Arc config={new ArcConfig("rinkeby")}>
+```
+
+3...
+
+```html
+<DAO address="0xMY_DAO"></DAO>
+```
+
+**Enabling you to build custom interfaces for displaying and interacting with your DAO's:**
+
+members...
 
 ```html
 <Members>
@@ -42,7 +58,7 @@ proposals...
 </Proposals>
 ```
 
-and any other entity [within the DAOstack protocol](./src/components).
+**and any other entity [within the DAOstack protocol](./src/components)!**
 
 ## Read The Docs
 

@@ -9,7 +9,7 @@
     "start:subgraph": "concurrently \"npm:start:graphnode\"",
     "start:graphnode": "docker-compose -f ./env/docker-compose.yml up graph-node",
     "stop:graphnode": "docker-compose -f ./env/docker-compose.yml down -v",
-    "test": "jest --forceExit --runInBand",
+    "test": "jest --forceExit --runInBand test/**/*.spec.tsx",
     "lint": "eslint --quiet src/**/*.tsx test/**/*.tsx",
     "build": "tsc",
     "build:release": "rm -rf ./dist && tsc && rm -rf ./dist/storybook",
@@ -18,7 +18,7 @@
     "release": "npm run build:release && npm run package:release && npm publish ./package --access public"
   },
   "dependencies": {
-    "@dorgtech/arc.js": "2.0.0-experimental.32",
+    "@daostack/arc.js": "2.0.0-experimental.33",
     "apollo-link-retry": "^2.2.16",
     "memoize-one": "^5.0.0",
     "ramda": "^0.26.1",

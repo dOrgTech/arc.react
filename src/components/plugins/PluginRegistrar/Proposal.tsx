@@ -13,7 +13,7 @@ import {
 } from "../../..";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 
-interface RequiredProps extends ComponentProps {
+interface RequiredProps extends ComponentProps<Entity, Data> {
   // Proposal ID
   id?: string | Entity;
 }
@@ -42,37 +42,46 @@ class InferredPluginRegistrarProposal extends Component<
 
   public static get Entity() {
     return CreateContextFeed(
-      this._EntityContext.Consumer,
-      this._LogsContext.Consumer,
+      this.EntityContext.Consumer,
+      this.LogsContext.Consumer,
       "PluginRegistrarProposal"
     );
   }
 
   public static get Data() {
     return CreateContextFeed(
-      this._DataContext.Consumer,
-      this._LogsContext.Consumer,
+      this.DataContext.Consumer,
+      this.LogsContext.Consumer,
       "PluginRegistrarProposal"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
-      this._LogsContext.Consumer,
-      this._LogsContext.Consumer,
+      this.LogsContext.Consumer,
+      this.LogsContext.Consumer,
       "PluginRegistrarProposal"
     );
   }
 
-  protected static _EntityContext = React.createContext<Entity | undefined>(
+  public static EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<Data | undefined>(
+  public static DataContext = React.createContext<Data | undefined>(undefined);
+  public static LogsContext = React.createContext<ComponentLogs | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<
-    ComponentLogs | undefined
-  >(undefined);
+}
+
+function usePluginRegistrarProposal(): [Data | undefined, Entity | undefined] {
+  const data = React.useContext<Data | undefined>(
+    InferredPluginRegistrarProposal.DataContext
+  );
+  const entity = React.useContext<Entity | undefined>(
+    InferredPluginRegistrarProposal.EntityContext
+  );
+
+  return [data, entity];
 }
 
 class PluginRegistrarProposal extends React.Component<RequiredProps> {
@@ -120,4 +129,5 @@ export {
   PluginRegistrarProposal,
   Entity as PluginRegistrarProposalEntity,
   Data as PluginRegistrarProposalData,
+  usePluginRegistrarProposal,
 };

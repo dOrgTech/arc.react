@@ -1,5 +1,5 @@
 import React from "react";
-import { Arc, ArcConfig, VoteData, Vote, Votes } from "../src";
+import { Arc, ArcConfig, VoteData, Vote, Votes, useVote } from "../src";
 import {
   render,
   screen,
@@ -34,6 +34,30 @@ describe("Vote component ", () => {
       </div>
     `);
   });
+
+  it("Shows id using useVote", async () => {
+    const VoteWithHooks = () => {
+      const [voteData] = useVote();
+      return <div>{"Vote id: " + voteData?.id}</div>;
+    };
+    const { container, findByText } = render(
+      <Arc config={arcConfig}>
+        <Vote id={voteId}>
+          <VoteWithHooks />
+        </Vote>
+      </Arc>
+    );
+
+    const name = await findByText(
+      /Vote id: 0x33472fe4769ad20fbb6e14d28074d0f21e7e0a34b09edd2b841714575c5e0da6/
+    );
+    expect(name).toBeInTheDocument();
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        Vote id: ${voteId}
+      </div>
+    `);
+  });
 });
 
 describe("Vote List", () => {
@@ -58,9 +82,6 @@ describe("Vote List", () => {
     const { findAllByText, queryAllByTestId, findByText } = render(
       <VoteList />
     );
-    await waitFor(() => findByText(/Vote id/), {
-      timeout: 8000,
-    });
     await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
       timeout: 8000,
     });

@@ -15,12 +15,16 @@ export interface State<Data extends IStatefulEntityData> {
   logs: ComponentLogs;
 }
 
-export interface ComponentProps {
+export interface ComponentProps<
+  Entity extends StatefulEntity<Data>,
+  Data extends IStatefulEntityData
+> {
   noSub?: boolean;
+  entity?: Entity;
 }
 
 export abstract class Component<
-  Props extends ComponentProps,
+  Props extends ComponentProps<Entity, Data>,
   Entity extends StatefulEntity<Data>,
   Data extends IStatefulEntityData
 > extends React.Component<Props, State<Data>> {
@@ -42,9 +46,9 @@ export abstract class Component<
 
   // See here for more information on the React.Context pattern:
   // https://reactjs.org/docs/context.html
-  protected static _EntityContext: React.Context<any | undefined>;
-  protected static _DataContext: React.Context<any | undefined>;
-  protected static _LogsContext: React.Context<ComponentLogs | undefined>;
+  public static EntityContext: React.Context<any | undefined>;
+  public static DataContext: React.Context<any | undefined>;
+  public static LogsContext: React.Context<ComponentLogs | undefined>;
 
   private entity = memoize(
     // This will only run when the function's arguments have changed :D
@@ -81,9 +85,9 @@ export abstract class Component<
   "constructor": typeof Component;
 
   public render() {
-    const EntityProvider = this.constructor._EntityContext.Provider as any;
-    const DataProvider = this.constructor._DataContext.Provider as any;
-    const LogsProvider = this.constructor._LogsContext.Provider;
+    const EntityProvider = this.constructor.EntityContext.Provider as any;
+    const DataProvider = this.constructor.DataContext.Provider as any;
+    const LogsProvider = this.constructor.LogsContext.Provider;
 
     const children = this.props.children;
     const { data, logs } = this.state;
@@ -134,6 +138,7 @@ export abstract class Component<
     props: Props
   ): Promise<Entity | undefined> {
     const { logs } = this.state;
+    const { entity } = this.props;
 
     logs.entityCreated();
 
@@ -142,8 +147,16 @@ export abstract class Component<
     this.clearPrevState();
 
     try {
-      const asyncFunction = this.createEntity.bind(this);
-      this._entity = await executeMaybeAsyncFunction(asyncFunction);
+      if (entity !== undefined) {
+        this._entity = entity;
+      } else {
+        const func = this.createEntity.bind(this);
+        this._entity = await executeMaybeAsyncFunction(func);
+      }
+
+      if (!this._entity) {
+        throw Error(`This should never happen, Entity undefined.`);
+      }
 
       logs.dataQueryStarted();
       await this.initialize(this._entity);

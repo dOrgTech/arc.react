@@ -1,5 +1,11 @@
 import React from "react";
 import {
+  render,
+  screen,
+  cleanup,
+  waitForElementToBeRemoved,
+} from "@testing-library/react";
+import {
   Arc,
   ArcConfig,
   DAO,
@@ -8,10 +14,10 @@ import {
   Members,
   Member,
   MemberData,
+  useDAO,
 } from "../src";
-import { render, screen, cleanup } from "@testing-library/react";
 
-const daoAddress = "0x666a6eb4618d0438511c8206df4d5b142837eb0d";
+const daoAddress = "0x41e5eb4acf9d65e4ac220e9afdccba0213cf60ec";
 const arcConfig = new ArcConfig("private");
 
 describe("DAO Component ", () => {
@@ -28,6 +34,28 @@ describe("DAO Component ", () => {
       </Arc>
     );
     const name = await screen.findByText(/DAO address:/);
+    expect(name).toBeInTheDocument();
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        DAO address: ${daoAddress}
+      </div>
+    `);
+  });
+
+  it("Shows address using useDAO", async () => {
+    const DaoWithHooks = () => {
+      const [daoData] = useDAO();
+      return <div>{"DAO address: " + daoData?.id}</div>;
+    };
+    const { container, findByText } = render(
+      <Arc config={arcConfig}>
+        <DAO address={daoAddress}>
+          <DaoWithHooks />
+        </DAO>
+      </Arc>
+    );
+
+    const name = await findByText(/DAO address:/);
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>
@@ -56,7 +84,10 @@ describe("DAO List", () => {
   }
 
   it("Show list of DAOS ", async () => {
-    const { findAllByText } = render(<DAOList />);
+    const { findAllByText, queryAllByTestId } = render(<DAOList />);
+    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
+      timeout: 8000,
+    });
     const daos = await findAllByText(/DAO address:/);
     expect(daos.length).toBeGreaterThan(1);
   });
@@ -83,7 +114,10 @@ describe("DAO List", () => {
         );
       }
     }
-    const { findAllByText } = render(<DAOWithMembers />);
+    const { findAllByText, queryAllByTestId } = render(<DAOWithMembers />);
+    await waitForElementToBeRemoved(() => queryAllByTestId("default-loader"), {
+      timeout: 8000,
+    });
     const members = await findAllByText(/Member address:/);
     expect(members.length).toBeGreaterThan(1);
   });

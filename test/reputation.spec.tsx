@@ -1,23 +1,24 @@
 import React from "react";
 import {
-  Arc,
-  ArcConfig,
-  ReputationData,
-  Reputation,
-  Reputations,
-  DAO,
-} from "../src";
-import {
   render,
   screen,
   waitForElementToBeRemoved,
   waitFor,
   cleanup,
 } from "@testing-library/react";
+import {
+  Arc,
+  ArcConfig,
+  ReputationData,
+  Reputation,
+  Reputations,
+  DAO,
+  useReputation,
+} from "../src";
 
 const arcConfig = new ArcConfig("private");
-const reputationAddress = "0xebbe3726558bea9869d397505c9dec2a6fb9a433";
-const daoAddress = "0x218f6e4257bc3e932936e476ebaf45bb7c5c6485";
+const reputationAddress = "0x146ab4120754cd4f15c1c831e0741064ccc36cae";
+const daoAddress = "0xea3a0a94d174dba202ba843f0460a49c87a64a9c";
 
 describe("Reputation component ", () => {
   afterEach(() => cleanup());
@@ -63,6 +64,39 @@ describe("Reputation component ", () => {
     expect(dao).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>
+        Reputation DAO address: ${daoAddress}
+      </div>
+    `);
+  });
+
+  it("Shows address and DAO using useReputation", async () => {
+    const ReputationWithHooks = () => {
+      const [reputationData] = useReputation();
+      return (
+        <div>
+          {"Reputation address: " + reputationData?.address}
+          {"Reputation DAO address: " + reputationData?.dao.id}
+        </div>
+      );
+    };
+    const { container, findByText } = render(
+      <Arc config={arcConfig}>
+        <DAO address={daoAddress}>
+          <Reputation>
+            <ReputationWithHooks />
+          </Reputation>
+        </DAO>
+      </Arc>
+    );
+
+    const name = await findByText(
+      `Reputation address: ${reputationAddress}` +
+        `Reputation DAO address: ${daoAddress}`
+    );
+    expect(name).toBeInTheDocument();
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        Reputation address: ${reputationAddress}
         Reputation DAO address: ${daoAddress}
       </div>
     `);

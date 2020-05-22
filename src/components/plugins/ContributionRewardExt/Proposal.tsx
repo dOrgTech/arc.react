@@ -1,7 +1,7 @@
 import * as React from "react";
-import { 
+import {
   ContributionRewardExtProposal as Entity,
-  IContributionRewardProposalState as Data
+  IContributionRewardProposalState as Data,
 } from "@dorgtech/arc.js";
 import {
   Arc as Protocol,
@@ -13,7 +13,7 @@ import {
 } from "../../../";
 import { CreateContextFeed } from "../../../runtime/ContextFeed";
 
-interface RequiredProps extends ComponentProps {
+interface RequiredProps extends ComponentProps<Entity, Data> {
   // Proposal ID
   id?: string | Entity;
 }
@@ -42,37 +42,49 @@ class InferredContributionRewardExtProposal extends Component<
 
   public static get Entity() {
     return CreateContextFeed(
-      this._EntityContext.Consumer,
-      this._LogsContext.Consumer,
+      this.EntityContext.Consumer,
+      this.LogsContext.Consumer,
       "ContributionRewardExtProposal"
     );
   }
 
   public static get Data() {
     return CreateContextFeed(
-      this._DataContext.Consumer,
-      this._LogsContext.Consumer,
+      this.DataContext.Consumer,
+      this.LogsContext.Consumer,
       "ContributionRewardExtProposal"
     );
   }
 
   public static get Logs() {
     return CreateContextFeed(
-      this._LogsContext.Consumer,
-      this._LogsContext.Consumer,
+      this.LogsContext.Consumer,
+      this.LogsContext.Consumer,
       "ContributionRewardExtProposal"
     );
   }
 
-  protected static _EntityContext = React.createContext<Entity | undefined>(
+  public static EntityContext = React.createContext<Entity | undefined>(
     undefined
   );
-  protected static _DataContext = React.createContext<Data | undefined>(
+  public static DataContext = React.createContext<Data | undefined>(undefined);
+  public static LogsContext = React.createContext<ComponentLogs | undefined>(
     undefined
   );
-  protected static _LogsContext = React.createContext<
-    ComponentLogs | undefined
-  >(undefined);
+}
+
+function useContributionRewardExtProposal(): [
+  Data | undefined,
+  Entity | undefined
+] {
+  const data = React.useContext<Data | undefined>(
+    InferredContributionRewardExtProposal.DataContext
+  );
+  const entity = React.useContext<Entity | undefined>(
+    InferredContributionRewardExtProposal.EntityContext
+  );
+
+  return [data, entity];
 }
 
 class ContributionRewardExtProposal extends React.Component<RequiredProps> {
@@ -115,9 +127,10 @@ class ContributionRewardExtProposal extends React.Component<RequiredProps> {
 
 export default ContributionRewardExtProposal;
 
-export { 
+export {
   InferredContributionRewardExtProposal,
   ContributionRewardExtProposal,
   Entity as ContributionRewardExtProposalEntity,
   Data as ContributionRewardExtProposalData,
+  useContributionRewardExtProposal,
 };

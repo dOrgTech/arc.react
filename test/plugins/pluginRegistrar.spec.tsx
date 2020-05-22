@@ -9,13 +9,13 @@ import {
   Plugin,
   PluginRegistrarPlugin,
   PluginRegistrarProposal,
+  usePluginRegistrarPlugin,
 } from "../../src";
 
 const arcConfig = new ArcConfig("private");
 const pluginId =
-  "0xb262e81d24322258466af958b36d67ad867be64f526ed13dd3af38e13094a829";
-const proposalId =
-  "0x1a691b748985f728ff512ea51498ba2459498312c57acd4536e2c14ae350d9e1";
+  "0x4e28c6562903626006ff47f51fb71bd3870f7da5ae41470d6fc8aa132c899794";
+const proposalId = "";
 
 describe("Plugin manaer component ", () => {
   afterEach(() => cleanup());
@@ -32,6 +32,28 @@ describe("Plugin manaer component ", () => {
     );
 
     const name = await screen.findByText(/Plugin name:/);
+    expect(name).toBeInTheDocument();
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        Plugin name: SchemeRegistrar
+      </div>
+    `);
+  });
+
+  it("Shows name using usePluginRegistrarPlugin", async () => {
+    const PluginRegistrarPluginWithHooks = () => {
+      const [PluginRegistrarPluginData] = usePluginRegistrarPlugin();
+      return <div>{"Plugin name: " + PluginRegistrarPluginData?.name}</div>;
+    };
+    const { container, findByText } = render(
+      <Arc config={arcConfig}>
+        <PluginRegistrarPlugin id={pluginId}>
+          <PluginRegistrarPluginWithHooks />
+        </PluginRegistrarPlugin>
+      </Arc>
+    );
+
+    const name = await findByText(/Plugin name: SchemeRegistrar/);
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>

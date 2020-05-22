@@ -9,12 +9,13 @@ import {
   Plugin,
   ContributionRewardExtPlugin,
   ContributionRewardProposal,
-  ContributionRewardPluginEntity,
+  ContributionRewardExtPluginEntity,
+  useContributionRewardExtPlugin,
 } from "../../src";
 
 const arcConfig = new ArcConfig("private");
 const pluginId =
-  "0x5f83d01d4a450819f46c9c8c4e7903a0367ae87d617b38e8946a6b9a13eb141c";
+  "0x1b3aedd67a272608f5b5a902c49fc7e68697915f4af48176ccfb8c86c47c7126";
 const proposalId = "";
 
 describe("Plugin contribution reward ext component ", () => {
@@ -32,6 +33,28 @@ describe("Plugin contribution reward ext component ", () => {
     );
 
     const name = await screen.findByText(/Plugin name:/);
+    expect(name).toBeInTheDocument();
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div>
+        Plugin name: ContributionRewardExt
+      </div>
+    `);
+  });
+
+  it("Shows name using useContributionRewardExtPlugin", async () => {
+    const ContributionRewardExtPluginWithHooks = () => {
+      const [contributionRewardPluginData] = useContributionRewardExtPlugin();
+      return <div>{"Plugin name: " + contributionRewardPluginData?.name}</div>;
+    };
+    const { container, findByText } = render(
+      <Arc config={arcConfig}>
+        <ContributionRewardExtPlugin id={pluginId}>
+          <ContributionRewardExtPluginWithHooks />
+        </ContributionRewardExtPlugin>
+      </Arc>
+    );
+
+    const name = await findByText(/Plugin name: ContributionRewardExt/);
     expect(name).toBeInTheDocument();
     expect(container.firstChild).toMatchInlineSnapshot(`
       <div>
