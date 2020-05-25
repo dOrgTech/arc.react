@@ -66,6 +66,8 @@ proposals...
 - [architecture](./documentation/architecture.md)
 - [api](./documentation/api.md)
 
+Check the [demo app!](https://github.com/dOrgTech/arc.react-demo)
+
 # Build & Contribute
 
 ## Prerequisites
