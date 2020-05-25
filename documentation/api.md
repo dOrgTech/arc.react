@@ -43,6 +43,7 @@ const arcConfig = new ArcConfig({
   ...config,
   web3Provider: metamask,
 });
+arcConfig.initialize();
 ```
 
 You can also pass in your own configuration values like so:
@@ -58,6 +59,7 @@ const settings: ArcSettings = {
 };
 
 const arcConfig = new ArcConfig(settings);
+arcConfig.initialize();
 ```
 
 ---
@@ -500,3 +502,35 @@ from?: "DAO" | "Member as proposer"
   <Proposals />
 </Member>
 ```
+
+---
+
+## useComponent
+
+As you previously saw, to get the information (`Data` and `Entity`) from every component we need to do, for example with Member:
+
+```html
+<Member address="0x" dao="0x">
+  <Member.Data>
+    {(member: MemberData) =>
+    <div>{"Member id: " + member.id}</div>
+    }
+  </Member.Data>
+</Member>
+```
+
+But the library also allows you to do, (this is available for every component of the library):
+
+```jsx
+const MyMemberComponent = () => {
+  const [memberData, memberEntity] = useMember();
+  return <div>Member id: {memberData?.id}</div>;
+};
+<Member address="0x" dao="0x">
+  <MyMemberComponent />
+</Member>;
+```
+
+Note that you MUST implement the component that has the `useXXX` INSIDE of the component you want to get the data and/or from. Also, you must use the `?` when interacting with the hook because it can be undefined.
+
+[Click here](https://github.com/dOrgTech/arc.react-demo/blob/dev/src/components/Proposals/Create.tsx#L20) to check an example
