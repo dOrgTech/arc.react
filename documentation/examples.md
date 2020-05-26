@@ -9,7 +9,7 @@ const configuration = new ArcConfig("private");
 ```
 
 ```html
-<Arc config="{configuration}">
+<Arc config={configuration}>
   <DAO address="0x...">
     <ExampleDAOView />
   </DAO>
